@@ -70,6 +70,8 @@
     * build,
     * ship,
     * iterate
+  * uses
+    * | ANY React Native app / REGARDLESS using `expo`
 
 ## Table of contents
 
