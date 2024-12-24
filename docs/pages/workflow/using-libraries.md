@@ -1,77 +1,56 @@
----
-title: Using Expo SDK, React Native, and third-party libraries
-sidebar_title: Using libraries
-description: Learn how to use Expo SDK, React Native libraries, and other third-party npm packages in your project.
----
-
-import InstallSection from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ConfigReactNative } from '~/ui/components/ConfigSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal, SnackInline } from '~/ui/components/Snippet';
-
-Every app is inevitably going to use a third-party library, so it's important to understand how to determine whether a library is compatible with your project.
+* goal
+  * determine whether a library -- is compatible with -- your project
 
 ## React Native core libraries
 
-React Native provides a set of built-in primitives that most developers will need in their apps. These include components such as `<ActivityIndicator>`, `<TextInput>`, `<Text>`, `<ScrollView>`, and `<View>`. These are listed at [Core Components and APIs](https://reactnative.dev/docs/components-and-apis) in React Native documentation. You can also view the [React Native version that corresponds to your Expo SDK version](/versions/latest).
+* built-in primitives / used | MOST apps
+* see [Core Components and APIs](https://reactnative.dev/docs/components-and-apis)
+* _Examples:_
+  * _Example1:_ components as `<ActivityIndicator>`, `<TextInput>`, `<Text>`, `<ScrollView>`, and `<View>`
+  * _Example2:_ use | your app
 
-To use a React Native component or API in your project, import it from the `react-native` package in your code:
-
-<SnackInline>
-
-```tsx
-import { Text, View } from 'react-native';
-
-export default function App() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Hello, world!</Text>
-    </View>
-  );
-}
-```
-
-</SnackInline>
+  ```tsx
+  import { Text, View } from 'react-native';
+  
+  export default function App() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Hello, world!</Text>
+      </View>
+    );
+  }
+  ```
 
 ## Expo SDK libraries
 
-The Expo SDK picks up where the React Native core libraries end. It provides access to a lot of device and system functionality such as audio, barcode scanning, camera, calendar, contacts, video, and so on. It also adds other powerful libraries like updates, maps, OAuth authentication tools, and more. For more information, see how we decide [what goes into the Expo SDK](https://expo.fyi/whats-in-the-sdk).
+* 👀picks up | React Native core libraries end 👀
+* see 
+  * [Expo SDK](../versions/index.md)
+  * [what goes | Expo SDK](https://expo.fyi/whats-in-the-sdk)
 
-To use a library from the Expo SDK, find the one you are looking for in the [API reference](/versions/latest/) or use the documentation search.
+* platform compatibility tags | top of EACH API reference 
+  * _Example:_ platform tags for the [`expo-device`](/versions/latest/sdk/device/)
 
-<ConfigReactNative>
+    ![](/docs/public/static/images/guides/platform-tags.png)
 
-If you initialized your app using `npx @react-native-community/cli@latest init` and you don't have the `expo` package installed in it yet, see the [installing Expo modules guide](/bare/installing-expo-modules) for more information.
+* `npx expo install`
+  * steps
+    * picks a library version -- compatible with -- your project
+    * install it -- via -- your JavaScript package manager
 
-</ConfigReactNative>
-
-You will see the platform compatibility tags at the top of each API reference. It tells you which platforms and environments the library is compatible with. For example, the platform tags for the [`expo-device`](/versions/latest/sdk/device/) library look like the following:
-
-<ContentSpotlight
-  alt="Platform compatibility tags for expo-device library on its API reference."
-  src="/static/images/guides/platform-tags.png"
-  className="max-w-[480px]"
-/>
-
-After the platform compatibility table, there is a library's description and a section with instructions on installing the library. For example:
-
-<InstallSection packageName="expo-device" hideBareInstructions />
-
-The `npx expo install` command picks a library version compatible with your project and then uses your JavaScript package manager (such as npm) to install it.
-
-Next, a typical API reference includes:
-
-- Config plugin usage information if the library requires a config plugin.
-- A code example that shows how to use the library.
-- API section that lists how to import the library, followed by a list of hooks, props, types, methods, and classes that the library provides.
-
-> **Note**: If you use TypeScript, you can see the information included in the API section in your TypeScript-compatible code editor (such as VS Code) with auto-completion.
+* typical API reference 
+  * if the library requires a config plugin -> config plugin usage information 
+  * code example -- about how to use the -- library
+  * API section / 
+    * lists how to import the library,
+    * list of hooks, props, types, methods, and classes / -- provided by the -- library
+  * if you use TypeScript -> information | your TypeScript-compatible code editor's API section
 
 ## Third-party libraries
 
 ### Finding a third-party library
 
+* TODO:
 [React Native Directory](https://reactnative.directory) is a searchable database of libraries built specifically for React Native. If the library that you are looking for is not provided by React Native or the Expo SDK then this is the best place to look first when trying to find a library for your app.
 
 After the React Native Directory, the [npm registry](https://www.npmjs.com/) is the next best place. The npm registry is the definitive source for JavaScript libraries, but the libraries that it lists may not all be compatible with React Native. React Native is one of many JavaScript programming environments, including Node.js, web browsers, Electron, and more, and npm includes libraries that work for all of these environments. Any library that is compatible with React Native is compatible with the Expo project when you create a [development build](/workflow/overview/#development-builds). However, it may not be compatible with the [Expo Go](https://expo.dev/go) app.
