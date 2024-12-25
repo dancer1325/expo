@@ -9,16 +9,21 @@
       * -- via -- writing React and JavaScript
 
 * this repository
-  * == Expo SDK + Expo Modules API + Go app + CLI + Router + documentation + OTHER supporting tools
+  * == [Expo SDK](docs/pages/versions) + Expo Modules API + Expo Go app + [Expo CLI](docs/pages/more/expo-cli.mdx) + Router + documentation + OTHER supporting tools
 
 * [Expo Application Services (EAS)](https://expo.dev/eas)
   * == platform of hosted services / -- deeply integrated with -- Expo open source tools
   * allows you, about your app -- as an -- individual or a team, 
     * build,
-    * ship,
+    * ship | stores,
     * iterate
+    * send push notifications
   * uses
     * | ANY React Native app / REGARDLESS using `expo`
+
+* Expo Go app
+  * := sandbox -- for -- trying out Expo quickly
+  * free | app store
 
 ## Table of contents
 
