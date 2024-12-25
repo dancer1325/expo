@@ -1,98 +1,38 @@
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
-
 ## Set up Android Studio
 
-<Tabs>
+### | macOS
 
-<Tab label="macOS">
+* Download & install [Android Studio](https://developer.android.com/studio).
+* Open the **Android Studio** app,
+  * click **More Actions**, select **SDK Manager**
+  * **Settings** &gt; **Languages & Frameworks** &gt; **Android SDK**
+    * | **SDK Platforms** tab, select the latest Android version (API level)
+    
+      ![](/docs/public/static/images/android-studio/build-tools.png)
+    * | **SDK Tools** tab, you MUST have installed >= 1 version of the **Android SDK Build-Tools** and **Android Emulator**
 
-<Step label="1">
+      ![](/docs/public/static/images/android-studio/sdk-platforms.png)
 
-Download and install [Android Studio](https://developer.android.com/studio).
+* copy the **Android SDK Location**'s path
+  
+  ![](/docs/public/static/images/android-studio/sdk-location.png)
 
-</Step>
+* click **Apply** and **OK** -- to -- install the Android SDK & related build tools
+* set the NEXT environment variables | **~/.bash_profile** (or **~/.zshrc**)
+  * see [environment variable](https://developer.android.com/studio/command-line/variables#envar) 
 
-<Step label="2">
+  ```
+  export ANDROID_HOME=$HOME/Library/Android/sdk
+  export PATH=$PATH:$ANDROID_HOME/emulator
+  export PATH=$PATH:$ANDROID_HOME/platform-tools
+  ```
 
-Open the **Android Studio** app, click **More Actions** and select **SDK Manager**.
+* `adb --version`
+  * check that you can run `adb` | your terminal
 
-</Step>
+### | Windows
 
-<Step label="3">
-
-Open Android Studio, go to **Settings** &gt; **Languages & Frameworks** &gt; **Android SDK**. From the **SDK Platforms** tab, select the latest Android version (API level).
-
-<ContentSpotlight
-  alt="Android SDK Platforms"
-  src="/static/images/android-studio/sdk-platforms.png"
-  className="max-w-[640px]"
-/>
-
-Then, click on the **SDK Tools** tab and make sure you have at least one version of the **Android SDK Build-Tools** and **Android Emulator** installed.
-
-<ContentSpotlight
-  alt="Android SDK build tools."
-  src="/static/images/android-studio/build-tools.png"
-  className="max-w-[640px]"
-/>
-</Step>
-
-<Step label="4">
-Copy or remember the path listed in the box that says **Android SDK Location**.
-
-<ContentSpotlight
-  alt="Android SDK location."
-  src="/static/images/android-studio/sdk-location.png"
-  className="max-w-[640px]"
-/>
-</Step>
-
-<Step label="5">
-
-Click **Apply** and **OK** to install the Android SDK and related build tools.
-
-</Step>
-
-<Step label="6">
-
-If you are on macOS or Linux, add an [environment variable](https://developer.android.com/studio/command-line/variables#envar) pointing to the Android SDK location in **~/.bash_profile** (or **~/.zshrc** if you use Zsh). For example: `export ANDROID_HOME=/your/path/here`.
-
-Add the following lines to your **/.zprofile** or **~/.zshrc** (if you are using bash, then **~/.bash_profile** or **~/.bashrc**) config file:
-
-<Terminal
-  cmd={[
-    '$ export ANDROID_HOME=$HOME/Library/Android/sdk',
-    '$ export PATH=$PATH:$ANDROID_HOME/emulator',
-    '$ export PATH=$PATH:$ANDROID_HOME/platform-tools',
-  ]}
-  cmdCopy="export ANDROID_HOME=$HOME/Library/Android/sdk && export PATH=$PATH:$ANDROID_HOME/emulator && export PATH=$PATH:$ANDROID_HOME/platform-tools"
-/>
-
-</Step>
-
-<Step label="7">
-
-Reload the path environment variables in your current shell:
-
-<Terminal
-  cmd={['# for zsh', '$ source $HOME/.zshrc', '', '# for bash', '$ source $HOME/.bashrc']}
-/>
-
-</Step>
-
-<Step label="8">
-
-Finally, make sure that you can run `adb` from your terminal.
-
-</Step>
-
-</Tab>
-
-<Tab label="Windows">
+* TODO:
 
 <Step label="1">
 
@@ -203,7 +143,3 @@ By default, the platform-tools are installed at the following location:
 Finally, make sure that you can run `adb` from the PowerShell. For example, run the `adb --version` to see which version of the `adb` your system is running.
 
 </Step>
-
-</Tab>
-
-</Tabs>
