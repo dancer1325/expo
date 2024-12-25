@@ -1,11 +1,3 @@
----
-title: Create a project
-description: Learn how to create a new Expo project.
-hideTOC: true
----
-
-import { Terminal } from '~/ui/components/Snippet';
-
 * System requirements
   * [Node.js (LTS)](https://nodejs.org/en/)
   * supported OS
