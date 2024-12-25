@@ -15,6 +15,8 @@
   * == platform of hosted services / -- deeply integrated with -- Expo open source tools
   * allows you, about your app -- as an -- individual or a team, 
     * build,
+      * uses
+        * install | your device or emulator
     * ship | stores,
     * iterate
     * send push notifications
