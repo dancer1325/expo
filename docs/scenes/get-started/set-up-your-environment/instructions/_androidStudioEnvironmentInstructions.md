@@ -24,6 +24,8 @@
   # set environment variable 
   export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
   ```
+  
+  * TODO: Is there some reason to choose specifically this distribution ❓  
 
 ### | Windows
 
