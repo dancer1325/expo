@@ -32,13 +32,22 @@
 
 ## Highlights
 
-* TODO:
-- List and launch simulators, including running Android emulators without audio.
-- Install and launch builds from EAS on simulators and real devices in one click.
-- [Install and open updates from EAS](/review/with-orbit/) on Android Emulators or iOS Simulators.
-- Launch Snack projects in your simulators in one click.
-- Install and launch apps from local files using Finder or drag and drop a file into the menu bar app. Orbit supports any Android **.apk**, iOS Simulator compatible **.app**, or ad hoc signed apps.
-- See pinned projects from your [EAS dashboard](https://expo.dev) and quickly launch your latest builds.
+- List & launch simulators
+- install & launch builds
+  - from EAS
+  - | simulators & real devices
+- [Install & open updates from EAS](/review/with-orbit/) | Android Emulators or iOS Simulators
+- Launch Snack projects | your simulators
+- Install and launch apps -- from -- local files  
+  - via
+    - Finder or
+    - drag and drop a file | menu bar app
+  - supported formats
+    - Android **.apk**,
+    - iOS Simulator compatible **.app**, OR ad-hoc signed apps
+- from your [EAS dashboard](https://expo.dev)
+  - see pinned projects
+  - quickly launch your latest builds
 
 ## Installation
 
