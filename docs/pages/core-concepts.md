@@ -6,7 +6,9 @@ description: An overview of Expo tools, features and services.
 * `expo` npm package
   * 👀enables a suite of features | React Native apps 👀 
   * uses
-    * | ANY React Native project
+    * recommended, BUT NOT required, |
+      * ANY React Native project
+      * [Expo Application Services (EAS)](#services)
 
 ## Tools and features
 
