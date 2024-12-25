@@ -23,6 +23,7 @@
 
 * Expo Go app
   * := sandbox -- for -- trying out Expo quickly
+    * ❌== NOT | long-term projects ❌
   * free | app store
 
 ## Table of contents
