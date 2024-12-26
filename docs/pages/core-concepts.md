@@ -5,6 +5,7 @@ description: An overview of Expo tools, features and services.
 
 * `expo` npm package
   * 👀enables a suite of features | React Native apps 👀 
+  * `npx expo`
   * uses
     * recommended, BUT NOT required, |
       * ANY React Native project
