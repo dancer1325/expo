@@ -21,7 +21,7 @@
     * iterate
     * send push notifications
   * uses
-    * | ANY React Native app / REGARDLESS using `expo`
+    * 👀 | ANY React Native app / REGARDLESS using `expo` 👀
 
 * Expo Go app
   * := sandbox -- for -- trying out Expo quickly
