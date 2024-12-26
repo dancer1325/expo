@@ -3,21 +3,24 @@ export default [
     name: 'withoutCredentials',
     type: 'boolean',
     description: [
-      "When set to `true`, EAS CLI won't require you to configure credentials when building the app. This comes in handy when using EAS Build [custom builds](/custom-builds/get-started/). Defaults to `false`.",
+      "if you set to `true` -> EAS CLI -- will NOT require you to -- configure credentials | building the app. " +
+      "uses: [EAS Build custom builds](/custom-builds/get-started/). " +
+      "by default `false`.",
     ],
   },
   {
     name: 'extends',
     type: 'string',
     description: [
-      "The name of the build profile that the current one should inherit values from. This value can't be specified per platform.",
+      "build profile name" +
+      "can NOT be specified / platform",
     ],
   },
   {
     name: 'credentialsSource',
     enum: ['local', 'remote'],
     description: [
-      'The source of credentials used to sign the application archive.',
+      'TODO: The source of credentials used to sign the application archive.',
       ' - `local` - if you want to provide your own [**credentials.json**](/app-signing/local-credentials).',
       ' - `remote` - if you want to use the credentials managed by EAS (default option).',
     ],
