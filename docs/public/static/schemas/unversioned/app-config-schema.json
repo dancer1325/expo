@@ -1,6 +1,6 @@
 {
   "name": {
-    "description": "The name of your app as it appears both within Expo Go and on your home screen as a standalone app.",
+    "description": "name of your app / uses 1. | Expo Go, 2. | your home screen -- as a -- standalone app",
     "type": "string",
     "meta": {
       "bareWorkflow": "To change the name of your app, edit the 'Display Name' field in Xcode and the `app_name` string in `android/app/src/main/res/values/strings.xml`"
@@ -11,7 +11,7 @@
     "type": "string"
   },
   "slug": {
-    "description": "A URL-friendly name for your project that is unique across your account.",
+    "description": "URL-friendly name -- for -- your project / UNIQUE | ACROSS your account",
     "type": "string",
     "pattern": "^[a-zA-Z0-9_\\-]+$"
   },
@@ -86,7 +86,7 @@
     }
   },
   "platforms": {
-    "description": "Platforms that your project explicitly supports. If not specified, it defaults to `[\"ios\", \"android\"]`.",
+    "description": "Platforms / your project explicitly supports. by default, they are `[\"ios\", \"android\"]`.",
     "example": [
       "ios",
       "android",
