@@ -44,7 +44,8 @@ Expo CLI commands provide several benefits over the similar commands in `@react-
 - Support for Expo tooling such as [`expo-dev-client`](/develop/development-builds/introduction), the [Expo Updates protocol](/technical-specs/expo-updates-1) and [EAS Update](/eas-update/introduction).
 - Automated `pod install` execution when using `npx expo run:ios`.
 - `npx expo install` selects compatible dependency versions for well-known packages.
-- Automatic port detection when running `npx expo run:[android|ios]` and `npx expo start`. If another app is running on the default port, a different port is used.
+- Automatic port detection when running `npx expo run:[android|ios]` and `npx expo start`. 
+  - If another app is running on the default port, a different port is used.
 - Android or iOS device launch selection shortcuts using <kbd>Shift</kbd> + <kbd>a</kbd> or <kbd>Shift</kbd> + <kbd>i</kbd> from the interactive prompt.
 - Built-in support for serving your app over an [ngrok tunnel](/develop/development-builds/development-workflows/#tunnel-urls).
 - Develop on any port with any entry JavaScript file.
@@ -64,7 +65,9 @@ When building your project, you can choose a device or simulator by using the `-
 
 ## Start the bundler independently
 
-`npx expo run:[android|ios]` automatically starts the bundler/development server. If you want to independently start the bundler with `npx expo start` command, pass the `--no-bundler` to the `npx expo run:[android|ios]` command.
+* `npx expo run:[android|ios]`
+  * 👀AUTOMATICALLY starts the bundler/development server 👀
+  If you want to independently start the bundler with `npx expo start` command, pass the `--no-bundler` to the `npx expo run:[android|ios]` command.
 
 ## Common questions
 
