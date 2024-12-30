@@ -3,23 +3,19 @@ title: Glossary of terms
 description: List of non-obvious terms used within the documentation, related to Expo or cross-platform development in general.
 ---
 
-### Android
-
-The mobile operating system that is sponsored by Google for use with **Android** devices.
-
 ### App config
 
-A file named **app.json**, **app.config.json**, **app.config.js**, or **app.config.ts** in the root project directory. For more information, see [app config configuration](/workflow/configuration/).
-
-This file is used for the following purposes:
-
-- To configure how [Expo CLI](#expo-cli) works.
-- Generate a project's public [manifest](#manifest) in EAS Update (think **index.html** but for native apps).
-- List Expo [config plugins](#config-plugin) which influence how `npx expo prebuild` generates native code.
+* == **app.json** / **app.config.json** / **app.config.js** / **app.config.ts** | root project directory 
+* see [app config configuration](../workflow/configuration.md)
+* uses
+  * configure how [Expo CLI](#expo-cli) works
+  * generate a project's public [manifest](#expo-manifest) | EAS Update 
+    * == native apps' **index.html**
+  * list Expo's [config plugins](#config-plugin) / 👀influence how `npx expo prebuild` -- generates -- native code 👀
 
 ### app.json
 
-An [app config](#app-config) file.
+* == [app config](#app-config)
 
 ### Apple capabilities
 
@@ -35,26 +31,45 @@ A feature of EAS Build that automatically enables or disables [Apple capabilitie
 
 ### Autolinking
 
-A cross-platform tool for automatically linking native modules to native apps via native package managers.
+* == cross-platform tool / 
+  * native modules -- , via native package managers, are automatically linked to -- native apps
+  * |
+    * Android, the tool is 
+      * used | **android/app/build.gradle**
+      * invoked | [Gradle](#gradle) sync process
+    * iOS, the tool is
+      * used | [CocoaPods](#cocoapods) **ios/Podfile**
+      * invoked | `pod install`
+  * built-in versions
+    * [Expo Autolinking](#expo-autolinking)
+    * [Community Autolinking](#community-autolinking)
 
-- On Android the tool is used in the **android/app/build.gradle** and invoked during the [Gradle](#gradle) sync process.
-- On iOS the tool is used in [CocoaPods](#cocoapods) **ios/Podfile** and invoked during `pod install`.
-
-There are two versions of Autolinking: [Expo Autolinking](#expo-autolinking), and [Community Autolinking](#community-autolinking).
-
-The default [Prebuild template](#prebuild-template) includes support for [Expo Autolinking](#expo-autolinking), and the [Community Autolinking](#community-autolinking) fork.
+* default [Prebuild template](#prebuild-template) includes support for [Expo Autolinking](#expo-autolinking), and the [Community Autolinking](#community-autolinking) fork.
 
 ### Babel
 
-Transpiler used for removing language features that aren't available in the runtime's [JavaScript engine](#javascript-engine). [Metro](#metro-bundler) uses Babel internally.
+Transpiler used for removing language features that aren't available in the runtime's [JavaScript engine](#javascript-engine).
+[Metro](#metro-bundler) uses Babel internally.
 
-Projects can configure how Babel is used by modifying the **babel.config.js** file in the project directory. This file is optional when using [Expo CLI](#expo-cli). Expo projects should extend the default Babel preset [`babel-preset-expo`](https://github.com/expo/expo/tree/main/packages/babel-preset-expo).
+Projects can configure how Babel is used by modifying the **babel.config.js** file in the project directory.
+This file is optional when using [Expo CLI](#expo-cli).
+Expo projects should extend the default Babel preset [`babel-preset-expo`](https://github.com/expo/expo/tree/main/packages/babel-preset-expo).
 
 ### Bare workflow
 
-Describes the approach when the native projects (in the **android** and **ios** directories) are versioned in Git and maintained manually. It's typical for **existing "bare" React Native apps** where you manually make changes to the native projects. There is freedom to customize them but also high maintenance overhead.
+* := approach / native projects (**android/** and **ios/**) are
+  * versioned | Git
+  * maintained manually
+* uses
+  * "bare" React Native apps / you MANUALLY make changes | native projects
+    * pros
+      * freedom to customize
+    * HIGH maintenance overhead
 
-This is in contrast to using [app config and prebuild](/workflow/prebuild), where the native projects are not versioned. Instead, they are generated on demand using the `npx expo prebuild`, which is the [recommended approach](/workflow/prebuild/#pitch).
+* != approach / use [app config & prebuild](../workflow/continuous-native-generation.md)
+  * -> native projects are
+    * NOT versioned
+    * generated on demand -- via -- `npx expo prebuild`, which is the [recommended approach](../workflow/continuous-native-generation.md#prebuild)
 
 ### Bun
 
@@ -104,9 +119,13 @@ Config [modifiers](#config-mods) that apply unstable changes to a native project
 
 ### Development build
 
-A development build is a debug build of your app that contains the `expo-dev-client` package. It's like an evolution of [Expo Go](#expo-go) which doesn't have Expo Go's limitations and can be customized to your application's needs.
-
-This is the recommended approach for building production-grade apps with Expo. For more information, see [Development builds](/get-started/set-up-your-environment/?mode=development-build).
+* == debug build of your app / contains the `expo-dev-client` package
+* == evolution of [Expo Go](#expo-go) /
+  * ❌NOT have Expo Go's limitations ❌
+  * can be customized -- to -- your application's needs
+* uses
+  * 💡build production-grade apps -- with -- Expo 💡
+* see [Development builds](../get-started/set-up-your-environment.md)
 
 ### Dev clients
 
@@ -114,9 +133,11 @@ This is the recommended approach for building production-grade apps with Expo. F
 
 ### Development server
 
-A development server (or dev server) is a server that is started locally, usually by running `npx expo start` from [Expo CLI](#expo-cli).
-
-The development server is typically hosted on `http://localhost:8081`. It hosts a [manifest](#manifest) from `/` which the client uses to request the JavaScript bundle from the bundler.
+* := server / started locally
+  * -- via -- `npx expo start` from [Expo CLI](#expo-cli)
+  * typically hosted | `http://localhost:8081`
+  * hosts a [manifest](#expo-manifest) | `/` 
+    * used by the client -- to request, from the bundler, the -- JS bundle 
 
 ### EAS
 
@@ -157,7 +178,10 @@ The original [Autolinking](#autolinking) system is designed for projects using `
 
 ### Expo CLI
 
-The command-line tool for working with Expo. This term now refers to the [Local Expo CLI](#local-expo-cli), but historically referred to the [Global Expo CLI](#global-expo-cli). For more information, see [Expo CLI](/more/expo-cli/).
+* == CL tool -- for working with -- Expo 
+  * NOWADAYS -- refers to the -- [Local Expo CLI](#local-expo-cli--versioned-expo-cli)
+  * HISTORICALLY -- refers to the -- [Global Expo CLI](#global-expo-cli)
+* see [Expo CLI](../more/expo-cli.md)
 
 ### Expo client
 
@@ -169,9 +193,16 @@ Refers to the command `npx expo export` from [Expo CLI](#expo-cli). This command
 
 ### Expo Go
 
-The Android and iOS app that serves as a sandbox for learning and experimenting with React Native.
-
-Due to its limitations (such as the inability to include custom native code), it's not recommended for building and distributing production apps. Instead, use a [development build](#development-build).
+* == Android and iOS app /
+  * uses
+    * sandbox for
+      * learning React Native
+      * experimenting with React Native
+  * limitations
+    * ⚠️NOT possible to include CUSTOM native code ⚠️
+  * recommendations 
+    * ❌NOT for building & distributing production apps ❌
+      * -> use better [development build](#development-build)
 
 ### Expo install
 
@@ -209,7 +240,11 @@ Sometimes referred to as **Expo FYI**, is a collection of tailored solutions to 
 
 ### Global Expo CLI
 
-The package `expo-cli` was installed globally on the user's machine and used across all projects. This CLI was introduced in SDK 30 (2018), and deprecated in favor of the [Local Expo CLI](#local-expo-cli) in SDK 46 (2022).
+* `expo-cli` / installed globally | user's machine
+  * used ACROSS ALL projects
+  * story of it
+    * introduced | SDK 30 (2018)
+    * deprecated -- in favor of the -- [Local Expo CLI](#local-expo-cli--versioned-expo-cli) | SDK 46 (2022)
 
 ### Gradle
 
@@ -235,13 +270,18 @@ A [JavaScript engine](#javascript-engine) developed by Apple and built-in to [iO
 
 Linking can mean [deep linking into apps similar to how you link to websites on the web](/linking/overview/) or [autolinking](#autolinking).
 
-### Local Expo CLI
+### Local Expo CLI / "Versioned Expo CLI"
 
-The package `@expo/cli` is installed with the `expo` package. This is sometimes referred to as the "Versioned Expo CLI" because it is installed inside the user's project as opposed to the now deprecated `expo-cli` which was installed globally.
+* == `@expo/cli` -- installed with the -- `expo` package
+* "Versioned Expo CLI"
+  * Reason: 🧠 it's installed | user's project 🧠
+  * != NOW deprecated `expo-cli` / installed globally
 
-### Manifest
+### Expo Manifest
 
-An Expo app manifest is similar to a [web app manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest). It provides information that Expo Go needs to know how to run the app and other relevant data.
+* == [web app manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest)
+* == information /
+  * used by Expo Go -- to run the -- app
 
 ### Meta
 
@@ -293,25 +333,41 @@ By default, platform extensions are resolved in `@expo/metro-config` using the f
 
 ### Prebuild
 
-The process of generating the temporary native **android** and **ios** folders for a React Native project based on the [app config](#app-config). This process is performed by running the command `npx expo prebuild` from [Expo CLI](#expo-cli) in a project directory.
-
-See [Prebuild template](#prebuild-template) and [Autolinking](#autolinking) for further information.
+* := process of generating, for a React Native project based on the [app config](#app-config), the temporary native
+  * `android/` &
+  * `ios/` 
+* how to run it?
+  * running `npx expo prebuild`
+    * from [Expo CLI](#expo-cli)
+    * | project directory
 
 ### Prebuild template
 
-The React Native project template is used as the first step of [Prebuilding](#prebuild). This template is versioned with the [Expo SDK](#expo-sdk), and the template is chosen based on the installed version of `expo` in a project. After the template is cloned, `npx expo prebuild` evaluates the [app config](#app-config) and runs the [Config mods](#config-mods) which modify various files in the template.
+* React Native project template
+  * uses
+    * first step of [Prebuilding](#prebuild)
+  * versioned with the [Expo SDK](#expo-sdk)
+    * -> depends on project's installed version of `expo` 
+  * steps
+    * clone the template
+    * run `npx expo prebuild`
+      * [Config mods](#config-mods) -- can modify -- various template's files
 
-Although the template can be changed by using the `npx expo prebuild --template /path/to/template` flag, the default prebuild template contains important initial defaults that the `npx expo prebuild` command makes assumptions about.
+* `npx expo prebuild --template /path/to/template`
+  * choose the prebuild template
 
-The default template currently lives at [`expo-template-bare-minimum`](https://github.com/expo/expo/tree/main/templates/expo-template-bare-minimum).
+* [`expo-template-bare-minimum`](https://github.com/expo/expo/tree/main/templates/expo-template-bare-minimum)
+  * default Prebuild template
 
 ### Publish
 
-We use the word "publish" as a synonym for "deploy". When you publish an app, it becomes available at a persistent URL from Expo Go, or in the case of [Standalone apps](#standalone-app), it updates the app.
+We use the word "publish" as a synonym for "deploy".
+When you publish an app, it becomes available at a persistent URL from Expo Go, or in the case of [Standalone apps](#standalone-app), it updates the app.
 
 ### React Native
 
-[React Native](https://reactnative.dev/) lets you build mobile apps using only JavaScript. It uses the same design as React, letting you compose a rich mobile UI from declarative components.
+[React Native](https://reactnative.dev/) lets you build mobile apps using only JavaScript. 
+It uses the same design as React, letting you compose a rich mobile UI from declarative components.
 
 ### React Native Web
 
