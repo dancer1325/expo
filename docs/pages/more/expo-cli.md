@@ -1,76 +1,66 @@
----
-title: Expo CLI
-maxHeadingDepth: 4
-description: The Expo CLI is a command-line tool that is the primary interface between a developer and other Expo tools.
----
+* goal
+  * Expo CLI
 
-import { Terminal } from '~/ui/components/Snippet';
-import { StatusTag } from '~/ui/components/Tag/StatusTag';
+* Expo CLI
+  * := CL tool / 
+    * 👀primary interface between a developer -- & -- OTHER Expo tools 👀
 
-The `expo` package provides a small and powerful CLI tool `npx expo` which is designed to keep you moving fast during app development.
+* `expo` package
+  * see [coreConcepts](../core-concepts.md)
 
 ## Highlights
 
-- [Start a server](#develop) for developing your app: `npx expo start`.
-- [Generate the native Android and iOS directories](#prebuild) for your project: `npx expo prebuild`.
-- [Build and run](#compiling) the native apps locally: `npx expo run:ios` and `npx expo run:android`.
-- [Install and update packages](#install) that work with the version of `react-native` in your project: `npx expo install package-name`.
-- `npx expo` can be used with `npx react-native` simultaneously.
-
-To view a list of available commands in Expo CLI, run the following in your project:
-
-<Terminal cmd={['$ npx expo -h']} />
-
-> You can also run `yarn expo -h` if you prefer to use yarn as the package manager.
-
-The output should look something like below:
-
-```sh
-Usage
-  $ npx expo <command>
-
-Commands
-  start, export
-  run:ios, run:android, prebuild
-  install, customize, config
-  login, logout, whoami, register
-
-Options
-  --version, -v   Version number
-  --help, -h      Usage info
-```
-
-You can run any command with the `--help` or `-h` flag to learn more about it:
-
-<Terminal cmd={['$ npx expo login -h']} />
+- `npx expo start`
+  - [Start a server](#develop) -- for -- developing your app
+- `npx expo prebuild`
+  - [Generate the native Android & iOS directories](#prebuild) 
+- `npx expo run:ios` & `npx expo run:android`
+  - [Build & run](#compiling) the NATIVE apps 
+- `npx expo install package-name`
+  - [Install & update packages](#install) / 's version -- compatible with -- the version of `react-native` | your project 
+- `npx expo` + `npx react-native` (SIMULTANEOUSLY)
 
 ## Installation
 
-Expo CLI is included in the `expo` package. You can install it with npm or yarn:
+* Expo CLI
+  * included | `expo` package
+  * `npm add expo` or `yarn add expo`
+    * install it
 
-<Terminal cmd={['$ yarn add expo']} />
-
-> Projects that are not using [Expo Prebuild](#prebuild) (also referred to as _Bare projects_) will need to perform additional setup to ensure all custom Expo bundling features work: [Metro: Bare workflow setup](/versions/latest/config/metro#bare-workflow-setup).
+* Bare projects
+  * == projects / NOT use [Expo Prebuild](#prebuild)
+  * requirements
+    * additional setup / ensure ALL custom Expo bundling features work
+      * see [Metro: Bare workflow setup](../versions/unversioned/config/metro.mdx#bare-workflow-setup)
 
 ## Develop
 
-Start a development server to work on your project by running:
+* start a development server -- to -- work | your project
 
-<Terminal cmd={['$ npx expo start']} />
+  ```
+  npx expo start
+  # or using the alias
+  npx expo
+  ```
+  * uses
+    * by a client, to interact with the bundler
+      * 👀default bundler is [Metro](https://metrobundler.dev/) 👀
+  * server, by default, | `http://localhost:8081`  
 
-> You can also run `npx expo` as an alias to `npx expo start`.
-
-This command starts a server on `http://localhost:8081` that a client can use to interact with the bundler. The default bundler is [Metro](https://metrobundler.dev/).
-
-The UI that shows up in the process is referred to as the **Terminal UI**. It contains a QR code (for the dev server URL) and a list of keyboard shortcuts you can press:
+* **Terminal UI**
+  * == UI / 
+    * shows up | process
+    * contains
+      * QR code (for the dev server URL)
+      * list of keyboard shortcuts / you can press:
 
 | Keyboard shortcut               | Description                                                                                                                                                                              |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ------------------------------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | <kbd>A</kbd>                    | Open the project on a connected Android device.                                                                                                                                          |
 | <kbd>Shift</kbd> + <kbd>A</kbd> | Select an Android device or emulator to open.                                                                                                                                            |
 | <kbd>I</kbd>                    | Open the project in an iOS Simulator.                                                                                                                                                    |
 | <kbd>Shift</kbd> + <kbd>I</kbd> | Select an iOS Simulator to open.                                                                                                                                                         |
-| <kbd>W</kbd>                    | Open the project in a web browser. This may require webpack to be installed in your project.                                                                                             |
+| <kbd>W</kbd>                    | Open the project in a web browser <br/> requirements: install webpack in your project.                                                                                   |
 | <kbd>R</kbd>                    | Reload the app on any connected device.                                                                                                                                                  |
 | <kbd>S</kbd>                    | Switch the launch target between Expo Go and development builds.                                                                                                                         |
 | <kbd>M</kbd>                    | Open the dev menu on any connected native device (web not supported).                                                                                                                    |
@@ -82,134 +72,220 @@ The UI that shows up in the process is referred to as the **Terminal UI**. It co
 
 ### Launch target
 
-The `npx expo start` command automatically launches the app in a development build if `expo-dev-client` is installed in the project. Otherwise, it launches the app in Expo Go.
+* `npx expo start`
+  * 👀if `expo-dev-client` is installed | project -> ALSO launches the app | development build 👀
+    * OTHERWISE -> app is launched | Expo Go
+  * if you want to force the launch target -> pass the flags
+    * `--dev-client`
+      * == launch the app | development build
+    * `--go`
+      * == launch the app | Expo Go
 
-Alternatively, you can force the launch target by passing the following flags to the command:
-
-- `--dev-client`: Always launch the app in a development build.
-- `--go`: Always launch the app in Expo Go.
-
-You can also switch the launch target during runtime by pressing <kbd>S</kbd> in the **Terminal UI**. The `run` commands also use `--dev-client` after compiling the development build, by default.
+* | runtime,
+  * if you want to switch the launch target -> press <kbd>S</kbd> | **Terminal UI**
 
 ### Server URL
 
-By default, the project is served over a LAN connection. You can change this behavior to localhost-only by using the flag `npx expo start --localhost`.
+* 👀by default, the project is served | LAN connection 👀
+* `npx expo start --localhost`
+  * if you want to serve the project | ONLY localhost
+  * alternatives to `--localhost`
+    * `--port`
+      * == port | start the dev server on
+      * ❌NOT valid, if you are using ❌
+        * webpack or
+        * [tunnel URLs](#tunneling)
+      * `--port 0`
+        * == use the first available port
+          * by default **8081**
+    * `--https`
+      * == | secure origin
+      * ONLY supported | web
 
-Other available options are:
+* `EXPO_PACKAGER_PROXY_URL`
+  * == environment variable / enable ANY URL value
+  * _Example:_
 
-- `--port`: Port to start the dev server on (does not apply to webpack or [tunnel URLs](#tunneling)). Use `--port 0` to automatically use the first available port. Default: **8081**.
-- `--https`: Start the dev server using a secure origin. This is currently only supported on web.
-
-You can force the URL to be any value with the `EXPO_PACKAGER_PROXY_URL` environment variable. For example:
-
-<Terminal cmd={['$ export EXPO_PACKAGER_PROXY_URL=http://expo.dev', '$ npx expo start']} />
-
-Will open apps to: `exp://expo.dev:80` (the `:80` is a temporary workaround for Android WebSockets).
+    ```
+    export EXPO_PACKAGER_PROXY_URL=http://expo.dev
+    
+    # if you launch it -> open the app | "exp://expo.dev:80" -- 80 temporary workaround for Android WebSockets --
+    npx expo start
+    ```
 
 #### Tunneling
 
-Restrictive network conditions (common for public Wi-Fi), firewalls (common for Windows users), or Emulator misconfiguration can make it difficult to connect a remote device to your dev server over lan/localhost.
+* difficult to connect a remote device -- , via lan/localhost, to your -- dev server
+  * use cases  
+    * restrictive network conditions (_Example:_ public Wi-Fi),
+    * firewalls (_Example:_ Windows users),
+    * Emulator misconfiguration 
+  * alternative
+    * **tunneling**
+      * == connect -- via a -- proxy URL
+      * requirements
+        * internet access  
+        * third-party hosting service
+          * typical issues
+            * `ngrok tunnel took too long to connect`
+            * `Tunnel connection has been closed. This is often related to intermittent connection problems with the Ngrok servers...`.
 
-Sometimes it's easier to connect to a dev server over a proxy URL that's accessible from any device with internet access, this is referred to as **tunneling**. `npx expo start` provides built-in support for **tunneling** via [ngrok][ngrok].
-
-To enable tunneling, first install `@expo/ngrok`:
-
-<Terminal cmd={['$ npm i -g @expo/ngrok']} />
-
-Then run the following to start your dev server from a _tunnel_ URL:
-
-<Terminal cmd={['$ npx expo start --tunnel']} />
-
-This will serve your app from a public URL like: `http://xxxxxxx.bacon.19000.exp.direct:80`.
-
-**Drawbacks**
-
-- Tunneling is slower than local connections because requests must be forwarded to a public URL.
-- Tunnel URLs are public and can be accessed by any device with a network connection. Expo CLI mitigates the risk of exposure by adding entropy to the beginning of the URL. Entropy can be reset by clearing the `.expo` directory in your project.
-- Tunnels require a network connection on both devices, meaning this feature cannot be used with the `--offline` flag.
-
-Tunneling requires a third-party hosting service, this means it may sometimes experience intermittent issues like `ngrok tunnel took too long to connect` or `Tunnel connection has been closed. This is often related to intermittent connection problems with the Ngrok servers...`. Be sure to check for [Ngrok outages](https://status.ngrok.com/) before reporting an issue. Some Windows users have also reported needing to modify their antivirus settings to allow Ngrok to work correctly.
+* **tunneling**
+  * 👀`npx expo start` provides built-in support -- via -- [ngrok][ngrok] 👀
+  * steps
+    * `npm i -g @expo/ngrok`
+    * `npx expo start --tunnel`
+      * start your dev server -- from a -- _tunnel_ URL
+        * == app is served | public URL 
+          * _Example:_ `http://xxxxxxx.bacon.19000.exp.direct:80`
+  * drawbacks 
+    * tunneling speed << local connections speed
+      * Reason: 🧠 requests -- must be forwarded to a -- public URL 🧠
+    * risky -- to be accessible by -- ANY device / network connection
+      * entropy | beginning of the URL
+        * added by Expo CLI
+        * if you clear your project's `.expo/`-> Entropy is reset 
+    * BOTH devices require a network connection
+      * -> can NOT be used -- with the -- `--offline` flag
 
 #### Offline
 
-You can develop without a network connection by using the `--offline` flag:
+* `npx expo start --offline`
+  * develop WITHOUT a network connection
+    * -> CLI will NOT making network requests
+  * 👀if you do NOT specify flag & your computer has NO internet connection -> offline support automatically enabled 👀
 
-<Terminal cmd={['$ npx expo start --offline']} />
+* Expo CLI network requests
+  * uses
+    * sign manifests -- with -- your user credentials
 
-Offline will prevent the CLI from making network requests. If you don't use the flag and your computer has no internet connection, then offline support will automatically be enabled, it will just take a bit longer to verify the reachability.
+### ".expo/" directory
 
-Expo CLI makes network requests to sign manifests with your user credentials to ensure sensitive information is sandboxed in reusable runtimes like Expo Go.
-
-### .expo directory
-
-When you start the development server in a project for the first time, a **.expo** directory is created at the root of that project. It contains two files:
-
-- **devices.json**: Contains information about devices that have opened this project recently.
-- **settings.json**: Contains information about server configuration that is used to serve the project's manifest.
-
-Both of these files have information that is specific to your local computer. This is the reason why **.expo** directory is included in the **.gitignore** file, by default, when a new project is created. It is not meant to be shared with other developers.
+* ".expo/"
+  * created |
+    * first time / you start the development server
+    * root of the project
+  * == `devices.json` + `settings.json` 
+    * `devices.json`
+      * == information about devices / have opened this project recently
+    * `settings.json`
+      * == information about server configuration / used to serve the project's manifest
+    * ⚠️BOTH informations are specific to your local computer ⚠️
+      * ⚠️-> include | **.gitignore** ⚠️
 
 ## Building
 
-A React Native app consists of two parts: a native runtime ([compiling](#compiling)), and static files like JavaScript bundles and assets ([exporting](#exporting)). Expo CLI provides commands for performing both tasks.
+* React Native app == native runtime ([compiling](#compiling)) + static files (_Example:_ JS bundles & assets) ([exporting](#exporting))
 
 ### Compiling
 
-You can compile your app locally with the `run` commands:
+* `npx expo run:ios` / `npx expo run:android`
+  * build directly | connected devices 
+    * `--device` flag -> NO global side effects 
+    * supports locked devices
+      * == retry instantly / NO need to rebuild
+  * AUTOMATICALLY codesign iOS apps
+    * for development
+    * from the CLI / NO need to open Xcode
+  * from your project source code -> smart log parsing / -- shows -- warnings and errors 
+    * != Xcode 
+      * from your node modules -> surfaces hundreds of benign warnings 
+  * FATAL errors surfaced | terminal
+    * == your app crashes 
+  * ⚠️if your project does NOT have the corresponding native directories (`android/` or `ios`) -> `npx expo prebuild` command will run | BEFORE building ⚠️
+    * _Example:_  if your project does NOT have `ios/` & you run `npx expo run:ios` -> FIRST runs `npx expo prebuild -p ios`
 
-<Terminal
-  cmd={['# Build for iOS', '$ npx expo run:ios', '# Build for Android', '$ npx expo run:android']}
-/>
+* `npx expo run:ios`
+  * requirements
+    * install Xcode
+    * run | Mac
 
-**Highlights**
+* `npx expo run:android`
+  * requirements
+    * install & configure
+      * Android Studio
+      * Java
 
-- Build directly on connected devices with no global side effects using the `--device` flag. Supports locked devices, letting you retry instantly instead of needing to rebuild.
-- Automatically codesign iOS apps for development from the CLI without having to open Xcode.
-- Smart log parsing shows warnings and errors from your project source code, unlike Xcode which surfaces hundreds of benign warnings from your node modules.
-- Fatal errors causing your app to crash will be surfaced in the terminal preventing the need to reproduce in Xcode.
+* `eas build -p ios`
+  * build the app | cloud -- from -- ANY computer  
+  
+* Building locally
+  * uses
+    * develop native modules
+    * [debugging complex native issues](../debugging/runtime-issues.mdx#native-debugging) 
 
-`npx expo run:ios` can only be run on a Mac, and Xcode must be installed. You can build the app in the cloud from any computer using `eas build -p ios`. Similarly, `npx expo run:android` requires Android Studio and Java to be installed and configured on your computer.
+* Building remotely
+  * -- via -- `eas build`
+  * MUCH MORE resilient option
+    * Reason: 🧠 due to the pre-configured cloud environment 🧠
 
-Building locally is useful for developing native modules and [debugging complex native issues](/debugging/runtime-issues/#native-debugging). Building remotely with `eas build` is a much more resilient option due to the pre-configured cloud environment.
-
-If your project does not have the corresponding native directories, the `npx expo prebuild` command will run once to generate the respective directory before building.
-
-For example, if your project does not have an **ios** directory in the root of your project, then `npx expo run:ios` will first run `npx expo prebuild -p ios` before compiling your app. For more information on this process, see [Expo Prebuild](/workflow/prebuild).
-
-**Cross-Platform Arguments**
-
-- `--no-build-cache`: Clear the native cache before building. On iOS, this is the **derived data** folder. Cache clearing is useful for profiling your build times.
-- `--no-install`: Skip installing dependencies. On iOS, this will also skip running `npx pod-install` if the `dependencies` field in the project's `package.json` has changed.
-- `--no-bundler`: Skip starting the dev server. Enabled automatically if the dev server is already serving the app from a different process.
-- `-d, --device [device]`: Device name or ID to build the app on. You can pass `--device` without arguments to select a device from a list of available options. This supports connected devices as well as virtual devices.
-- `-p, --port <port>`: Port to start the development server. **Default: 8081**. This is only relevant for development builds. Production builds will [export](#exporting) the project and embed the files in the native binary before installing them on a device.
-- `--binary <path>`: File path to the binary to install on the device. When this is provided, the build process will be skipped and the binary will attempt to be installed directly. If the binary was not built for the correct device, for example, it is built for the simulator or installed on the device, then the command will fail.
+* CROSS-Platform arguments:
+  * `--no-build-cache`
+    * clear the native cache | BEFORE building
+      * uses
+        * profile your build times
+      * _Example:_ | iOS, `derived data/` 
+  * `--no-install`
+    * skip installing dependencies
+      * & | iOS, skip running `npx pod-install`
+  * `--no-bundler`
+    * skip starting the dev server
+    * if the dev server is ALREADY serving the app -- from a -- different process -> enabled automatically
+  * `-d, --device [deviceNameOrId]`
+    * device / build the app on
+    * `[deviceNameOrId]`
+      * optional
+      * if you do NOT pass it -> you select the device | list of available options
+    * supports
+      * connected devices
+      * virtual devices
+  * `-p, --port <port>`
+    * port -- to start the -- development server
+      * by default, 8081
+    * ONLY relevant | development builds
+    * production builds
+      * will [export](#exporting) the project
+      * embed the files | native binary | BEFORE installing them | device
+  * `--binary <pathToTheBinary>`
+    * if it's provided -> the
+      * build process -- will be -- skipped
+      * binary -- will attempt to be -- installed directly
+    * if the binary was NOT built for the correct device (_Example:_ built for the simulator or installed | device) -> it fails
 
 #### Compiling Android
 
-Android apps can have multiple different **variants** which are defined in the project's `build.gradle` file. Variants can be selected with the `--variant` flag:
+* if Android apps have MULTIPLE **variants** / defined | project's `build.gradle` -> use `--variant` flag
+  * _Example:_ 
+    ```
+    npx expo run:android --variant debug
+    
+    # compile -- for -- production
+    # NOT code-signed -- for -- submit | Google Play Store
+    # uses: test bugs 
+    npx expo run:android --variant release
+    ```
 
-<Terminal cmd={['$ npx expo run:android --variant debug']} />
+  * 👀if you want to generate a production build / code signed for the Play Store -> use [EAS Build](../build/introduction.md) 👀
 
-You can compile the Android app for production by running:
+* `open -a /Applications/Android Studio.app android`
+  * debug the native Android project -- via -- native debugging tools
+    * open the `android/` | Android Studio
 
-<Terminal cmd={['$ npx expo run:android --variant release']} />
+* if you have a customized Android project / different product flavors -> use the `--variant` and `--app-id` flags
+  * _Example:_ 
+    ```
+    npx expo run:android --variant freeDebug --app-id dev.expo.myapp.free
+    ```
 
-This build is not automatically code-signed for submission to the Google Play Store. This command should be used to test bugs that may only show up in production builds. To generate a production build that is code signed for the Play Store, we recommend using [EAS Build](/build/introduction).
-
-You can debug the native Android project using native debugging tools by opening the **android** directory in Android Studio:
-
-<Terminal cmd={['$ open -a /Applications/Android Studio.app android']} />
-
-If you have a customized Android project using different product flavors, you can configure both the flavor and application ID using the `--variant` and `--app-id` flags:
-
-<Terminal cmd={['$ npx expo run:android --variant freeDebug --app-id dev.expo.myapp.free']} />
-
-For more information, see the [Local builds using Android product flavors](/guides/local-app-development/#local-builds-using-android-product-flavors) guide.
+* see [local builds -- via -- Android product flavors](../guides/local-app-development.md#local-builds-using-android-product-flavors)
 
 #### Compiling iOS
 
-An iOS app can have multiple **schemes** for representing different sub-apps like App Clips, watchOS apps, Safari Extensions, and so on. By default, `npx expo run:ios` will choose the scheme for your iOS app. You can pick a custom scheme with the `--scheme <my-scheme>` argument. If you pass in the `--scheme` argument alone, then Expo CLI will prompt you to choose a scheme from the list of available options in your Xcode project.
+* TODO:
+An iOS app can have multiple **schemes** for representing different sub-apps like App Clips, watchOS apps, Safari Extensions, and so on. 
+By default, `npx expo run:ios` will choose the scheme for your iOS app. 
+You can pick a custom scheme with the `--scheme <my-scheme>` argument. 
+If you pass in the `--scheme` argument alone, then Expo CLI will prompt you to choose a scheme from the list of available options in your Xcode project.
 
 The scheme you select will filter out which `--device` options show up in the selection prompt, for example, selecting an Apple TV scheme will only show available Apple TV devices.
 
@@ -334,12 +410,16 @@ This command will be disabled if your project is configured to use `metro` for b
 
 ## Prebuild
 
-<Terminal cmd={['$ npx expo prebuild']} />
-
-Native source code must be generated before a native app can compile. Expo CLI provides a unique and powerful system called _prebuild_, that generates the native code for your project. To learn more, read the [Expo Prebuild docs](/workflow/prebuild/).
+* `npx expo prebuild`
+  * generate the native code -- for -- your project
+    * happens | BEFORE compile the native app
+* 👀if you [compile](#compiling) & NOT exist the native directories -> prebuild is run 1! 👀
+  
+* see [Expo Prebuild docs](../workflow/continuous-native-generation.md)
 
 ## Config
 
+* TODO:
 Evaluate the app config (**app.json**, or **app.config.js**) by running:
 
 <Terminal cmd={['$ npx expo config']} />
@@ -358,20 +438,24 @@ There are three different config types that are generated from the app config:
 
 ## Install
 
-Unlike the web, React Native is not backwards compatible. This means that npm packages often need to be the exact right version for the currently installed copy of `react-native` in your project. Expo CLI provides a best-effort tool for doing this using a list of popular packages and the known working version combinations. Simply use the `install` command as a drop-in replacement for `npm install`:
-
-<Terminal cmd={['$ npx expo install expo-camera']} />
-
-Running a single instance of this command, you can also install multiple packages:
-
-<Terminal cmd={['$ npx expo install typescript expo-sms']} />
-
-You can directly pass arguments to the underlying package manager by using the `--` operator:
-
-<Terminal
-  cmd={['$ yarn expo install typescript -- -D', '# yarn add typescript -D']}
-  cmdCopy="yarn expo install typescript -- -D"
-/>
+* ❌React Native is NOT backwards compatible ❌
+  * != React web
+  * -> 👀npm packages / strict versions 👀
+    * _Example:_ versions sensitivity
+      ```
+        {
+        "dependencies": {
+            "react-native": "0.71.0",
+            // These MUST be compatible with RN 0.71.0
+            "react-native-maps": "1.3.2",     // Works
+            "react-native-maps": "1.4.0"      // Might break!
+        }
+        }
+      ```
+  * SOLUTION | Expo projects
+    * 👀use `npx expo install package` 👀
+      * Reason: 🧠analyzes the compatible version 🧠 
+      * _Example:_ `npx expo install expo-camera`
 
 ### Version validation
 
