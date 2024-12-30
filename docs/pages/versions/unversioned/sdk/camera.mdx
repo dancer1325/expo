@@ -17,10 +17,15 @@ import {
 } from '~/ui/components/ConfigSection';
 import { SnackInline } from '~/ui/components/Snippet';
 
-`expo-camera` provides a React component that renders a preview of the device's front or back camera. The camera's parameters such as zoom, torch, and flash mode are adjustable. Using `CameraView`, you can take photos and record videos that are saved to the app's cache. The component is also capable of detecting bar codes appearing in the preview. Run the [example](#usage) on your device to see all these features working together.
+* `expo-camera`
+  * 👀React component / renders a preview of the device's front or back camera 👀
+    * camera's parameters can be adjusted (_Example:_ zoom, torch, and flash mode)
+    * `CameraView` enables take photos and record videos / saved | app's cache
+    * detect bar codes / appear | preview
 
 ## Installation
 
+* TODO:
 <APIInstallSection />
 
 ## Configuration in app.json/app.config.js
@@ -80,83 +85,83 @@ Learn how to configure the native projects in the [installation instructions in 
 
 ## Usage
 
-> **warning** Only one Camera preview can be active at any given time. If you have multiple screens in your app, you should unmount `Camera` components whenever a screen is unfocused.
+* ⚠️ ONLY ALLOWED 1! Camera preview active / ANY given time ⚠️
+  * if you have MULTIPLE screens | your app -> unmount `Camera` components | screen is unfocused
+* run | your device -- to see -- ALL features working together
 
-<SnackInline label='Basic Camera Usage' dependencies={['expo-camera']}>
+* _Example:_
 
-```tsx
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { useState } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+  ```tsx
+  import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+  import { useState } from 'react';
+  import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function App() {
-  const [facing, setFacing] = useState<CameraType>('back');
-  const [permission, requestPermission] = useCameraPermissions();
+  export default function App() {
+    const [facing, setFacing] = useState<CameraType>('back');
+    const [permission, requestPermission] = useCameraPermissions();
 
-  if (!permission) {
-    // Camera permissions are still loading.
-    return <View />;
-  }
+    if (!permission) {
+      // Camera permissions are still loading.
+      return <View />;
+    }
 
-  if (!permission.granted) {
-    // Camera permissions are not granted yet.
+    if (!permission.granted) {
+      // Camera permissions are not granted yet.
+      return (
+        <View style={styles.container}>
+          <Text style={styles.message}>We need your permission to show the camera</Text>
+          <Button onPress={requestPermission} title="grant permission" />
+        </View>
+      );
+    }
+
+    function toggleCameraFacing() {
+      setFacing(current => (current === 'back' ? 'front' : 'back'));
+    }
+
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <CameraView style={styles.camera} facing={facing}>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+              <Text style={styles.text}>Flip Camera</Text>
+            </TouchableOpacity>
+          </View>
+        </CameraView>
       </View>
     );
   }
 
-  function toggleCameraFacing() {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
-  }
-
-  return (
-    <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <Text style={styles.text}>Flip Camera</Text>
-          </TouchableOpacity>
-        </View>
-      </CameraView>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  message: {
-    textAlign: 'center',
-    paddingBottom: 10,
-  },
-  camera: {
-    flex: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64,
-  },
-  button: {
-    flex: 1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-});
-```
-
-</SnackInline>
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    message: {
+      textAlign: 'center',
+      paddingBottom: 10,
+    },
+    camera: {
+      flex: 1,
+    },
+    buttonContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      backgroundColor: 'transparent',
+      margin: 64,
+    },
+    button: {
+      flex: 1,
+      alignSelf: 'flex-end',
+      alignItems: 'center',
+    },
+    text: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: 'white',
+    },
+  });
+  ```
 
 ## Web support
 
