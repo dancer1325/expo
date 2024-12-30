@@ -4,83 +4,50 @@ description: Learn how to quickly get started by creating a new project with Exp
 sidebar_title: Installation
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
-
-Find the steps below to create a new project with Expo Router library or add it to your existing project.
+* goal
+  * add Expo Router  
+    * from scratch
+    * | EXISTING project
 
 ## Quick start
 
-<Step label="1">
-
-We recommend creating a new Expo app using `create-expo-app` to create a project with Expo Router library already installed and configured:
-
-<Terminal cmd={['$ npx create-expo-app@latest']} />
-
-</Step>
-
-<Step label="2">
-
-Now, you can start your project by running:
-
-<Terminal cmd={['$ npx expo start']} />
-
-- To view your app on a mobile device, we recommend starting with [Expo Go](/get-started/set-up-your-environment/#how-would-you-like-to-develop). As your application grows in complexity and you need more control, you can create a [development build](/develop/development-builds/introduction/).
-- Open the project in a web browser by pressing <kbd>w</kbd> in the Terminal UI. Press <kbd>a</kbd> for Android (Android Studio is required), or <kbd>i</kbd> for iOS (macOS with Xcode is required).
-
-</Step>
+* `npx create-expo-app@latest`
+  * create a new Expo app / Expo Router library ALREADY installed and configured
+* `npx expo start`
+  * start the project
 
 ## Manual installation
 
-Follow the steps below if you have a project that was previously created with Expo but does not have Expo Router library installed.
+* requirements
+  * Expo project / PREVIOUSLY created WITHOUT Expo Router library installed
 
 ### Prerequisites
 
-Make sure your computer is [set up for running an Expo app](/get-started/create-a-project/).
-
-<Step label="1">
+* see [set up for running an Expo app](../get-started/create-a-project)
 
 ### Install dependencies
 
-You'll need to install the following dependencies:
-
-<Tabs>
-  <Tab label="SDK 50 and above">
-    <Terminal cmd={['$ npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar']} />
-
-    The above command will install versions of these libraries that are compatible with the Expo SDK version your project is using.
-
-  </Tab>
-  <Tab label="SDK 49 and below">
-    <Terminal cmd={['$ npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar react-native-gesture-handler']} />
-
-    The above command will install versions of these libraries that are compatible with the Expo SDK version your project is using.
-
-  </Tab>
-</Tabs>
-
-</Step>
-
-<Step label="2">
+* | 
+  * Expo SDK v50+
+    * `npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar'`
+  *Expo SDK v49-
+    * `npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar react-native-gesture-handler`
 
 ### Setup entry point
 
-For the property `main`, use the `expo-router/entry` as its value in the **package.json**. The initial client file is [**app/\_layout.js**](/router/advanced/root-layout).
+* set
 
-```json package.json
-{
-  "main": "expo-router/entry"
-}
-```
-
-</Step>
-
-<Step label="3">
+    ```json package.json
+    {
+      "main": "expo-router/entry"
+    }
+    ```
+  * -> [app/_layout.js](advanced/root-layout.md) is initial client file
 
 ### Modify project configuration
 
-Add a deep linking `scheme` in your [app config](/workflow/configuration/):
+* TODO:
+Add a deep linking `scheme` in your [app config](../workflow/configuration.md):
 
 ```json app.json
 {
@@ -101,8 +68,6 @@ Then, enable [Metro web](/guides/customizing-metro/#adding-web-support-to-metro)
   }
 }
 ```
-
-</Step>
 
 <Step label="4">
 
