@@ -4,13 +4,20 @@ description: Learn how code signing and key rotation work in EAS Update.
 sidebar_title: Code signing
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
+* goal
+  * functionality | EAS Update, of
+    * code signing
+    * key rotation
 
-> **info** EAS Update Code Signing is only available to accounts subscribed to the EAS Production or Enterprise plans. [Learn more](https://expo.dev/pricing).
+* code signing | EAS Update
+  * requirements
+    * accounts -- subscribed to the -- EAS Production or Enterprise plans
+      * see [here](https://expo.dev/pricing)
 
-The `expo-updates` library supports end-to-end code signing using [public-key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography). Code signing allows developers to cryptographically sign their updates with their own keys. The signatures are then verified on the client before the update is applied, which ensures ISPs, CDNs, cloud providers, and even EAS itself cannot tamper with updates run by apps.
+* TODO:
+The `expo-updates` library supports end-to-end code signing using [public-key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography).
+Code signing allows developers to cryptographically sign their updates with their own keys.
+The signatures are then verified on the client before the update is applied, which ensures ISPs, CDNs, cloud providers, and even EAS itself cannot tamper with updates run by apps.
 
 The following steps will guide you through the process of generating a private key and corresponding certificate, configuring your project to use code signing, and publishing a signed update for your app.
 
