@@ -4,24 +4,26 @@ description: Learn how to create development builds for a project.
 sidebar_title: Create a build
 ---
 
-import { GraduationHat01Icon } from '@expo/styleguide-icons/outline/GraduationHat01Icon';
-import { VideoRecorderIcon } from '@expo/styleguide-icons/outline/VideoRecorderIcon';
+* goal
+  * create development builds -- via -- EAS build local
+  * install it |
+    * emulator/simulator or
+    * physical device
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tab, Tabs } from '~/ui/components/Tabs';
-
-> If you are looking to create a development build **locally**, rather than remotely on EAS, you can [create local builds with `npx expo run:[android|ios]`](/guides/local-app-development/#local-builds-with-expo-dev-client) or with [`eas build --local`](/build-reference/local-builds/).
-
-Development builds can be created with [EAS Build](/build/introduction/) or [locally on your computer](/guides/local-app-development/) if you have Android Studio and Xcode installed.
-
-In this guide, you'll find information on creating a development build with EAS and installing it on an emulator/simulator or a physical device to continue developing your app.
+* ways to create a development build
+  * locally
+    * [`npx expo run:[android|ios]`](../../guides/local-app-development.md#local-builds-with-expo-dev-client)
+      * requirements
+        * install
+          * Android Studio
+          * Xcode
+    * [`eas build --local`](../../build-reference/local-builds.mdx)
+  * remotely | EAS
 
 ## Prerequisites
 
-You will need a React Native Android and/or iOS project that is configured to build with EAS Build. If you haven't configured your project yet, see [Create your first build](/build/setup/).
+* React Native Android and/or iOS project / -- configured to build with -- EAS Build
+  * see [Create your first build](../../build/setup.md)
 
 ## Instructions
 
@@ -31,46 +33,45 @@ The following instructions cover both Android and iOS and physical devices and e
 
 ## Install expo-dev-client
 
-<Terminal cmd={['$ npx expo install expo-dev-client']} />
-
-<Collapsible summary="Are you using this library in a bare React Native app?">
-
-Apps that don't use [Continuous Native Generation](/workflow/continuous-native-generation/) need to follow instructions from [Install `expo-dev-client` in bare React Native](/bare/install-dev-builds-in-bare/).
-
-</Collapsible>
-
-</Step>
-
-<Step label="2">
+* `npx expo install expo-dev-client`
+  * if you do NOT use [Continuous Native Generation](../../workflow/continuous-native-generation.md) -> follow instructions from [install `expo-dev-client` | bare React Native](../../bare/install-dev-builds-in-bare.mdx)
 
 ## Verify your eas.json configuration
 
-The first time you run the `eas build` command, it creates an [**eas.json**](/build/eas-json/) file at the root of your project directory. The **eas.json** includes three default build profiles &mdash; `development`, `preview`, and `production`. If you have removed the `development` profile since you first initialized **eas.json**, you should add it back now. A minimal configuration is shown below:
+* first time / you run `eas build` -> creates an [eas.json](../../build/eas-json.md) | root of your project directory
+  * if you have removed the `development` profile | first initialized **eas.json** -> you SHOULD add it back NOW
+* _Example:_ minimal configuration
 
-```json eas.json
-{
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
-    "preview": {
-      "distribution": "internal"
-    },
-    "production": {}
+  ```json eas.json
+  {
+    "build": {
+      "development": {
+        "developmentClient": true,
+        "distribution": "internal"
+      },
+      "preview": {
+        "distribution": "internal"
+      },
+      "production": {}
+    }
   }
-}
-```
+  ```
+  * [`developmentClient`](../../eas/json.md#developmentclient)
+    * 👀`=true` -> 
+      * create a Debug build 👀
+      * generates a build artifact / 
+        * you can install, -- via -- [internal distribution](../../build/internal-distribution.mdx) | 
+          * Android device
+          * emulator
+          * iOS device
+            * requirements
+              * **Apple Developer Program membership**
+        * | iOS
+          * -> set `"distribution": "internal"`
+          * if you are distributing for TestFlight -> set `"distribution": "store"`
 
-The `development` profile sets the following options:
 
-- [`developmentClient`](/eas/json/#developmentclient) to `true` to create a Debug build. It also generates a build artifact you can install on an Android device or emulator, or an iOS device with [internal distribution](/build/internal-distribution/).
-- Building for an iOS device requires an **Apple Developer Program membership**. If you don't have one, you can only build for an iOS Simulator. See the next step for more information.
-
-> iOS builds where `developmentClient` is set to `true` on the build profile should always be distributed as `internal`. If you are distributing for TestFlight, you have to set the distribution to `store`.
-
-</Step>
-
+* TODO:
 <Step label="3">
 
 ## Create a build for emulator/simulator
