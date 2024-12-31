@@ -7,23 +7,23 @@ iconUrl: '/static/images/packages/expo-dev-client.png'
 platforms: ['android', 'ios']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ConfigPluginExample, ConfigPluginProperties } from '~/ui/components/ConfigSection';
+* `expo-dev-client`
+  * == library / 
+    * enables creating a development build
+    * includes useful development tools
+      * [support for network debugging](../../../debugging/tools.mdx/#inspecting-network-requests)
+      * [support for launching updates](../../../eas-update/expo-dev-client.mdx) (_Example:_ [PR previews](../../../develop/development-builds/development-workflows/#pr-previews))
+      * default in-app development tools UI / provided by React Native -- are replaced with -- [a more powerful and extensible in-app UI](../../../debugging/tools.mdx/#developer-menu)
 
-`expo-dev-client` adds various useful development tools to your debug builds:
-
-- A configurable launcher UI, so you can launch updates (such as from [PR previews](/develop/development-builds/development-workflows#pr-previews)) and switch between development servers without needing to recompile the native app
-- Improved debugging tools (such as support for [inspecting network requests](/debugging/tools/#inspecting-network-requests))
-- [A powerful and extensible developer menu UI](/debugging/tools#developer-menu)
-
-Expo documentation refers to debug builds that include `expo-dev-client` as [development builds](/develop/development-builds/introduction/).
+* 💡[development builds](/develop/development-builds/introduction/) := debug builds / include `expo-dev-client` 💡 
 
 ## Installation
 
+* TODO:
 <APIInstallSection hideBareInstructions />
 
-If you are installing this in an [existing React Native app](/bare/overview/), start by installing [`expo`](/bare/installing-expo-modules/) in your project. Then, follow the instructions from [Install `expo-dev-client` in an existing React Native project](/bare/install-dev-builds-in-bare/).
+If you are installing this in an [existing React Native app](/bare/overview/), start by installing [`expo`](/bare/installing-expo-modules/) in your project.
+Then, follow the instructions from [Install `expo-dev-client` in an existing React Native project](/bare/install-dev-builds-in-bare/).
 
 ## Configuration in app.json/app.config.js
 
