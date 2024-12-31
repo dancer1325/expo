@@ -4,55 +4,56 @@ description: Learn about different tools available to inspect your Expo project 
 sidebar_title: Tools
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
+* goal
+  * tools / inspect your Expo project | runtime 
 
-React Native consists of both JavaScript and native code. Making this distinction is very important when it comes to debugging. If an error is thrown from the JavaScript code, you might not find it using debugging tools for native code. This page lists a few tools to help you debug your Expo project.
+* React Native == JS + native code 
+  * ⚠️-> if an error is thrown -- from the -- JS code -> you MIGHT NOT find it -- via -- debugging tools | native code ⚠️
 
 ## Developer menu
 
-The **Developer menu** provides access to useful debugging functions. It is built into dev clients and Expo Go. If you are using an emulator, simulator, or have a device connected via USB, you can open this menu by pressing <kbd>m</kbd> in the terminal where Expo CLI has started the development server.
+* provides
+  * 👀-- access to -- useful debugging functions 👀
+    * **Copy link**
+      * copy the 
+        * dev server address in dev client or
+        * [`exp://`](../linking/into-your-app.mdx#test-a-link-using-expo-go) link in Expo of your app
+    * **Reload**
+      * reload you app
+        * NORMALLY, NOT necessary
+          * Reason: 🧠 Fast Refresh is enabled by default 🧠
+    * **Go Home**
+      * leave your app & navigate back to the dev client's or Expo Go app's Home screen
+    * **Toggle performance monitor**
+      * view the performance information about your app
+    * **Toggle element inspector**
+      * enable or disable the element inspector overlay
+    * **Open JS debugger**
+      * see [Debugging with Chrome DevTools](#debugging-with-chrome-devtools)
+    * **Fast Refresh**
+      * toggle automatic refreshing of the JS bundle | make changes your project's files -- via a -- text editor
+* built into
+  * dev clients
+  * Expo Go
+* if you press <kbd>m</kbd> -> you access to it
 
-<Collapsible summary="Alternative options to open the Developer menu">
+* alternatives
+  * Android device WITHOUT USB
+    * Shake the device vertically
+  * Android Emulator or device WITH USB
+    * Press <kbd>Cmd ⌘</kbd> + <kbd>m</kbd> or <kbd>Ctrl</kbd> + <kbd>m</kbd>
+    * run `adb shell input keyevent 82`
+  * iOS device WITHOUT USB
+    * Shake the device
+    * Touch three fingers to the screen
+  * iOS Simulator or device WITH USB
+    * Press <kbd>Ctrl</kbd> + <kbd>Cmd ⌘</kbd> + <kbd>z</kbd> or <kbd>Cmd ⌘</kbd> + <kbd>d</kbd>
 
-- Android device (without USB): Shake the device vertically.
-- Android Emulator or device (with USB):
-
-  - Press <kbd>Cmd ⌘</kbd> + <kbd>m</kbd> or <kbd>Ctrl</kbd> + <kbd>m</kbd>.
-  - Run the following command in the terminal to simulate pressing the menu button:
-    <Terminal cmd={['$ adb shell input keyevent 82']} />
-
-- iOS device (without USB):
-  - Shake the device.
-  - Touch three fingers to the screen.
-- iOS Simulator or device (with USB):
-  - Press <kbd>Ctrl</kbd> + <kbd>Cmd ⌘</kbd> + <kbd>z</kbd> or <kbd>Cmd ⌘</kbd> + <kbd>d</kbd>
-
-</Collapsible>
-
-Once the Developer menu is open, it will appear as below:
-
-<ContentSpotlight
-  alt="The Expo Go Developer Menu, showing the menu options available."
-  src="/static/images/debugging/developer-menu.png"
-  className="max-w-[480px]"
-/>
-
-The Developer menu provides the following options:
-
-- **Copy link**: To copy the dev server address in dev client or [`exp://`](/linking/into-your-app/#test-a-link-using-expo-go) link in Expo of your app.
-- **Reload**: To reload you app. Usually, not necessary since Fast Refresh is enabled by default.
-- **Go Home**: To leave your app and navigate back to the dev client's or Expo Go app's Home screen.
-- **Toggle performance monitor**: To view the performance information about your app.
-- **Toggle element inspector**: To enable or disable the element inspector overlay.
-- **Open JS debugger**: To open Chrome DevTools which provides access to Console, Source, and Network tabs for apps using Hermes. For more information, see the [Debugging with Chrome DevTools](#debugging-with-chrome-devtools) section.
-- **Fast Refresh**: To toggle automatic refreshing of the JS bundle whenever you make changes to files in your project using a text editor.
-
-Now, let's explore some of these options in details.
+![](/docs/public/static/images/debugging/developer-menu.png)
 
 ### Toggle performance monitor
 
+* TODO:
 Opens up a small overlay that provides the following performance information about your app:
 
 - RAM usage of a project.
@@ -79,9 +80,12 @@ This overlay has capabilities to:
 
 ## Debugging with Chrome DevTools
 
-As with websites, you can use Chrome DevTools to gain insights into the JavaScript code of your app. With this tool, you can access the [Console](#interacting-with-the-console), [Source](#pausing-on-breakpoints), and [Network](#inspecting-network-requests) tab when using [dev clients](/more/glossary-of-terms/#dev-clients) or Expo Go.
+As with websites, you can use Chrome DevTools to gain insights into the JavaScript code of your app.
+With this tool, you can access the [Console](#interacting-with-the-console), [Source](#pausing-on-breakpoints), and [Network](#inspecting-network-requests) tab when using [dev clients](/more/glossary-of-terms/#dev-clients) or Expo Go.
 
-You can use the Chrome DevTools on any app using Hermes. To open it, start your app and press <kbd>j</kbd> in the terminal where Expo was started. Once you have opened the Chrome DevTools, it will appear as below:
+You can use the Chrome DevTools on any app using Hermes. 
+To open it, start your app and press <kbd>j</kbd> in the terminal where Expo was started. 
+Once you have opened the Chrome DevTools, it will appear as below:
 
 <ContentSpotlight
   alt="The Chrome DevTools, showing one of the files under the source tab."
@@ -244,4 +248,6 @@ There are however [some limitations](https://github.com/jhen0409/react-native-de
 
 ## Debugging production apps
 
-In reality, apps often ship with bugs. Implementing a crash and bug reporting system can help you get real-time insights of your production apps. See [Using error reporting services](/debugging/runtime-issues/#using-error-reporting-services) for more details.
+* crash and bug reporting system
+  * if you implement it -> it can help you -- get -- real-time insights of your production apps 
+* see [error reporting services](../debugging/runtime-issues.mdx/#using-error-reporting-services)
