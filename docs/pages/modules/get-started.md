@@ -4,49 +4,38 @@ sidebar_title: Get started
 description: Learn about getting started with Expo modules API.
 ---
 
-import { Grid01Icon } from '@expo/styleguide-icons/outline/Grid01Icon';
+* goal
+  * getting started with Expo modules API
+    * create a NEW module -- from -- scratch 
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
+* ways to get started with the Expo Modules API
+  * initialize a NEW module from scratch or
+  * add the Expo Modules API | existing module
 
-**There are two ways to get started with the Expo Modules API:** you can either initialize a new module from scratch or add the Expo Modules API to an existing module. This guide will walk you through creating a new module from scratch, and the [Integrating in an existing library](/modules/existing-library) covers the latter.
+* ways to create a NEW module -- with -- Expo Modules API
+  * [add a NEW module | EXISTING Expo application](#add-a-new-module--existing-application)
+    * uses
+      * test the module
+      * develop your module
+  * [create a NEW module / in isolation -- with a -- generated example project](#create-a-new-module-with-an-example-project) 
+    * uses
+      * reuse it | MULTIPLE projects or
+      * publish it | npm
 
-The two recommended flows to create a new module with Expo Modules API:
-
-- [Add a new module to an existing Expo application](#adding-a-new-module-to-an-existing-application), and use it to test and develop your module.
-
-- [Create a new module in isolation with a generated example project](#creating-a-new-module-with-an-example-project) if you want to reuse it in multiple projects or publish it to npm.
-
-Both of these flows are covered in the next sections.
-
-## Add a new module to an existing application
-
-<Step label="1">
+## Add a NEW module | existing application
 
 ### Create the local Expo module
 
-Navigate to your project directory (the one that contains the **package.json** file) and run the following command. This is the recommended way to create a local Expo module.
+* `npx create-expo-module@latest --local`
+  * 👀recommended way -- to create a -- local Expo module 👀
+  * provide module name | CLI prompt
 
-<Terminal cmd={['$ npx create-expo-module@latest --local']} />
-
-Then, if your project doesn't have native projects generated (**android** and **ios** directories), run the following command, otherwise skip this command:
-
-<Terminal cmd={['$ npx expo prebuild --clean']} />
-
-You can provide a meaningful module name in the CLI prompt. For the rest of the prompts, you can also accept the default suggestions.
-
-> **Note**: If you have a pre-existing **ios** directory in your project's root which was created using `npx expo prebuild`, you must reinstall the pods:
->
-> <br />
-> <Terminal cmd={['$ npx pod-install']} />
-
-</Step>
-
-<Step label="2">
+* if your project does NOT have native projects generated (`android/` & `ios/`) -> run `npx expo prebuild --clean`
+* if you have a pre-existing `ios/` | your project's root / created by `npx expo prebuild` -> run `npx pod-install`
 
 ### Use the local module
 
+* TODO:
 Import the local module in your application, for example in **App.js** or **App.tsx** or **app/index.tsx**:
 
 ```tsx App.tsx
@@ -68,11 +57,11 @@ Start the development sever in your terminal so that when you edit the native mo
 
 <Terminal cmd={['$ npx expo start']} />
 
-Congratulations! You have created a local Expo module. You can now start working on it.
+Congratulations! You have created a local Expo module.
+You can now start working on it.
 
 > **info** **Tip**: You can also use absolute import paths [by applying these configuration changes](https://expo.fyi/absolute-path-expo-modules.md).
 
-</Step>
 
 <Step label="3">
 
@@ -104,23 +93,18 @@ You have to repeat the build step anytime you make a change to the native code t
 
 > **Note**: There are also other flows for working on an Expo module in parallel with your application. For example, you can use a monorepo or publish to npm, as described in the [How to use a standalone Expo module](/modules/use-standalone-expo-module-in-your-project) guide.
 
-## Create a new module with an example project
-
-<Step label="1">
+## Create a NEW module with an example project
 
 ### Create the Expo module
 
-To create a new Expo module from scratch, run the `create-expo-module` script as shown below.
-The script will ask you a few questions and then generate the native Expo module along with the example app for Android and iOS that uses your new module.
+* `npx create-expo-module@latest my-module-name`
+  * create a 
+    * NEW Expo module -- from -- scratch &
+    * the example app for Android and iOS / uses your NEW module
 
-<Terminal cmd={[`$ npx create-expo-module@latest my-module`]} />
+### Open the module & start the development server
 
-</Step>
-
-<Step label="2">
-
-### Open the module and start the development server
-
+* TODO:
 Navigate to the module directory and then open the Android and/or iOS example project by running the following commands:
 
 <Terminal cmd={[`$ cd my-module`, `$ npm run open:android`, `$ npm run open:ios`]} />
@@ -130,8 +114,6 @@ Go to **example** directory and start the development sever in your terminal so 
 <Terminal cmd={['$ cd example', '$ npx expo start']} cmdCopy="cd example && npx expo start" />
 
 > **Note:** If you're using Windows, you can open the example project by opening the **android** directory in Android Studio, but you cannot open the iOS project files.
-
-</Step>
 
 <Step label="3">
 
