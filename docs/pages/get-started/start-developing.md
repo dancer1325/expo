@@ -1,49 +1,31 @@
----
-title: Start developing
-description: Make your first change to an Expo project and see it live on your device.
-hideTOC: true
----
+* goal
+  * change t Expo project and see it live on your device
 
-import { ProjectStructure } from '~/scenes/get-started/start-developing/ProjectStructure';
-import { TemplateFeatures } from '~/scenes/get-started/start-developing/TemplateFeatures';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal, DiffBlock } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-
-<Step label="1">
 ## Start a development server
-To start the development server, run the following command:
 
-<Terminal cmd={['$ npx expo start']} />
+* `npx expo start`
+  * start the development server
+  * display QR code | your terminal 
 
-</Step>
+## Open the app | your device
 
-<Step label="2">
-## Open the app on your device
+* scan QR code -- to -- open the app | your device
+  * if you have problems -> 
+    * check your computer's Wi-Fi network == your device's WI-FI network or
+    * `npx expo start --tunnel`
+      * == **Tunnel** connection type | start the development server
+      * -> app reloads speed << app reloads | **LAN** or **Local**, speed
 
-After running the command above, you will see a QR code in your terminal. Scan this QR code to open the app on your device.
-
-If you're using an Android Emulator or iOS Simulator, you can press <kbd>a</kbd> or <kbd>i</kbd> respectively to open the app.
-
-<Collapsible summary="Having problems?">
-
-Make sure you are on the same Wi-Fi network on your computer and your device.
-
-If it still doesn't work, it may be due to the router configuration &mdash; this is common for public networks. You can work around this by choosing the **Tunnel** connection type when starting the development server, then scanning the QR code again.
-
-<Terminal cmd={['$ npx expo start --tunnel']} />
-
-> Using the **Tunnel** connection type will make the app reloads considerably slower than on **LAN** or **Local**, so it's best to avoid tunnel when possible. You may want to install and use an emulator or simulator to speed up development if **Tunnel** is required to access your machine from another device on your network.
-
-</Collapsible>
-
-</Step>
-
-<Step label="3">
+* if you want to use an emulator
+  * -> press
+    * `a` -- to open the -- app | Android Emulator 
+    * `i` -- to open the -- app | iOS Simulator
+  * use cases
+    * **Tunnel** connection type
 
 ## Make your first change
 
+* TODO:
 Open the **app/(tabs)/index.tsx** file in your code editor and make a change.
 
 <DiffBlock
