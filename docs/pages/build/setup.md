@@ -5,7 +5,7 @@
   * allows you
     * build a ready-to-submit binary of your app -- for the -- Google Play Store or Apple App Store
       * | small app,
-        * builds should take few minutes
+        * builds should take FEW minutes
         * if you encounter any issues -> reach out | [Discord](https://chat.expo.dev/)
 
 ## Prerequisites

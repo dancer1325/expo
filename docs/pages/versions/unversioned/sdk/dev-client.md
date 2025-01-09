@@ -13,7 +13,7 @@ platforms: ['android', 'ios']
     * includes useful development tools
       * [support for network debugging](../../../debugging/tools.mdx/#inspecting-network-requests)
       * [support for launching updates](../../../eas-update/expo-dev-client.mdx) (_Example:_ [PR previews](../../../develop/development-builds/development-workflows.mdx#pr-previews))
-      * default in-app development tools UI / provided by React Native -- are replaced with -- [in-app UI](../../../debugging/tools.mdx/#developer-menu)
+      * default in-app development tools UI / provided by React Native -- are replaced with -- [in-app UI](../../../debugging/tools.md/#developer-menu)
 
 * 💡[development builds](/develop/development-builds/introduction/) := debug builds / include `expo-dev-client` 💡 
 

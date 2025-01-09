@@ -143,7 +143,8 @@ EXPO_PUBLIC_API_URL=https://staging.my-api-url.mycompany.com
 SENTRY_AUTH_TOKEN=token
 ```
 
-The downloaded `EXPO_PUBLIC_` variables are available for local development when using the `npx expo start` command. The `GOOGLE_SERVICES_JSON` variable is not available to be pulled to the local environment since it is a secret variable.
+The downloaded `EXPO_PUBLIC_` variables are available for local development when using the `npx expo start` command.
+The `GOOGLE_SERVICES_JSON` variable is not available to be pulled to the local environment since it is a secret variable.
 
 > **warning** It is best to add all of the **.env** files to **.gitignore** to avoid committing them to your repository and exposing sensitive information. Committing a **.env** file may additionally lead to environment variables resolution conflicts.
 
