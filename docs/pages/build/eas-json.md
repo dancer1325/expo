@@ -4,11 +4,7 @@ sidebar_title: Configure with eas.json
 description: Learn how a project using EAS services is configured with eas.json.
 ---
 
-import { BuildIcon } from '@expo/styleguide-icons/custom/BuildIcon';
-
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
+* TODO:
 
 **eas.json** is the configuration file for EAS CLI and services. It is generated when the [`eas build:configure` command](/build/setup/#configure-the-project) runs for the first time in your project and is located next to **package.json** at the root of your project. Configuration for EAS Build all belongs under the `build` key.
 
@@ -33,7 +29,11 @@ The default configuration for **eas.json** generated in a new project is shown b
 
 A build profile is a named group of configurations that describes the necessary parameters to perform a certain type of build.
 
-The JSON object under the `build` key can contain multiple build profiles, and you can have custom build profile names. In the default configuration, there are three build profiles: `development`, `preview`, and `production`. However, these could have been named `foo`, `bar`, and `baz`.
+The JSON object under the `build` key can contain multiple build profiles, and you can have custom build profile names
+* default, 3 build profiles (👀NEXT names could be WHATEVER 👀)
+  * `development`,
+  * `preview`,
+  * `production`
 
 To run a build with a specific profile, use the command as shown below with a `<profile-name>`:
 

@@ -1,41 +1,57 @@
----
-title: Build your project for app stores
-description: Learn how to create a production build for your app that is ready to be submitted to app stores from the command line using EAS Build.
-sidebar_title: Build project for app stores
----
+* goal
+  * how to create a production build for your app /
+    * submit | app stores
+    * -- via EAS build, from the -- CL
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
+* ways to build a native app binary -- via --
+  * [EAS](../build/setup.md) or
+  * [locally](../guides/local-app-development.md)
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Tabs, Tab } from '~/ui/components/Tabs';
+* requirements to submit your app | stores
+  * 👀create a **production build** 👀
 
-Whether you have built a native app binary using [EAS](/build/setup/) or [locally](/guides/local-app-development/), the next step in your app development journey is to submit your app to the stores. To do so, you need to create a **production build**.
+* production builds
+  * ⚠️!= native app binary ⚠️
+  * uses
+    * submit | app stores -- for --
+      * release to the general public or
+      * part of a store-facilitated testing process 
+        * _Example:_ TestFlight
+  * ways to create -- via --
+    * [EAS](#production-builds-using-eas) or
+    * [locally](#production-builds-locally) or
+    * CI service / -- capable of compiling -- Android and iOS apps
 
-Production builds are submitted to app stores for release to the general public or as part of a store-facilitated testing process such as TestFlight. This guide explains how to create production builds with [EAS](#production-builds-using-eas) and [locally](#production-builds-locally). It is also possible to create production builds for Expo apps with any CI service capable of compiling Android and iOS apps.
+## Production builds -- via -- EAS
 
-## Production builds using EAS
-
-Production builds must be installed through their respective app stores. You cannot install them directly on your Android Emulator, iOS Emulator, or device. The only exception to this is if you explicitly set `"buildType": "apk"` for Android on your build profile. However, it is recommended to use **aab** when submitting to stores, and this is the default configuration.
+* production builds
+  * must be installed -- through their -- respective app stores
+  * ❌can NOT be installed directly 
+    * | your ❌
+      * Android Emulator,
+      * iOS Emulator, or
+      * device 
+    * EXCEPT, | your Android build profile, you set `"buildType": "apk"`  
+  * by default, `"buildType": "aab"`
 
 ### `eas.json` configuration
 
-A minimal configuration for building a production build in **eas.json** is already created when you create your first build:
+* if you create your first build -> minimal configuration for building a production build is created 
 
-{/* prettier-ignore */}
-```json eas.json
-{
-  "build": {
-    /* @hide ... */ /* @end */
-    "production": {}
-    /* @hide ... */ /* @end */
+  {/* prettier-ignore */}
+  ```json eas.json
+  {
+    "build": {
+      /* @hide ... */ /* @end */
+      "production": {}
+      /* @hide ... */ /* @end */
+    }
   }
-}
-```
+  ```
 
 ### Create a production build
 
+* TODO:
 To create a production build, run the following command for a platform:
 
 <Tabs tabs={['Android', 'iOS']}>

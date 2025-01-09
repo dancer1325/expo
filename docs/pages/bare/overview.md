@@ -4,17 +4,7 @@ sidebar_title: Overview
 description: Learn how to use Expo tools and services with existing React Native apps.
 ---
 
-import { DocsLogo, RouterLogo } from '@expo/styleguide';
-import { BuildArtifactIcon } from '@expo/styleguide-icons/custom/BuildArtifactIcon';
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { ChevronUpDoubleIcon } from '@expo/styleguide-icons/outline/ChevronUpDoubleIcon';
-import { Lightbulb01Icon } from '@expo/styleguide-icons/outline/Lightbulb01Icon';
-import { RefreshCw02Icon } from '@expo/styleguide-icons/outline/RefreshCw02Icon';
-import { Rocket02Icon } from '@expo/styleguide-icons/outline/Rocket02Icon';
-
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { CODE } from '~/ui/components/Text';
+* TODO:
 
 If you have a React Native app that doesn't use any Expo tools, you might be wondering what Expo can provide for you, why you might want to use Expo tools and services, and how to get started.
 

@@ -1,16 +1,11 @@
----
-modificationDate: October 31st, 2024
-title: Build server infrastructure
-sidebar_title: Server infrastructure
-maxHeadingDepth: 4
-description: Learn about the current build server infrastructure when using EAS.
----
-
-import { Collapsible } from '~/ui/components/Collapsible';
-import { BuildResourceList } from '~/ui/components/utils/infrastructure';
+* goal
+  * current build server infrastructure | using EAS
+    * Android - Ubuntu
+    * iOS - macOS
 
 ## Builder IP addresses
 
+* TODO:
 A list of the IP addresses of the build servers is available [in this file](https://expo.dev/eas-build-worker-ips.txt). We do not expect to change the list often. The list includes "Last-Modified" and "Expires" ISO 8601 timestamps that respectively specify the last time the list was updated and the time until which we commit to not change the list.
 
 Linux runners are hosted in Google Cloud Platform. macOS runners are hosted in our own macOS cloud.
