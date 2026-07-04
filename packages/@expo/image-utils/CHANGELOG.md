@@ -10,6 +10,143 @@
 
 ### 💡 Others
 
+## 0.10.1 — 2026-05-23
+
+_This version does not introduce any user-facing changes._
+
+## 0.10.0 — 2026-05-20
+
+### 💡 Others
+
+- Bump to `@expo/spawn-async@^1.8.0` ([#45999](https://github.com/expo/expo/pull/45999) by [@kitten](https://github.com/kitten))
+
+## 0.9.3 — 2026-05-15
+
+_This version does not introduce any user-facing changes._
+
+## 0.9.2 — 2026-05-08
+
+_This version does not introduce any user-facing changes._
+
+## 0.9.1 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 0.9.0 — 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.14 - 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.13 - 2026-04-09
+
+### 💡 Others
+
+- Use `@expo/require-utils` for sharp resolution ([#44236](https://github.com/expo/expo/pull/44236) by [@kitten](https://github.com/kitten))
+
+## 0.8.12 — 2026-02-03
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.11 — 2026-01-26
+
+### 💡 Others
+
+- Drop `unique-string` and `temp-dir` dependencies ([#42480](https://github.com/expo/expo/pull/42480) by [@kitten](https://github.com/kitten))
+- Improve global resolution for `sharp-cli` resolution ([#42513](https://github.com/expo/expo/pull/42513) by [@kitten](https://github.com/kitten))
+
+## 0.8.10 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.9 — 2026-01-21
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.8 - 2025-12-05
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.7 — 2025-09-10
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.6 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.5 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.4 — 2025-08-27
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.3 — 2025-08-25
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 0.8.0 — 2025-08-13
+
+### 🐛 Bug fixes
+
+- Update to `sharp-cli@5.2.0` to support P3 colors in `sharp@0.34.2`. ([#38740](https://github.com/expo/expo/pull/38740) by [@byCedric](https://github.com/byCedric))
+
+## 0.7.6 - 2025-07-03
+
+_This version does not introduce any user-facing changes._
+
+## 0.7.5 - 2025-07-01
+
+### 🐛 Bug fixes
+
+- Update to `getenv@2.0.0` to support upper case boolean environment variables ([#36688](https://github.com/expo/expo/pull/36688) by [@stephenlacy](https://github.com/stephenlacy))
+
+### 💡 Others
+
+- Remove "Please" from warnings and errors ([#36862](https://github.com/expo/expo/pull/36862) by [@brentvatne](https://github.com/brentvatne))
+
+## 0.7.4 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 0.7.3 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 0.7.2 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 0.7.1 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 0.7.0 — 2025-04-04
+
+### 💡 Others
+
+- Drop `fs-extra` in favor of `fs`. ([#35036](https://github.com/expo/expo/pull/35036) by [@kitten](https://github.com/kitten))
+
+## 0.6.5 - 2025-02-14
+
+_This version does not introduce any user-facing changes._
+
+## 0.6.4 - 2025-01-10
+
+_This version does not introduce any user-facing changes._
+
 ## 0.6.3 — 2024-11-07
 
 _This version does not introduce any user-facing changes._

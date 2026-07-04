@@ -1,29 +1,93 @@
-import { mergeClasses } from '@expo/styleguide';
+import { mergeClasses, RouterLogo } from '@expo/styleguide';
 import { DiscordIcon } from '@expo/styleguide-icons/custom/DiscordIcon';
+import { PlanEnterpriseIcon } from '@expo/styleguide-icons/custom/PlanEnterpriseIcon';
 import { ArrowRightIcon } from '@expo/styleguide-icons/outline/ArrowRightIcon';
 import { ArrowUpRightIcon } from '@expo/styleguide-icons/outline/ArrowUpRightIcon';
 
-import { GridContainer, GridCell, HeaderDescription, HomeButton } from '~/ui/components/Home';
-import { OfficeHoursImage, SnackImage, WhyImage } from '~/ui/components/Home/resources';
-import { P, RawH3 } from '~/ui/components/Text';
+import { GridContainer, GridCell, Header, HomeButton } from '~/ui/components/Home/components';
+import { SnackImage } from '~/ui/components/Home/resources';
+import { P, RawH2, RawH3 } from '~/ui/components/Text';
 
 export function DiscoverMore() {
   return (
     <>
-      <RawH3>Discover more</RawH3>
-      <HeaderDescription>
-        Try out Expo in minutes and learn how to get the most out of Expo.
-      </HeaderDescription>
+      <Header
+        title="Discover more"
+        description="Try out Expo in minutes and learn how to get the most out of Expo."
+      />
       <GridContainer>
         <GridCell
           className={mergeClasses(
-            'border-palette-orange6 bg-palette-orange3 selection:bg-palette-orange5',
-            'dark:border-palette-orange7 dark:bg-palette-orange4 dark:selection:bg-palette-orange6'
+            'relative z-0 min-h-39.5 bg-subtle bg-linear-to-br from-subtle from-30% to-palette-green3 selection:bg-palette-green5',
+            'selection:bg-palette-green5',
+            'max-md:min-h-50'
           )}>
+          <PlanEnterpriseIcon
+            aria-hidden="true"
+            className={mergeClasses(
+              'absolute -bottom-12 -left-20 size-87.5! rotate-40 opacity-[0.12]',
+              'text-palette-green7'
+            )}
+          />
+          <PlanEnterpriseIcon
+            aria-hidden="true"
+            className={mergeClasses(
+              'absolute right-6 bottom-6 size-18! rounded-xl border-[6px] p-2',
+              'border-palette-green5 bg-palette-green4 text-palette-green8'
+            )}
+          />
+          <RawH2 className="relative z-10 max-w-[22ch] text-lg! text-palette-green11!">
+            Speed up your development with Expo Application Services
+          </RawH2>
+          <HomeButton
+            className="border-palette-green10 bg-palette-green10 dark:text-palette-green2 hocus:bg-palette-green9"
+            href="/tutorial/eas/introduction/"
+            size="sm"
+            rightSlot={
+              <ArrowRightIcon aria-hidden="true" className="icon-md dark:text-palette-green2" />
+            }>
+            <span className="max-sm:hidden">Start&nbsp;</span>EAS Tutorial
+          </HomeButton>
+        </GridCell>
+        <GridCell
+          className={mergeClasses(
+            'relative z-0 min-h-39.5 bg-subtle bg-linear-to-br from-subtle from-30% to-palette-pink3',
+            'selection:bg-palette-pink5',
+            'max-md:min-h-50'
+          )}>
+          <RouterLogo
+            aria-hidden="true"
+            className={mergeClasses(
+              'absolute -bottom-20 -left-24 size-85! rotate-20 opacity-[0.12]',
+              'stroke-palette-pink7 stroke-[0.01rem] text-palette-pink7'
+            )}
+          />
+          <RouterLogo
+            aria-hidden="true"
+            className={mergeClasses(
+              'absolute right-6 bottom-6 size-18! rounded-xl border-[6px] p-3',
+              'border-palette-pink5 bg-palette-pink4 stroke-palette-pink8 stroke-[0.01rem] text-palette-pink8'
+            )}
+          />
+          <RawH2 className="relative z-10 max-w-[32ch] text-lg! text-palette-pink11!">
+            Discover the benefits of file-based routing with Expo Router
+          </RawH2>
+          <HomeButton
+            className="border-palette-pink10 bg-palette-pink10 dark:text-palette-pink2 hocus:bg-palette-pink9"
+            href="/router/introduction/"
+            size="sm"
+            aria-label="Learn more about Expo Router"
+            rightSlot={
+              <ArrowRightIcon aria-hidden="true" className="icon-md dark:text-palette-pink2" />
+            }>
+            Learn more
+          </HomeButton>
+        </GridCell>
+        <GridCell className="bg-linear-to-br from-subtle from-30% to-palette-orange3 selection:bg-palette-orange4 dark:selection:bg-palette-orange6">
           <SnackImage />
-          <RawH3 className="!font-bold !text-palette-orange11">Try Expo in your browser</RawH3>
-          <P className="max-w-[24ch] !text-xs !text-palette-orange11">
-            Expo’s Snack lets you try Expo with zero local setup.
+          <RawH3 className="font-bold! text-palette-orange11!">Try Expo in your browser</RawH3>
+          <P className="max-w-[24ch] text-sm! text-palette-orange11!">
+            Expo's Snack lets you try Expo with zero local setup.
           </P>
           <HomeButton
             className={mergeClasses(
@@ -32,54 +96,34 @@ export function DiscoverMore() {
             )}
             href="https://snack.expo.dev/"
             target="_blank"
-            rightSlot={<ArrowUpRightIcon className="icon-md text-palette-orange3" />}>
+            rightSlot={
+              <ArrowUpRightIcon aria-hidden="true" className="icon-md text-palette-orange3" />
+            }>
             Create a Snack
           </HomeButton>
         </GridCell>
-        <GridCell className="border-palette-green6 bg-palette-green3 selection:bg-palette-green5">
-          <WhyImage />
-          <RawH3 className="!font-bold !text-palette-green11">Frequently Asked Questions</RawH3>
-          <P className="max-w-[36ch] !text-xs !text-palette-green11">
-            Answers to common questions about Expo, EAS, and React Native.
-          </P>
-          <HomeButton
-            className="border-palette-green11 bg-palette-green11 text-palette-green2 hocus:bg-palette-green11"
-            href="/faq"
-            rightSlot={<ArrowRightIcon className="icon-md text-palette-green2" />}>
-            Read FAQ
-          </HomeButton>
-        </GridCell>
-        <GridCell
-          className={mergeClasses(
-            'border-palette-yellow6 bg-palette-yellow3 selection:bg-palette-yellow5',
-            'dark:border-palette-yellow7 dark:bg-palette-yellow4'
-          )}>
-          <OfficeHoursImage />
-          <RawH3 className="!font-bold !text-palette-yellow11">Join us for Office Hours</RawH3>
-          <P className="max-w-[28ch] !text-xs !text-palette-yellow11">
-            Check our Discord events for the next live Q&A session.
-          </P>
-          <HomeButton
-            className="border-palette-yellow11 bg-palette-yellow11 text-palette-yellow2 hocus:bg-palette-yellow11"
-            href="https://chat.expo.dev"
-            rightSlot={<ArrowUpRightIcon className="icon-md text-palette-yellow2" />}>
-            Go to Discord
-          </HomeButton>
-        </GridCell>
-        <GridCell className="border-palette-blue6 bg-palette-blue3 selection:bg-palette-blue5">
-          <div className="absolute bottom-6 right-6 rounded-full bg-palette-blue5 p-4">
-            <DiscordIcon className="size-12 text-palette-blue9 dark:text-palette-blue9" />
+        <GridCell className="bg-linear-to-br from-subtle from-30% to-palette-blue3 selection:bg-palette-blue5">
+          <div className="absolute right-6 bottom-6 rounded-full bg-palette-blue5 p-4">
+            <DiscordIcon
+              aria-hidden="true"
+              className="size-12! text-palette-blue9 dark:text-palette-blue9"
+            />
           </div>
-          <RawH3 className="!font-bold !text-palette-blue11">Chat with the community</RawH3>
-          <P className="max-w-[32ch] !text-xs !text-palette-blue11">
-            Join over 40,000 other developers
+          <RawH3 className="font-bold! text-palette-blue11!">Chat with the community</RawH3>
+          <P className="max-w-[32ch] text-sm! text-palette-blue11!">
+            Join over 70,000 other developers
             <br />
             on the Expo Community Discord.
           </P>
           <HomeButton
-            className="text-palette-blue1 hocus:bg-button-primary dark:border-palette-blue9 dark:bg-palette-blue9"
+            className="border-palette-blue10 bg-palette-blue10 text-palette-blue1 dark:border-palette-blue9 dark:bg-palette-blue9 dark:text-palette-blue2 hocus:bg-palette-blue9"
             href="https://chat.expo.dev"
-            rightSlot={<ArrowUpRightIcon className="icon-md text-palette-blue2" />}>
+            rightSlot={
+              <ArrowUpRightIcon
+                aria-hidden="true"
+                className="icon-md text-palette-blue1 dark:text-palette-blue2"
+              />
+            }>
             Go to Discord
           </HomeButton>
         </GridCell>

@@ -2,8 +2,9 @@ import { mergeClasses } from '@expo/styleguide';
 import { type PropsWithChildren, type ReactNode } from 'react';
 
 import { Header } from '~/ui/components/Header';
-import { LayoutScroll } from '~/ui/components/Layout';
 import { Sidebar } from '~/ui/components/Sidebar/Sidebar';
+
+import { LayoutScroll } from './LayoutScroll';
 
 type LayoutProps = PropsWithChildren<{
   /**
@@ -41,10 +42,9 @@ export function Layout({
 }: LayoutProps) {
   return (
     <>
-      <header className="fixed top-0 z-[100] h-[60px] w-full">{header}</header>
-      <main
-        className={mergeClasses('mt-[60px] flex items-stretch', 'max-md-gutters:max-h-[unset]')}>
-        {navigation && <nav className="basis-[256px] max-md-gutters:hidden">{navigation}</nav>}
+      <header className="fixed top-0 z-100 h-[60px] w-full">{header}</header>
+      <main className={mergeClasses('mt-15 flex items-stretch', 'max-md:max-h-[unset]')}>
+        {navigation && <nav className="basis-[256px] max-md:hidden">{navigation}</nav>}
         <LayoutScroll>
           <article
             className={mergeClasses(
@@ -54,7 +54,7 @@ export function Layout({
             {children}
           </article>
         </LayoutScroll>
-        {sidebar && <aside className="basis-[288px] max-md-gutters:hidden">{sidebar}</aside>}
+        {sidebar && <aside className="basis-[288px] max-md:hidden">{sidebar}</aside>}
       </main>
     </>
   );

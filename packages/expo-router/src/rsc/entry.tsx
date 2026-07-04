@@ -10,9 +10,10 @@
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { Router } from './router/client';
 import { ErrorBoundary } from '../views/ErrorBoundary';
-import { ErrorBoundaryProps, Try } from '../views/Try';
+import type { ErrorBoundaryProps } from '../views/Try';
+import { Try } from '../views/Try';
+import { Router } from './router/client';
 
 // Add root error recovery.
 function RootErrorBoundary(props: ErrorBoundaryProps) {
@@ -26,7 +27,7 @@ function RootErrorBoundary(props: ErrorBoundaryProps) {
     if (process.env.NODE_ENV === 'development') {
       globalThis.__EXPO_RSC_RELOAD_LISTENERS__ ||= [];
       const index = globalThis.__EXPO_RSC_RELOAD_LISTENERS__.indexOf(
-        globalThis.__EXPO_REFETCH_ROUTE__
+        globalThis.__EXPO_REFETCH_ROUTE__!
       );
       if (index !== -1) {
         globalThis.__EXPO_RSC_RELOAD_LISTENERS__.splice(index, 1, refetchRoute);

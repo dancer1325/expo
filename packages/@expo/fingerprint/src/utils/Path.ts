@@ -1,4 +1,5 @@
-import minimatch, { type IMinimatch } from 'minimatch';
+import fs from 'fs/promises';
+import { Minimatch, type MinimatchOptions } from 'minimatch';
 import process from 'node:process';
 import path from 'path';
 
@@ -8,7 +9,7 @@ import path from 'path';
 export function isIgnoredPath(
   filePath: string,
   ignorePaths: string[],
-  minimatchOptions: minimatch.IOptions = { dot: true }
+  minimatchOptions: MinimatchOptions = { dot: true }
 ): boolean {
   const matchObjects = buildPathMatchObjects(ignorePaths, minimatchOptions);
   return isIgnoredPathWithMatchObjects(filePath, matchObjects);
@@ -19,18 +20,29 @@ export function isIgnoredPath(
  */
 export function buildPathMatchObjects(
   paths: string[],
-  minimatchOptions: minimatch.IOptions = { dot: true }
-): IMinimatch[] {
-  return paths.map((filePath) => new minimatch.Minimatch(filePath, minimatchOptions));
+  minimatchOptions: MinimatchOptions = { dot: true }
+): Minimatch[] {
+  return paths.map((filePath) => new Minimatch(filePath, minimatchOptions));
+}
+
+/**
+ * Append a new ignore path to the given `matchObjects`.
+ */
+export function appendIgnorePath(
+  matchObjects: Minimatch[],
+  path: string,
+  minimatchOptions: MinimatchOptions = { dot: true }
+) {
+  matchObjects.push(new Minimatch(path, minimatchOptions));
 }
 
 /**
  * Build an ignore match objects for directories based on the given `ignorePathMatchObjects`.
  */
 export function buildDirMatchObjects(
-  ignorePathMatchObjects: IMinimatch[],
-  minimatchOptions: minimatch.IOptions = { dot: true }
-): IMinimatch[] {
+  ignorePathMatchObjects: Minimatch[],
+  minimatchOptions: MinimatchOptions = { dot: true }
+): Minimatch[] {
   const dirIgnorePatterns: string[] = [];
   const ignorePaths = ignorePathMatchObjects.filter((obj) => !obj.negate).map((obj) => obj.pattern);
   const negatedIgnorePaths = ignorePathMatchObjects
@@ -55,13 +67,13 @@ export function buildDirMatchObjects(
   for (const pattern of negatedIgnorePaths) {
     for (let i = 0; i < dirIgnorePatterns.length; ++i) {
       const existingPattern = dirIgnorePatterns[i];
-      if (isSubDirectory(existingPattern, pattern)) {
+      if (existingPattern != null && isSubDirectory(existingPattern, pattern)) {
         dirIgnorePatterns.splice(i, 1);
       }
     }
   }
 
-  return dirIgnorePatterns.map((pattern) => new minimatch.Minimatch(pattern, minimatchOptions));
+  return dirIgnorePatterns.map((pattern) => new Minimatch(pattern, minimatchOptions));
 }
 
 /**
@@ -69,7 +81,7 @@ export function buildDirMatchObjects(
  */
 export function isIgnoredPathWithMatchObjects(
   filePath: string,
-  matchObjects: IMinimatch[]
+  matchObjects: Minimatch[]
 ): boolean {
   let result = false;
   for (const minimatchObj of matchObjects) {
@@ -121,4 +133,16 @@ const REGEXP_REPLACE_SLASHES = /\\/g;
  */
 export function toPosixPath(filePath: string): string {
   return process.platform === 'win32' ? filePath.replace(REGEXP_REPLACE_SLASHES, '/') : filePath;
+}
+
+/**
+ * Check if the given `filePath` exists.
+ */
+export async function pathExistsAsync(filePath: string): Promise<boolean> {
+  try {
+    const stat = await fs.stat(filePath);
+    return stat.isFile() || stat.isDirectory();
+  } catch {
+    return false;
+  }
 }

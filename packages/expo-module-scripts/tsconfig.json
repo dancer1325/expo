@@ -1,7 +1,7 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "moduleResolution": "node",
-    "strict": true,
+    "noEmit": true,
     "types": []
   }
 }

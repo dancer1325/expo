@@ -19,7 +19,7 @@ export function Navigation({ routes }: NavigationProps) {
   const persistScroll = usePersistScroll('navigation');
 
   return (
-    <nav className="h-full w-[280px] bg-subtle dark:bg-default">
+    <nav className="h-full w-70 bg-subtle dark:bg-default">
       <LayoutScroll {...persistScroll}>
         {routes.map(route => navigationRenderer(route, activeRoutes))}
       </LayoutScroll>
@@ -43,7 +43,7 @@ function navigationRenderer(
   const Component = renderers[route.type];
   const routeKey = `${route.type}-${route.name}`;
   const isActive = activeRoutes[route.type] === route;
-  const hasChildren = route.type !== 'page' && route.children.length;
+  const hasChildren = route.type !== 'page' && route.children.length > 0;
   return (
     <Component key={routeKey} route={route} isActive={isActive}>
       {hasChildren && route.children.map(nested => navigationRenderer(nested, activeRoutes))}

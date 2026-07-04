@@ -9,14 +9,17 @@
  * This helps establish a baseline of support.
  */
 import { codeFrameColumns } from '@babel/code-frame';
-import { transformFromAstSync } from '@babel/core';
+import { transformFromAstSync, parse, types as t } from '@babel/core';
+import type { NodePath } from '@babel/core';
 import generate from '@babel/generator';
-import * as babylon from '@babel/parser';
-import type { NodePath } from '@babel/traverse';
-import * as t from '@babel/types';
+import {
+  importLocationsPlugin,
+  locToKey,
+} from '@expo/metro/metro/ModuleGraph/worker/importLocationsPlugin';
 import dedent from 'dedent';
 import assert from 'node:assert';
 
+import { importExportPlugin } from '../../transform-plugins/index';
 import type {
   Dependency,
   DependencyTransformer,
@@ -27,8 +30,8 @@ import type {
 import collectDependencies, { InvalidRequireCallError } from '../collect-dependencies';
 
 const generateOptions = { concise: true, sourceType: 'module' };
-const codeFromAst = (ast) => generate(ast, generateOptions).code;
-const comparableCode = (code) => code.trim().replace(/\s+/g, ' ');
+const codeFromAst = (ast: t.Node) => generate(ast, generateOptions).code;
+const comparableCode = (code: string) => code.trim().replace(/\s+/g, ' ');
 const { any, objectContaining } = expect;
 
 const opts: Options = {
@@ -39,10 +42,11 @@ const opts: Options = {
   allowOptionalDependencies: false,
   dependencyMapName: null,
   unstable_allowRequireContext: false,
+  unstable_isESMImportAtSource: null,
 };
 
 // asserts non-null
-function nullthrows<T extends object>(x: T | null, message?: string): NonNullable<T> {
+function nullthrows<T>(x: T | null, message?: string): NonNullable<T> {
   assert(x != null, message);
   return x;
 }
@@ -745,6 +749,86 @@ describe(`require.context`, () => {
   });
 });
 
+describe(`Worker`, () => {
+  it('collects dependency with explicit worker boundary', () => {
+    const ast = astFromCode(`
+    const a = require.unstable_resolveWorker("../path/to/module");
+  `);
+    const { dependencies } = collectDependencies(ast, opts);
+    expect(dependencies).toEqual([
+      { name: '../path/to/module', data: objectContaining({ asyncType: 'worker' }) },
+      { name: 'asyncRequire', data: objectContaining({ asyncType: null }) },
+    ]);
+    expect(codeFromAst(ast)).toEqual(
+      comparableCode(`
+      const a = require(_dependencyMap[1], "asyncRequire").unstable_resolve(_dependencyMap[0], _dependencyMap.paths);
+    `)
+    );
+  });
+
+  it('collects dependency with worker constructor', () => {
+    const ast = astFromCode(`
+    const a = new Worker(new URL("../path/to/module", window.location.href));
+  `);
+    const { dependencies } = collectDependencies(ast, opts);
+    expect(dependencies).toEqual([
+      { name: '../path/to/module', data: objectContaining({ asyncType: 'worker' }) },
+      { name: 'asyncRequire', data: objectContaining({ asyncType: null }) },
+    ]);
+    expect(codeFromAst(ast)).toEqual(
+      comparableCode(`
+      const a = new (require(_dependencyMap[1], "asyncRequire").unstable_createWorker)(new URL(require(_dependencyMap[1], "asyncRequire").unstable_resolve(_dependencyMap[0], _dependencyMap.paths), window.location.href));
+    `)
+    );
+  });
+
+  it('collects dependency with SharedWorker constructor', () => {
+    const ast = astFromCode(`
+    const a = new SharedWorker(new URL("../path/to/module", import.meta.url));
+  `);
+    const { dependencies } = collectDependencies(ast, opts);
+    expect(dependencies).toEqual([
+      { name: '../path/to/module', data: objectContaining({ asyncType: 'worker' }) },
+      { name: 'asyncRequire', data: objectContaining({ asyncType: null }) },
+    ]);
+    expect(codeFromAst(ast)).toEqual(
+      comparableCode(`
+      const a = new (require(_dependencyMap[1], "asyncRequire").unstable_createWorker)(new URL(require(_dependencyMap[1], "asyncRequire").unstable_resolve(_dependencyMap[0], _dependencyMap.paths), import.meta.url));
+    `)
+    );
+  });
+
+  it('does not register dependency with worker constructor if a variable is used', () => {
+    const ast = astFromCode(`
+    const id = "./path/to/module";
+    const a = new Worker(new URL(id, window.location.href));
+  `);
+    const { dependencies } = collectDependencies(ast, opts);
+    expect(dependencies).toEqual([]);
+    expect(codeFromAst(ast)).toEqual(
+      comparableCode(`
+      const id = "./path/to/module";
+      const a = new Worker(new URL(id, window.location.href));
+    `)
+    );
+  });
+
+  it('does not register dependency with worker constructor if a variable is used with a URL constructor', () => {
+    const ast = astFromCode(`
+    const id = new URL("./path/to/module", window.location.href);
+    const a = new Worker(id);
+  `);
+    const { dependencies } = collectDependencies(ast, opts);
+    expect(dependencies).toEqual([]);
+    expect(codeFromAst(ast)).toEqual(
+      comparableCode(`
+      const id = new URL("./path/to/module", window.location.href); 
+      const a = new Worker(id);
+    `)
+    );
+  });
+});
+
 it('collects unique dependency identifiers and transforms the AST', () => {
   const ast = astFromCode(`
     const a = require('b/lib/a');
@@ -962,6 +1046,70 @@ describe('import() prefetching', () => {
     );
   });
 
+  it('keepRequireNames: false is ignored in optional dependencies', () => {
+    const ast = astFromCode(`
+      try {
+        require("some/async/module");
+      } catch {}
+    `);
+    collectDependencies(ast, {
+      ...opts,
+      keepRequireNames: false,
+      allowOptionalDependencies: true,
+    });
+    expect(codeFromAst(ast)).toEqual(
+      comparableCode(`
+        try { 
+          require(_dependencyMap[0], "some/async/module"); 
+        } catch {}
+      `)
+    );
+  });
+
+  it('keepRequireNames: false is ignored in optional dependencies with dynamic import', () => {
+    const ast = astFromCode(`
+      async function foo() {
+        try {
+          await import("some/async/module");
+        } catch {}
+      }
+    `);
+    collectDependencies(ast, {
+      ...opts,
+      keepRequireNames: false,
+      allowOptionalDependencies: true,
+    });
+    expect(codeFromAst(ast)).toEqual(
+      comparableCode(`
+        async function foo() { 
+          try { 
+            await require(_dependencyMap[1])(_dependencyMap[0], _dependencyMap.paths, "some/async/module"); 
+          } catch {} 
+        }
+      `)
+    );
+  });
+
+  it('keepRequireNames: false is ignored in optional dependencies with require.unstable_importMaybeSync', () => {
+    const ast = astFromCode(`
+      try {
+        require.unstable_importMaybeSync("some/async/module");
+      } catch {}
+    `);
+    collectDependencies(ast, {
+      ...opts,
+      keepRequireNames: false,
+      allowOptionalDependencies: true,
+    });
+    expect(codeFromAst(ast)).toEqual(
+      comparableCode(`
+       try { 
+        require(_dependencyMap[1]).unstable_importMaybeSync(_dependencyMap[0], _dependencyMap.paths, "some/async/module");
+       } catch {}
+      `)
+    );
+  });
+
   it('distinguishes between import and prefetch dependncies on the same module', () => {
     const ast = astFromCode(`
       __prefetchImport("some/async/module");
@@ -1147,6 +1295,7 @@ describe('Evaluating static arguments', () => {
       allowOptionalDependencies: false,
       dependencyMapName: null,
       unstable_allowRequireContext: false,
+      unstable_isESMImportAtSource: null,
     };
     const { dependencies } = collectDependencies(ast, opts);
     expect(dependencies).toEqual([]);
@@ -1168,6 +1317,7 @@ describe('Evaluating static arguments', () => {
       allowOptionalDependencies: false,
       dependencyMapName: null,
       unstable_allowRequireContext: false,
+      unstable_isESMImportAtSource: null,
     };
     const { dependencies } = collectDependencies(ast, opts);
     expect(dependencies).toEqual([]);
@@ -1191,6 +1341,7 @@ describe('Evaluating static arguments', () => {
       allowOptionalDependencies: false,
       dependencyMapName: null,
       unstable_allowRequireContext: false,
+      unstable_isESMImportAtSource: null,
     };
     const { dependencies } = collectDependencies(ast, opts);
     expect(dependencies).toEqual([]);
@@ -1331,7 +1482,7 @@ it('records locations of dependencies', () => {
   `);
 });
 
-test('integration: records locations of inlined dependencies (Metro ESM)', () => {
+it('integration: records locations of inlined dependencies (Metro ESM)', () => {
   const code = dedent`
     import a from 'a';
     import {b as b1} from 'b';
@@ -1347,17 +1498,20 @@ test('integration: records locations of inlined dependencies (Metro ESM)', () =>
 
   const inlineableCalls = [importDefault, importAll];
 
+  const {
+    inlineRequiresPlugin,
+  }: typeof import('@expo/metro/metro-transform-plugins') = require('@expo/metro/metro-transform-plugins');
   const { ast: transformedAst } = transformFromAstSync(ast, code, {
     ast: true,
     plugins: [
       [
-        require('metro-transform-plugins').importExportPlugin,
+        importExportPlugin,
         {
           importDefault,
           importAll,
         },
       ],
-      [require('metro-transform-plugins').inlineRequiresPlugin, { inlineableCalls }],
+      [inlineRequiresPlugin, { inlineableCalls }],
     ],
     babelrc: false,
     configFile: false,
@@ -1380,10 +1534,10 @@ test('integration: records locations of inlined dependencies (Metro ESM)', () =>
   `);
 
   // Verify that dependencies have been inlined into the console.log call.
-  expect(codeFromAst(transformedAst)).toMatch(/^console\.log/);
+  expect(codeFromAst(nullthrows(transformedAst))).toMatch(/^console\.log/);
 });
 
-test('integration: records locations of inlined dependencies (Babel ESM)', () => {
+it('integration: records locations of inlined dependencies (Babel ESM)', () => {
   const code = dedent`
     import a from 'a';
     import {b as b1} from 'b';
@@ -1428,6 +1582,7 @@ describe('optional dependencies', () => {
     allowOptionalDependencies: true,
     dependencyMapName: null,
     unstable_allowRequireContext: false,
+    unstable_isESMImportAtSource: null,
   };
   const validateDependencies = (dependencies: readonly Dependency[], expectedCount: number) => {
     let hasAsync = false;
@@ -1494,6 +1649,173 @@ describe('optional dependencies', () => {
     const { dependencies } = collectDependencies(ast, opts);
     validateDependencies(dependencies, 4);
   });
+
+  describe('dynamic import with rejection handler', () => {
+    it('import().catch(handler) is optional', () => {
+      const ast = astFromCode(`
+        import('optional-async-a').catch(() => {});
+      `);
+      const { dependencies } = collectDependencies(ast, opts);
+      validateDependencies(dependencies, 2);
+    });
+
+    it('import().then(handler, onReject) is optional', () => {
+      const ast = astFromCode(`
+        import('optional-async-a').then(() => {}, () => {});
+      `);
+      const { dependencies } = collectDependencies(ast, opts);
+      validateDependencies(dependencies, 2);
+    });
+
+    it('import().then(...).then(...).catch(handler) is optional', () => {
+      const ast = astFromCode(`
+        import('optional-async-a')
+          .then(x => x)
+          .then(x => x)
+          .catch(() => {});
+      `);
+      const { dependencies } = collectDependencies(ast, opts);
+      validateDependencies(dependencies, 2);
+    });
+
+    it('await import().catch(handler) is optional', () => {
+      const ast = astFromCode(`
+        async function f() {
+          await import('optional-async-a').catch(() => {});
+        }
+      `);
+      const { dependencies } = collectDependencies(ast, opts);
+      validateDependencies(dependencies, 2);
+    });
+
+    it('try { await import() } catch {} is optional', () => {
+      const ast = astFromCode(`
+        async function f() {
+          try {
+            await import('optional-async-a');
+          } catch (e) {}
+        }
+      `);
+      const { dependencies } = collectDependencies(ast, opts);
+      validateDependencies(dependencies, 2);
+    });
+
+    it('import().then(handler) without onReject is not optional', () => {
+      const ast = astFromCode(`
+        import('not-optional-async-a').then(() => {});
+      `);
+      const { dependencies } = collectDependencies(ast, opts);
+      validateDependencies(dependencies, 2);
+    });
+
+    it('import().catch() with no handler argument is not optional', () => {
+      const ast = astFromCode(`
+        import('not-optional-async-a').catch();
+      `);
+      const { dependencies } = collectDependencies(ast, opts);
+      validateDependencies(dependencies, 2);
+    });
+
+    it('import().then(handler, null) is not optional (null/undefined onReject)', () => {
+      const ast = astFromCode(`
+        import('not-optional-async-a').then(() => {}, null);
+        import('not-optional-async-b').then(() => {}, undefined);
+      `);
+      const { dependencies } = collectDependencies(ast, opts);
+      validateDependencies(dependencies, 3);
+    });
+
+    it('import() detached from chain is not optional', () => {
+      const ast = astFromCode(`
+        const p = import('not-optional-async-a');
+        p.catch(() => {});
+      `);
+      const { dependencies } = collectDependencies(ast, opts);
+      validateDependencies(dependencies, 2);
+    });
+  });
+
+  describe('isESMImport', () => {
+    it('distinguishes require calls, static imports and async imports', () => {
+      const ast = astFromCode(`
+        import anImport from '.';
+        const aRequire = require('.');
+        const asyncImport = await import('.');
+      `);
+      const { dependencies } = collectDependencies(ast, opts);
+      expect(dependencies).toEqual([
+        {
+          // Static import
+          name: '.',
+          data: objectContaining({
+            asyncType: null,
+            isESMImport: true,
+          }),
+        },
+        {
+          // require call
+          name: '.',
+          data: objectContaining({
+            asyncType: null,
+            isESMImport: false,
+          }),
+        },
+        {
+          // await import call
+          name: '.',
+          data: objectContaining({
+            asyncType: 'async',
+            isESMImport: true,
+          }),
+        },
+        objectContaining({
+          // asyncRequire helper
+          name: 'asyncRequire',
+        }),
+      ]);
+    });
+
+    // Collect dependencies' `getNearestLocFromPath` iterated up to the `Program`,
+    // which conflated added `require('@babel/runtime/..')` with 1 line ESM code
+    // resulting in ESM code of babel being resolved, while it should have used CJS code.
+    // See: https://discord.com/channels/514829729862516747/514832110595604510/1368148663179804733
+    it('distinguishes ESM imports in single-line files from generated CJS babel runtime helpers', () => {
+      const code = `export { default } from './x'`;
+
+      // Transform code and collect original ESM import locations
+      const { ast, metadata } = transformFromAstSync(astFromCode(code), code, {
+        ast: true,
+        plugins: [
+          importLocationsPlugin, // Required to collect original ESM import locations
+          '@babel/plugin-transform-runtime', // Required to have `@babel/runtime/helpers/..` applied
+          '@babel/plugin-transform-modules-commonjs', // Required to apply `@babel/runtime/helpers/interopRequireDefault`
+        ],
+      })!;
+      // @ts-expect-error: Internal/Metro-specific property
+      const importLocations = metadata?.metro.unstable_importDeclarationLocs;
+
+      // Collect the dependencies, using the `isESMImport` location-based lookup
+      const { dependencies } = collectDependencies(ast!, {
+        ...opts,
+        unstable_isESMImportAtSource: (loc) => importLocations.has(locToKey(loc)),
+      });
+      expect(dependencies).toEqual([
+        {
+          name: '@babel/runtime/helpers/interopRequireDefault',
+          data: objectContaining({
+            isESMImport: false,
+          }),
+        },
+        {
+          name: './x',
+          data: objectContaining({
+            isESMImport: true,
+          }),
+        },
+      ]);
+    });
+  });
+
   it('can handle single-line statement', () => {
     const ast = astFromCode("try { const a = require('optional-a') } catch (e) {}");
     const { dependencies } = collectDependencies(ast, opts);
@@ -1679,10 +2001,12 @@ function formatLoc(loc: t.SourceLocation, depIndex: number, dep: Dependency, cod
 }
 
 function astFromCode(code: string) {
-  return babylon.parse(code, {
-    plugins: ['dynamicImport', 'flow'],
+  return parse(code, {
     sourceType: 'module',
-  });
+    parserOpts: {
+      plugins: ['dynamicImport', 'flow'],
+    },
+  })!;
 }
 
 // Mock transformer for dependencies. Uses a "readable" format

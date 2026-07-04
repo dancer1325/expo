@@ -1,4 +1,19 @@
 import { Telemetry } from '../Telemetry';
+import { commandEvent } from '../events';
+import { getAgentTelemetryContext } from '../utils/agent';
+
+jest.mock('../utils/agent', () => ({
+  getAgentTelemetryContext: jest.fn(),
+}));
+
+const getAgentTelemetryContextMock = getAgentTelemetryContext as jest.MockedFunction<
+  typeof getAgentTelemetryContext
+>;
+
+beforeEach(() => {
+  getAgentTelemetryContextMock.mockReset();
+  getAgentTelemetryContextMock.mockReturnValue(null);
+});
 
 it('starts with default detached client', () => {
   const telemetry = new Telemetry({ anonymousId: 'xxx' });
@@ -12,7 +27,7 @@ it('waits until telemetry is initialized', () => {
   const client = mockTelemetryClient(telemetry);
 
   // Record a simple event
-  telemetry.record({ event: 'Start Project' });
+  telemetry.record(commandEvent('start'));
 
   // Ensure the record was not recorded (yet)
   expect(client.record).not.toHaveBeenCalled();
@@ -24,6 +39,7 @@ it('waits until telemetry is initialized', () => {
   expect(client.record).toHaveBeenCalledWith([
     expect.objectContaining({
       userHash: null,
+      context: expect.not.objectContaining({ agent: expect.anything() }),
     }),
   ]);
 });
@@ -33,13 +49,13 @@ it('preprocesses all records', () => {
   const client = mockTelemetryClient(telemetry);
 
   // Record a simple event
-  telemetry.record({ event: 'Start Project' });
+  telemetry.record(commandEvent('start'));
 
   // Ensure the record was preprocessed
   expect(client.record).toHaveBeenCalledWith([
     expect.objectContaining({
       type: 'track',
-      event: 'Start Project',
+      event: 'action',
       sentAt: expect.any(Date),
       messageId: expect.any(String),
       anonymousId: 'xxx',
@@ -49,11 +65,32 @@ it('preprocesses all records', () => {
       }),
     }),
   ]);
+  expect(client.record.mock.calls[0][0][0].context).not.toHaveProperty('agent');
 
   // Ensure the user hash was used instead of the actual user id
   expect(client.record).toHaveBeenCalledWith([
     expect.objectContaining({
       userHash: expect.not.stringMatching('yyy'),
+    }),
+  ]);
+});
+
+it('adds detected agent context to all records', () => {
+  getAgentTelemetryContextMock.mockReturnValue({ id: 'codex', sessionId: 'zzz' });
+
+  const telemetry = new Telemetry({ anonymousId: 'xxx', userId: 'yyy' });
+  const client = mockTelemetryClient(telemetry);
+
+  telemetry.record(commandEvent('start'));
+
+  expect(client.record).toHaveBeenCalledWith([
+    expect.objectContaining({
+      context: expect.objectContaining({
+        agent: {
+          id: 'codex',
+          sessionId: 'zzz',
+        },
+      }),
     }),
   ]);
 });
@@ -74,7 +111,7 @@ it('switches strategy to detached before exiting', async () => {
   const client = mockTelemetryClient(telemetry);
 
   // Fake pending records
-  client.abort.mockReturnValue([{ event: 'Start Project' }]);
+  client.abort.mockReturnValue([commandEvent('start')]);
 
   // Ensure we are using the mocked test client
   expect(telemetry['client']).toBe(client);

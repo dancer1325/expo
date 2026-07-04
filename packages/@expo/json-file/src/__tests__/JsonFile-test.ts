@@ -28,12 +28,12 @@ describe(JsonFile, () => {
     'deleteKey',
     'deleteKeys',
     'merge',
-  ];
+  ] as const;
 
   it(`has static methods`, () => {
     for (const method of methodNames) {
       expect(JsonFile[method]).toBeDefined();
-      expect(JsonFile[`${method}Async`]).toBeDefined();
+      expect(JsonFile[`${method}Async` as keyof typeof JsonFile]).toBeDefined();
     }
   });
 
@@ -44,7 +44,7 @@ describe(JsonFile, () => {
 
     for (const method of methodNames) {
       expect(file[method]).toBeDefined();
-      expect(file[`${method}Async`]).toBeDefined();
+      expect(file[`${method}Async` as keyof typeof file]).toBeDefined();
     }
   });
 });
@@ -79,15 +79,16 @@ describe('async', () => {
   it(`has useful error messages for JSON parsing errors`, async () => {
     vol.fromJSON({ [testFilename]: loadFixture('syntax-error.json') });
 
-    await expect(JsonFile.readAsync(testFilename)).rejects.toThrowError(
-      /Cause: SyntaxError: Unexpected string in JSON at position 602/
+    await expect(JsonFile.readAsync(testFilename)).rejects.toThrow(
+      // based on node version you may get different error messages
+      /Cause: SyntaxError: (Unexpected string|Expected ':' after property name) in JSON at position 602/
     );
   });
 
   it(`has useful error messages for JSON5 parsing errors`, async () => {
     vol.fromJSON({ [testFilename]: loadFixture('syntax-error.json5') });
 
-    await expect(JsonFile.readAsync(testFilename, { json5: true })).rejects.toThrowError(
+    await expect(JsonFile.readAsync(testFilename, { json5: true })).rejects.toThrow(
       /Cause: SyntaxError: JSON5: invalid character ',' at 4:15/
     );
   });
@@ -99,6 +100,14 @@ describe('async', () => {
     await file.writeAsync(testObject);
     expect(fs.existsSync(testFilename)).toBe(true);
     await expect(file.readAsync()).resolves.toEqual(testObject);
+  });
+
+  it(`writes JSON with the requested file mode`, async () => {
+    const file = new JsonFile(testFilename, { ensureDir: true, mode: 0o600 });
+
+    await file.writeAsync(testObject);
+
+    expect((await fs.promises.stat(testFilename)).mode & 0o777).toBe(0o600);
   });
 
   it(`rewrite async`, async () => {
@@ -221,7 +230,8 @@ describe('sync', () => {
     vol.fromJSON({ [testFilename]: loadFixture('syntax-error.json') });
 
     expect(() => JsonFile.read(testFilename)).toThrow(
-      /Cause: SyntaxError: Unexpected string in JSON at position 602/
+      // based on node version you may get different error messages
+      /Cause: SyntaxError: (Unexpected string|Expected ':' after property name) in JSON at position 602/
     );
   });
 
@@ -240,6 +250,14 @@ describe('sync', () => {
     file.write(testObject);
     expect(fs.existsSync(testFilename)).toBe(true);
     expect(file.read()).toEqual(testObject);
+  });
+
+  it(`writes JSON with the requested file mode`, () => {
+    const file = new JsonFile(testFilename, { ensureDir: true, mode: 0o600 });
+
+    file.write(testObject);
+
+    expect(fs.statSync(testFilename).mode & 0o777).toBe(0o600);
   });
 
   it(`rewrite async`, () => {

@@ -19,12 +19,28 @@ export type CommandOptions = {
   force: boolean;
   canary: boolean;
   deps: boolean;
+  /** Publish only template packages under `templates/` */
+  templatesOnly: boolean;
+  /** Include expo-module-scripts in publishing (excluded by default) */
+  includeExpoModuleScripts: boolean;
+  /** Bypass the non-cascading package filter and cascade dependents for all packages */
+  cascadeAll: boolean;
+  skipAndroidArtifacts: boolean;
+  skipIosPrebuilds: boolean;
+  skipTurboChecks: boolean;
+  /**
+   * When true, automatically selects packages whose current package.json version
+   * has already been bumped locally but that version has not been published yet.
+   * Presents a multi-select prompt to optionally deselect some of them.
+   */
+  autoSelectUnpublished: boolean;
 
   /* exclusive options that affect what the command does */
   listUnpublished: boolean;
   grantAccess: boolean;
   checkIntegrity: boolean;
   assignSdkTag: boolean;
+  promptOtp?: boolean;
 };
 
 /**

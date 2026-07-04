@@ -11,10 +11,11 @@ import expo.modules.core.errors.ModuleDestroyedException
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.Exceptions
 import expo.modules.kotlin.exception.toCodedException
+import expo.modules.kotlin.jni.NativeArrayBuffer
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import okhttp3.JavaNetCookieJar
 import java.net.URL
@@ -25,6 +26,7 @@ class ExpoFetchModule : Module() {
     OkHttpClientProvider.createClient(reactContext)
       .newBuilder()
       .addInterceptor(OkHttpFileUrlInterceptor(reactContext))
+      .addInterceptor(TransparentCompressionInterceptor)
       .build()
   }
   private val cookieHandler by lazy { ForwardingCookieHandler(reactContext) }
@@ -33,7 +35,12 @@ class ExpoFetchModule : Module() {
   private val reactContext: ReactContext
     get() = appContext.reactContext as? ReactContext ?: throw Exceptions.ReactContextLost()
 
-  private val moduleCoroutineScope = CoroutineScope(Dispatchers.Default)
+  private val moduleCoroutineScope by lazy {
+    CoroutineScope(
+      appContext.modulesQueue.coroutineContext +
+        CoroutineName("expo.modules.fetch.CoroutineScope")
+    )
+  }
 
   override fun definition() = ModuleDefinition {
     Name("ExpoFetchModule")
@@ -62,7 +69,7 @@ class ExpoFetchModule : Module() {
         return@AsyncFunction response.startStreaming()
       }
 
-      AsyncFunction("cancelStreaming") { response: NativeResponse ->
+      AsyncFunction("cancelStreaming") { response: NativeResponse, _: String ->
         response.cancelStreaming()
       }
 
@@ -92,14 +99,14 @@ class ExpoFetchModule : Module() {
 
       AsyncFunction("arrayBuffer") { response: NativeResponse, promise: Promise ->
         response.waitForStates(listOf(ResponseState.BODY_COMPLETED)) {
-          val data = response.sink.finalize()
-          promise.resolve(data)
+          val data = response.sink.finalize(directBuffer = true)
+          promise.resolve(NativeArrayBuffer(data))
         }
       }
 
       AsyncFunction("text") { response: NativeResponse, promise: Promise ->
         response.waitForStates(listOf(ResponseState.BODY_COMPLETED)) {
-          val data = response.sink.finalize()
+          val data = response.sink.finalize(directBuffer = false).array()
           val text = data.toString(Charsets.UTF_8)
           promise.resolve(text)
         }

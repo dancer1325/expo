@@ -1,13 +1,13 @@
-import { ExpoConfig } from '@expo/config';
+import type { ExpoConfig } from '@expo/config';
 import fs from 'fs';
-import minimatch from 'minimatch';
 import path from 'path';
+import picomatch from 'picomatch';
 
-import { getAssetIdForLogGrouping, persistMetroAssetsAsync } from './persistMetroAssets';
-import type { Asset, BundleAssetWithFileHashes, BundleOutput, ExportAssetMap } from './saveAssets';
 import * as Log from '../log';
 import { resolveGoogleServicesFile } from '../start/server/middleware/resolveAssets';
 import { uniqBy } from '../utils/array';
+import { getAssetIdForLogGrouping, persistMetroAssetsAsync } from './persistMetroAssets';
+import type { Asset, BundleAssetWithFileHashes, BundleOutput, ExportAssetMap } from './saveAssets';
 
 const debug = require('debug')('expo:export:exportAssets') as typeof console.log;
 
@@ -71,10 +71,10 @@ function setOfAssetsToBeBundled(
   );
 
   logPatterns(fullPatterns);
-
+  const matches = picomatch(fullPatterns);
   const allBundledAssets = assets
     .map((asset) => {
-      const shouldBundle = shouldBundleAsset(asset, fullPatterns);
+      const shouldBundle = shouldBundleAsset(asset, matches);
       if (shouldBundle) {
         debug(`${shouldBundle ? 'Include' : 'Exclude'} asset ${asset.files?.[0]}`);
         return asset.fileHashes.map((hash) => mapAssetHashToAssetString(asset, hash));
@@ -116,14 +116,9 @@ function logPatterns(patterns: string[]) {
   patterns.forEach((p) => Log.log('- ' + p));
 }
 
-function shouldBundleAsset(asset: Asset, patterns: string[]) {
+function shouldBundleAsset(asset: Asset, matcher: picomatch.Matcher) {
   const file = asset.files?.[0];
-  return !!(
-    '__packager_asset' in asset &&
-    asset.__packager_asset &&
-    file &&
-    patterns.some((pattern) => minimatch(file, pattern))
-  );
+  return !!('__packager_asset' in asset && asset.__packager_asset && file && matcher(file));
 }
 
 export async function exportAssetsAsync(
@@ -134,24 +129,43 @@ export async function exportAssetsAsync(
     bundles: { web, ...bundles },
     baseUrl,
     files = new Map(),
+    hostedNative,
   }: {
     exp: ExpoConfig;
     bundles: Partial<Record<string, BundleOutput>>;
     outputDir: string;
     baseUrl: string;
     files?: ExportAssetMap;
+    hostedNative?: boolean;
   }
-) {
-  // NOTE: We use a different system for static web
-  if (web) {
+): Promise<{
+  exp: ExpoConfig;
+  assets: BundleAssetWithFileHashes[];
+  embeddedHashSet: Set<string>;
+  files: ExportAssetMap;
+}> {
+  const hostedAssets: BundleAssetWithFileHashes[] = web ? [...web.assets] : [];
+
+  // If the native assets should be hosted like web, then we can add them to the hosted assets to export.
+  if (hostedNative) {
+    hostedAssets.push(...Object.values(bundles).flatMap((bundle) => bundle!.assets ?? []));
+  }
+
+  if (hostedAssets.length) {
     // Save assets like a typical bundler, preserving the file paths on web.
     // TODO: Update React Native Web to support loading files from asset hashes.
-    await persistMetroAssetsAsync(projectRoot, web.assets, {
+    await persistMetroAssetsAsync(projectRoot, hostedAssets, {
       files,
       platform: 'web',
       outputDirectory: outputDir,
       baseUrl,
     });
+  }
+
+  if (hostedNative) {
+    // Add google services file if it exists
+    await resolveGoogleServicesFile(projectRoot, exp);
+    return { exp, assets: [], embeddedHashSet: new Set(), files };
   }
 
   const assets: BundleAssetWithFileHashes[] = uniqBy(
@@ -189,7 +203,7 @@ export async function exportAssetsAsync(
 
       asset.files.forEach((fp: string, index: number) => {
         const hash = asset.fileHashes[index];
-        if (hashes.has(hash)) return;
+        if (!hash || hashes.has(hash)) return;
         hashes.add(hash);
         files.set(path.join('assets', hash), {
           originFilename: path.relative(projectRoot, fp),

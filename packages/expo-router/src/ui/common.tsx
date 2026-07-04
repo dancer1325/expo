@@ -1,23 +1,20 @@
-import { LinkingOptions, ParamListBase, PartialRoute, Route } from '@react-navigation/native';
-import { ViewProps, View, SafeAreaView } from 'react-native';
-
-import type { ExpoTabActionType } from './TabRouter';
-import { UrlObject } from '../LocationProvider';
-import { RouteNode } from '../Route';
+import type { UrlObject } from '../LocationProvider';
+import type { RouteNode } from '../Route';
+import { NOT_FOUND_ROUTE_NAME } from '../constants';
 import { resolveHref, resolveHrefStringWithSegments } from '../link/href';
+import type {
+  LinkingOptions,
+  ParamListBase,
+  PartialRoute,
+  Route,
+} from '../react-navigation/native';
 import { sortRoutesWithInitial } from '../sortRoutes';
-import { Href } from '../types';
+import type { Href } from '../types';
 import { routeToScreen } from '../useScreens';
 import { Slot } from './Slot';
+import type { ExpoTabActionType } from './TabRouter';
 
-// Fix the TypeScript types for <Slot />. It complains about the ViewProps["style"]
-export const ViewSlot = Slot as React.ForwardRefExoticComponent<
-  ViewProps & React.RefAttributes<View>
->;
-
-export const SafeAreaViewSlot = Slot as React.ForwardRefExoticComponent<
-  ViewProps & React.RefAttributes<SafeAreaView>
->;
+export const ViewSlot = Slot;
 
 export type ScreenTrigger =
   | {
@@ -57,7 +54,7 @@ export function triggersToScreens(
 
   for (const trigger of triggers) {
     if (trigger.name in parentTriggerMap) {
-      const parentTrigger = parentTriggerMap[trigger.name];
+      const parentTrigger = parentTriggerMap[trigger.name]!;
       throw new Error(
         `Trigger ${JSON.stringify({
           name: trigger.name,
@@ -105,31 +102,32 @@ export function triggersToScreens(
 
     let routeState = state;
 
-    // The state object is the current state from the rootNavigator
-    // We need to work out the state for just this trigger
-    if (layoutRouteNode.route) {
-      while (state?.state) {
-        const previousState = state;
-        if (previousState.name === layoutRouteNode.route) break;
-        state = state.state.routes[state.state.index ?? state.state.routes.length - 1];
-      }
-      routeState = state.state?.routes[state.state.index ?? state.state.routes.length - 1] || state;
-    }
-
-    const routeNode = layoutRouteNode.children.find((child) => child.route === routeState?.name);
-    if (!routeNode) {
-      console.warn(
-        `Unable to find routeNode for trigger ${JSON.stringify(trigger)}. This might be a bug with Expo Router`
-      );
-      continue;
-    }
-
-    if (routeNode.generated && routeNode.internal && routeNode.route.includes('+not-found')) {
+    if (routeState.name === NOT_FOUND_ROUTE_NAME) {
       if (process.env.NODE_ENV !== 'production') {
         console.warn(
           `Tab trigger '${trigger.name}' has the href '${trigger.href}' which points to a +not-found route.`
         );
       }
+      continue;
+    }
+
+    const targetStateName = layoutRouteNode.route || '__root';
+
+    // The state object is the current state from the rootNavigator
+    // We need to work out the state for just this trigger
+    while (state?.state) {
+      if (state.name === targetStateName) break;
+      state = state.state.routes[state.state.index ?? state.state.routes.length - 1]!;
+    }
+    routeState =
+      state!.state?.routes[state!.state.index ?? state!.state.routes.length - 1] || state;
+
+    const routeNode = layoutRouteNode.children.find((child) => child.route === routeState?.name);
+
+    if (!routeNode) {
+      console.warn(
+        `Unable to find routeNode for trigger ${JSON.stringify(trigger)}. This might be a bug with Expo Router`
+      );
       continue;
     }
 
@@ -197,7 +195,9 @@ export function stateToAction(
   const rootPayload: any = {};
   let payload = rootPayload;
 
-  let foundStartingPoint = !startAtRoute || !state?.state;
+  startAtRoute = startAtRoute === '' ? '__root' : startAtRoute;
+
+  let foundStartingPoint = startAtRoute === undefined || !state?.state;
 
   while (state) {
     if (foundStartingPoint) {

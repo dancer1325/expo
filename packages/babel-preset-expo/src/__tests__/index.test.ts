@@ -8,15 +8,29 @@ function getCaller(props: Record<string, string | boolean>): babel.TransformCall
   return props as unknown as babel.TransformCaller;
 }
 
-jest.mock('../common.ts', () => ({
-  ...jest.requireActual('../common.ts'),
-  hasModule: jest.fn((moduleId) => {
-    if (['react-native-reanimated', 'expo-router', '@expo/vector-icons'].includes(moduleId)) {
-      return true;
+jest.mock('../utils/resolveModule.ts', () => {
+  function resolveModule(_api: any, id: string): string | null {
+    if (
+      [
+        'react-native-worklets/plugin',
+        'react-native-reanimated/plugin',
+        '@expo/ui/babel-plugin',
+        'expo-router/package.json',
+        'expo-widgets/package.json',
+        '@expo/vector-icons',
+      ].includes(id)
+    ) {
+      return id;
     }
-    return false;
-  }),
-}));
+    return null;
+  }
+
+  return {
+    ...jest.requireActual('../utils/resolveModule.ts'),
+    resolveModule: jest.fn(resolveModule),
+    hasModule: jest.fn((api, id) => !!resolveModule(api, id)),
+  };
+});
 
 describe('flow + esm', () => {
   const BABEL_OPTIONS = {
@@ -147,7 +161,8 @@ it(`compiles sample file with Metro targeting Hermes`, () => {
 
   expect(withHermes.code).not.toEqual(withoutHermes.code);
 
-  // 😎
+  // Hermes v1 supports most modern JS features natively, so the output
+  // should be shorter than the default profile (fewer transforms applied).
   expect(withHermes.code!.length).toBeLessThan(withoutHermes.code!.length);
 });
 
@@ -168,14 +183,14 @@ it(`supports overwriting the default engine option`, () => {
       ],
     ],
     sourceMaps: true,
-    caller: getCaller({ name: 'metro', platform: 'ios', engine: 'hermes' }),
+    caller: getCaller({ name: 'metro', platform: 'ios', engine: 'hermes', isDev: true }),
   })!;
 
   const secondPass = babel.transformFileSync(fileName, {
     babelrc: false,
     presets: [[preset, {}]],
     sourceMaps: true,
-    caller: getCaller({ name: 'metro', platform: 'ios', engine: 'hermes' }),
+    caller: getCaller({ name: 'metro', platform: 'ios', engine: 'hermes', isDev: true }),
   })!;
 
   expect(firstPass.code).not.toEqual(secondPass.code);
@@ -245,7 +260,7 @@ export * as default from './Animated';
   });
 
   it(`supports disabling reanimated`, () => {
-    expect(require.resolve('react-native-reanimated/plugin')).toBeDefined();
+    expect(require.resolve('react-native-worklets/plugin')).toBeDefined();
 
     const samplesPath = path.resolve(__dirname, 'samples/worklet.js');
 
@@ -257,13 +272,13 @@ export * as default from './Animated';
       caller,
     };
 
-    const code = babel.transformFileSync(samplesPath, options)!.code;
+    const code = babel.transformFileSync(samplesPath, options)!.code || '';
     expect(code).toContain("'worklet';");
     expect(code).toMatchSnapshot();
   });
 
   it(`supports reanimated worklets`, () => {
-    expect(require.resolve('react-native-reanimated/plugin')).toBeDefined();
+    expect(require.resolve('react-native-worklets/plugin')).toBeDefined();
 
     const samplesPath = path.resolve(__dirname, 'samples/worklet.js');
 
@@ -275,13 +290,13 @@ export * as default from './Animated';
       caller,
     };
 
-    function stablePaths(src) {
+    function stablePaths(src: string) {
       return src
         .replace(new RegExp(samplesPath, 'g'), '[mock]/worklet.js')
-        .replace(/version:".*"/, 'version:"[GLOBAL]"');
+        .replace(/__pluginVersion="\d+(?:\.\d+){2}"/, '__pluginVersion="[GLOBAL]"');
     }
 
-    const code = stablePaths(babel.transformFileSync(samplesPath, options)!.code);
+    const code = stablePaths(babel.transformFileSync(samplesPath, options)!.code!);
 
     expect(code).toMatchSnapshot();
 
@@ -290,8 +305,8 @@ export * as default from './Animated';
         babel.transformFileSync(samplesPath, {
           ...options,
           // Test that duplicate plugins make no difference
-          plugins: [require.resolve('react-native-reanimated/plugin')],
-        })!.code
+          plugins: [require.resolve('react-native-worklets/plugin')],
+        })!.code!
       )
     ).toBe(code);
   });
@@ -371,7 +386,10 @@ describe('"lazyImports" option', () => {
     [false],
     [true],
     [['inline-comp', './inline-func', '../inline-func-with-side-effects.fx.ts']],
-    [(name) => !(name.endsWith('.fx') || name.endsWith('.fx.js') || name.endsWith('.fx.ts'))],
+    [
+      (name: string) =>
+        !(name.endsWith('.fx') || name.endsWith('.fx.js') || name.endsWith('.fx.ts')),
+    ],
   ])(`accepts %p`, (lazyImportsOption) => {
     const testFilename = path.resolve(__dirname, 'samples', 'Lazy.js');
     const options = {

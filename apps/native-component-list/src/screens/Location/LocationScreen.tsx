@@ -85,12 +85,28 @@ export default function LocationScreen({
       />
       <SubscriptionDemo
         title="watchPositionAsync"
-        subscribe={(setValue) => Location.watchPositionAsync({}, setValue)}
+        subscribe={(setValue) => Location.watchPositionAsync({}, setValue, setValue)}
       />
       <SimpleActionDemo title="getHeadingAsync" action={() => Location.getHeadingAsync()} />
       <SubscriptionDemo
         title="watchHeadingAsync"
-        subscribe={(setValue) => Location.watchHeadingAsync(setValue)}
+        subscribe={(setValue) => Location.watchHeadingAsync(setValue, setValue)}
+      />
+      <SimpleActionDemo
+        title="getMotionActivityPermissionsAsync"
+        action={() => Location.getMotionActivityPermissionsAsync()}
+      />
+      <SimpleActionDemo
+        title="requestMotionActivityPermissionsAsync"
+        action={() => Location.requestMotionActivityPermissionsAsync()}
+      />
+      <SimpleActionDemo
+        title="getMotionActivityAsync"
+        action={() => Location.getMotionActivityAsync()}
+      />
+      <SubscriptionDemo
+        title="watchMotionActivityAsync"
+        subscribe={(setValue) => Location.watchMotionActivityAsync(setValue, setValue)}
       />
 
       <View style={{ marginTop: 30, paddingHorizontal: 10 }}>

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import arg from 'arg';
+import type arg from 'arg';
 import chalk from 'chalk';
 import path from 'path';
 
-import { Command } from '../../../bin/cli';
+import type { Command } from '../../index';
 import { assertWithOptionsArgs, printHelp } from '../../utils/args';
 
 export const expoExportEmbed: Command = async (argv) => {
@@ -22,6 +22,12 @@ export const expoExportEmbed: Command = async (argv) => {
     '--unstable-transform-profile': String,
     '--config': String,
 
+    // By default we also export a standalone server, which is mostly done
+    // during the `export:embed` native build to ensure that the server is
+    // valid, or to deploy it later (TBD). This can be skipped using this
+    // flag explicitly
+    '--skip-server': Boolean,
+
     // Hack: This is added because react-native-xcode.sh script always includes this value.
     // If supplied, we'll do nothing with the value, but at least the process won't crash.
     // Note that we also don't show this value in the `--help` prompt since we don't want people to use it.
@@ -29,6 +35,8 @@ export const expoExportEmbed: Command = async (argv) => {
 
     // New flag to guess the other flags based on the environment.
     '--eager': Boolean,
+    // Export the bundle as Hermes bytecode bundle
+    '--bytecode': Boolean,
 
     // This is here for compatibility with the `npx react-native bundle` command.
     // devs should use `DEBUG=expo:*` instead.
@@ -49,7 +57,7 @@ export const expoExportEmbed: Command = async (argv) => {
       chalk`npx expo export:embed {dim <dir>}`,
       [
         chalk`<dir>                                  Directory of the Expo project. {dim Default: Current working directory}`,
-        `--entry-file <path>                    Path to the root JS file, either absolute or relative to JS root`,
+        `--entry-file <path>                    Path to the root JS file, either absolute or relative to current working directory`,
         `--platform <string>                    Either "ios" or "android" (default: "ios")`,
         `--transformer <string>                 Specify a custom transformer to be used`,
         `--dev [boolean]                        If false, warnings are disabled and the bundle is minified (default: true)`,
@@ -65,6 +73,7 @@ export const expoExportEmbed: Command = async (argv) => {
         `--unstable-transform-profile <string>  Experimental, transform JS for a specific JS engine. Currently supported: hermes, hermes-canary, default`,
         `--reset-cache                          Removes cached files`,
         `--eager                                Eagerly export the bundle with default options`,
+        `--bytecode                             Export the bundle as Hermes bytecode bundle`,
         `-v, --verbose                          Enables debug logging`,
 
         `--config <string>                      Path to the CLI configuration file`,
@@ -91,6 +100,7 @@ export const expoExportEmbed: Command = async (argv) => {
   return (async () => {
     const parsed = await resolveCustomBooleanArgsAsync(argv ?? [], rawArgsMap, {
       '--eager': Boolean,
+      '--bytecode': Boolean,
       '--dev': Boolean,
       '--minify': Boolean,
       '--sourcemap-use-absolute-path': Boolean,

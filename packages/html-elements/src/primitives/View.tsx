@@ -1,14 +1,15 @@
-import { ClassAttributes, ComponentProps, ComponentType } from 'react';
+import type { ClassAttributes, ComponentProps, ComponentType } from 'react';
 import {
-  StyleProp,
+  type StyleProp,
+  type ViewStyle as NativeViewStyle,
+  type BoxShadowValue,
+  type FilterFunction,
+  type ColorValue,
   View as NativeView,
-  ViewStyle as NativeViewStyle,
-  BoxShadowValue,
-  FilterFunction,
 } from 'react-native';
 
-import { createDevView } from './createDevView';
 import { createSafeStyledView } from '../css/createSafeStyledView';
+import { createDevView } from './createDevView';
 
 // https://github.com/necolas/react-native-web/issues/832
 
@@ -89,7 +90,7 @@ export interface WebViewStyle {
   /** @platform web */
   outline?: string;
   /** @platform web */
-  outlineColor?: string;
+  outlineColor?: ColorValue;
   /** @platform web */
   overflowX?: string;
   /** @platform web */

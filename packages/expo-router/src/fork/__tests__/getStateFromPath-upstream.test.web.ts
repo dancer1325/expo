@@ -1,7 +1,7 @@
 import { expect, test } from '@jest/globals';
-import type { InitialState } from '@react-navigation/routers';
 import { produce } from 'immer';
 
+import type { InitialState } from '../../react-navigation/routers';
 import { findFocusedRoute } from '../findFocusedRoute';
 import { getPathFromState } from '../getPathFromState';
 import { getStateFromPath } from '../getStateFromPath';
@@ -2821,6 +2821,7 @@ test('throws when invalid properties are specified in the config', () => {
     - path (string)
     - initialRouteName (string)
     - screens (object)
+    - alias (array)
     - exact (boolean)
     - stringify (object)
     - parse (object)

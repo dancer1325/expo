@@ -4,8 +4,10 @@ package host.exp.exponent
 import android.app.Application
 import android.os.Debug
 import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
+import expo.modules.devmenu.api.DevMenuApi
 import host.exp.exponent.analytics.EXL
 import host.exp.exponent.branch.BranchManager
 import host.exp.exponent.di.NativeModuleDepsProvider
@@ -17,6 +19,7 @@ import host.exp.exponent.storage.ExponentSharedPreferences
 import host.exp.expoview.ExpoViewBuildConfig
 import host.exp.expoview.Exponent
 import me.leolin.shortcutbadger.ShortcutBadger
+import java.io.IOException
 import javax.inject.Inject
 
 abstract class ExpoApplication : Application() {
@@ -28,6 +31,11 @@ abstract class ExpoApplication : Application() {
 
   override fun onCreate() {
     super.onCreate()
+
+    // The performance monitor in Expo Go doesn't require overlay permission.
+    DevMenuApi.configure(
+      performanceMonitorNeedsOverlayPermission = false
+    )
 
     ExpoViewBuildConfig.DEBUG = isDebug
     ExpoViewBuildConfig.USE_EMBEDDED_KERNEL = shouldUseEmbeddedKernel()
@@ -55,7 +63,6 @@ abstract class ExpoApplication : Application() {
     Exponent.initialize(this, this)
 
     NativeModuleDepsProvider.instance.add(Kernel::class.java, KernelProvider.instance)
-    NativeModuleDepsProvider.instance.add(DevMenuManager::class.java, DevMenuManager())
     NativeModuleDepsProvider.instance.inject(ExpoApplication::class.java, this)
 
     BranchManager.initialize(this)
@@ -72,11 +79,12 @@ abstract class ExpoApplication : Application() {
       Debug.startMethodTracing("coldStart")
     }
 
-    SoLoader.init(applicationContext, OpenSourceMergedSoMapping)
-    ExpoGoReactNativeFeatureFlags.setup()
-    // For the New Architecture, we load the native entry point for this app.
-    // We should keep the code in sync with `DefaultNewArchitectureEntryPoint.load()`
-    SoLoader.loadLibrary("react_newarchdefaults")
+    try {
+      SoLoader.init(applicationContext, OpenSourceMergedSoMapping)
+    } catch (error: IOException) {
+      throw RuntimeException(error)
+    }
+    DefaultNewArchitectureEntryPoint.load()
 
     // Add exception handler. This is used by the entire process, so only need to add it here.
     Thread.setDefaultUncaughtExceptionHandler(

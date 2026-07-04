@@ -1,7 +1,7 @@
 import crypto from 'crypto';
-import fs from 'fs-extra';
+import fs from 'fs';
 import os from 'os';
-import { join } from 'path';
+import { join, resolve } from 'path';
 
 import { GitDirectory } from '../../../../tools/src/Git';
 import { autolinkingRunAsync, yarnSync, combinations } from '../TestUtils';
@@ -20,33 +20,34 @@ const monorepoConfig = {
 const apps = ['ejected', 'managed', 'with-sentry'];
 const testCases = combinations('app', apps, 'platform', ['android', 'apple']);
 
+jest.setTimeout(5 * 60 * 1000);
+jest.unmock('fs/promises');
+jest.unmock('fs');
+
 describe('monorepo', () => {
   let monorepoProject: string | undefined;
 
   function removeProjectPath(str: string | undefined): string | undefined {
-    return str?.replace(monorepoProject, 'monorepo');
+    return str?.replace(monorepoProject!, 'monorepo');
   }
 
   function projectPath(app: string): string {
-    return join(monorepoProject, 'apps', app);
+    return join(monorepoProject!, 'apps', app);
   }
 
-  beforeAll(
-    async () => {
-      const temp = join(tempDirectory(), 'monorepo');
-      console.log(`Cloning monorepo into: ${temp}`);
-      await GitDirectory.shallowCloneAsync(temp, monorepoConfig.source, monorepoConfig.ref);
-      console.log('Yarning');
-      yarnSync({ cwd: temp });
-      monorepoProject = temp;
-    },
-    5 * 60 * 1000
-  );
+  beforeAll(async () => {
+    const temp = join(tempDirectory(), 'monorepo');
+    console.log(`Cloning monorepo into: ${temp}`);
+    await GitDirectory.shallowCloneAsync(temp, monorepoConfig.source, monorepoConfig.ref);
+    console.log('Yarning');
+    yarnSync({ cwd: temp });
+    monorepoProject = temp;
+  });
 
   afterAll(async () => {
     if (monorepoProject) {
       console.log(`Removing: ${monorepoProject}`);
-      await fs.remove(monorepoProject);
+      await fs.promises.rm(monorepoProject, { recursive: true, force: true });
     }
   });
 
@@ -107,23 +108,29 @@ describe('monorepo', () => {
     });
   });
 
-  describe('generate-package-list / generate-modules-provider', () => {
+  describe('generate-modules-provider', () => {
     test.each(testCases)('%s', async ({ app, platform }) => {
-      const command =
-        platform === 'android' ? 'generate-package-list' : 'generate-modules-provider';
+      if (platform === 'android') return;
       const appPath = projectPath(app);
       const target = join(appPath, 'generated', 'file.txt');
-      const platformExtraArgs = platform === 'android' ? ['--namespace', 'com.test'] : [];
-
+      const podfilePropertiesFilePath = resolve(appPath, 'ios/Podfile.properties.json');
       const generatePackageListResult = await autolinkingRunAsync(
-        [command, '--platform', platform, '--target', target, ...platformExtraArgs],
+        [
+          'generate-modules-provider',
+          '--podfile-properties-file-path',
+          podfilePropertiesFilePath,
+          '--platform',
+          platform,
+          '--target',
+          target,
+        ],
         {
           cwd: appPath,
         }
       );
 
       expect(generatePackageListResult.status).toBe(0);
-      const generatedFile = await fs.readFile(target, 'utf-8');
+      const generatedFile = await fs.promises.readFile(target, 'utf-8');
       expect(generatedFile).toMatchSnapshot();
     });
   });

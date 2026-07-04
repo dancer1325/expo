@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,6 +17,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.RemoteViews
+import androidx.activity.enableEdgeToEdge
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -27,8 +29,11 @@ import com.facebook.soloader.SoLoader
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import de.greenrobot.event.EventBus
 import expo.modules.core.interfaces.Package
+import expo.modules.devmenu.api.DevMenuApi
+import expo.modules.devmenu.compose.DevMenuAction
+import expo.modules.devmenu.compose.DevMenuState
+import expo.modules.kotlin.weak
 import expo.modules.manifests.core.Manifest
-import host.exp.exponent.experience.splashscreen.legacy.singletons.SplashScreen
 import host.exp.exponent.Constants
 import host.exp.exponent.ExpoUpdatesAppLoader
 import host.exp.exponent.ExpoUpdatesAppLoader.AppLoaderCallback
@@ -43,10 +48,9 @@ import host.exp.exponent.experience.loading.LoadingProgressPopupController
 import host.exp.exponent.experience.splashscreen.ManagedAppSplashScreenConfiguration
 import host.exp.exponent.experience.splashscreen.ManagedAppSplashScreenViewController
 import host.exp.exponent.experience.splashscreen.ManagedAppSplashScreenViewProvider
-import host.exp.exponent.kernel.DevMenuManager
+import host.exp.exponent.experience.splashscreen.legacy.singletons.SplashScreen
 import host.exp.exponent.kernel.ExperienceKey
 import host.exp.exponent.kernel.ExponentUrls
-import host.exp.exponent.kernel.Kernel.KernelStartedRunningEvent
 import host.exp.exponent.kernel.KernelConstants
 import host.exp.exponent.kernel.KernelConstants.ExperienceOptions
 import host.exp.exponent.kernel.KernelProvider
@@ -70,8 +74,8 @@ import org.json.JSONException
 import org.json.JSONObject
 import versioned.host.exp.exponent.ExponentPackageDelegate
 import versioned.host.exp.exponent.ReactUnthemedRootView
+import versioned.host.exp.exponent.VersionedUtils
 import java.lang.ref.WeakReference
-import javax.inject.Inject
 
 open class ExperienceActivity : BaseExperienceActivity(), StartReactInstanceDelegate {
   open fun expoPackages(): List<Package>? {
@@ -94,6 +98,7 @@ open class ExperienceActivity : BaseExperienceActivity(), StartReactInstanceDele
   private var notificationBuilder: NotificationCompat.Builder? = null
   private var isLoadExperienceAllowedToRun = false
   private var shouldShowLoadingViewWithOptimisticManifest = false
+  private val devMenuFragment by DevMenuApi.fragment { this }
 
   /**
    * Controls loadingProgressPopupWindow that is shown above whole activity.
@@ -102,17 +107,15 @@ open class ExperienceActivity : BaseExperienceActivity(), StartReactInstanceDele
   private var managedAppSplashScreenViewProvider: ManagedAppSplashScreenViewProvider? = null
   var managedAppSplashScreenViewController: ManagedAppSplashScreenViewController? = null
 
-  @Inject
-  lateinit var devMenuManager: DevMenuManager
-
   private val devBundleDownloadProgressListener: DevBundleDownloadProgressListener =
     object : DevBundleDownloadProgressListener {
-      override fun onProgress(status: String?, done: Int?, total: Int?) {
+      override fun onProgress(status: String?, done: Int?, total: Int?, percent: Int?) {
         lifecycleScope.launch {
           loadingProgressPopupController.updateProgress(
             status,
             done,
-            total
+            total,
+            percent
           )
         }
       }
@@ -139,6 +142,7 @@ open class ExperienceActivity : BaseExperienceActivity(), StartReactInstanceDele
    *
    */
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
 
     isLoadExperienceAllowedToRun = true
@@ -231,9 +235,6 @@ open class ExperienceActivity : BaseExperienceActivity(), StartReactInstanceDele
     super.onResume()
     currentActivity = this
 
-    // Resume home's host if needed.
-    devMenuManager.maybeResumeHostWithActivity(this)
-
     soLoaderInit()
 
     addNotification()
@@ -250,6 +251,12 @@ open class ExperienceActivity : BaseExperienceActivity(), StartReactInstanceDele
         )
       }
     }
+  }
+
+  override fun onConfigurationChanged(newConfig: Configuration) {
+    // Will update the navigation bar colors if the system theme has changed. This is only relevant for the three button navigation bar.
+    enableEdgeToEdge()
+    super.onConfigurationChanged(newConfig)
   }
 
   private fun soLoaderInit() {
@@ -285,21 +292,22 @@ open class ExperienceActivity : BaseExperienceActivity(), StartReactInstanceDele
 
   fun toggleDevMenu(): Boolean {
     if (reactHost != null && !isCrashed) {
-      devMenuManager.toggleInActivity(this)
+      devMenuFragment?.viewModel?.onAction(DevMenuAction.Toggle)
       return true
     }
     return false
   }
 
-  /**
-   * Handles command line command `adb shell input keyevent 82` that toggles the dev menu on the current experience activity.
-   */
-  override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-    if (keyCode == KeyEvent.KEYCODE_MENU && reactHost != null && !isCrashed) {
-      devMenuManager.toggleInActivity(this)
-      return true
+  override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+    if (event.action == KeyEvent.ACTION_UP) {
+      if (reactHost != null && !isCrashed) {
+        val wasHandled = devMenuFragment?.onKeyUp(event.keyCode, event)
+        if (wasHandled == true) {
+          return true
+        }
+      }
     }
-    return super.onKeyUp(keyCode, event)
+    return super.dispatchKeyEvent(event)
   }
 
   /**
@@ -308,19 +316,41 @@ open class ExperienceActivity : BaseExperienceActivity(), StartReactInstanceDele
   @Deprecated("Deprecated in Java")
   override fun onBackPressed() {
     super.onBackPressed()
-    if (currentActivity === this && devMenuManager.isShownInActivity(this)) {
-      devMenuManager.requestToClose(this)
+    if (currentActivity === this && devMenuFragment?.viewModel?.state?.isOpen == true) {
+      devMenuFragment?.viewModel?.onAction(DevMenuAction.Close)
       return
     }
-  }
-
-  fun onEventMainThread(event: KernelStartedRunningEvent?) {
-    AsyncCondition.notify(KERNEL_STARTED_RUNNING_KEY)
   }
 
   override fun onDoneLoading() {
     reactSurface?.view?.let {
       setReactRootView(it)
+      addReactViewToContentContainer(
+        DevMenuApi.createFragmentHost(
+          activity = this,
+          reactHostHolder = reactHost.weak(),
+          goToHomeAction = {
+            kernel.openHomeActivity()
+          },
+          reloadAction = {
+            VersionedUtils.reloadExpoApp()
+          },
+          appInfoProvider = { _, _ ->
+            DevMenuState.AppInfo(
+              appName = manifest?.getName() ?: "Unknown",
+              hostUrl = manifestUrl ?: "Unknown",
+              appVersion = manifest?.getVersion() ?: "Unknown",
+              runtimeVersion = null,
+              sdkVersion = manifest?.getExpoGoSDKVersion() ?: "Unknown",
+              engine = "Hermes"
+            )
+          },
+          preferences = DevMenuSharedPreferencesAdapter(
+            application,
+            kernel.exponentSharedPreferences
+          )
+        )
+      )
     }
   }
 
@@ -378,10 +408,9 @@ open class ExperienceActivity : BaseExperienceActivity(), StartReactInstanceDele
         ReactSurfaceView::class.java,
         splashScreenView
       )
-      SplashScreen.show(this, managedAppSplashScreenViewController!!, true)
+      SplashScreen.show(this, managedAppSplashScreenViewController!!)
     } else {
       managedAppSplashScreenViewProvider!!.updateSplashScreenViewWithManifest(
-        this,
         manifest!!
       )
     }
@@ -755,7 +784,6 @@ open class ExperienceActivity : BaseExperienceActivity(), StartReactInstanceDele
 
   companion object {
     private val TAG = ExperienceActivity::class.java.simpleName
-    private const val KERNEL_STARTED_RUNNING_KEY = "experienceActivityKernelDidLoad"
     const val PERSISTENT_EXPONENT_NOTIFICATION_ID = 10101
     private const val READY_FOR_BUNDLE = "readyForBundle"
 

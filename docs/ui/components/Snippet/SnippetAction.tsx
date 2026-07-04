@@ -25,12 +25,12 @@ export const SnippetAction = ({
         alwaysDark &&
           'dark-theme border-transparent bg-transparent hocus:border-palette-gray9 hocus:bg-palette-gray5 hocus:shadow-xs',
         !alwaysDark &&
-          'h-10 rounded-none border-0 border-l border-l-default px-4 leading-10 hocus:bg-subtle hocus:shadow-none',
+          'h-10 rounded-none border-0 border-l border-l-default leading-10 hocus:bg-subtle hocus:shadow-none',
         className
       )}
       {...rest}>
       {children && (
-        <FOOTNOTE className={mergeClasses(alwaysDark && '!text-palette-white')}>
+        <FOOTNOTE className={mergeClasses(alwaysDark && 'text-palette-white!')}>
           {children}
         </FOOTNOTE>
       )}

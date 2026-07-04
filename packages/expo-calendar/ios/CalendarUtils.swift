@@ -1,6 +1,21 @@
 import ExpoModulesCore
 import EventKit
 
+
+func requireDate(from date: Either<String, Double>?) throws -> Date {
+  guard let parsedDate = parse(date: date) else {
+    throw InvalidDateFormatException()
+  }
+  return parsedDate
+}
+
+func requireDate(from date: String?) throws -> Date {
+  guard let parsedDate = parse(date: date) else {
+    throw InvalidDateFormatException()
+  }
+  return parsedDate
+}
+
 func parse(date: Either<String, Double>?) -> Date? {
   guard let date else {
     return nil
@@ -127,9 +142,11 @@ func createCalendarEventAlarm(alarm: Alarm) -> EKAlarm? {
   return calendarEventAlarm
 }
 
-func createDateComponents(for date: Date) -> DateComponents {
+func createDateComponents(for date: Date, allDay: Bool = false) -> DateComponents {
   let currentCalendar = Calendar.current
-  let dateComponents: Set<Calendar.Component> = [.year, .month, .day, .hour, .minute, .second]
+  let dateComponents: Set<Calendar.Component> = allDay
+    ? [.year, .month, .day]
+    : [.year, .month, .day, .hour, .minute, .second]
 
   return currentCalendar.dateComponents(
     dateComponents,

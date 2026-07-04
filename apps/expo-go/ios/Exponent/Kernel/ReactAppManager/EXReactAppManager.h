@@ -1,11 +1,13 @@
 
 #import <UIKit/UIKit.h>
+#import <Expo/RCTAppDelegateUmbrella.h>
 #import <React/RCTBridgeDelegate.h>
-#import <React-RCTAppDelegate/RCTAppDelegate.h>
+#import <React/RCTBridgeModule.h>
 #import <React/RCTReloadCommand.h>
 
 #import "EXAppFetcher.h"
 #import "EXKernelAppRecord.h"
+#import "ExpoAppInstance.h"
 
 typedef enum EXReactAppManagerStatus {
   kEXReactAppManagerStatusNew,
@@ -43,7 +45,8 @@ typedef enum EXReactAppManagerStatus {
 @property (nonatomic, readonly) NSString *scopedDocumentDirectory;
 @property (nonatomic, readonly) NSString *scopedCachesDirectory;
 @property (nonatomic, strong) id reactHost;
-@property (nonatomic, strong) RCTAppDelegate *reactAppInstance;
+@property (nonatomic, readonly) RCTModuleRegistry *reactModuleRegistry;
+@property (nonatomic, strong) ExpoAppInstance *expoAppInstance;
 @property (nonatomic, assign) id<EXReactAppManagerUIDelegate> delegate;
 @property (nonatomic, weak) EXKernelAppRecord *appRecord;
 
@@ -60,8 +63,6 @@ typedef enum EXReactAppManagerStatus {
 /**
  * Clear any executor class on the bridge and reload. Used by Cmd+N devtool key command.
  */
-- (void)disableRemoteDebugging;
-- (void)toggleRemoteDebugging;
 - (void)togglePerformanceMonitor;
 - (void)toggleElementInspector;
 - (void)showDevMenu;
@@ -71,6 +72,10 @@ typedef enum EXReactAppManagerStatus {
  */
 - (NSDictionary<NSString *, NSString *> *)devMenuItems;
 - (void)selectDevMenuItemWithKey:(NSString *)key;
+
+- (BOOL)isHotLoadingEnabled;
+- (BOOL)isHotLoadingAvailable;
+- (BOOL)isPerfMonitorAvailable;
 
 @end
 

@@ -1,5 +1,5 @@
+import { Platform } from 'expo';
 import { MeshGradientView } from 'expo-mesh-gradient';
-import { Platform } from 'expo-modules-core';
 import { useCallback, useState } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -12,7 +12,7 @@ import Animated, {
 
 import Button from '../components/Button';
 
-const SCREEN_SIZE = Dimensions.get('screen');
+const SCREEN_SIZE = Dimensions.get('window');
 
 const AnimatedMeshGradientView = Animated.createAnimatedComponent(MeshGradientView);
 
@@ -33,13 +33,7 @@ export default function MeshGradientScreen() {
       };
     })
     .onEnd(() => {
-      point.value = withSpring(
-        { x: 0.5, y: 0.5 },
-        {
-          restDisplacementThreshold: 0.0001,
-          restSpeedThreshold: 0.02,
-        }
-      );
+      point.value = withSpring({ x: 0.5, y: 0.5 });
     });
 
   const animatedProps = useAnimatedProps(() => {
@@ -71,10 +65,6 @@ export default function MeshGradientScreen() {
     setMask(!mask);
   }, [mask]);
 
-  if (Platform.OS === 'android') {
-    return <Text>Mesh gradient is not available on Android</Text>;
-  }
-
   return (
     <View style={{ flex: 1 }}>
       <AnimatedMeshGradientView
@@ -85,6 +75,10 @@ export default function MeshGradientScreen() {
         smoothsColors
         ignoresSafeArea
         mask={mask}
+        resolution={{
+          x: 16,
+          y: 16,
+        }}
         animatedProps={animatedProps}>
         <Text style={styles.maskingText}>Expo SwiftUI</Text>
       </AnimatedMeshGradientView>
@@ -95,9 +89,11 @@ export default function MeshGradientScreen() {
         </GestureDetector>
       </View>
 
-      <View style={styles.buttonsContainer}>
-        <Button title="Toggle mask" onPress={toggleMask} buttonStyle={{ padding: 20 }} />
-      </View>
+      {Platform.OS === 'ios' && (
+        <View style={styles.buttonsContainer}>
+          <Button title="Toggle mask" onPress={toggleMask} buttonStyle={{ padding: 20 }} />
+        </View>
+      )}
     </View>
   );
 }
@@ -111,7 +107,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   button: {
     width: 40,

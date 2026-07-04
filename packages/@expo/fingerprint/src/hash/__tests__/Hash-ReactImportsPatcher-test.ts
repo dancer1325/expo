@@ -1,13 +1,14 @@
 import { vol } from 'memfs';
-import pLimit from 'p-limit';
 import path from 'path';
 
 import { normalizeOptionsAsync } from '../../Options';
+import { createLimiter } from '../../utils/Concurrency';
 import { createFileHashResultsAsync } from '../Hash';
 import { ReactImportsPatchTransform } from '../ReactImportsPatcher';
 
 jest.mock('fs');
 jest.mock('fs/promises');
+jest.mock('../../ProjectWorkflow');
 jest.mock('../ReactImportsPatcher', () => ({
   ReactImportsPatchTransform: jest
     .fn()
@@ -21,7 +22,7 @@ describe(`createFileHashResultsAsync - use ReactImportsPatchTransform`, () => {
   });
 
   it('should use ReactImportsPatchTransform when `enableReactImportsPatcher=false`', async () => {
-    const limiter = pLimit(1);
+    const limiter = createLimiter(1);
     const options = await normalizeOptionsAsync('/app', {
       debug: true,
       enableReactImportsPatcher: false,
@@ -46,7 +47,7 @@ describe(`createFileHashResultsAsync - use ReactImportsPatchTransform`, () => {
   });
 
   it(`should not use ReactImportsPatchTransform if no match platforms`, async () => {
-    const limiter = pLimit(1);
+    const limiter = createLimiter(1);
     const options = await normalizeOptionsAsync('/app', { debug: true, platforms: ['android'] });
     const files = {
       '/app/ios/HelloWorld/Info.plist': '',
@@ -68,7 +69,7 @@ describe(`createFileHashResultsAsync - use ReactImportsPatchTransform`, () => {
   });
 
   it(`should not use ReactImportsPatchTransform if no match files`, async () => {
-    const limiter = pLimit(1);
+    const limiter = createLimiter(1);
     const options = await normalizeOptionsAsync('/app', { debug: true, platforms: ['android'] });
     const files = {
       '/app/ios/HelloWorld/Info.plist': '',

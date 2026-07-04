@@ -1,9 +1,9 @@
-import { Android, ExpoConfig, IOS } from '@expo/config-types';
+import type { Android, ExpoConfig, IOS } from '@expo/config-types';
+import { resolveFrom } from '@expo/require-utils';
 import { getRuntimeVersionForSDKVersion } from '@expo/sdk-runtime-versions';
 import fs from 'fs';
 import { boolish } from 'getenv';
 import path from 'path';
-import resolveFrom from 'resolve-from';
 import semver from 'semver';
 
 import * as AndroidVersion from '../android/Version';
@@ -11,14 +11,14 @@ import * as IOSVersion from '../ios/Version';
 
 export type ExpoConfigUpdates = Pick<
   ExpoConfig,
-  'sdkVersion' | 'owner' | 'runtimeVersion' | 'updates' | 'slug'
+  'sdkVersion' | 'runtimeVersion' | 'updates' | 'slug'
 >;
 
 export const FINGERPRINT_RUNTIME_VERSION_SENTINEL = 'file:fingerprint';
 
 export function getExpoUpdatesPackageVersion(projectRoot: string): string | null {
-  const expoUpdatesPackageJsonPath = resolveFrom.silent(projectRoot, 'expo-updates/package.json');
-  if (!expoUpdatesPackageJsonPath || !fs.existsSync(expoUpdatesPackageJsonPath)) {
+  const expoUpdatesPackageJsonPath = resolveFrom(projectRoot, 'expo-updates/package.json');
+  if (!expoUpdatesPackageJsonPath) {
     return null;
   }
   const packageJson = JSON.parse(fs.readFileSync(expoUpdatesPackageJsonPath, 'utf8'));
@@ -146,6 +146,15 @@ export function getUpdatesUseEmbeddedUpdate(config: Pick<ExpoConfigUpdates, 'upd
   return true;
 }
 
+export function getUpdatesBsdiffPatchSupportEnabled(
+  config: Pick<ExpoConfigUpdates, 'updates'>
+): boolean {
+  if (config.updates?.enableBsdiffPatchSupport !== undefined) {
+    return config.updates.enableBsdiffPatchSupport;
+  }
+  return true;
+}
+
 export function getUpdatesTimeout(config: Pick<ExpoConfigUpdates, 'updates'>): number {
   return config.updates?.fallbackToCacheTimeout ?? 0;
 }
@@ -219,4 +228,10 @@ export function getUpdatesRequestHeadersStringified(
   }
 
   return JSON.stringify(metadata);
+}
+
+export function getDisableAntiBrickingMeasures(
+  config: Pick<ExpoConfigUpdates, 'updates'>
+): boolean | undefined {
+  return config.updates?.disableAntiBrickingMeasures;
 }

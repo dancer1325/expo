@@ -12,17 +12,18 @@ Linux runners are hosted in Google Cloud Platform. macOS runners are hosted in o
 
 ## Configuring build environment
 
-Images for each platform have one specific version of Node.js, yarn, CocoaPods, Xcode, Ruby, Fastlane, and so on. You can override some of the versions in [eas.json](/build/eas-json). If there is no dedicated configuration option you are looking for, you can use [npm hooks](/build-reference/npm-hooks) to install or update any system dependencies with `apt-get` or `brew`. Consider that those customizations are applied during the build and will increase your build times.
+Images for each platform have one specific version of Node.js, Yarn, CocoaPods, Xcode, Ruby, Fastlane, and so on. You can override some of the versions in [eas.json](/build/eas-json). If there is no dedicated configuration option you are looking for, you can use [npm hooks](/build-reference/npm-hooks) to install or update any system dependencies with `apt-get` or `brew`. Consider that those customizations are applied during the build and will increase your build times.
 
-When selecting an image for the build you can use the full name provided below or one of the aliases: `auto`, `latest`, or for a particular SDK such as `sdk-52`.
+When selecting an image for the build you can use the full name provided below or one of the aliases: `auto`, `latest`, or for a particular SDK such as `sdk-56`.
 
 - The use of a specific name guarantees a consistent environment with only minor updates.
 - When using the `auto` alias, the build image will be selected based on the project configuration, Expo SDK version, and React Native version. You can check what image is used for a build in the **Spin up build environment** build logs section.
 - The `latest` alias will be assigned to the image with the most up-to-date versions of the software.
+- The `sdk-56` alias will be assigned to the image best suited for SDK 56 builds.
+- The `sdk-55` alias will be assigned to the image best suited for SDK 55 builds.
+- The `sdk-54` alias will be assigned to the image best suited for SDK 54 builds.
+- The `sdk-53` alias will be assigned to the image best suited for SDK 53 builds.
 - The `sdk-52` alias will be assigned to the image best suited for SDK 52 builds.
-- The `sdk-51` alias will be assigned to the image best suited for SDK 51 builds.
-- The `sdk-50` alias will be assigned to the image best suited for SDK 50 builds.
-- The `sdk-49` alias will be assigned to the image best suited for SDK 49 builds.
 - SDK aliases will be updated with every new SDK release.
 - The `latest` alias will be updated with every new image release.
 
@@ -38,49 +39,134 @@ Android builders run on virtual machines in an isolated environment. Every build
 
 - [npm cache deployed with Kubernetes](/build-reference/caching/#javascript-dependencies)
 - [Maven cache deployed with Kubernetes](/build-reference/caching/#android-dependencies)
-- Global Gradle configuration in **~/.gradle/gradle.properties**:
-
-  ```ini ~/.gradle/gradle.properties
-  org.gradle.jvmargs=-Xmx14g -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
-  org.gradle.parallel=true
-  org.gradle.configureondemand=true
-  org.gradle.daemon=false
-  ```
-
+- Gradle JVM args are injected via the `GRADLE_OPTS` environment variable when the build environment is provisioned. See [Gradle JVM args](#gradle-jvm-args) below.
 - Global npm configuration in **~/.npmrc**:
 
   ```ini ~/.npmrc
-  registry=http://10.4.0.19:4873
+  registry=http://npm.production.caches.eas-build.internal
   ```
 
 - Global Yarn configuration in **~/.yarnrc.yml**:
 
-  ```yml ~/.yarnrc.yml
+  ```yaml ~/.yarnrc.yml
   unsafeHttpWhitelist:
     - '*'
-  npmRegistryServer: 'http://10.4.0.19:4873'
+  npmRegistryServer: 'http://npm.production.caches.eas-build.internal'
   enableImmutableInstalls: false
   ```
 
+### Gradle JVM args
+
+EAS Build sets the `GRADLE_OPTS` environment variable on the build VM (the worker) before Gradle runs. The values depend on the [resource class](/eas/json/#resourceclass) you select:
+
+| Resource class | `-Xmx` (max heap) |
+| -------------- | ----------------- |
+| `medium`       | `4g`              |
+| `large`        | `8g`              |
+
+In addition to `-Xmx`, the worker passes the following JVM args to the Gradle build JVM via `-Dorg.gradle.jvmargs`:
+
+- `-XX:MaxMetaspaceSize=1g`
+- `-XX:+HeapDumpOnOutOfMemoryError`
+- `-Dfile.encoding=UTF-8`
+
+The worker also sets these top-level Gradle properties on `GRADLE_OPTS`:
+
+- `-Dorg.gradle.parallel=true`
+- `-Dorg.gradle.daemon=false`
+
+> **warning** The worker sets `org.gradle.jvmargs` via `GRADLE_OPTS`, which overrides any `org.gradle.jvmargs` defined in your project's **gradle.properties**.
+
+#### Overriding `GRADLE_OPTS`
+
+You can replace the worker default by setting `GRADLE_OPTS` under a build profile's [`env`](/eas/json/#env) in **eas.json**, in a [workflow file](/eas/workflows/syntax/#jobsjob_idenv), or with [EAS Environment Variables](/eas/environment-variables/). Project environment values take precedence over the worker's default values.
+
 ### Android server images
 
-#### `ubuntu-22.04-jdk-17-ndk-r26b` (`latest`, `sdk-51`, `sdk-52`)
+#### <CopyTextButton>`ubuntu-26.04-jdk-17-ndk-r27b` (`latest`, `sdk-56`)</CopyTextButton>
 
 <Collapsible summary="Details">
 
-- Docker image: `ubuntu:jammy-v20240614`
-- NDK 26.1.10909125
-- Node.js 18.18.0
-- Bun 1.1.13
-- Yarn 1.22.21
-- pnpm 9.3.0
-- npm 9.8.1
+- GCE image: `ubuntu-2604-resolute-amd64-v20260505`
+- NDK 27.1.12297006
+- Node.js 22.22.2
+- Bun 1.3.13
+- Yarn 1.22.22
+- pnpm 10.33.3
+- npm 10.9.4
 - Java 17
-- node-gyp 10.1.0
+- node-gyp 12.3.0
+- Maestro 2.5.1
 
 </Collapsible>
 
-#### `ubuntu-22.04-jdk-17-ndk-r25b` (`sdk-50`)
+#### <CopyTextButton>`ubuntu-24.04-jdk-17-ndk-r27b-sdk-55` (`sdk-55`)</CopyTextButton>
+
+<Collapsible summary="Details">
+
+- GCE image: `ubuntu-2404-noble-amd64-v20260128`
+- NDK 27.1.12297006
+- Node.js 20.19.4
+- Bun 1.3.8
+- Yarn 1.22.22
+- pnpm 10.28.2
+- npm 10.9.3
+- Java 17
+- node-gyp 12.2.0
+- Maestro 2.1.0
+
+</Collapsible>
+
+#### <CopyTextButton>`ubuntu-24.04-jdk-17-ndk-r27b` (`sdk-54`)</CopyTextButton>
+
+<Collapsible summary="Details">
+
+- GCE image: `ubuntu-2404-noble-amd64-v20250805`
+- NDK 27.1.12297006
+- Node.js 20.19.4
+- Bun 1.2.20
+- Yarn 1.22.22
+- pnpm 10.14.0
+- npm 10.9.3
+- Java 17
+- node-gyp 11.3.0
+- Maestro 2.0.2
+
+</Collapsible>
+
+#### <CopyTextButton>`ubuntu-22.04-jdk-17-ndk-r26b` (`sdk-53`)</CopyTextButton>
+
+<Collapsible summary="Details">
+
+- Docker image: `ubuntu:jammy-v20250112`
+- NDK 26.1.10909125
+- Node.js 20.19.2
+- Bun 1.2.4
+- Yarn 1.22.22
+- pnpm 9.15.5
+- npm 10.8.2
+- Java 17
+- node-gyp 11.1.0
+
+</Collapsible>
+
+#### Legacy <CopyTextButton>`ubuntu-22.04-jdk-17-ndk-r26b`-like (`sdk-51`, `sdk-52`)</CopyTextButton>
+
+<Collapsible summary="Details">
+
+- Docker image: `ubuntu:jammy-v20250112`
+- NDK 26.1.10909125
+- Node.js 20.18.3
+- Bun 1.2.4
+- Yarn 1.22.22
+- pnpm 9.15.5
+- npm 10.8.2
+- Java 17
+- node-gyp 11.1.0
+
+</Collapsible>
+
+#### <CopyTextButton>`ubuntu-22.04-jdk-17-ndk-r25b` (`sdk-50`)</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -96,7 +182,7 @@ Android builders run on virtual machines in an isolated environment. Every build
 
 </Collapsible>
 
-#### `ubuntu-22.04-jdk-11-ndk-r23b` (`sdk-49`)
+#### <CopyTextButton>`ubuntu-22.04-jdk-11-ndk-r23b` (`sdk-49`)</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -112,7 +198,7 @@ Android builders run on virtual machines in an isolated environment. Every build
 
 </Collapsible>
 
-#### `ubuntu-22.04-jdk-17-ndk-r21e`
+#### <CopyTextButton>`ubuntu-22.04-jdk-17-ndk-r21e`</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -128,7 +214,7 @@ Android builders run on virtual machines in an isolated environment. Every build
 
 </Collapsible>
 
-#### `ubuntu-22.04-jdk-11-ndk-r21e`
+#### <CopyTextButton>`ubuntu-22.04-jdk-11-ndk-r21e`</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -144,7 +230,7 @@ Android builders run on virtual machines in an isolated environment. Every build
 
 </Collapsible>
 
-#### `ubuntu-22.04-jdk-8-ndk-r21e` (deprecated)
+#### <CopyTextButton>`ubuntu-22.04-jdk-8-ndk-r21e` (deprecated)</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -160,7 +246,7 @@ Android builders run on virtual machines in an isolated environment. Every build
 
 </Collapsible>
 
-#### `ubuntu-20.04-jdk-11-ndk-r23b` (deprecated)
+#### <CopyTextButton>`ubuntu-20.04-jdk-11-ndk-r23b` (deprecated)</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -176,7 +262,7 @@ Android builders run on virtual machines in an isolated environment. Every build
 
 </Collapsible>
 
-#### `ubuntu-20.04-jdk-11-ndk-r21e` (deprecated)
+#### <CopyTextButton>`ubuntu-20.04-jdk-11-ndk-r21e` (deprecated)</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -192,7 +278,7 @@ Android builders run on virtual machines in an isolated environment. Every build
 
 </Collapsible>
 
-#### `ubuntu-20.04-jdk-8-ndk-r21e` (deprecated)
+#### <CopyTextButton>`ubuntu-20.04-jdk-8-ndk-r21e` (deprecated)</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -208,7 +294,7 @@ Android builders run on virtual machines in an isolated environment. Every build
 
 </Collapsible>
 
-#### `ubuntu-20.04-jdk-11-ndk-r19c` (deprecated)
+#### <CopyTextButton>`ubuntu-20.04-jdk-11-ndk-r19c` (deprecated)</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -224,7 +310,7 @@ Android builders run on virtual machines in an isolated environment. Every build
 
 </Collapsible>
 
-#### `ubuntu-20.04-jdk-8-ndk-r19c` (deprecated)
+#### <CopyTextButton>`ubuntu-20.04-jdk-8-ndk-r19c` (deprecated)</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -244,37 +330,203 @@ Android builders run on virtual machines in an isolated environment. Every build
 
 iOS builder VMs run on Mac mini hosts in an isolated environment. Every build gets its own fresh macOS VM. For more information, see [iOS-specific resource classes](/eas/json/#resourceclass-2).
 
-- Hardware:
-
-  - M1 3.2GHz 8-Core, 16 GB RAM
-  - M2 3.9GHz 8-Core, 24 GB RAM
-  - M2 Pro 3.9GHz 12-Core, 32 GB RAM
-
 - Build resources:
 
   <BuildResourceList platform="ios" />
 
 - [npm cache](/build-reference/caching/#javascript-dependencies)
 - [CocoaPods cache](/build-reference/caching/#ios-dependencies)
-- [`cocoapods-nexus-plugin`](https://github.com/expo/eas-build/tree/main/packages/cocoapods-nexus-plugin)
 - Global npm configuration in **~/.npmrc**:
 
   ```ini ~/.npmrc
-  registry=http://10.94.183.70:4873
+  registry=http://npm.caches.eas-build.internal
   ```
 
 - Global Yarn configuration in **~/.yarnrc.yml**:
 
-  ```yml ~/.yarnrc.yml
+  ```yaml ~/.yarnrc.yml
   unsafeHttpWhitelist:
     - '*'
-  npmRegistryServer: 'http://10.94.183.70:4873'
+  npmRegistryServer: 'http://npm.caches.eas-build.internal'
   enableImmutableInstalls: false
   ```
 
 ### iOS server images
 
-#### `macos-sonoma-14.6-xcode-16.1` (`latest`, `sdk-52`)
+#### <CopyTextButton>`macos-tahoe-26.4-xcode-26.4` (`latest`, `sdk-56`)</CopyTextButton>
+
+<Collapsible summary="Details">
+
+- macOS Tahoe 26.4.1
+- Xcode 26.4 (17E202)
+- Node.js 22.22.2
+- Bun 1.3.13
+- Yarn 1.22.22
+- pnpm 10.33.3
+- npm 10.9.4
+- fastlane 2.233.1
+- CocoaPods 1.16.2
+- Ruby 3.2
+- node-gyp 12.3.0
+- Maestro 2.5.1
+
+</Collapsible>
+
+#### <CopyTextButton>`macos-sequoia-15.6-xcode-26.2` (`sdk-55`)</CopyTextButton>
+
+<Collapsible summary="Details">
+
+- macOS Sequoia 15.6.1
+- Xcode 26.2 (17C52)
+- Node.js 20.19.4
+- Bun 1.3.8
+- Yarn 1.22.22
+- pnpm 10.28.2
+- npm 10.9.3
+- fastlane 2.231.1
+- CocoaPods 1.16.2
+- Ruby 3.2
+- node-gyp 12.2.0
+- Maestro 2.1.0
+
+</Collapsible>
+
+#### <CopyTextButton>`macos-sequoia-15.6-xcode-26.1`</CopyTextButton>
+
+<Collapsible summary="Details">
+
+- macOS Sequoia 15.6.1
+- Xcode 26.1 (17B55)
+- Node.js 20.19.4
+- Bun 1.3.1
+- Yarn 1.22.22
+- pnpm 10.20.0
+- npm 10.9.3
+- fastlane 2.228.0
+- CocoaPods 1.16.2
+- Ruby 3.2
+- node-gyp 11.5.0
+- Maestro 2.0.9
+
+</Collapsible>
+
+#### <CopyTextButton>`macos-sequoia-15.6-xcode-26.0` (`sdk-54`, `macos-sequoia-15.5-xcode-26.0`)</CopyTextButton>
+
+<Collapsible summary="Details">
+
+- macOS Sequoia 15.6
+- Xcode 26.0 (17A324)
+- Node.js 20.19.4
+- Bun 1.2.22
+- Yarn 1.22.22
+- pnpm 10.16.1
+- npm 10.9.3
+- fastlane 2.228.0
+- CocoaPods 1.16.2
+- Ruby 3.2
+- node-gyp 11.4.2
+- jq 1.8.0
+- Azul Zulu JDK 17.58.21 (OpenJDK 17.0.15)
+- Git 2.49.0
+- Git LFS 3.6.1
+- applesimutils 0.9.12
+- idb-companion 1.1.8
+- Maestro 2.0.3
+
+</Collapsible>
+
+#### <CopyTextButton>`macos-sequoia-15.6-xcode-16.4`</CopyTextButton> (recommended for SDK 54 if you don't want to use Xcode 26)
+
+<Collapsible summary="Details">
+
+- macOS Sequoia 15.6
+- Xcode 16.4 (16F6)
+- Node.js 20.19.4
+- Bun 1.2.20
+- Yarn 1.22.22
+- pnpm 10.14.0
+- npm 10.9.3
+- fastlane 2.228.0
+- CocoaPods 1.16.2
+- Ruby 3.2
+- node-gyp 11.3.0
+- Maestro 1.41.0
+- jq 1.8.0
+- Azul Zulu JDK 17.58.21 (OpenJDK 17.0.15)
+- Git 2.49.0
+- Git LFS 3.6.1
+- applesimutils 0.9.10
+- idb-companion 1.1.8
+
+</Collapsible>
+
+#### <CopyTextButton>`macos-sequoia-15.5-xcode-16.4` (`sdk-53`)</CopyTextButton>
+
+<Collapsible summary="Details">
+
+- macOS Sequoia 15.5
+- Xcode 16.4 (16E140)
+- Node.js 20.19.2
+- Bun 1.2.15
+- Yarn 1.22.22
+- pnpm 9.15.9
+- npm 10.8.2
+- fastlane 2.227.1
+- CocoaPods 1.16.2
+- Ruby 3.2
+- node-gyp 11.2.0
+- jq 1.8.0
+- Azul Zulu JDK 17.58.21 (OpenJDK 17.0.15)
+- Git 2.49.0
+- Git LFS 3.6.1
+- applesimutils 0.9.10
+- idb-companion 1.1.8
+
+</Collapsible>
+
+#### <CopyTextButton>`macos-sequoia-15.4-xcode-16.3`</CopyTextButton>
+
+<Collapsible summary="Details">
+
+- macOS Sequoia 15.4.1
+- Xcode 16.3 (16E140)
+- Node.js 20.19.1
+- Bun 1.2.11
+- Yarn 1.22.22
+- pnpm 9.15.9
+- npm 9.8.1
+- fastlane 2.227.1
+- CocoaPods 1.16.2
+- Ruby 3.2
+- node-gyp 11.2.0
+- jq 1.7.1
+- Azul Zulu JDK 17.58.21 (OpenJDK 17.0.15)
+- Git 2.49.0
+- Git LFS 3.6.1
+- applesimutils 0.9.10
+- idb-companion 1.1.8
+
+</Collapsible>
+
+#### <CopyTextButton>`macos-sequoia-15.3-xcode-16.2` (`sdk-52`)</CopyTextButton>
+
+<Collapsible summary="Details">
+
+- macOS Sequoia 15.3
+- Xcode 16.2 (16C5032a)
+- Node.js 20.18.3
+- Bun 1.2.4
+- Yarn 1.22.22
+- pnpm 9.15.5
+- npm 9.8.1
+- fastlane 2.226.0
+- CocoaPods 1.16.2
+- Ruby 3.2
+- node-gyp 11.1.0
+
+</Collapsible>
+
+#### <CopyTextButton>`macos-sonoma-14.6-xcode-16.1`</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -292,7 +544,7 @@ iOS builder VMs run on Mac mini hosts in an isolated environment. Every build ge
 
 </Collapsible>
 
-#### `macos-sonoma-14.6-xcode-16.0`
+#### <CopyTextButton>`macos-sonoma-14.6-xcode-16.0`</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -310,7 +562,7 @@ iOS builder VMs run on Mac mini hosts in an isolated environment. Every build ge
 
 </Collapsible>
 
-#### `macos-sonoma-14.5-xcode-15.4` (`sdk-51`, `sdk-50`, `sdk-49`)
+#### <CopyTextButton>`macos-sonoma-14.5-xcode-15.4` (`sdk-51`, `sdk-50`, `sdk-49`)</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -328,7 +580,7 @@ iOS builder VMs run on Mac mini hosts in an isolated environment. Every build ge
 
 </Collapsible>
 
-#### `macos-sonoma-14.4-xcode-15.3`
+#### <CopyTextButton>`macos-sonoma-14.4-xcode-15.3`</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -346,7 +598,7 @@ iOS builder VMs run on Mac mini hosts in an isolated environment. Every build ge
 
 </Collapsible>
 
-#### `macos-ventura-13.6-xcode-15.2`
+#### <CopyTextButton>`macos-ventura-13.6-xcode-15.2`</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -364,7 +616,7 @@ iOS builder VMs run on Mac mini hosts in an isolated environment. Every build ge
 
 </Collapsible>
 
-#### `macos-ventura-13.6-xcode-15.1`
+#### <CopyTextButton>`macos-ventura-13.6-xcode-15.1`</CopyTextButton>
 
 <Collapsible summary="Details">
 
@@ -382,7 +634,7 @@ iOS builder VMs run on Mac mini hosts in an isolated environment. Every build ge
 
 </Collapsible>
 
-#### `macos-ventura-13.6-xcode-15.0`
+#### <CopyTextButton>`macos-ventura-13.6-xcode-15.0`</CopyTextButton>
 
 <Collapsible summary="Details">
 

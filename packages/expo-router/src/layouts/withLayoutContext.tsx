@@ -1,21 +1,22 @@
-import { EventMapBase, NavigationState } from '@react-navigation/native';
-import React, {
-  Children,
-  forwardRef,
+import type {
   ComponentProps,
   ComponentType,
   ForwardRefExoticComponent,
   PropsWithoutRef,
   ReactNode,
   RefAttributes,
-  isValidElement,
-  useMemo,
 } from 'react';
+import { Children, forwardRef, useMemo } from 'react';
 
 import { useContextKey } from '../Route';
-import { PickPartial } from '../types';
-import { useSortedScreens, ScreenProps } from '../useScreens';
-import { Screen } from '../views/Screen';
+import { isNativeTabTrigger, convertTabPropsToOptions } from '../native-tabs/NativeTabTrigger';
+import type { EventMapBase, NavigationState } from '../react-navigation/native';
+import type { PickPartial } from '../types';
+import type { ScreenProps } from '../useScreens';
+import { useSortedScreens } from '../useScreens';
+import { isProtectedReactElement, Protected } from '../views/Protected';
+import { isScreen, Screen } from '../views/Screen';
+import { IsWithinLayoutContext } from './IsWithinLayoutContext';
 
 export function useFilterScreenChildren(
   children: ReactNode,
@@ -30,44 +31,83 @@ export function useFilterScreenChildren(
 ) {
   return useMemo(() => {
     const customChildren: any[] = [];
-    const screens = Children.map(children, (child) => {
-      if (isValidElement(child) && child && child.type === Screen) {
-        if (!child.props.name) {
-          throw new Error(
-            `<Screen /> component in \`default export\` at \`app${contextKey}/_layout\` must have a \`name\` prop when used as a child of a Layout Route.`
-          );
+
+    const screens: (ScreenProps & { name: string })[] = [];
+    const protectedScreens = new Set<string>();
+
+    function flattenChild(child: ReactNode, exclude = false) {
+      if (isScreen(child, contextKey)) {
+        if (exclude) {
+          protectedScreens.add(child.props.name);
+        } else {
+          screens.push(child.props);
         }
-        if (process.env.NODE_ENV !== 'production') {
-          if (['children', 'component', 'getComponent'].some((key) => key in child.props)) {
-            throw new Error(
-              `<Screen /> component in \`default export\` at \`app${contextKey}/_layout\` must not have a \`children\`, \`component\`, or \`getComponent\` prop when used as a child of a Layout Route`
-            );
+        return;
+      }
+
+      if (isNativeTabTrigger(child, contextKey)) {
+        if (exclude) {
+          protectedScreens.add(child.props.name);
+        } else {
+          const options = convertTabPropsToOptions(child.props);
+          if (options.hidden === false) {
+            screens.push({
+              ...child.props,
+              options,
+            } as ScreenProps & { name: string });
+          } else {
+            // - hidden = undefined -> then the route was not specified in navigator
+            // - hidden = true -> then the route is hidden
+            // In this cases we should treat the tab as protected
+            protectedScreens.add(child.props.name);
           }
         }
-        return child.props;
-      } else {
-        if (isCustomNavigator) {
-          customChildren.push(child);
-        } else {
-          console.warn(
-            `Layout children must be of type Screen, all other children are ignored. To use custom children, create a custom <Layout />. Update Layout Route at: "app${contextKey}/_layout"`
-          );
-        }
+        return;
       }
-    });
+
+      if (isProtectedReactElement(child)) {
+        const excludeChildren = exclude || !child.props.guard;
+        Children.forEach(child.props.children, (protectedChild) => {
+          flattenChild(protectedChild, excludeChildren);
+        });
+        return;
+      }
+
+      if (isCustomNavigator) {
+        customChildren.push(child);
+        return null;
+      }
+
+      console.warn(
+        `Layout children must be of type Screen, all other children are ignored. To use custom children, create a custom <Layout />. Update Layout Route at: "app${contextKey}/_layout"`
+      );
+
+      return null;
+    }
+
+    Children.forEach(children, (child) => flattenChild(child));
 
     // Add an assertion for development
     if (process.env.NODE_ENV !== 'production') {
       // Assert if names are not unique
-      const names = screens?.map((screen) => screen.name);
-      if (names && new Set(names).size !== names.length) {
-        throw new Error('Screen names must be unique: ' + names);
+      const normalizeName = (name: unknown) =>
+        typeof name === 'string' ? name.replace(/\/index$/, '') : name;
+
+      const screenNames =
+        screens?.map(
+          (screen) => screen && typeof screen === 'object' && 'name' in screen && screen.name
+        ) ?? [];
+      const protectedScreenNames = Array.from(protectedScreens).map(normalizeName);
+      const allNames = [...screenNames.map(normalizeName), ...protectedScreenNames];
+      if (new Set(allNames).size !== allNames.length) {
+        throw new Error('Screen names must be unique: ' + allNames);
       }
     }
 
     return {
       screens,
       children: customChildren,
+      protectedScreens,
     };
   }, [children]);
 }
@@ -75,6 +115,36 @@ export function useFilterScreenChildren(
 /**
  * Returns a navigator that automatically injects matched routes and renders nothing when there are no children.
  * Return type with `children` prop optional.
+ * 
+ * Enables use of other built-in React Navigation navigators and other navigators built with the React Navigation custom navigator API.
+ *
+ * @param Nav - The navigator component to wrap.
+ * @param processor - A function that processes the screens before passing them to the navigator.
+ * @param useOnlyUserDefinedScreens - If true, all screens not specified as navigator's children will be ignored.
+ *
+ *  @example
+ * ```tsx app/_layout.tsx
+ * import { ParamListBase, TabNavigationState } from "@react-navigation/native";
+ * import {
+ *   createMaterialTopTabNavigator,
+ *   MaterialTopTabNavigationOptions,
+ *   MaterialTopTabNavigationEventMap,
+ * } from "@react-navigation/material-top-tabs";
+ * import { withLayoutContext } from "expo-router";
+ * 
+ * const MaterialTopTabs = createMaterialTopTabNavigator();
+ * 
+ * const ExpoRouterMaterialTopTabs = withLayoutContext<
+ *   MaterialTopTabNavigationOptions,
+ *   typeof MaterialTopTabs.Navigator,
+ *   TabNavigationState<ParamListBase>,
+ *   MaterialTopTabNavigationEventMap
+ * >(MaterialTopTabs.Navigator);
+
+ * export default function TabLayout() {
+ *   return <ExpoRouterMaterialTopTabs />;
+ * }
+ * ```
  */
 export function withLayoutContext<
   TOptions extends object,
@@ -83,35 +153,40 @@ export function withLayoutContext<
   TEventMap extends EventMapBase,
 >(
   Nav: T,
-  processor?: (
-    options: ScreenProps<TOptions, TState, TEventMap>[]
-  ) => ScreenProps<TOptions, TState, TEventMap>[]
+  processor?: (options: ScreenProps[]) => ScreenProps[],
+  useOnlyUserDefinedScreens: boolean = false
 ) {
   return Object.assign(
     forwardRef(({ children: userDefinedChildren, ...props }: any, ref) => {
       const contextKey = useContextKey();
 
-      const { screens } = useFilterScreenChildren(userDefinedChildren, {
+      const { screens, protectedScreens } = useFilterScreenChildren(userDefinedChildren, {
         contextKey,
       });
 
       const processed = processor ? processor(screens ?? []) : screens;
 
-      const sorted = useSortedScreens(processed ?? []);
+      const sorted = useSortedScreens(processed ?? [], protectedScreens, useOnlyUserDefinedScreens);
 
       // Prevent throwing an error when there are no screens.
       if (!sorted.length) {
         return null;
       }
 
-      return <Nav {...props} id={contextKey} ref={ref} children={sorted} />;
+      return (
+        <IsWithinLayoutContext value>
+          <Nav {...props} id={contextKey} ref={ref} children={sorted} />
+        </IsWithinLayoutContext>
+      );
     }),
     {
       Screen,
+      Protected,
     }
   ) as ForwardRefExoticComponent<
     PropsWithoutRef<PickPartial<ComponentProps<T>, 'children'>> & RefAttributes<unknown>
   > & {
     Screen: (props: ScreenProps<TOptions, TState, TEventMap>) => null;
+    Protected: typeof Protected;
   };
 }

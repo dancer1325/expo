@@ -8,9 +8,248 @@
 
 ### 🐛 Bug fixes
 
+- Add `@platform ios` JSDoc annotations to iOS-exclusive APIs: `ExpoCalendarReminder` class, `listReminders()`, `createReminder()`, `requestRemindersPermissions()`, `getRemindersPermissions()`, `useRemindersPermissions()`, `AddEventWithFormOptions.url`, and `AddEventWithFormOptions.alarms`. ([#46416](https://github.com/expo/expo/pull/46416) by [@kota113](https://github.com/kota113))
+- Throw `UnavailabilityError` when iOS-only Reminders and Sources APIs (`listReminders()`, `createReminder()`, `ExpoCalendarReminder.get/update/delete`, `requestRemindersPermissions()`, `getRemindersPermissions()`, and `getSourcesSync()`) are called on non-iOS platforms. ([#46416](https://github.com/expo/expo/pull/46416) by [@kota113](https://github.com/kota113))
+- Return a denied permission response from `useRemindersPermissions()` on non-iOS platforms instead of throwing. ([#46416](https://github.com/expo/expo/pull/46416) by [@kota113](https://github.com/kota113))
+
 ### 💡 Others
 
+## 56.0.8 — 2026-05-21
+
+### 🐛 Bug fixes
+
+- Fix an ES module import error in the typed config plugin. ([#46089](https://github.com/expo/expo/pull/46089) by [@zoontek](https://github.com/zoontek))
+
+## 56.0.7 — 2026-05-20
+
+### 🛠 Breaking changes
+
+- Promote the object-oriented Calendar API to the root `expo-calendar` import and move the legacy API to `expo-calendar/legacy`. ([#46030](https://github.com/expo/expo/pull/46030) by [@Wenszel](https://github.com/Wenszel))
+
+### 🎉 New features
+
+- [Android][next] Add `calendar.addEventWithForm()` ([#46004](https://github.com/expo/expo/pull/46004) by [@Wenszel](https://github.com/Wenszel))
+
+### 🐛 Bug fixes
+
+- [next] Remove legacy exports ([#45739](https://github.com/expo/expo/pull/45739) by [@Wenszel](https://github.com/Wenszel))
+
+## 56.0.6 — 2026-05-19
+
+### 🐛 Bug fixes
+
+- [Android] Add missing escaping of `calendarIds` filter input ([#45951](https://github.com/expo/expo/pull/45951) by [@kitten](https://github.com/kitten))
+
+## 56.0.5 — 2026-05-13
+
+### 💡 Others
+
+- Updated permission hook imports to be imported from `expo` instead of `expo-modules-core` ([#45565](https://github.com/expo/expo/pull/45565) by [@Wenszel](https://github.com/Wenszel))
+
+## 56.0.4 — 2026-05-07
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.3 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.1 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+### 🛠 Breaking changes
+
+- Bumped minimum iOS/tvOS version to 16.4, macOS to 13.4. ([#43296](https://github.com/expo/expo/pull/43296) by [@tsapeta](https://github.com/tsapeta))
+
+### 🎉 New features
+
+- [iOS][next] Add support for writeOnly permissions ([#44967](https://github.com/expo/expo/pull/44967) by [@Wenszel](https://github.com/Wenszel))
+- [iOS][next] Add `calendar.addEventWithForm()` ([#44966](https://github.com/expo/expo/pull/44966) by [@Wenszel](https://github.com/Wenszel))
+- [iOS][next] Add `presentPicker()` ([#44965](https://github.com/expo/expo/pull/44965) by [@Wenszel](https://github.com/Wenszel))
+- Expose a typed config plugin function ([#44098](https://github.com/expo/expo/pull/44098) by [@zoontek](https://github.com/zoontek))
+
+### 🐛 Bug fixes
+
+- [iOS] Fix `deleteEventAsync` deleting wrong recurring event instance when `instanceStartDate` is provided. ([#40172](https://github.com/expo/expo/pull/40172) by [@marcelogdeandrade](https://github.com/marcelogdeandrade))
+
+### 💡 Others
+
+- [next] Add permission hooks ([#45390](https://github.com/expo/expo/pull/45390) by [@Wenszel](https://github.com/Wenszel))
+- [next] Clean up null options workaround ([#45328](https://github.com/expo/expo/pull/45328) by [@Wenszel](https://github.com/Wenszel))
+- Add deprecation notes ([#45118](https://github.com/expo/expo/pull/45118) by [@Wenszel](https://github.com/Wenszel))
+- [next] Refactor Calendar@Next ([#43434](https://github.com/expo/expo/pull/43434) by [@Wenszel](https://github.com/Wenszel))
+- Use `export type` for type-only re-exports to fix TS1205 with `isolatedModules`. ([#44205](https://github.com/expo/expo/pull/44205) by [@hknakn](https://github.com/hknakn))
+
+## 55.0.14 - 2026-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.13 - 2026-04-07
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.12 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.11 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.10 - 2026-03-17
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.9 - 2026-02-26
+
+### 🐛 Bug fixes
+
+- Fixed `NumberFormatException` crash on Android when calendar/event IDs exceed `Integer.MAX_VALUE`. ([#43344](https://github.com/expo/expo/pull/43344) by [@olivier-bouillet](https://github.com/olivier-bouillet))
+
+### 💡 Others
+
+- [iOS] Added explicit `import React` for xcframework compatibility. ([#44248](https://github.com/expo/expo/pull/44248) by [@chrfalch](https://github.com/chrfalch))
+
+## 55.0.8 — 2026-02-25
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.7 — 2026-02-20
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.6 — 2026-02-16
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.5 — 2026-02-08
+
+### 💡 Others
+
+- Fixed missing `@` in `@platform ios` JSDoc tag for `EntityTypes` enum. ([#42944](https://github.com/expo/expo/pull/42944) by [@brentvatne](https://github.com/brentvatne))
+
+## 55.0.4 — 2026-02-03
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.3 — 2026-01-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 🎉 New features
+
+- [iOS] Added support for all‑day reminders ([#39028](https://github.com/expo/expo/pull/39028)) by [@dominik-miskovic](https://github.com/dominik-miskovic)
+- [next] Implement `ExpoCalendar@next` ([#39108](https://github.com/expo/expo/pull/39108) by [@kosmydel](https://github.com/kosmydel) and [@arturgesiarz](https://github.com/arturgesiarz))
+
+### 🐛 Bug fixes
+
+- [Android] Fixed retrieving recurrence rules information. ([#40549](https://github.com/expo/expo/pull/40549) by [@barthap](https://github.com/barthap))
+
+### 💡 Others
+
+- [Android] Refactored module native code. ([#40548](https://github.com/expo/expo/pull/40548) by [@barthap](https://github.com/barthap))
+
+## 15.0.8 - 2025-12-05
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.7 — 2025-09-11
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.6 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.5 — 2025-08-28
+
+### 🎉 New features
+
+- [iOS] Added support for all‑day reminders ([#39028](https://github.com/expo/expo/pull/39028)) by [@dominik-miskovic](https://github.com/dominik-miskovic)
+
+## 15.0.4 — 2025-08-27
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.3 — 2025-08-25
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.0 — 2025-08-13
+
+### 🐛 Bug fixes
+
+- [iOS] Don't encode event URLs. ([#37243](https://github.com/expo/expo/pull/37243) by [@jakex7](https://github.com/jakex7))
+- [iOS] Don't require permissions for createEventInCalendarAsync. ([#37607](https://github.com/expo/expo/pull/37607) by [@jakex7](https://github.com/jakex7))
+- [iOS] Make location optional. ([#37612](https://github.com/expo/expo/pull/37612) by [@jakex7](https://github.com/jakex7))
+
+## 14.1.4 — 2025-04-30
+
+### 🐛 Bug fixes
+
+- [iOS] Fix event recurrence rules returning `dayOfTheWeek` as `undefined`. ([#36482](https://github.com/expo/expo/pull/36482) by [@ouwargui](https://github.com/ouwargui))
+
+## 14.1.3 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 14.1.2 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 14.1.1 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 14.1.0 — 2025-04-04
+
+### 🎉 New features
+
+- Allow nullable dates for `getRemindersAsync` ([#33264](https://github.com/expo/expo/pull/33264) by [@TomAtterton](https://github.com/TomAtterton))
+
+### 🐛 Bug fixes
+
+- Updated `Event.location` type to allow a `null` value if not set. ([#33802](https://github.com/expo/expo/pull/33802) by [@rklomp](https://github.com/rklomp)
+- Allow more characters in url encoding ([#35034](https://github.com/expo/expo/pull/35034) by [@cederache](https://github.com/cederache))
+
+### 💡 Others
+
+- [android][calendar] Add `EventRecurrenceUtils` unit tests. ([#33863](https://github.com/expo/expo/pull/33863) by [@mateoguzmana](https://github.com/mateoguzmana))
 - [ios][calendar] Use EXPermissionStatus instead of CalendarPermissionsStatus in calendar permissions requesters ([#33453](https://github.com/expo/expo/pull/33453) by [@ryanduffin](https://github.com/ryanduffin)
+- [Android] Started using expo modules gradle plugin. ([#34176](https://github.com/expo/expo/pull/34176) by [@lukmccall](https://github.com/lukmccall))
+- [apple] Migrate remaining `expo-module.config.json` to unified platform syntax. ([#34445](https://github.com/expo/expo/pull/34445) by [@reichhartd](https://github.com/reichhartd))
+- [iOS] Fix warnings which will become errors in Swift 6. ([#35428](https://github.com/expo/expo/pull/35428) by [@behenate](https://github.com/behenate))
+
+## 14.0.6 - 2025-01-10
+
+### 🐛 Bug fixes
+
+- [iOS] Correctly type `organizer` and document it. ([#34052](https://github.com/expo/expo/pull/34052) by [@alanjhughes](https://github.com/alanjhughes))
 
 ## 14.0.4 - 2024-11-29
 

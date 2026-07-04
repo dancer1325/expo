@@ -13,19 +13,19 @@ Here's an example of an app screen's content getting concealed by the status bar
 
 <ContentSpotlight
   alt="Without defining a safe area, the content can be obscured by the device's interface elements."
-  src="/static/images/safe-area/without-safe-area.png"
+  src="/static/images/safe-area/without-safe-area.webp"
   className="max-w-[480px]"
 />
 
 ## Use `react-native-safe-area-context` library
 
-[`react-native-safe-area-context`](https://github.com/th3rdwave/react-native-safe-area-context) provides a flexible API for handling Android and iOS device's safe area insets. It also provides a `SafeAreaView` component that you can use instead of a [`<View>`](https://reactnative.dev/docs/view) to account for safe areas automatically in your screen components.
+[`react-native-safe-area-context`](https://github.com/AppAndFlow/react-native-safe-area-context) provides a flexible API for handling Android and iOS device's safe area insets. It also provides a `SafeAreaView` component that you can use instead of a [`<View>`](https://reactnative.dev/docs/view) to account for safe areas automatically in your screen components.
 
 Using the library, the result of the previous example changes as it displays the content inside a safe area, as shown below:
 
 <ContentSpotlight
   alt="On using react-native-safe-area-context, the content is positioned within the safe area."
-  src="/static/images/safe-area/with-safe-area.png"
+  src="/static/images/safe-area/with-safe-area.webp"
   className="max-w-[480px]"
 />
 
@@ -33,13 +33,20 @@ Using the library, the result of the previous example changes as it displays the
 
 You can skip installing `react-native-safe-area-context` if you have created a project using [the default template](/get-started/create-a-project/). This library is installed as peer dependency for Expo Router library. Otherwise, install it by running the following command:
 
-<Terminal cmd={['$ npx expo install react-native-safe-area-context']} />
+<Terminal
+  cmd={{
+    npm: ['$ npx expo install react-native-safe-area-context'],
+    yarn: ['$ yarn expo install react-native-safe-area-context'],
+    pnpm: ['$ pnpm expo install react-native-safe-area-context'],
+    bun: ['$ bun expo install react-native-safe-area-context'],
+  }}
+/>
 
 ### Usage
 
-You can directly use [`SafeAreaView`](https://github.com/th3rdwave/react-native-safe-area-context#safeareaview) to wrap the content of your screen's component. It is a regular `<View>` with the safe area insets applied as extra padding or margin.
+You can directly use [`SafeAreaView`](https://appandflow.github.io/react-native-safe-area-context/api/safe-area-view) to wrap the content of your screen's component. It is a regular `<View>` with the safe area insets applied as extra padding or margin.
 
-```tsx app/index.tsx
+```tsx src/app/index.tsx
 import { Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -54,14 +61,17 @@ export default function HomeScreen() {
 
 <Collapsible summary="Using a different Expo template and don't have Expo Router installed?">
 
-Import and add [`SafeAreaProvider`](https://github.com/th3rdwave/react-native-safe-area-context#safeareaprovider) to the root component file (such as **App.tsx**) before using `SafeAreaView` in your screen component.
+Import and add [`SafeAreaProvider`](https://appandflow.github.io/react-native-safe-area-context/api/safe-area-provider) to the root component file (such as **App.tsx**) before using `SafeAreaView` in your screen component.
 
+{/* prettier-ignore */}
 ```tsx App.tsx
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
   return (
-    return <SafeAreaProvider>...</SafeAreaProvider>;
+    <SafeAreaProvider>
+      {/* Your app content */}
+    </SafeAreaProvider>
   );
 }
 ```
@@ -70,11 +80,11 @@ export default function App() {
 
 ## Alternate: `useSafeAreaInsets` hook
 
-Alternate to `SafeAreaView`, you can use [`useSafeAreaInsets`](https://github.com/th3rdwave/react-native-safe-area-context#usesafeareainsets) hook in your screen component. It provides direct access to the safe area insets, allowing you to apply padding for each edge of the `<View>` using an inset from this hook.
+Alternate to `SafeAreaView`, you can use [`useSafeAreaInsets`](https://appandflow.github.io/react-native-safe-area-context/api/use-safe-area-insets) hook in your screen component. It provides direct access to the safe area insets, allowing you to apply padding for each edge of the `<View>` using an inset from this hook.
 
 The example below uses the `useSafeAreaInsets` hook. It applies top padding to a `<View>` using `insets.top`.
 
-```tsx app/index.tsx
+```tsx src/app/index.tsx
 import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -138,4 +148,4 @@ By default, React Navigation supports safe areas and uses `react-native-safe-are
 
 ### Usage with web
 
-If you are targeting the web, set up `SafeAreaProvider` as described in the [usage section](#usage). If you are doing server-side rendering (SSR), see the [Web SSR section](https://github.com/th3rdwave/react-native-safe-area-context#web-ssr) in the library's documentation.
+If you are targeting the web, set up `SafeAreaProvider` as described in the [usage section](#usage). If you are doing server-side rendering (SSR), see the [Web SSR section](https://appandflow.github.io/react-native-safe-area-context/optimizations#web-ssr) in the library's documentation.

@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.speech.tts.Voice
+import expo.modules.kotlin.Promise
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import java.util.ArrayDeque
+import java.util.IllformedLocaleException
 import java.util.Locale
 import java.util.Queue
 
@@ -18,6 +20,7 @@ const val speakingErrorEvent = "Exponent.speakingError"
 
 class SpeechModule : Module() {
   private val delayedUtterances: Queue<Utterance> = ArrayDeque()
+  private val delayedGetVoices: Queue<Promise> = ArrayDeque()
 
   override fun definition() = ModuleDefinition {
     Name("ExpoSpeech")
@@ -30,7 +33,9 @@ class SpeechModule : Module() {
       speakingErrorEvent
     )
 
-    Constants("maxSpeechInputLength" to TextToSpeech.getMaxSpeechInputLength())
+    Constant("maxSpeechInputLength") {
+      TextToSpeech.getMaxSpeechInputLength()
+    }
 
     OnActivityDestroys {
       textToSpeech.shutdown()
@@ -40,26 +45,14 @@ class SpeechModule : Module() {
       textToSpeech.isSpeaking
     }
 
-    AsyncFunction<List<VoiceRecord>>("getVoices") {
-      val nativeVoices = try {
-        textToSpeech.voices.toList()
-      } catch (_: Exception) {
-        emptyList()
-      }
+    AsyncFunction("getVoices") { promise: Promise ->
+      if (isTextToSpeechReady) {
+        promise.resolve(getVoices())
+      } else {
+        delayedGetVoices.add(promise)
 
-      return@AsyncFunction nativeVoices.map {
-        val quality = if (it.quality > Voice.QUALITY_NORMAL) {
-          VoiceQuality.ENHANCED
-        } else {
-          VoiceQuality.DEFAULT
-        }
-
-        VoiceRecord(
-          identifier = it.name,
-          name = it.name,
-          quality = quality,
-          language = LanguageUtils.getISOCode(it.locale)
-        )
+        // Init TTS, the promise will be fulfilled after onInit
+        textToSpeech
       }
     }
 
@@ -84,20 +77,47 @@ class SpeechModule : Module() {
     }
   }
 
+  private fun getVoices(): List<VoiceRecord> {
+    val nativeVoices = try {
+      textToSpeech.voices.toList()
+    } catch (err: Exception) {
+      throw SpeechUnableToGetVoicesException(err)
+    }
+
+    return nativeVoices.map {
+      val quality = if (it.quality > Voice.QUALITY_NORMAL) {
+        VoiceQuality.ENHANCED
+      } else {
+        VoiceQuality.DEFAULT
+      }
+
+      VoiceRecord(
+        identifier = it.name,
+        name = it.name,
+        quality = quality,
+        language = LanguageUtils.getISOCode(it.locale)
+      )
+    }
+  }
+
   private fun speakOut(id: String, text: String, options: SpeechOptions) {
     options.pitch?.let(textToSpeech::setPitch)
     options.rate?.let(textToSpeech::setSpeechRate)
 
     textToSpeech.language = options.language?.let {
-      val locale = Locale(it)
-      val languageAvailable = textToSpeech.isLanguageAvailable(locale)
+      try {
+        val locale = Locale.Builder().setLanguage(it).build()
+        val languageAvailable = textToSpeech.isLanguageAvailable(locale)
 
-      return@let if (
-        languageAvailable != TextToSpeech.LANG_MISSING_DATA &&
-        languageAvailable != TextToSpeech.LANG_NOT_SUPPORTED
-      ) {
-        locale
-      } else {
+        return@let if (
+          languageAvailable != TextToSpeech.LANG_MISSING_DATA &&
+          languageAvailable != TextToSpeech.LANG_NOT_SUPPORTED
+        ) {
+          locale
+        } else {
+          Locale.getDefault()
+        }
+      } catch (_: IllformedLocaleException) {
         Locale.getDefault()
       }
     } ?: Locale.getDefault()
@@ -108,10 +128,17 @@ class SpeechModule : Module() {
         ?.let(textToSpeech::setVoice)
     }
 
+    val params = Bundle().apply {
+      options.volume?.let {
+        val volume = it.coerceAtLeast(0.0f).coerceAtMost(1.0f)
+        putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, volume)
+      }
+    }
+
     textToSpeech.speak(
       text,
       TextToSpeech.QUEUE_ADD,
-      null,
+      params,
       id
     )
   }
@@ -156,6 +183,9 @@ class SpeechModule : Module() {
           })
           for ((id, text, options) in delayedUtterances) {
             speakOut(id, text, options)
+          }
+          for (promise in delayedGetVoices) {
+            promise.resolve(getVoices())
           }
         }
       }

@@ -1,6 +1,6 @@
-import { ExpoConfig } from '@expo/config';
-import type { BundleOptions as MetroBundleOptions } from 'metro/src/shared/types';
-import resolveFrom from 'resolve-from';
+import type { ExpoConfig } from '@expo/config';
+import Server from '@expo/metro/metro/Server';
+import type { BundleOptions as MetroBundleOptions } from '@expo/metro/metro/shared/types';
 
 import { env } from '../../../utils/env';
 import { CommandError } from '../../../utils/errors';
@@ -8,6 +8,14 @@ import { toPosixPath } from '../../../utils/filePath';
 import { getRouterDirectoryModuleIdWithManifest } from '../metro/router';
 
 const debug = require('debug')('expo:metro:options') as typeof console.log;
+
+/** Enforce conversion of `true` to `'true'` */
+function toBoolStr(x: true): 'true';
+function toBoolStr(x: false): 'false';
+function toBoolStr(x: boolean): 'true' | 'false';
+function toBoolStr(x: boolean): 'true' | 'false' {
+  return x ? 'true' : 'false';
+}
 
 export type MetroEnvironment = 'node' | 'react-server' | 'client';
 
@@ -22,17 +30,19 @@ export type ExpoMetroOptions = {
   lazy?: boolean;
   engine?: 'hermes';
   preserveEnvVars?: boolean;
-  bytecode: boolean;
+  bytecode?: boolean;
   /** Enable async routes (route-based bundle splitting) in Expo Router. */
   asyncRoutes?: boolean;
   /** Module ID relative to the projectRoot for the Expo Router app directory. */
-  routerRoot: string;
+  routerRoot?: string;
   /** Enable React compiler support in Babel. */
-  reactCompiler: boolean;
+  reactCompiler?: boolean;
   baseUrl?: string;
   isExporting: boolean;
   /** Is bundling a DOM Component ("use dom"). Requires the entry dom component file path. */
   domRoot?: string;
+  /** Exporting MD5 filename based on file contents, for EAS Update.  */
+  useMd5Filename?: boolean;
   inlineSourceMap?: boolean;
   clientBoundaries?: string[];
   splitChunks?: boolean;
@@ -42,13 +52,25 @@ export type ExpoMetroOptions = {
 
   modulesOnly?: boolean;
   runModule?: boolean;
+
+  /** When true, omits `sourcesContent` from generated source maps (saves ~80x memory for SSR). */
+  excludeSource?: boolean;
+
+  /** Should assets be exported for hosting. Always true on web. Always false for embedded builds. Optional for native exports. */
+  hosted?: boolean;
+  /** Disable live bindings (enabled by default, required for circular deps) in experimental import export support. */
+  liveBindings?: boolean;
+  /** When true, indicates this bundle should contain only the loader export. */
+  isLoaderBundle?: boolean;
 };
 
+// See: @expo/metro-config/src/serializer/fork/baseJSBundle.ts `ExpoSerializerOptions`
 export type SerializerOptions = {
   includeSourceMaps?: boolean;
   output?: 'static';
   splitChunks?: boolean;
   usedExports?: boolean;
+  exporting?: boolean;
 };
 
 export type ExpoMetroBundleOptions = MetroBundleOptions & {
@@ -57,18 +79,6 @@ export type ExpoMetroBundleOptions = MetroBundleOptions & {
 
 export function isServerEnvironment(environment?: any): boolean {
   return environment === 'node' || environment === 'react-server';
-}
-
-export function shouldEnableAsyncImports(projectRoot: string): boolean {
-  if (env.EXPO_NO_METRO_LAZY) {
-    return false;
-  }
-
-  // `@expo/metro-runtime` includes support for the fetch + eval runtime code required
-  // to support async imports. If it's not installed, we can't support async imports.
-  // If it is installed, the user MUST import it somewhere in their project.
-  // Expo Router automatically pulls this in, so we can check for it.
-  return resolveFrom.silent(projectRoot, '@expo/metro-runtime') != null;
 }
 
 function withDefaults({
@@ -100,6 +110,8 @@ function withDefaults({
     usedExports: optimize && env.EXPO_UNSTABLE_TREE_SHAKING,
     lazy: !props.isExporting && lazy,
     environment: environment === 'client' ? undefined : environment,
+    liveBindings: env.EXPO_UNSTABLE_LIVE_BINDINGS,
+    excludeSource: isServerEnvironment(environment),
     ...props,
   };
 }
@@ -127,7 +139,7 @@ export function getMetroDirectBundleOptionsForExpoConfig(
   projectRoot: string,
   exp: ExpoConfig,
   options: Omit<ExpoMetroOptions, 'baseUrl' | 'reactCompiler' | 'routerRoot' | 'asyncRoutes'>
-): Partial<ExpoMetroBundleOptions> {
+) {
   return getMetroDirectBundleOptions({
     ...options,
     reactCompiler: !!exp.experiments?.reactCompiler,
@@ -137,9 +149,7 @@ export function getMetroDirectBundleOptionsForExpoConfig(
   });
 }
 
-export function getMetroDirectBundleOptions(
-  options: ExpoMetroOptions
-): Partial<ExpoMetroBundleOptions> {
+export function getMetroDirectBundleOptions(options: ExpoMetroOptions) {
   const {
     mainModuleName,
     platform,
@@ -165,6 +175,11 @@ export function getMetroDirectBundleOptions(
     clientBoundaries,
     runModule,
     modulesOnly,
+    useMd5Filename,
+    hosted,
+    liveBindings,
+    isLoaderBundle,
+    excludeSource,
   } = withDefaults(options);
 
   const dev = mode !== 'production';
@@ -196,13 +211,17 @@ export function getMetroDirectBundleOptions(
     clientBoundaries,
     preserveEnvVars: preserveEnvVars || undefined,
     // Use string to match the query param behavior.
-    asyncRoutes: asyncRoutes ? String(asyncRoutes) : undefined,
+    asyncRoutes: asyncRoutes ? toBoolStr(asyncRoutes) : undefined,
     environment,
     baseUrl: baseUrl || undefined,
     routerRoot,
     bytecode: bytecode ? '1' : undefined,
-    reactCompiler: reactCompiler || undefined,
+    reactCompiler: reactCompiler ? toBoolStr(reactCompiler) : undefined,
     dom: domRoot,
+    hosted: hosted ? '1' : undefined,
+    useMd5Filename: useMd5Filename || undefined,
+    liveBindings: !liveBindings ? toBoolStr(!!liveBindings) : undefined,
+    isLoaderBundle: isLoaderBundle ? toBoolStr(isLoaderBundle) : undefined,
   };
 
   // Iterate and delete undefined values
@@ -212,7 +231,7 @@ export function getMetroDirectBundleOptions(
     }
   }
 
-  const bundleOptions: Partial<ExpoMetroBundleOptions> = {
+  return {
     platform,
     entryFile: mainModuleName,
     dev,
@@ -235,10 +254,13 @@ export function getMetroDirectBundleOptions(
       usedExports: usedExports || undefined,
       output: serializerOutput,
       includeSourceMaps: serializerIncludeMaps,
+      exporting: isExporting || undefined,
+      excludeSource: excludeSource ?? Server.DEFAULT_BUNDLE_OPTIONS.excludeSource,
     },
-  };
-
-  return bundleOptions;
+    // TODO(@kitten): See comments in MetroBundlerDevServer.ts; should all defaults be added and the logic
+    // from `src/start/server/middleware/metroOptions.ts` that adds default be moved here?
+    shallow: Server.DEFAULT_BUNDLE_OPTIONS.shallow,
+  } as const;
 }
 
 export function createBundleUrlPathFromExpoConfig(
@@ -265,9 +287,9 @@ export function createBundleUrlPath(options: ExpoMetroOptions): string {
  * On UNIX systems, this would look something like `C:\Users\..\project\file.js?dev=false&..`.
  * This path can safely be used with `path.*` modifiers and resolved.
  */
-export function createBundleUrlOsPath(options: ExpoMetroOptions): string {
+export function createBundleOsPath(options: ExpoMetroOptions): string {
   const queryParams = createBundleUrlSearchParams(options);
-  const mainModuleName = encodeURI(toPosixPath(options.mainModuleName));
+  const mainModuleName = toPosixPath(options.mainModuleName);
   return `${mainModuleName}.bundle?${queryParams.toString()}`;
 }
 
@@ -296,6 +318,8 @@ export function createBundleUrlSearchParams(options: ExpoMetroOptions): URLSearc
     domRoot,
     modulesOnly,
     runModule,
+    hosted,
+    liveBindings,
   } = withDefaults(options);
 
   const dev = String(mode !== 'production');
@@ -349,6 +373,9 @@ export function createBundleUrlSearchParams(options: ExpoMetroOptions): URLSearc
   if (domRoot) {
     queryParams.append('transform.dom', domRoot);
   }
+  if (hosted) {
+    queryParams.append('transform.hosted', '1');
+  }
 
   if (environment) {
     queryParams.append('resolver.environment', environment);
@@ -383,6 +410,10 @@ export function createBundleUrlSearchParams(options: ExpoMetroOptions): URLSearc
   }
   if (runModule != null) {
     queryParams.set('runModule', String(runModule));
+  }
+
+  if (liveBindings === false) {
+    queryParams.append('transform.liveBindings', String(false));
   }
 
   return queryParams;
@@ -420,6 +451,7 @@ export function getMetroOptionsFromUrl(urlFragment: string) {
     minify: isTruthy(getStringParam('minify') ?? 'false'),
     lazy: isTruthy(getStringParam('lazy') ?? 'false'),
     routerRoot: getStringParam('transform.routerRoot') ?? 'app',
+    hosted: isTruthy(getStringParam('transform.hosted')),
     isExporting: isTruthy(getStringParam('resolver.exporting') ?? 'false'),
     environment: assertEnvironment(getStringParam('transform.environment') ?? 'node'),
     platform: url.searchParams.get('platform') ?? 'web',
@@ -432,6 +464,7 @@ export function getMetroOptionsFromUrl(urlFragment: string) {
     engine: assertEngine(getStringParam('transform.engine')),
     runModule: isTruthy(getStringParam('runModule') ?? 'true'),
     modulesOnly: isTruthy(getStringParam('modulesOnly') ?? 'false'),
+    liveBindings: isTruthy(getStringParam('transform.liveBindings') ?? 'true'),
   };
 
   return options;

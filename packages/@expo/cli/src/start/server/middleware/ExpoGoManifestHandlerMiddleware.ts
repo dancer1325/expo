@@ -1,25 +1,33 @@
-import { ExpoUpdatesManifest } from '@expo/config';
+import type { ExpoUpdatesManifest } from '@expo/config';
 import { Updates } from '@expo/config-plugins';
 import accepts from 'accepts';
 import crypto from 'crypto';
-import FormData from 'form-data';
-import { serializeDictionary, Dictionary } from 'structured-headers';
+import type { FormEntry } from 'multitars';
+import { iterableToStream, streamMultipart, multipartContentType, MultipartPart } from 'multitars';
+import type { Dictionary } from 'structured-headers';
+import { serializeDictionary } from 'structured-headers';
 
-import { ManifestMiddleware, ManifestRequestInfo } from './ManifestMiddleware';
-import { assertRuntimePlatform, parsePlatformHeader } from './resolvePlatform';
-import { resolveRuntimeVersionWithExpoUpdatesAsync } from './resolveRuntimeVersionWithExpoUpdatesAsync';
-import { ServerHeaders, ServerRequest } from './server.types';
 import { getAnonymousIdAsync } from '../../../api/user/UserSettings';
 import { ANONYMOUS_USERNAME } from '../../../api/user/user';
-import {
-  CodeSigningInfo,
-  getCodeSigningInfoAsync,
-  signManifestString,
-} from '../../../utils/codesigning';
+import type { CodeSigningInfo } from '../../../utils/codesigning';
+import { getCodeSigningInfoAsync, signManifestString } from '../../../utils/codesigning';
 import { CommandError } from '../../../utils/errors';
 import { stripPort } from '../../../utils/url';
+import type { ManifestRequestInfo } from './ManifestMiddleware';
+import { ManifestMiddleware } from './ManifestMiddleware';
+import { assertRuntimePlatform, parsePlatformHeader } from './resolvePlatform';
+import { resolveRuntimeVersionWithExpoUpdatesAsync } from './resolveRuntimeVersionWithExpoUpdatesAsync';
+import type { ServerRequest } from './server.types';
+
+const MULTIPART_TYPE = 'multipart/form-data';
 
 const debug = require('debug')('expo:start:server:middleware:ExpoGoManifestHandlerMiddleware');
+
+let multipartMixedContentType = multipartContentType;
+if (multipartMixedContentType.startsWith(MULTIPART_TYPE)) {
+  multipartMixedContentType =
+    'multipart/mixed' + multipartMixedContentType.slice(MULTIPART_TYPE.length);
+}
 
 export enum ResponseContentType {
   TEXT_PLAIN,
@@ -86,20 +94,18 @@ export class ExpoGoManifestHandlerMiddleware extends ManifestMiddleware<ExpoGoMa
     };
   }
 
-  private getDefaultResponseHeaders(): ServerHeaders {
-    const headers = new Map<string, number | string | readonly string[]>();
+  private getDefaultResponseHeaders(): Headers {
+    const headers = new Headers();
     // set required headers for Expo Updates manifest specification
-    headers.set('expo-protocol-version', 0);
-    headers.set('expo-sfv-version', 0);
+    headers.set('expo-protocol-version', '0');
+    headers.set('expo-sfv-version', '0');
     headers.set('cache-control', 'private, max-age=0');
     return headers;
   }
 
-  public async _getManifestResponseAsync(requestOptions: ExpoGoManifestRequestInfo): Promise<{
-    body: string;
-    version: string;
-    headers: ServerHeaders;
-  }> {
+  public async _getManifestResponseAsync(
+    requestOptions: ExpoGoManifestRequestInfo
+  ): Promise<Response> {
     const { exp, hostUri, expoGoConfig, bundleUrl } =
       await this._resolveProjectSettingsAsync(requestOptions);
 
@@ -114,7 +120,9 @@ export class ExpoGoManifestHandlerMiddleware extends ManifestMiddleware<ExpoGoMa
       (await Updates.getRuntimeVersionAsync(
         this.projectRoot,
         { ...exp, runtimeVersion: exp.runtimeVersion ?? { policy: 'sdkVersion' } },
-        requestOptions.platform
+        // TODO(@kitten): Runtime-version resolution only reads ios/android config
+        // tvos/macos fall back to the shared `runtimeVersion` until they get explicit support
+        requestOptions.platform as 'android' | 'ios'
       ));
     if (!runtimeVersion) {
       throw new CommandError(
@@ -161,7 +169,7 @@ export class ExpoGoManifestHandlerMiddleware extends ManifestMiddleware<ExpoGoMa
 
     const stringifiedManifest = JSON.stringify(expoUpdatesManifest);
 
-    let manifestPartHeaders: { 'expo-signature': string } | null = null;
+    let manifestPartHeaders: { 'expo-signature': string } | undefined;
     let certificateChainBody: string | null = null;
     if (codeSigningInfo) {
       const signature = signManifestString(stringifiedManifest, codeSigningInfo);
@@ -177,42 +185,28 @@ export class ExpoGoManifestHandlerMiddleware extends ManifestMiddleware<ExpoGoMa
       certificateChainBody = codeSigningInfo.certificateChainForResponse.join('\n');
     }
 
-    const headers = this.getDefaultResponseHeaders();
-
     switch (requestOptions.responseContentType) {
       case ResponseContentType.MULTIPART_MIXED: {
-        const form = this.getFormData({
+        return this.encodeFormDataAsync({
           stringifiedManifest,
           manifestPartHeaders,
           certificateChainBody,
         });
-        headers.set('content-type', `multipart/mixed; boundary=${form.getBoundary()}`);
-        return {
-          body: form.getBuffer().toString(),
-          version: runtimeVersion,
-          headers,
-        };
       }
       case ResponseContentType.APPLICATION_EXPO_JSON:
       case ResponseContentType.APPLICATION_JSON:
       case ResponseContentType.TEXT_PLAIN: {
+        const headers = this.getDefaultResponseHeaders();
         headers.set(
           'content-type',
           ExpoGoManifestHandlerMiddleware.getContentTypeForResponseContentType(
             requestOptions.responseContentType
           )
         );
-        if (manifestPartHeaders) {
-          Object.entries(manifestPartHeaders).forEach(([key, value]) => {
-            headers.set(key, value);
-          });
+        if (manifestPartHeaders?.['expo-signature']) {
+          headers.set('expo-signature', manifestPartHeaders['expo-signature']);
         }
-
-        return {
-          body: stringifiedManifest,
-          version: runtimeVersion,
-          headers,
-        };
+        return new Response(stringifiedManifest, { status: 200, headers });
       }
     }
   }
@@ -232,28 +226,35 @@ export class ExpoGoManifestHandlerMiddleware extends ManifestMiddleware<ExpoGoMa
     }
   }
 
-  private getFormData({
+  private encodeFormDataAsync({
     stringifiedManifest,
     manifestPartHeaders,
     certificateChainBody,
   }: {
     stringifiedManifest: string;
-    manifestPartHeaders: { 'expo-signature': string } | null;
+    manifestPartHeaders: { 'expo-signature': string } | undefined;
     certificateChainBody: string | null;
-  }): FormData {
-    const form = new FormData();
-    form.append('manifest', stringifiedManifest, {
-      contentType: 'application/json',
-      header: {
-        ...manifestPartHeaders,
-      },
-    });
+  }): Response {
+    const parts: FormEntry[] = [
+      [
+        'manifest',
+        new MultipartPart([stringifiedManifest], 'manifest', {
+          type: 'application/json',
+          headers: manifestPartHeaders,
+        }),
+      ],
+    ];
     if (certificateChainBody && certificateChainBody.length > 0) {
-      form.append('certificate_chain', certificateChainBody, {
-        contentType: 'application/x-pem-file',
-      });
+      parts.push([
+        'certificate_chain',
+        new MultipartPart([certificateChainBody], 'certificate_chain', {
+          type: 'application/x-pem-file',
+        }),
+      ]);
     }
-    return form;
+    const headers = this.getDefaultResponseHeaders();
+    headers.set('Content-Type', multipartMixedContentType);
+    return new Response(iterableToStream(streamMultipart(parts)), { status: 200, headers });
   }
 
   private static async getScopeKeyAsync({

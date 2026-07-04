@@ -12,12 +12,14 @@ import {
   getCoreAutolinkingSourcesFromExpoAndroid,
   getCoreAutolinkingSourcesFromExpoIos,
   getCoreAutolinkingSourcesFromRncCliAsync,
+  getGitIgnoreSourcesAsync,
 } from '../Bare';
 import { SourceSkips } from '../SourceSkips';
 
 jest.mock('@expo/spawn-async');
 jest.mock('fs/promises');
 jest.mock('/app/package.json', () => ({}), { virtual: true });
+jest.mock('../../ProjectWorkflow');
 
 describe('getBareSourcesAsync', () => {
   afterEach(() => {
@@ -144,6 +146,16 @@ describe(getPackageJsonScriptSourcesAsync, () => {
         })
       );
     });
+  });
+});
+
+describe('getGitIgnoreSourcesAsync', () => {
+  it('should return empty sources when SourceSkips.GitIgnore is set', async () => {
+    const sources = await getGitIgnoreSourcesAsync(
+      '/app',
+      await normalizeOptionsAsync('/app', { sourceSkips: SourceSkips.GitIgnore })
+    );
+    expect(sources).toEqual([]);
   });
 });
 

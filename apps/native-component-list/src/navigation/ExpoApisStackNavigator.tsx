@@ -1,26 +1,50 @@
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTheme } from 'ThemeProvider';
+import { isRunningInExpoGo } from 'expo';
 import * as React from 'react';
 
-import { optionalRequire } from './routeBuilder';
 import { TabBackground } from '../components/TabBackground';
 import TabIcon from '../components/TabIcon';
 import getStackNavWithConfig from '../navigation/StackConfig';
 import { AudioScreens } from '../screens/Audio/AudioScreen';
+import { BlobScreens } from '../screens/Blob/BlobScreen';
+import { CalendarNextScreens } from '../screens/Calendar@Next/CalendarNextScreens';
+import { CalendarsScreens } from '../screens/CalendarsScreen';
+import { apiScreensToListElements } from '../screens/ComponentListScreen';
+import { ContactsScreens } from '../screens/Contacts/ContactsScreen';
+import { ContactsNextScreens } from '../screens/Contacts@Next/ContactsNextScreen';
+import { CryptoScreens } from '../screens/Crypto/CryptoScreen';
 import ExpoApis from '../screens/ExpoApisScreen';
+import { MediaLibraryScreens } from '../screens/MediaLibrary@Next/MediaLibraryScreens';
 import { ModulesCoreScreens } from '../screens/ModulesCore/ModulesCoreScreen';
-import { ScreenConfig } from '../types/ScreenConfig';
+import { WorkletsScreens } from '../screens/Worklets/WorkletsScreen';
+import { type ScreenConfig } from '../types/ScreenConfig';
+import { optionalRequire } from './routeBuilder';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
-export const Screens: ScreenConfig[] = [
+export const ScreensList: ScreenConfig[] = [
+  {
+    getComponent() {
+      return optionalRequire(() => require('../screens/CameraPermissions/CameraPermissionsScreen'));
+    },
+    name: 'CameraPermissions',
+    options: { title: 'Camera Permissions' },
+  },
   {
     getComponent() {
       return optionalRequire(() => require('../screens/ModulesCore/ModulesCoreScreen'));
     },
     name: 'ModulesCore',
     options: { title: 'Expo Modules Core' },
+  },
+  {
+    getComponent() {
+      return optionalRequire(() => require('../screens/MediaLibrary@Next/MediaLibraryScreens'));
+    },
+    name: 'MediaLibrary@Next',
+    options: { title: 'MediaLibrary@Next' },
   },
   {
     getComponent() {
@@ -44,7 +68,7 @@ export const Screens: ScreenConfig[] = [
     getComponent() {
       return optionalRequire(() => require('../screens/CellularScreen'));
     },
-    name: 'Cellular',
+    name: 'Cellular (device-only)',
   },
   {
     getComponent() {
@@ -59,18 +83,43 @@ export const Screens: ScreenConfig[] = [
     name: 'ActionSheet',
     options: { title: 'Action Sheet' },
   },
+  ...(isRunningInExpoGo()
+    ? []
+    : [
+        {
+          getComponent() {
+            return optionalRequire(() => require('../screens/AgeRangeScreen'));
+          },
+          name: 'AgeRange',
+          options: { title: 'Age Range' },
+        },
+      ]),
   {
     getComponent() {
       return optionalRequire(() => require('../screens/AppearanceScreen'));
     },
     name: 'Appearance',
   },
+  // TODO: fix this, erroring in release in Expo Go
+  // {
+  //   getComponent() {
+  //     return optionalRequire(() => require('../screens/AppIntegrity/AppIntegrityScreen'));
+  //   },
+  //   name: 'AppIntegrity',
+  // },
   {
     getComponent() {
       return optionalRequire(() => require('../screens/AppleAuthenticationScreen'));
     },
     name: 'AppleAuthentication',
     options: { title: 'Apple Authentication' },
+  },
+  {
+    getComponent() {
+      return optionalRequire(() => require('../screens/AppMetricsScreen'));
+    },
+    name: 'AppMetrics',
+    options: { title: 'App Metrics' },
   },
   {
     getComponent() {
@@ -84,12 +133,13 @@ export const Screens: ScreenConfig[] = [
     },
     name: 'Audio',
   },
-  {
-    getComponent() {
-      return optionalRequire(() => require('../screens/AuthSession/AuthSessionScreen'));
-    },
-    name: 'AuthSession',
-  },
+  // TODO: fix this, erroring in release in Expo Go
+  // {
+  //   getComponent() {
+  //     return optionalRequire(() => require('../screens/AuthSession/AuthSessionScreen'));
+  //   },
+  //   name: 'AuthSession',
+  // },
   {
     getComponent() {
       return optionalRequire(() => require('../screens/Location/BackgroundLocationMapScreen'));
@@ -106,15 +156,34 @@ export const Screens: ScreenConfig[] = [
   },
   {
     getComponent() {
+      return optionalRequire(() => require('../screens/BackgroundTaskScreen'));
+    },
+    name: 'BackgroundTask',
+    options: { title: 'Background Task' },
+  },
+  {
+    getComponent() {
       return optionalRequire(() => require('../screens/BatteryScreen'));
     },
     name: 'Battery',
   },
   {
     getComponent() {
+      return optionalRequire(() => require('../screens/inlineModules/InlineModulesScreen'));
+    },
+    name: 'InlineModules',
+  },
+  {
+    getComponent() {
+      return optionalRequire(() => require('../screens/Blob/BlobScreen'));
+    },
+    name: 'Blob',
+  },
+  {
+    getComponent() {
       return optionalRequire(() => require('../screens/BrightnessScreen'));
     },
-    name: 'Brightness',
+    name: 'Brightness (device-only)',
   },
   {
     getComponent() {
@@ -136,15 +205,15 @@ export const Screens: ScreenConfig[] = [
   },
   {
     getComponent() {
-      return optionalRequire(() => require('../screens/FaceDetectorScreen'));
-    },
-    name: 'FaceDetector',
-  },
-  {
-    getComponent() {
       return optionalRequire(() => require('../screens/FileSystemScreen'));
     },
     name: 'FileSystem',
+  },
+  {
+    getComponent() {
+      return optionalRequire(() => require('../screens/FileSystemLegacyScreen'));
+    },
+    name: 'FileSystem@legacy',
   },
   {
     getComponent() {
@@ -167,6 +236,12 @@ export const Screens: ScreenConfig[] = [
   },
   {
     getComponent() {
+      return optionalRequire(() => require('../screens/Calendar@Next/CalendarNextScreens'));
+    },
+    name: 'Calendars@next',
+  },
+  {
+    getComponent() {
       return optionalRequire(() => require('../screens/ConstantsScreen'));
     },
     name: 'Constants',
@@ -179,21 +254,16 @@ export const Screens: ScreenConfig[] = [
   },
   {
     getComponent() {
-      return optionalRequire(() => require('../screens/Contacts/ContactDetailScreen'));
+      return optionalRequire(() => require('../screens/Contacts@Next/ContactsNextScreen'));
     },
-    name: 'ContactDetail',
+    name: 'Contacts@Next',
+    options: { title: 'Contacts@Next' },
   },
   {
     getComponent() {
       return optionalRequire(() => require('../screens/ErrorScreen'));
     },
     name: 'Errors',
-  },
-  {
-    getComponent() {
-      return optionalRequire(() => require('../screens/EventsScreen'));
-    },
-    name: 'Events',
   },
   {
     getComponent() {
@@ -206,6 +276,7 @@ export const Screens: ScreenConfig[] = [
       return optionalRequire(() => require('../screens/ImageManipulatorScreenLegacy'));
     },
     name: 'ImageManipulator (legacy)',
+    route: 'image-manipulator-legacy',
   },
   {
     getComponent() {
@@ -271,7 +342,7 @@ export const Screens: ScreenConfig[] = [
   },
   {
     getComponent() {
-      return optionalRequire(() => require('../screens/CryptoScreen'));
+      return optionalRequire(() => require('../screens/Crypto/CryptoScreen'));
     },
     name: 'Crypto',
   },
@@ -407,6 +478,19 @@ export const Screens: ScreenConfig[] = [
   },
   {
     getComponent() {
+      return optionalRequire(() => require('../screens/UpdatesScreen'));
+    },
+    name: 'Updates Reload Screen',
+  },
+  {
+    getComponent() {
+      return optionalRequire(() => require('../screens/Worklets/WorkletsScreen'));
+    },
+    name: 'Worklets integration',
+    route: 'worklets',
+  },
+  {
+    getComponent() {
       return optionalRequire(() => require('../screens/WebBrowser/WebBrowserScreen'));
     },
     name: 'WebBrowser',
@@ -423,16 +507,32 @@ export const Screens: ScreenConfig[] = [
     },
     name: 'ViewShot',
   },
-  ...ModulesCoreScreens,
-  ...AudioScreens,
 ];
+
+export const Screens: ScreenConfig[] = [
+  ...ScreensList,
+  ...ModulesCoreScreens,
+  ...MediaLibraryScreens,
+  ...AudioScreens,
+  ...BlobScreens,
+  ...ContactsScreens,
+  ...ContactsNextScreens,
+  ...CalendarsScreens,
+  ...CalendarNextScreens,
+  ...CryptoScreens,
+  ...WorkletsScreens,
+];
+
+export const screenApiItems = apiScreensToListElements(ScreensList);
 
 function ExpoApisStackNavigator(props: { navigation: BottomTabNavigationProp<any> }) {
   const { theme } = useTheme();
 
   return (
     <Stack.Navigator {...props} {...getStackNavWithConfig(props.navigation, theme)}>
-      <Stack.Screen name="ExpoApis" options={{ title: 'APIs in Expo SDK' }} component={ExpoApis} />
+      <Stack.Screen name="ExpoApis" options={{ title: 'APIs in Expo SDK' }}>
+        {() => <ExpoApis apis={screenApiItems} />}
+      </Stack.Screen>
       {Screens.map(({ name, options, getComponent }) => (
         <Stack.Screen name={name} key={name} getComponent={getComponent} options={options ?? {}} />
       ))}

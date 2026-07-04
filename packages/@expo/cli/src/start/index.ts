@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import chalk from 'chalk';
 
-import { Command } from '../../bin/cli';
+import type { Command } from '../index';
 import { assertArgs, getProjectRoot, printHelp } from '../utils/args';
 import { logCmdError } from '../utils/errors';
 
@@ -71,7 +71,7 @@ export const expoStart: Command = async (argv) => {
         `--localhost                     Same as --host localhost`,
         ``,
         `--offline                       Skip network requests and use anonymous manifest signatures`,
-        `--https                         Start the dev server with https protocol`,
+        chalk`--https                         Start the dev server with https protocol. {bold Deprecated in favor of --tunnel}`,
         `--scheme <scheme>               Custom URI protocol to use when launching an app`,
         chalk`-p, --port <number>             Port to start the dev server on (does not apply to web or tunnel). {dim Default: 8081}`,
         ``,
@@ -82,6 +82,8 @@ export const expoStart: Command = async (argv) => {
   }
 
   const projectRoot = getProjectRoot(args);
+  const { installEventLogger, getWellKnownTemporaryLogFile } = await import('../events/index.js');
+  installEventLogger(getWellKnownTemporaryLogFile(projectRoot, 'start'));
 
   // NOTE(cedric): `./resolveOptions` loads the expo config when using dev clients, this needs to be initialized before that
   const { setNodeEnv, loadEnvFiles } = await import('../utils/nodeEnv.js');

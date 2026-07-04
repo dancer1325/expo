@@ -1,3 +1,6 @@
+import { Terminal } from '~/ui/components/Snippet';
+import { Step } from '~/ui/components/Step';
+
 import AndroidEmulatorInstructions from './_androidEmulatorInstructions.mdx';
 import AndroidStudioInstructions from './_androidStudioInstructions.mdx';
 import { BuildEnvironmentSwitch } from '../BuildEnvironmentSwitch';
@@ -12,7 +15,12 @@ import { BuildEnvironmentSwitch } from '../BuildEnvironmentSwitch';
 
 ### Install EAS CLI
 
-* `npm install -g eas-cli`
+```
+npm install -g eas-cli
+yarn global add eas-cli
+pnpm add --global eas-cli
+bun add --global eas-cli
+```
 
 ### Create an Expo account and login
 

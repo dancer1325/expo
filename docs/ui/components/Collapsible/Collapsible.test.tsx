@@ -2,15 +2,13 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import GithubSlugger from 'github-slugger';
 import { PropsWithChildren } from 'react';
 
-import { HeadingManager } from '~/common/headingManager';
+import { createHeadingManager } from '~/common/headingManager';
 import { HeadingsContext } from '~/common/withHeadingManager';
 
 import { Collapsible } from '.';
 
 const prepareHeadingManager = () => {
-  const headingManager = new HeadingManager(new GithubSlugger(), { headings: [] });
-
-  return headingManager;
+  return createHeadingManager(new GithubSlugger(), { headings: [] });
 };
 
 const WrapWithContext = ({ children }: PropsWithChildren) => {

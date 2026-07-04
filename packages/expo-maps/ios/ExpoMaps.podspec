@@ -11,16 +11,13 @@ Pod::Spec.new do |s|
   s.author         = package['author']
   s.homepage       = package['homepage']
   s.platforms      = {
-    :ios => '15.1'
+    :ios => '16.4'
   }
   s.source         = { git: 'https://github.com/expo/expo.git' }
   s.static_framework = true
-  s.source_files   = 'ExpoMaps/**/*.{h,m,swift}'
-  s.preserve_paths = 'ExpoMaps/**/*.{h,m,swift}'
+  s.source_files   = '**/*.{h,m,swift}'
+  s.preserve_paths = '**/*.{h,m,swift}'
   s.requires_arc   = true
 
   s.dependency 'ExpoModulesCore'
-  s.dependency 'GoogleMaps', '7.4.0'
-#  s.dependency 'Google-Maps-iOS-Utils', '4.1.0'
-  s.dependency 'GooglePlaces', '7.3.0'
 end

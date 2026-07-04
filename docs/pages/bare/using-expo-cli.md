@@ -1,6 +1,7 @@
 ---
-title: Migrate to Expo CLI
-description: Learn how to migrate to use Expo CLI instead of @react-native-community/cli in any React Native project.
+title: Migrate from React Native CLI to Expo CLI
+sidebar_title: Migrate to Expo CLI
+description: Learn how to migrate from React Native CLI (@react-native-community/cli) to Expo CLI for any React Native project.
 ---
 
 To migrate from `npx @react-native-community/cli@latest init` to Expo CLI, you'll need to install the `expo` package, which includes the Expo Modules API and Expo CLI. This guide covers the installation step, the benefits of using Expo CLI, and how to compile and run your project after migrating to Expo CLI.
@@ -11,19 +12,28 @@ It is strongly recommended to use Expo CLI when using other Expo tools. It is re
 
 In most cases, executing the following command in a project directory to install the package is all you need to do:
 
-<Terminal cmd={['$ npx install-expo-modules@latest']} />
+<Terminal
+  cmd={{
+    npm: ['$ npx install-expo-modules@latest'],
+    yarn: ['$ yarn dlx install-expo-modules@latest'],
+    pnpm: ['$ pnpm dlx install-expo-modules@latest'],
+    bun: ['$ bunx install-expo-modules@latest'],
+  }}
+/>
 
 For a detailed installation guide, see [Install Expo modules](/bare/installing-expo-modules).
 
-## Why Expo CLI instead of `npx react-native`
+> **info** After installing the `expo` package, you'll need to configure your project to use Expo CLI. This includes setting up Metro config, Babel preset, and native project configurations. See the [Configure Expo CLI for bundling on Android and iOS](/bare/installing-expo-modules/#configure-expo-cli-for-bundling-on-android-and-ios) section for the complete setup instructions.
+
+## Why Expo CLI instead of React Native CLI
 
 Expo CLI commands provide several benefits over the similar commands in `@react-native-community/cli`, which includes:
 
-- Instant access to Hermes debugger with <kbd>j</kbd> keystroke.
-- The debugger ships with React Developer Tools (`react-devtools`) already installed.
-- [Continuous Native Generation (CNG)](/workflow/continuous-native-generation/) support with [`expo prebuild`](/workflow/prebuild/) for upgrades, white-labeling, easy third-party package setup, and better maintainability of the codebase (by reducing the surface area).
+- Instant access to Hermes debugger with <kbd>J</kbd> keystroke.
+- The debugger ships with [React Native DevTools](/debugging/tools/#debugging-with-react-native-devtools).
+- [Continuous Native Generation (CNG)](/workflow/continuous-native-generation/) support with [`expo prebuild`](/more/glossary-of-terms/#prebuild) for upgrades, white-labeling, easy third-party package setup, and better maintainability of the codebase (by reducing the surface area).
 - Support for file-based routing with [`expo-router`](/router/introduction/).
-  - [Async bundling](/router/reference/async-routes) in development.
+  - [Async bundling](/router/web/async-routes) in development.
 - Built-in [environment variable support](/guides/environment-variables) and **.env** file integration.
 - View native logs directly in the terminal alongside JavaScript logs.
 - Improved native build log formatting using Expo CLI's `xcpretty`-style tool built specifically for React Native apps. For example, when compiling a Pod, you can see which Node module included it.
@@ -50,7 +60,12 @@ Windows and macOS. If building for these platforms, you can utilize Expo CLI for
 After installing the `expo` package, you can use the following commands which are alternatives to `npx react-native run-android` and `npx react-native run-ios`:
 
 <Terminal
-  cmd={['# for Android', '$ npx expo run:android', '', '# for iOS', '$ npx expo run:ios']}
+  cmd={{
+    npm: ['# for Android', '$ npx expo run:android', '', '# for iOS', '$ npx expo run:ios'],
+    yarn: ['# for Android', '$ yarn expo run:android', '', '# for iOS', '$ yarn expo run:ios'],
+    pnpm: ['# for Android', '$ pnpm expo run:android', '', '# for iOS', '$ pnpm expo run:ios'],
+    bun: ['# for Android', '$ bun expo run:android', '', '# for iOS', '$ bun expo run:ios'],
+  }}
 />
 
 When building your project, you can choose a device or simulator by using the `--device` flag. This also applies to any iOS device that is connected to your computer.
@@ -99,6 +114,12 @@ Now, with the `expo` package installed and configured in your project, you can s
   title="Expo CLI Reference"
   description="Learn more about the commands and flags available in Expo CLI."
   href="/more/expo-cli"
+  Icon={BookOpen02Icon}
+/>
+<BoxLink
+  title="Customizing Metro"
+  description="Learn how to customize the Metro bundler configuration for your project."
+  href="/guides/customizing-metro"
   Icon={BookOpen02Icon}
 />
 <BoxLink

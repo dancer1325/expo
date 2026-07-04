@@ -5,24 +5,17 @@ import android.icu.util.LocaleData
 import android.icu.util.ULocale
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import android.os.Bundle
-import android.text.TextUtils
 import android.text.TextUtils.getLayoutDirectionFromLocale
 import android.text.format.DateFormat
 import android.util.LayoutDirection
 import android.util.Log
-import android.view.View
 import androidx.core.os.LocaleListCompat
-import androidx.core.os.bundleOf
+import com.facebook.react.modules.i18nmanager.I18nUtil
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import java.text.DecimalFormatSymbols
 import java.util.*
 
-// must be kept in sync with https://github.com/facebook/react-native/blob/main/ReactAndroid/src/main/java/com/facebook/react/modules/i18nmanager/I18nUtil.java
-private const val SHARED_PREFS_NAME = "com.facebook.react.modules.i18nmanager.I18nUtil"
-private const val KEY_FOR_PREFS_ALLOWRTL = "RCTI18nUtil_allowRTL"
-private const val KEY_FOR_PREFS_FORCERTL = "RCTI18nUtil_forceRTL"
 private const val LOCALE_SETTINGS_CHANGED = "onLocaleSettingsChanged"
 private const val CALENDAR_SETTINGS_CHANGED = "onCalendarSettingsChanged"
 
@@ -31,14 +24,6 @@ class LocalizationModule : Module() {
 
   override fun definition() = ModuleDefinition {
     Name("ExpoLocalization")
-
-    Constants {
-      bundledConstants.toShallowMap()
-    }
-
-    AsyncFunction<Bundle>("getLocalizationAsync") {
-      return@AsyncFunction bundledConstants
-    }
 
     Function("getLocales") {
       return@Function getPreferredLocales()
@@ -67,74 +52,23 @@ class LocalizationModule : Module() {
   }
 
   private fun setRTLFromStringResources(context: Context) {
-    // These keys are used by React Native here: https://github.com/facebook/react-native/blob/main/React/Modules/RCTI18nUtil.m
     // We set them before React loads to ensure it gets rendered correctly the first time the app is opened.
-    val supportsRTL = appContext.reactContext?.getString(R.string.ExpoLocalization_supportsRTL)
-    val forcesRTL = appContext.reactContext?.getString(R.string.ExpoLocalization_forcesRTL)
+    val supportsRTL = context.getString(R.string.ExpoLocalization_supportsRTL)
+    val forcesRTL = context.getString(R.string.ExpoLocalization_forcesRTL)
 
     if (forcesRTL == "true") {
-      context
-        .getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
-        .edit()
-        .also {
-          it.putBoolean(KEY_FOR_PREFS_ALLOWRTL, true)
-          it.putBoolean(KEY_FOR_PREFS_FORCERTL, true)
-          it.apply()
-        }
+      I18nUtil.instance.allowRTL(context, true)
+      I18nUtil.instance.forceRTL(context, true)
     } else {
       if (supportsRTL == "true" || supportsRTL == "false") {
-        context
-          .getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
-          .edit()
-          .also {
-            it.putBoolean(KEY_FOR_PREFS_ALLOWRTL, supportsRTL == "true")
-            if (forcesRTL == "false") {
-              it.putBoolean(KEY_FOR_PREFS_FORCERTL, false)
-            }
-            it.apply()
-          }
+        val shouldSupport = supportsRTL == "true"
+        I18nUtil.instance.allowRTL(context, shouldSupport)
+        if (forcesRTL == "false") {
+          I18nUtil.instance.forceRTL(context, false)
+        }
       }
     }
   }
-
-  // TODO: Bacon: add set language
-  private val bundledConstants: Bundle
-    get() {
-      val locale = Locale.getDefault()
-      val localeNames = getLocaleNames(locales)
-      val isRTL = TextUtils.getLayoutDirectionFromLocale(locale) == View.LAYOUT_DIRECTION_RTL
-      val region = getRegionCode(locale)
-      val symbols = DecimalFormatSymbols(locale)
-      return bundleOf(
-        "currency" to getCurrencyCode(locale),
-        "decimalSeparator" to symbols.decimalSeparator.toString(),
-        "digitGroupingSeparator" to symbols.groupingSeparator.toString(),
-        "isoCurrencyCodes" to ISOCurrencyCodes,
-        "isMetric" to !USES_IMPERIAL.contains(region),
-        "isRTL" to isRTL,
-        // TODO: (barthap) this can throw IndexOutOfBounds exception - handle this properly
-        "locale" to localeNames[0],
-        "locales" to localeNames,
-        "region" to region,
-        "timezone" to TimeZone.getDefault().id
-      )
-    }
-
-  private val locales: List<Locale>
-    get() {
-      val context = appContext.reactContext ?: return emptyList()
-      val configuration = context.resources.configuration
-      return if (VERSION.SDK_INT > VERSION_CODES.N) {
-        val locales = ArrayList<Locale>()
-        for (i in 0 until configuration.locales.size()) {
-          locales.add(configuration.locales[i])
-        }
-        locales
-      } else {
-        @Suppress("DEPRECATION")
-        listOf(configuration.locale)
-      }
-    }
 
   private fun getMeasurementSystem(locale: Locale): String? {
     return if (VERSION.SDK_INT >= VERSION_CODES.P) {
@@ -189,6 +123,7 @@ class LocalizationModule : Module() {
             "languageRegionCode" to getCountryCode(locale),
             "textDirection" to if (getLayoutDirectionFromLocale(locale) == LayoutDirection.RTL) "rtl" else "ltr",
             "languageCode" to locale.language,
+            "languageScriptCode" to locale.script.ifEmpty { null },
             // the following two properties should be deprecated once Intl makes it way to RN, instead use toLocaleString
             "decimalSeparator" to decimalFormat.decimalSeparator.toString(),
             "digitGroupingSeparator" to decimalFormat.groupingSeparator.toString(),
@@ -229,15 +164,4 @@ class LocalizationModule : Module() {
       )
     )
   }
-}
-
-/**
- * Creates a shallow [Map] from the [Bundle]. Does not traverse nested arrays and bundles.
- */
-private fun Bundle.toShallowMap(): Map<String, Any?> {
-  val map = HashMap<String, Any?>()
-  for (key in this.keySet()) {
-    map[key] = this[key]
-  }
-  return map
 }

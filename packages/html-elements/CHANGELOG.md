@@ -10,6 +10,114 @@
 
 ### 💡 Others
 
+## 56.0.1 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.3 — 2026-02-16
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 💡 Others
+
+- Fixed check-packages error on Windows. ([#41194](https://github.com/expo/expo/pull/41194) by [@kudo](https://github.com/kudo))
+
+## 0.13.8 - 2025-12-05
+
+_This version does not introduce any user-facing changes._
+
+## 0.13.7 — 2025-09-11
+
+_This version does not introduce any user-facing changes._
+
+## 0.13.6 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 0.13.5 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 0.13.4 — 2025-08-27
+
+_This version does not introduce any user-facing changes._
+
+## 0.13.3 — 2025-08-25
+
+_This version does not introduce any user-facing changes._
+
+## 0.13.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 0.13.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 0.13.0 — 2025-08-13
+
+### 🎉 New features
+
+- Use modern monospace font for web and iOS. ([#37789](https://github.com/expo/expo/pull/37789) by [@EvanBacon](https://github.com/EvanBacon))
+
+### 💡 Others
+
+- Add missing peer dependencies on `react` and `react-native` and optional peer dependency on `react-native-web` ([#38570](https://github.com/expo/expo/pull/38570) by [@kitten](https://github.com/kitten))
+
+## 0.12.5 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 0.12.4 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 0.12.3 — 2025-04-22
+
+### 🛠 Breaking changes
+
+- Upgrade to React 19 and remove compiled build code. ([#36273](https://github.com/expo/expo/pull/36273) by [@EvanBacon](https://github.com/EvanBacon))
+
+### 💡 Others
+
+- Switch web testing to `@testing-library/react`. ([#36293](https://github.com/expo/expo/pull/36293) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 0.12.2 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 0.12.1 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 0.12.0 — 2025-04-04
+
+_This version does not introduce any user-facing changes._
+
+## 0.11.2 - 2025-01-19
+
+### 🐛 Bug fixes
+
+- change type of `outlineColor` to `ColorValue` to support react-native 0.77 ([#33946](https://github.com/expo/expo/pull/33946) by [@vonovak](https://github.com/vonovak))
+
+## 0.11.1 - 2025-01-10
+
+_This version does not introduce any user-facing changes._
+
 ## 0.11.0 — 2024-10-22
 
 ### ⚠️ Notices

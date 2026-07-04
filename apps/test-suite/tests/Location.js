@@ -69,6 +69,9 @@ export async function test(t) {
         const permission = await Location.requestForegroundPermissionsAsync();
         t.expect(permission.granted).toBe(true);
         t.expect(permission.status).toBe(Location.PermissionStatus.GRANTED);
+        if (Platform.OS === 'ios') {
+          t.expect(permission.scope).toBe('whenInUse');
+        }
       });
     });
 
@@ -77,6 +80,9 @@ export async function test(t) {
         const permission = await Location.getForegroundPermissionsAsync();
         t.expect(permission.granted).toBe(true);
         t.expect(permission.status).toBe(Location.PermissionStatus.GRANTED);
+        if (Platform.OS === 'ios') {
+          t.expect(permission.scope).toBe('whenInUse');
+        }
       });
     });
 
@@ -85,6 +91,9 @@ export async function test(t) {
         const permission = await Location.requestBackgroundPermissionsAsync();
         t.expect(permission.granted).toBe(true);
         t.expect(permission.status).toBe(Location.PermissionStatus.GRANTED);
+        if (Platform.OS === 'ios') {
+          t.expect(permission.scope).toBe('always');
+        }
       });
     });
 
@@ -93,6 +102,9 @@ export async function test(t) {
         const permission = await Location.getBackgroundPermissionsAsync();
         t.expect(permission.granted).toBe(true);
         t.expect(permission.status).toBe(Location.PermissionStatus.GRANTED);
+        if (Platform.OS === 'ios') {
+          t.expect(permission.scope).toBe('always');
+        }
       });
     });
 

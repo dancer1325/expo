@@ -8,7 +8,14 @@ describe(getResponseInfo, () => {
   it('returns json serializable response info', async () => {
     const scope = nock('http://example.com')
       .get('/test')
-      .reply(200, { test: true }, { 'Content-Type': 'application/json' });
+      .reply(200, { test: true }, [
+        'content-type',
+        'application/json',
+        'set-cookie',
+        'test=123',
+        'set-cookie',
+        'test2=456',
+      ]);
 
     const response = await fetch('http://example.com/test');
 
@@ -50,7 +57,10 @@ describe(getRequestBodyCacheData, () => {
 
   it('converts legacy node stream', () => {
     vol.fromJSON({ '/test': 'data' });
-    const stream = fs.createReadStream('/test');
+    // `getRequestBodyCacheData` supports legacy node-fetch ReadStream bodies, which aren't part of the static body type.
+    const stream = fs.createReadStream('/test') as unknown as Parameters<
+      typeof getRequestBodyCacheData
+    >[0];
     expect(getRequestBodyCacheData(stream)).toBe('/test');
   });
 });

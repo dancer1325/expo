@@ -9,11 +9,8 @@ if [ -d "./node_modules" ]; then
     echo " ✅ Node modules installed"
 else
     echo " ⚠️  Cannot find node modules for this project, installing..."
-    yarn
+    pnpm install
 fi
-
-"${CURR_DIR}/../../../bin/expotools" android-generate-dynamic-macros --configuration $1 --bare
-echo " ✅ Generate dynamic macros"
 
 if [ ! -d "android/app/src/androidTest/assets" ]; then
   mkdir -p android/app/src/androidTest/assets

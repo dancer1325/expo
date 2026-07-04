@@ -6,11 +6,594 @@
 
 ### 🎉 New features
 
+- Add a Settings toggle to switch between auto-launching the most recent app and showing the launcher. ([#47131](https://github.com/expo/expo/pull/47131) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Add build's expiration date to Settings. ([#47190](https://github.com/expo/expo/pull/47190) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
 ### 🐛 Bug fixes
+
+- [iOS] Use `RCTPlatformName` instead of hardcoding `ios` when requesting bundles from Metro. ([#46443](https://github.com/expo/expo/pull/46443) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [iOS] Cleared the deep-link URL from cached `launchOptions` after it is consumed ([#46265](https://github.com/expo/expo/pull/46265) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [Android] Fixed a crash when cold-launching a development build from a deep link that carries intent categories (e.g. an App Link opened from a browser). ([#46314](https://github.com/expo/expo/pull/46314) by [@lilianchiassai-fc](https://github.com/lilianchiassai-fc) & [#46328](https://github.com/expo/expo/pull/46328) by [@lukmccall](https://github.com/lukmccall))
+- [Android] Discover packagers across all connected networks on Android 33+. ([#46487](https://github.com/expo/expo/pull/46487) by [@lukmccall](https://github.com/lukmccall))
+- [iOS] Present Local Network permission as a status row instead of a toggle, and make the Settings debug actions native, full-row-tappable list rows. ([#46758](https://github.com/expo/expo/pull/46758) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Improve the Updates tab empty state with clearer guidance on how to publish an update. ([#46759](https://github.com/expo/expo/pull/46759) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Present the development server info dialog as a native sheet. ([#46760](https://github.com/expo/expo/pull/46760) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Reduce accidental logout in the account selector with a confirmation step and a less prominent button, and add more spacing around the header title. ([#46761](https://github.com/expo/expo/pull/46761) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Make the development server list reliable, keep discovery running across tab switches, periodically re-verify discovered servers, add pull-to-refresh on the Home tab, and show a searching state instead of "No development servers found". ([#46811](https://github.com/expo/expo/pull/46811) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Explain why a project failed to load instead of showing a generic "Failed to connect" message. ([#46866](https://github.com/expo/expo/pull/46866) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Fix tvOS compile error in DevServersView. ([#47082](https://github.com/expo/expo/pull/47082) by [@douglowder](https://github.com/douglowder))
+- [Android] Fix auto-launching into the most recently opened project on startup. ([#47131](https://github.com/expo/expo/pull/47131) by [@alanjhughes](https://github.com/alanjhughes))
 
 ### 💡 Others
 
+## 56.0.16 — 2026-05-26
+
+### 🐛 Bug fixes
+
+- [iOS] Fixed `defaultLaunchURL` being ignored on cold start when no recently-opened app was cached. ([#46185](https://github.com/expo/expo/pull/46185) by [@kaihirota](https://github.com/kaihirota))
+- [iOS] Order the build phase by array position to avoid a dependency cycle when the main target embeds an app extension. ([#46224](https://github.com/expo/expo/pull/46224) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 56.0.15 — 2026-05-23
+
+### 🐛 Bug fixes
+
+- [iOS] Fix xcode build phase ordering. ([#46125](https://github.com/expo/expo/pull/46125) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 56.0.14 — 2026-05-21
+
+### 🐛 Bug fixes
+
+- Fix an ES module import error in the typed config plugin. ([#46089](https://github.com/expo/expo/pull/46089) by [@zoontek](https://github.com/zoontek))
+
+## 56.0.13 — 2026-05-20
+
+### 🐛 Bug fixes
+
+- [iOS] Apply dev launcher gesture and auto-launch settings immediately instead of requiring an app restart. ([#46000](https://github.com/expo/expo/pull/46000) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+## 56.0.12 — 2026-05-19
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.11 — 2026-05-15
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.10 — 2026-05-13
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.9 — 2026-05-13
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.8 — 2026-05-13
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.7 — 2026-05-13
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.6 — 2026-05-11
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.5 — 2026-05-08
+
+### 💡 Others
+
+- Remove pinned dependencies ([#45520](https://github.com/expo/expo/pull/45520) by [@kitten](https://githun.com/kitten))
+
+## 56.0.4 — 2026-05-07
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.3 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.1 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+### 🛠 Breaking changes
+
+- Bumped minimum iOS/tvOS version to 16.4, macOS to 13.4. ([#43296](https://github.com/expo/expo/pull/43296) by [@tsapeta](https://github.com/tsapeta))
+
+### 🎉 New features
+
+- [plugin] add `defaultLaunchURL` option to have a default fallback launch URL to launch into. ([#44419](https://github.com/expo/expo/pull/44419) by [@HubertBer](https://github.com/HubertBer))
+- Add a "Copy" button to the error screen that copies the error info to the clipboard. ([#44723](https://github.com/expo/expo/pull/44723) by [@vonovak](https://github.com/vonovak))
+- [Android] Implement edge-to-edge. ([#44529](https://github.com/expo/expo/pull/44529) by [@zoontek](https://github.com/zoontek))
+- Expose a typed config plugin function ([#44098](https://github.com/expo/expo/pull/44098) by [@zoontek](https://github.com/zoontek))
+- [Android] Add NDS service discovery.
+- Support loading embedded bundles. ([#44396](https://github.com/expo/expo/pull/44396) by [@alanjhughes](https://github.com/alanjhughes))
+- [plugin] Add `skipOnboarding` and `showMenuAtLaunch` options to set menu's onboarding and auto-launch defaults, useful for E2E and CI builds. ([#45167](https://github.com/expo/expo/pull/45167) by [@alanjhughes](https://github.com/alanjhughes))
+
+### 🐛 Bug fixes
+
+- [iOS] Fixed deep links not reaching the app because `EXDevLauncherController.isAppRunning` always returned `false`. ([#44609](https://github.com/expo/expo/pull/44609) by [@vonovak](https://github.com/vonovak))
+- [Android] Fix `DevLauncherErrorActivity` dark theme. ([#44529](https://github.com/expo/expo/pull/44529) by [@zoontek](https://github.com/zoontek))
+- [iOS] Fix hard-coded usage of http with exps URLs ([#43982](https://github.com/expo/expo/pull/43982) by [@muvaf](https://github.com/muvaf))
+- [iOS] Fix react-native version resolution in podspec ([#44178](https://github.com/expo/expo/pull/44178) by [@kitten](https://github.com/kitten))
+- [macOS] Fix LocalNetworkPermissionView max height ([#44745](https://github.com/expo/expo/pull/44745) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [iOS] Fix safe area insets not being applied on settings screen. ([#45074](https://github.com/expo/expo/pull/45074) by [@alanjhughes](https://github.com/alanjhughes))
+
+### 💡 Others
+
+- Improved URL input in the launcher home screen. ([#44886](https://github.com/expo/expo/pull/44886) by [@vonovak](https://github.com/vonovak))
+- Removed `DevLauncherExpoActivityConfigurator`. System bars configuration is now handled by the `expo-status-bar` and `expo-navigation-bar` modules. ([#44469](https://github.com/expo/expo/pull/44469) by [@zoontek](https://github.com/zoontek))
+- Enforce transparent status bar and navigation bar on Android, remove unused `backgroundColor` / `translucent` options handling. ([#43518](https://github.com/expo/expo/pull/43518) by [@zoontek](https://github.com/zoontek))
+- [Android] Bump Apollo Kotlin from 4.3.1 to 4.4.2. ([#44386](https://github.com/expo/expo/pull/44386) by [@radko93](https://github.com/radko93))
+
+### ⚠️ Notices
+
+- Added support for React Native 0.84.x. ([#43018](https://github.com/expo/expo/pull/43018) by [@chrfalch](https://github.com/chrfalch))
+
+## 55.0.33 - 2026-05-04
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.32 - 2026-05-04
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.31 - 2026-05-01
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.30 - 2026-05-01
+
+### 🎉 New features
+
+- [plugin] Add option to disable tools button by default. ([#44251](https://github.com/expo/expo/pull/44251) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 55.0.29 - 2026-04-21
+
+### 🐛 Bug fixes
+
+- [Android] Use `OkHttpClientProvider` instead of bare `OkHttpClient` so custom interceptors are applied. ([#44798](https://github.com/expo/expo/pull/44798) by [@fabriziocucci](https://github.com/fabriziocucci))
+- [iOS] Fix JSI crash (`EXC_BAD_ACCESS` in `jsi::Pointer::~Pointer`) when an embedded `main.jsbundle` and dev-launcher race on startup. ([#44799](https://github.com/expo/expo/pull/44799) by [@fabriziocucci](https://github.com/fabriziocucci))
+
+### 💡 Others
+
+- Align dev launcher labels across iOS and Android. ([#44720](https://github.com/expo/expo/pull/44720) by [@vonovak](https://github.com/vonovak))
+
+## 55.0.27 - 2026-04-10
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.25 - 2026-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.24 - 2026-04-07
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.23 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.22 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.21 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.20 - 2026-03-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.19 - 2026-03-18
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.18 - 2026-03-17
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.17 - 2026-03-11
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.16 - 2026-03-11
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.15 - 2026-03-11
+
+### 🐛 Bug fixes
+
+- [iOS] Fix orientation change regression. ([#43847](https://github.com/expo/expo/pull/43847) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 55.0.14 - 2026-03-09
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.13 - 2026-03-09
+
+### 🐛 Bug fixes
+
+- [iOS] Fix missing navigation bar padding ([#43672](https://github.com/expo/expo/pull/43672) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 55.0.12 - 2026-03-04
+
+### 🐛 Bug fixes
+
+- [iOS] Fix issue when using `fullScreenModal` with `expo-router`. ([#43520](https://github.com/expo/expo/pull/43520) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 55.0.11 - 2026-02-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.10 — 2026-02-25
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.9 — 2026-02-25
+
+### 🐛 Bug fixes
+
+- [ios] Fix truncated text labels in `LocalNetworkPermissionView` ([#43353](https://github.com/expo/expo/pull/43353) by [@vonovak](https://github.com/vonovak))
+
+## 55.0.8 — 2026-02-20
+
+### 🐛 Bug fixes
+
+- [android] fixed crash when returning from notification settings after disabling notification permissions ([#43217](https://github.com/expo/expo/pull/43217) by [@vonovak](https://github.com/vonovak))
+
+## 55.0.7 — 2026-02-16
+
+### 🎉 New features
+
+- Full native interface for updates. ([#42981](https://github.com/expo/expo/pull/42981) by [@douglowder](https://github.com/douglowder))
+
+### 🐛 Bug fixes
+
+- fixes to error handling ([#42873](https://github.com/expo/expo/pull/42873) by [@vonovak](https://github.com/vonovak))
+
+## 55.0.6 — 2026-02-08
+
+### 🎉 New features
+
+- [iOS] Add Bonjour service discovery ([#42384](https://github.com/expo/expo/pull/42384) by [@kitten](https://github.com/kitten))
+
+## 55.0.5 — 2026-02-03
+
+### 🐛 Bug fixes
+
+- [Android] Fix sometimes two dev menus would open. ([#42567](https://github.com/expo/expo/pull/42567) by [@lukmccall](https://github.com/lukmccall))
+- [iOS] Fix color of placeholder text in URL input. ([#42677](https://github.com/expo/expo/pull/42677) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Dev launcher should respond to screen rotations. ([#42799](https://github.com/expo/expo/pull/42799) by [@douglowder](https://github.com/douglowder))
+
+## 55.0.4 — 2026-01-27
+
+### 🐛 Bug fixes
+
+- [iOS] Fix issue where the header would overlap the safe area. ([#42540](https://github.com/expo/expo/pull/42540) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 55.0.3 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 🎉 New features
+
+- Remove `ExpoAppDelegate` inheritance requirement ([#39417](https://github.com/expo/expo/pull/39417) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [iOS] Add brownfield support ([#40463](https://github.com/expo/expo/pull/40463) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [iOS] Decouple menu from dev-launcher ([#40669](https://github.com/expo/expo/pull/40669) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Add activity indicator when loading dev server URL. ([#40825](https://github.com/expo/expo/pull/40825) by [@alanjhughes](https://github.com/alanjhughes))
+- Add initial macOS support ([#41330](https://github.com/expo/expo/pull/41330) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- Add api to change bundleUrl from JS ([#42065](https://github.com/expo/expo/pull/42065) by [@alanjhughes](https://github.com/alanjhughes))
+
+### 🐛 Bug fixes
+
+- [Android] Fix launching apps in brownfield ([#40711](https://github.com/expo/expo/pull/40711) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [iOS] Fix React Native dev menu not showing up in 0.83.x ([#40819](https://github.com/expo/expo/pull/40819) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [iOS] Fix RCTDevMenuConfiguration in release builds ([#40870](https://github.com/expo/expo/pull/40870) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [iOS] Fix Safe Area being ignored on physical devices ([#41119](https://github.com/expo/expo/pull/41119) by [@betomoedano](https://github.com/betomoedano))
+- Restore config plugin `launchMode` support ([#41363](https://github.com/expo/expo/pull/41363) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [Android] Prevent some debug only artifacts from being included in release builds. ([#41378](https://github.com/expo/expo/pull/41378) by [@lukmccall](https://github.com/lukmccall))
+- [iOS] Fix `DevLauncherWrapperView` in SwiftUI brownfield apps ([#41431](https://github.com/expo/expo/pull/41431) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [iOS] Fix dev server discovery cancellation. ([#41555](https://github.com/expo/expo/pull/41555) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Fixes an issue where a `nil` projectUrl could be passed to Expo Updates. ([#42126](https://github.com/expo/expo/pull/42126) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Fix launching deeplink with dev launcher. ([#42212](https://github.com/expo/expo/pull/42212) by [@jakex7](https://github.com/jakex7))
+- Fix react-native-macos 0.81 support ([#42366](https://github.com/expo/expo/pull/42366) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+### 💡 Others
+
+- [Android] Migrated from `kotlinOptions` to `compilerOptions` DSL. ([#39794](https://github.com/expo/expo/pull/39794) by [@huextrat](https://github.com/huextrat))
+- [android] Make reactNativeHost optional in ReactHostWrapper ([#40085](https://github.com/expo/expo/pull/40085) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [Android] Remove `ReactHostWrapper` ([#40295](https://github.com/expo/expo/pull/40295) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [iOS] Remove custom `ReactNativeFactory`. ([#41084](https://github.com/expo/expo/pull/41084) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Remove unused reactNativeFactory. ([#41286](https://github.com/expo/expo/pull/41286) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- Switch from `ajv` to `@expo/schema-utils` ([#42221](https://github.com/expo/expo/pull/42221) by [@kitten](https://github.com/kitten))
+
+## 6.0.20 - 2025-12-05
+
+### 🐛 Bug fixes
+
+- [iOS] Fix port scanning on pysical devices. ([#40824](https://github.com/expo/expo/pull/40824) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 6.0.19 - 2025-12-04
+
+### 🐛 Bug fixes
+
+- Restore config plugin `launchMode` support ([#41363](https://github.com/expo/expo/pull/41363) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+## 6.0.18 - 2025-11-17
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.17 - 2025-11-05
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.16 - 2025-10-21
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.15 - 2025-10-10
+
+### 🐛 Bug fixes
+
+- [iOS] Fixes updates not being viewable on first launch. ([#40324](https://github.com/expo/expo/pull/40324) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 6.0.14 - 2025-10-09
+
+### 💡 Others
+
+- [Android] Prevented the app from crashing during the initialization of the `ErrorViewModel`. ([#40148](https://github.com/expo/expo/pull/40148) by [@lukmccall](https://github.com/lukmccall))
+
+## 6.0.13 - 2025-10-01
+
+### 🐛 Bug fixes
+
+- [iOS] Adjust tvOS colors. ([#40006](https://github.com/expo/expo/pull/40006) by [@douglowder](https://github.com/douglowder))
+
+## 6.0.12 - 2025-09-22
+
+### 🎉 New features
+
+- [Android] Adds loading state when connecting to a development server. ([#39873](https://github.com/expo/expo/pull/39873) by [@lukmccall](https://github.com/lukmccall))
+
+### 🐛 Bug fixes
+
+- [expo-dev-launcher] Fix manual URL entry: decode percent-encoded URLs, enable return key submit, and support dark mode text. ([#39840](https://github.com/expo/expo/pull/39840) by [@blazejkustra](https://github.com/blazejkustra))
+
+## 6.0.11 — 2025-09-11
+
+### 🐛 Bug fixes
+
+- [Android] Fix incorrect text color in the error dialog. ([#39550](https://github.com/expo/expo/pull/39550) by [@lukmccall](https://github.com/lukmccall))
+- [iOS] Fix UI on iPad. ([#39549](https://github.com/expo/expo/pull/39549) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 6.0.10 — 2025-09-08
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.9 — 2025-09-03
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.8 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.7 — 2025-08-28
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.6 — 2025-08-27
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.5 — 2025-08-25
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.4 — 2025-08-21
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.3 — 2025-08-18
+
+### 💡 Others
+
+- [ios] Wrap system color references for dev client. ([#38912](https://github.com/expo/expo/pull/38912) by [@douglowder](https://github.com/douglowder))
+
+## 6.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.1 — 2025-08-15
+
+### 🐛 Bug fixes
+
+- [ios] Fix tvOS and Swiftlint after UI refresh. ([#38808](https://github.com/expo/expo/pull/38808) by [@douglowder](https://github.com/douglowder))
+
+## 6.0.0 — 2025-08-13
+
+### 🎉 New features
+
+- [iOS] Reimplement UI in SwiftUI. ([#37413](https://github.com/expo/expo/pull/37413) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Add floating action button option in the settings menu. ([#38247](https://github.com/expo/expo/pull/38247) by [@behenate](https://github.com/behenate))
+- [iOS] Partial support for Apple TV. ([#38388](https://github.com/expo/expo/pull/38388) by [@douglowder](https://github.com/douglowder))
+
+### 🐛 Bug fixes
+
+- [iOS] Fix missing CDP headers when using static frameworks. ([#37448](https://github.com/expo/expo/pull/37448) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Use same strings in UI as iOS. ([#37786](https://github.com/expo/expo/pull/37786) by [@douglowder](https://github.com/douglowder))
+- [iOS] Fix an issue where the packager commands stop working after a reload. ([#38579](https://github.com/expo/expo/pull/38579) by [@alanjhughes](https://github.com/alanjhughes))
+
+### 💡 Others
+
+- [Android] RN 0.81.0: patched some reflection issues after kotlin upgrade ([#38451](https://github.com/expo/expo/pull/38451) by [@chrfalch](https://github.com/chrfalch))
+- Fixed release build error on Android. ([#37579](https://github.com/expo/expo/pull/37579) by [@kudo](https://github.com/kudo))
+- Informational message for tvOS on signin page. ([#38518](https://github.com/expo/expo/pull/38518) by [@douglowder](https://github.com/douglowder))
+
+### ⚠️ Notices
+
+- Added support for React Native 0.80.x. ([#37400](https://github.com/expo/expo/pull/37400) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+## 5.1.16 - 2025-07-03
+
+_This version does not introduce any user-facing changes._
+
+## 5.1.15 - 2025-07-02
+
+_This version does not introduce any user-facing changes._
+
+## 5.1.14 - 2025-06-26
+
+### 🐛 Bug fixes
+
+- [Android] Fix missing launch args from pending intent extras. ([#37172](https://github.com/expo/expo/pull/37172) by [@coolsoftwaretyler](https://github.com/coolsoftwaretyler))
+- [Android] Fix missing intent extras when handling external intents. ([#37307](https://github.com/expo/expo/pull/37307) by [@coolsoftwaretyler](https://github.com/coolsoftwaretyler))
+
+## 5.1.13 - 2025-06-18
+
+_This version does not introduce any user-facing changes._
+
+## 5.1.12 - 2025-06-04
+
+### 🐛 Bug fixes
+
+- [Android] Remove `testDebug` variant from npm package. ([#36845](https://github.com/expo/expo/pull/36845) by [@lukmccall](https://github.com/lukmccall))
+
+## 5.1.11 — 2025-05-01
+
+_This version does not introduce any user-facing changes._
+
+## 5.1.10 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 5.1.9 — 2025-04-30
+
+### 🐛 Bug fixes
+
+- Fixed Property "require" doesn't exist error. ([#36484](https://github.com/expo/expo/pull/36484) by [@kudo](https://github.com/kudo))
+
+## 5.1.8 — 2025-04-28
+
+_This version does not introduce any user-facing changes._
+
+## 5.1.7 — 2025-04-28
+
+_This version does not introduce any user-facing changes._
+
+## 5.1.6 — 2025-04-25
+
+### 💡 Others
+
+- [iOS] Remove usage of deprecated `SFAuthenticationSession` for user login. ([#36395](https://github.com/expo/expo/pull/36395) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Enable edge-to-edge. ([#36363](https://github.com/expo/expo/pull/36363) by [@behenate](https://github.com/behenate))
+
+## 5.1.5 — 2025-04-23
+
+### 🐛 Bug fixes
+
+- Fix duplicated modals ([#36326](https://github.com/expo/expo/pull/36326) by [@jakex7](https://github.com/jakex7))
+
+## 5.1.4 — 2025-04-21
+
+_This version does not introduce any user-facing changes._
+
+## 5.1.3 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 5.1.2 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 5.1.1 — 2025-04-08
+
+_This version does not introduce any user-facing changes._
+
+## 5.1.0 — 2025-04-04
+
+### 🛠 Breaking changes
+
+- upgrade RN to 0.78 ([#35050](https://github.com/expo/expo/pull/35050) by [@vonovak](https://github.com/vonovak))
+
+### 🎉 New features
+
+- support react-native 0.77 ([#33379](https://github.com/expo/expo/pull/33379) by [@vonovak](https://github.com/vonovak))
+- Bump version of React Navigation ([#35595](https://github.com/expo/expo/pull/35595) by [@marklawlor](https://github.com/marklawlor))
+
+### 💡 Others
+
+- use custom iOS dependencyProvider ([#35321](https://github.com/expo/expo/pull/35321) by [@vonovak](https://github.com/vonovak))
+- [6/n] upgrade to react-native 0.77 - improve 0.76 compatibility ([#34078](https://github.com/expo/expo/pull/34078) by [@vonovak](https://github.com/vonovak))
 - Fixed broken local UI development on Android. ([#33714](https://github.com/expo/expo/pull/33714) by [@kudo](https://github.com/kudo))
+- [Android] Started using expo modules gradle plugin. ([#34176](https://github.com/expo/expo/pull/34176) by [@lukmccall](https://github.com/lukmccall))
+- [apple] Migrate remaining `expo-module.config.json` to unified platform syntax. ([#34445](https://github.com/expo/expo/pull/34445) by [@reichhartd](https://github.com/reichhartd))
+- Removed remote debugging dead code. ([#34977](https://github.com/expo/expo/pull/34977) by [@kudo](https://github.com/kudo))
+- [android] Migrate DevLauncherInternalModule to Expo Modules API ([#35166](https://github.com/expo/expo/pull/35166) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- Refactored `RCTReactNativeFactory` integration. ([#35679](https://github.com/expo/expo/pull/35679) by [@kudo](https://github.com/kudo))
+- [Android] Specified Gradle project version. ([#35751](https://github.com/expo/expo/pull/35751) by [@lukmccall](https://github.com/lukmccall))
+
+## 5.0.33 - 2025-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.32 - 2025-03-31
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.31 - 2025-03-18
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.29 - 2025-02-10
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.28 - 2025-02-06
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.27 - 2025-01-31
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.26 - 2025-01-27
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.23 - 2025-01-10
+
+### 🐛 Bug fixes
+
+- [Android] Fixed issue with initialization of the dev client being wrong on the old architecture ([#34398](https://github.com/expo/expo/pull/34398) by [@chrfalch](https://github.com/chrfalch))
+- [iOS] Fixed black stuck screen when loading an unreachable server from last opened url. ([#34067](https://github.com/expo/expo/pull/34067) by [@kudo](https://github.com/kudo))
+- [iOS] Read EAS project id and url from manifest instead of updates interface. ([#34342](https://github.com/expo/expo/pull/34342) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- [Android] Read EAS project id and url from AndroidManifest instead of updates interface. ([#34342](https://github.com/expo/expo/pull/34342) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+## 5.0.22 - 2025-01-08
+
+_This version does not introduce any user-facing changes._
 
 ## 5.0.21 - 2024-12-24
 
@@ -21,6 +604,7 @@ _This version does not introduce any user-facing changes._
 ### 💡 Others
 
 - Bump react-navigation versions. ([#33758](https://github.com/expo/expo/pull/33758) by [@marklawlor](https://github.com/marklawlor))
+- Removed unused `@react-navigation/core` devDependencies. ([#33829](https://github.com/expo/expo/pull/33829) by [@kudo](https://github.com/kudo))
 
 ## 5.0.19 - 2024-12-10
 

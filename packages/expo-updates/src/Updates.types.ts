@@ -1,4 +1,4 @@
-import { ExpoUpdatesManifest, EmbeddedManifest } from 'expo-manifests';
+import type { ExpoUpdatesManifest, EmbeddedManifest } from 'expo-manifests';
 
 export type Manifest = ExpoUpdatesManifest | EmbeddedManifest;
 
@@ -101,16 +101,6 @@ export type UpdateCheckResult =
   | UpdateCheckResultRollBack
   | UpdateCheckResultAvailable
   | UpdateCheckResultNotAvailable;
-
-/**
- * @deprecated
- */
-export type UpdateCheckResultSuccess = UpdateCheckResultAvailable;
-
-/**
- * @deprecated
- */
-export type UpdateCheckResultFailure = UpdateCheckResultNotAvailable;
 
 /**
  * The successful result of fetching a new update.
@@ -270,6 +260,8 @@ export enum UpdatesCheckAutomaticallyValue {
  */
 export type LocalAssets = Record<string, string>;
 
+export type { ReloadScreenOptions, ReloadScreenImageSource } from './ReloadScreen.types';
+
 /**
  * @hidden
  */
@@ -284,11 +276,13 @@ export type UpdatesNativeStateRollback = {
  * @hidden
  */
 export type UpdatesNativeStateMachineContext = {
+  isStartupProcedureRunning: boolean;
   isUpdateAvailable: boolean;
   isUpdatePending: boolean;
   isChecking: boolean;
   isDownloading: boolean;
   isRestarting: boolean;
+  restartCount: number;
   latestManifest?: Manifest;
   downloadedManifest?: Manifest;
   rollback?: UpdatesNativeStateRollback;
@@ -296,6 +290,7 @@ export type UpdatesNativeStateMachineContext = {
   downloadError?: Error;
   lastCheckForUpdateTime?: Date;
   sequenceNumber: number;
+  downloadProgress: number;
 };
 
 /**

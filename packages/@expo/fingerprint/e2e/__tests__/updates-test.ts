@@ -1,16 +1,15 @@
 import spawnAsync from '@expo/spawn-async';
 import fs from 'fs/promises';
 import path from 'path';
-import rimraf from 'rimraf';
 
+import { getFingerprintHashFromCLIAsync } from './utils/CLIUtils';
 import { createProjectHashAsync } from '../../src/Fingerprint';
+import { E2E_TEMPLATE_SDK_VERSION } from './utils/constants';
 
-jest.mock('../../src/sourcer/ExpoConfigLoader', () => ({
+jest.mock('../../src/ExpoConfigLoader', () => ({
   // Mock the getExpoConfigLoaderPath to use the built version rather than the typescript version from src
   getExpoConfigLoaderPath: jest.fn(() =>
-    jest
-      .requireActual('path')
-      .resolve(__dirname, '..', '..', 'build', 'sourcer', 'ExpoConfigLoader.js')
+    jest.requireActual('path').resolve(__dirname, '..', '..', 'build', 'ExpoConfigLoader.js')
   ),
 }));
 
@@ -21,17 +20,20 @@ describe('updates managed support', () => {
   const projectRoot = path.join(tmpDir, projectName);
 
   beforeAll(async () => {
-    rimraf.sync(projectRoot);
-    // Pin the SDK version to prevent the latest version breaking snapshots
-    await spawnAsync('bunx', ['create-expo-app', '-t', 'blank@sdk-51', projectName], {
-      stdio: 'inherit',
-      cwd: tmpDir,
-      env: {
-        ...process.env,
-        // Do not inherit the package manager from this repository
-        npm_config_user_agent: undefined,
-      },
-    });
+    await fs.rm(projectRoot, { force: true, recursive: true });
+    await spawnAsync(
+      'bunx',
+      ['create-expo-app', '-t', `blank@${E2E_TEMPLATE_SDK_VERSION}`, projectName],
+      {
+        stdio: 'inherit',
+        cwd: tmpDir,
+        env: {
+          ...process.env,
+          // Do not inherit the package manager from this repository
+          npm_config_user_agent: undefined,
+        },
+      }
+    );
 
     // Add appId
     const appConfigPath = path.join(projectRoot, 'app.json');
@@ -42,7 +44,7 @@ describe('updates managed support', () => {
   });
 
   afterAll(async () => {
-    rimraf.sync(projectRoot);
+    await fs.rm(projectRoot, { force: true, recursive: true });
   });
 
   it('should have same hash before and after prebuild', async () => {
@@ -56,16 +58,39 @@ describe('updates managed support', () => {
       ignorePaths: ['android/**/*', 'ios/**/*'],
     });
 
+    const fingerprintHash1FromCLI = await getFingerprintHashFromCLIAsync(projectRoot, [
+      '--ignore-path',
+      'android/**/*',
+      '--ignore-path',
+      'ios/**/*',
+    ]);
+    expect(fingerprintHash1).toEqual(fingerprintHash1FromCLI);
+
     // Reset modules to prevent cached `require(projectRoot/package.json)`
     jest.resetModules();
 
     await spawnAsync('npx', ['expo', 'prebuild'], {
       stdio: 'ignore',
       cwd: projectRoot,
+      env: {
+        ...process.env,
+        // NOTE(cedric): for some reason older version of `@expo/image-utils` find a binary of sharp on Windows.
+        // Unfortunately, this doesn't mean we can use Sharp and will cause prebuild to fail.
+        // Manually disable Sharp for this test to avoid falky test behavior on Windows CI.
+        EXPO_IMAGE_UTILS_NO_SHARP: '1',
+      },
     });
     const fingerprintHash2 = await createProjectHashAsync(projectRoot, {
       ignorePaths: ['android/**/*', 'ios/**/*'],
     });
     expect(fingerprintHash1).toEqual(fingerprintHash2);
+
+    const fingerprintHash2FromCLI = await getFingerprintHashFromCLIAsync(projectRoot, [
+      '--ignore-path',
+      'android/**/*',
+      '--ignore-path',
+      'ios/**/*',
+    ]);
+    expect(fingerprintHash2).toEqual(fingerprintHash2FromCLI);
   });
 });

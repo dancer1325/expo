@@ -1,11 +1,12 @@
-import { PathConfigMap, validatePathConfig } from '@react-navigation/native';
-import type { InitialState, NavigationState, PartialState } from '@react-navigation/routers';
 import escape from 'escape-string-regexp';
 
+import { INTERNAL_SLOT_NAME } from '../constants';
+import type { PathConfigMap } from '../react-navigation/native';
+import { validatePathConfig } from '../react-navigation/native';
+import type { InitialState, NavigationState, PartialState } from '../react-navigation/routers';
 import { findFocusedRoute } from './findFocusedRoute';
 import type { ExpoOptions, ExpoRouteConfig } from './getStateFromPath-forks';
 import * as expo from './getStateFromPath-forks';
-import { RouterStore } from '../global-state/router-store';
 
 export type Options<ParamList extends object> = ExpoOptions & {
   path?: string;
@@ -67,15 +68,17 @@ type ConfigResources = {
  * @param options Extra options to fine-tune how to parse the path.
  */
 export function getStateFromPath<ParamList extends object>(
-  // START FORK
-  this: RouterStore | undefined | void,
-  // END FORK
   path: string,
-  options?: Options<ParamList>
+  options?: Options<ParamList>,
+  // START FORK
+  segments: string[] = []
+  // END FORK
 ): ResultState | undefined {
   const { initialRoutes, configs, configWithRegexes } = getConfigResources(
     options,
-    this?.routeInfo?.segments
+    // START FORK
+    segments
+    // END FORK
   );
 
   const screens = options?.screens;
@@ -85,15 +88,15 @@ export function getStateFromPath<ParamList extends object>(
   // END FORK
 
   // START FORK
-  let remaining = expoPath.nonstandardPathname
-    // let remaining = path
-    // END FORK
-    .replace(/\/+/g, '/') // Replace multiple slash (//) with single ones
-    .replace(/^\//, '') // Remove extra leading slash
-    .replace(/\?.*$/, ''); // Remove query params which we will handle later
+  let remaining = expo.cleanPath(expoPath.nonstandardPathname);
+  // let remaining = path
+  //   .replace(/\/+/g, '/') // Replace multiple slash (//) with single ones
+  //   .replace(/^\//, '') // Remove extra leading slash
+  //   .replace(/\?.*$/, ''); // Remove query params which we will handle later
 
-  // Make sure there is a trailing slash
-  remaining = remaining.endsWith('/') ? remaining : `${remaining}/`;
+  // // Make sure there is a trailing slash
+  // remaining = remaining.endsWith('/') ? remaining : `${remaining}/`;
+  // END FORK
 
   const prefix = options?.path?.replace(/^\//, ''); // Remove extra leading slash
 
@@ -121,7 +124,7 @@ export function getStateFromPath<ParamList extends object>(
       });
 
     if (routes.length) {
-      return createNestedStateObject(expoPath, routes, initialRoutes, [], expoPath.url.hash);
+      return createNestedStateObject(expoPath, routes, initialRoutes, [], expoPath.hash);
     }
 
     return undefined;
@@ -148,7 +151,7 @@ export function getStateFromPath<ParamList extends object>(
         match.routeNames.map((name) => ({ name })),
         initialRoutes,
         configs,
-        expoPath.url.hash
+        expoPath.hash
       );
     }
 
@@ -164,7 +167,7 @@ export function getStateFromPath<ParamList extends object>(
 
   if (routes !== undefined) {
     // This will always be empty if full path matched
-    current = createNestedStateObject(expoPath, routes, initialRoutes, configs, expoPath.url.hash);
+    current = createNestedStateObject(expoPath, routes, initialRoutes, configs, expoPath.hash);
     remaining = remainingPath;
     result = current;
   }
@@ -192,7 +195,6 @@ function getConfigResources<ParamList extends object>(
 ) {
   // START FORK - We need to disable this caching as our configs can change based upon the current state
   // if (cachedConfigResources[0] !== options) {
-  //   console.log(previousSegments);
   cachedConfigResources = [options, prepareConfigResources(options, previousSegments)];
   // }
   // END FORK FORK
@@ -305,7 +307,7 @@ function checkForDuplicatedConfigs(configs: RouteConfig[]) {
   // Check for duplicate patterns in the config
   configs.reduce<Record<string, RouteConfig>>((acc, config) => {
     if (acc[config.pattern]) {
-      const a = acc[config.pattern].routeNames;
+      const a = acc[config.pattern]!.routeNames;
       const b = config.routeNames;
 
       // It's not a problem if the path string omitted from a inner most screen
@@ -380,8 +382,7 @@ const matchAgainstConfigs = (remaining: string, configs: RouteConfig[]) => {
           const decodedParamSegment = expo.safelyDecodeURIComponent(
             // const decodedParamSegment = decodeURIComponent(
             // The param segments appear every second item starting from 2 in the regex match result
-            match![(acc.pos + 1) * 2]
-              // Remove trailing slash
+            match[(acc.pos + 1) * 2]! // Remove trailing slash
               .replace(/\/$/, '')
           );
           // END FORK
@@ -426,7 +427,8 @@ const matchAgainstConfigs = (remaining: string, configs: RouteConfig[]) => {
             const offset = numInitialSegments ? numInitialSegments - 1 : 0;
             // START FORK
             // const value = matchedParams[p]?.[index + offset];
-            const value = expo.getParamValue(p, matchedParams[p]?.[index + offset]);
+            // TODO(@kitten): Assess which is intended, non-optional or getParamValue accepting undefined
+            const value = expo.getParamValue(p, matchedParams[p]?.[index + offset]!);
             // END FORK
 
             if (value) {
@@ -448,7 +450,7 @@ const matchAgainstConfigs = (remaining: string, configs: RouteConfig[]) => {
         return { name };
       });
 
-      remainingPath = remainingPath.replace(match[1], '');
+      remainingPath = remainingPath.replace(match[1]!, '');
 
       break;
     }
@@ -475,6 +477,7 @@ const createNormalizedConfigs = (
 
   parentScreens.push(screen);
 
+  // @ts-expect-error: TODO(@kitten): This is entirely untyped. The index access just flags this, but we're not typing the config properly here
   const config = routeConfig[screen];
 
   if (typeof config === 'string') {
@@ -500,9 +503,11 @@ const createNormalizedConfigs = (
           ? joinPaths(parentPattern || '', config.path || '')
           : config.path || '';
 
-      configs.push(
-        createConfigItem(screen, routeNames, pattern!, config.path, config.parse, config)
-      );
+      if (screen !== INTERNAL_SLOT_NAME) {
+        configs.push(
+          createConfigItem(screen, routeNames, pattern!, config.path, config.parse, config)
+        );
+      }
     }
 
     if (config.screens) {
@@ -545,20 +550,23 @@ const createConfigItem = (
   // Normalize pattern to remove any leading, trailing slashes, duplicate slashes etc.
   pattern = pattern.split('/').filter(Boolean).join('/');
 
-  const regex = pattern
-    ? new RegExp(
-        `^(${pattern
-          .split('/')
-          .map((it) => {
-            if (it.startsWith(':')) {
-              return `(([^/]+\\/)${it.endsWith('?') ? '?' : ''})`;
-            }
+  // START FORK
+  const regex = pattern ? expo.routePatternToRegex(pattern) : undefined;
+  // const regex = pattern
+  //   ? new RegExp(
+  //       `^(${pattern
+  //         .split('/')
+  //         .map((it) => {
+  //           if (it.startsWith(':')) {
+  //             return `(([^/]+\\/)${it.endsWith('?') ? '?' : ''})`;
+  //           }
 
-            return `${it === '*' ? '.*' : escape(it)}\\/`;
-          })
-          .join('')})`
-      )
-    : undefined;
+  //           return `${it === '*' ? '.*' : escape(it)}\\/`;
+  //         })
+  //         .join('')})`
+  //     )
+  //   : undefined;
+  // END FORK
 
   return {
     screen,
@@ -597,7 +605,7 @@ const findInitialRoute = (
     if (parentScreens.length === config.parentScreens.length) {
       let sameParents = true;
       for (let i = 0; i < parentScreens.length; i++) {
-        if (parentScreens[i].localeCompare(config.parentScreens[i]) !== 0) {
+        if (parentScreens[i]!.localeCompare(config.parentScreens[i]!) !== 0) {
           sameParents = false;
           break;
         }
@@ -669,14 +677,14 @@ const createNestedStateObject = (
 
       const nestedStateIndex = nestedState.index || nestedState.routes.length - 1;
 
-      nestedState.routes[nestedStateIndex].state = createStateObject(
+      nestedState.routes[nestedStateIndex]!.state = createStateObject(
         initialRoute,
         route,
         routes.length === 0
       );
 
       if (routes.length > 0) {
-        nestedState = nestedState.routes[nestedStateIndex].state as InitialState;
+        nestedState = nestedState.routes[nestedStateIndex]!.state as InitialState;
       }
 
       parentScreens.push(route.name);

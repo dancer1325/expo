@@ -95,7 +95,7 @@ describe(updatePackageJSONAsync, () => {
       scriptsChanged: true,
     });
 
-    expect(JSON.parse(vol.toJSON()['/package.json'])).toEqual({
+    expect(JSON.parse(vol.toJSON()['/package.json']!)).toEqual({
       dependencies: { expo: '1.0.0', 'react-native': '0.1.0' },
       scripts: { android: 'expo run:android', ios: 'expo run:ios' },
     });
@@ -137,7 +137,7 @@ describe(updatePackageJSONAsync, () => {
       scriptsChanged: false,
     });
 
-    expect(JSON.parse(vol.toJSON()['/package.json'])).toEqual({
+    expect(JSON.parse(vol.toJSON()['/package.json']!)).toEqual({
       dependencies: { unexpected: '1.0.0', expo: '1.0.0', 'react-native': '0.1.0' },
       scripts: { android: 'expo run:android', ios: 'expo run:ios' },
     });
@@ -269,13 +269,11 @@ describe(updatePkgDependencies, () => {
       expo: 'version-from-project',
     });
     expect(Log.warn).toHaveBeenCalledWith(
+      expect.stringContaining(`instead of recommended ${chalk.bold('expo@version-from-template')}`)
+    );
+    expect(Log.warn).toHaveBeenCalledWith(
       expect.stringContaining(
-        `instead of recommended ${[
-          `expo@version-from-template`,
-          `react-native@version-from-template-required-1`,
-        ]
-          .map((dep) => chalk.bold(dep))
-          .join(', ')}`
+        `instead of recommended ${chalk.bold('react-native@version-from-template-required-1')}`
       )
     );
   });

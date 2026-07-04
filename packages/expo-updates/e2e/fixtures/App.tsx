@@ -1,13 +1,65 @@
 import { Inter_900Black } from '@expo-google-fonts/inter';
 import Constants from 'expo-constants';
-import { requireNativeModule } from 'expo-modules-core';
+import { ExpoUpdatesManifest } from 'expo-manifests';
+import { requireNativeModule } from 'expo';
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import { UpdatesLogEntry } from 'expo-updates';
 import React from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-const ExpoUpdatesE2ETest = requireNativeModule('ExpoUpdatesE2ETest');
+const ExpoUpdatesE2ETestModule = requireNativeModule('ExpoUpdatesE2ETest');
+
+ExpoUpdatesE2ETestModule.addListener('Expo.updatesE2EStateChangeEvent', _handleE2EStateChangeEvent);
+
+type NativeInterfaceState = {
+  runtimeVersion: string;
+  embeddedUpdateId: string;
+  launchedUpdateId: string;
+  downloadTimeMs: number | null;
+  type?: string | null;
+  manifest?: ExpoUpdatesManifest | null;
+};
+
+const _nativeInterfaceStateChangeListeners = new Set<(event: any) => void>();
+
+// Reemits native state change events
+function _handleE2EStateChangeEvent(params: any) {
+  const newParams = typeof params === 'string' ? JSON.parse(params) : { ...params };
+
+  _nativeInterfaceStateChangeListeners.forEach((listener) => listener(newParams));
+}
+
+function useNativeInterfaceState() {
+  const runtimeVersion = ExpoUpdatesE2ETestModule.getRuntimeVersion();
+  const embeddedUpdateId = ExpoUpdatesE2ETestModule.getEmbeddedUpdateId()?.toLowerCase();
+  const launchedUpdateId = ExpoUpdatesE2ETestModule.getLaunchedUpdateId()?.toLowerCase();
+  const [state, setState] = React.useState<NativeInterfaceState>({
+    type: null,
+    manifest: null,
+    runtimeVersion,
+    embeddedUpdateId,
+    launchedUpdateId,
+    downloadTimeMs: null,
+  });
+  const listener = React.useCallback((event: any) => {
+    setState({
+      type: event.type,
+      manifest: event.manifest,
+      runtimeVersion,
+      embeddedUpdateId,
+      launchedUpdateId: ExpoUpdatesE2ETestModule.getLaunchedUpdateId(),
+      downloadTimeMs: ExpoUpdatesE2ETestModule.getDownloadTimeMs(),
+    });
+  }, []);
+  React.useEffect(() => {
+    _nativeInterfaceStateChangeListeners.add(listener);
+    return () => {
+      _nativeInterfaceStateChangeListeners.delete(listener);
+    };
+  }, [listener]);
+  return state;
+}
 
 require('./includedAssets/test.png');
 require('./includedAssets/lock-filled.svg');
@@ -33,7 +85,10 @@ function TestValue(props: { testID: string; value: string }) {
 
 function TestButton(props: { testID: string; onPress: () => void }) {
   return (
-    <Pressable testID={props.testID} style={styles.button} onPress={props.onPress}>
+    <Pressable
+      testID={props.testID}
+      style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+      onPress={props.onPress}>
       <Text style={styles.buttonText}>{props.testID}</Text>
     </Pressable>
   );
@@ -49,8 +104,11 @@ export default function App() {
   const [startTime, setStartTime] = React.useState<number | null>(null);
   const [didCheckAndDownloadHappenInParallel, setDidCheckAndDownloadHappenInParallel] =
     React.useState(false);
+  const [wasIsStartupProcedureRunningEverTrue, setWasIsStartupProcedureRunningEverTrue] =
+    React.useState(false);
 
   const {
+    isStartupProcedureRunning,
     currentlyRunning,
     availableUpdate,
     downloadedUpdate,
@@ -59,11 +117,22 @@ export default function App() {
     checkError,
     isChecking,
     isDownloading,
+    isRestarting,
+    restartCount,
+    downloadProgress,
   } = Updates.useUpdates();
+
+  const nativeInterfaceState = useNativeInterfaceState();
 
   React.useEffect(() => {
     setStartTime(Date.now());
   }, []);
+
+  React.useEffect(() => {
+    if (isStartupProcedureRunning) {
+      setWasIsStartupProcedureRunningEverTrue(true);
+    }
+  }, [isStartupProcedureRunning]);
 
   // Get rollback state with this, until useUpdates() supports rollbacks
   React.useEffect(() => {
@@ -101,20 +170,49 @@ export default function App() {
     setExtraParamsString(JSON.stringify(params, null, 2));
   });
 
+  const handleSetUpdateURLAndRequestHeadersOverride = runBlockAsync(async () => {
+    Updates.setUpdateURLAndRequestHeadersOverride({
+      updateUrl: `${Constants.expoConfig?.updates?.url}-override`,
+      requestHeaders: {},
+    });
+  });
+
+  const handleToggleUpdateRequestHeadersOverride = runBlockAsync(async () => {
+    if (currentlyRunning.channel !== 'preview') {
+      Updates.setUpdateRequestHeadersOverride({
+        'expo-channel-name': 'preview',
+      });
+    } else {
+      Updates.setUpdateRequestHeadersOverride(null);
+    }
+  });
+
   const handleReadAssetFiles = runBlockAsync(async () => {
-    const numFiles = await ExpoUpdatesE2ETest.readInternalAssetsFolderAsync();
+    const numFiles = await ExpoUpdatesE2ETestModule.readInternalAssetsFolderAsync();
     setNumAssetFiles(numFiles);
   });
 
   const handleClearAssetFiles = runBlockAsync(async () => {
-    await ExpoUpdatesE2ETest.clearInternalAssetsFolderAsync();
-    const numFiles = await ExpoUpdatesE2ETest.readInternalAssetsFolderAsync();
+    await ExpoUpdatesE2ETestModule.clearInternalAssetsFolderAsync();
+    const numFiles = await ExpoUpdatesE2ETestModule.readInternalAssetsFolderAsync();
     setNumAssetFiles(numFiles);
   });
 
   const handleReadLogEntries = runBlockAsync(async () => {
     const logEntries = await Updates.readLogEntriesAsync(60000);
     setLogs(logEntries);
+    const server_port = process.env.EXPO_PUBLIC_UPDATES_SERVER_PORT;
+    try {
+      await fetch(`http://localhost:${server_port}/upload-log-entries`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(logEntries),
+      });
+    } catch (e) {
+      console.log('Server does not support the log entry endpoints');
+    }
   });
 
   const handleClearLogEntries = runBlockAsync(async () => {
@@ -183,7 +281,13 @@ export default function App() {
       <TestValue testID="extraParamsString" value={`${extraParamsString}`} />
       <TestValue testID="isReloading" value={`${isReloading}`} />
       <TestValue testID="startTime" value={`${startTime}`} />
+      <TestValue testID="channel" value={`${currentlyRunning.channel}`} />
 
+      <TestValue
+        testID="wasIsStartupProcedureRunningEverTrue"
+        value={`${wasIsStartupProcedureRunningEverTrue}`}
+      />
+      <TestValue testID="state.isStartupProcedureRunning" value={`${isStartupProcedureRunning}`} />
       <TestValue testID="state.isUpdateAvailable" value={`${isUpdateAvailable}`} />
       <TestValue testID="state.isUpdatePending" value={`${isUpdatePending}`} />
       <TestValue testID="state.isRollback" value={`${isRollback}`} />
@@ -200,6 +304,22 @@ export default function App() {
         testID="state.downloadedManifest.id"
         value={`${downloadedUpdate?.manifest?.id || ''}`}
       />
+      <TestValue testID="state.isRestarting" value={`${isRestarting}`} />
+      <TestValue testID="state.restartCount" value={`${restartCount}`} />
+      <TestValue testID="state.downloadProgress" value={`${downloadProgress}`} />
+      <TestValue testID="nativeInterfaceState.type" value={`${nativeInterfaceState.type}`} />
+      <TestValue
+        testID="nativeInterfaceState.launchedUpdateId"
+        value={`${nativeInterfaceState.launchedUpdateId}`}
+      />
+      <TestValue
+        testID="nativeInterfaceState.availableUpdateId"
+        value={`${nativeInterfaceState.manifest?.id}`}
+      />
+      <TestValue
+        testID="nativeInterfaceState.downloadTimeMs"
+        value={`${nativeInterfaceState.downloadTimeMs}`}
+      />
 
       <Text>Log messages</Text>
       <ScrollView contentContainerStyle={styles.logEntriesContainer}>
@@ -211,7 +331,7 @@ export default function App() {
       <Text>Updates expoConfig</Text>
       <ScrollView contentContainerStyle={styles.logEntriesContainer}>
         <Text testID="updates.expoClient" style={styles.logEntriesText}>
-          {JSON.stringify(Updates.manifest?.extra?.expoClient || {})}
+          {JSON.stringify((Updates.manifest as ExpoUpdatesManifest)?.extra?.expoClient || {})}
         </Text>
       </ScrollView>
 
@@ -239,6 +359,14 @@ export default function App() {
             onPress={handleCheckAndDownloadAtSameTime}
           />
           <TestButton testID="reload" onPress={handleReload} />
+          <TestButton
+            testID="setUpdateURLAndRequestHeadersOverride"
+            onPress={handleSetUpdateURLAndRequestHeadersOverride}
+          />
+          <TestButton
+            testID="toggleUpdateRequestHeadersOverride"
+            onPress={handleToggleUpdateRequestHeadersOverride}
+          />
         </View>
       </View>
 
@@ -260,22 +388,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 5,
-    paddingVertical: 5,
+    paddingVertical: 2,
     paddingHorizontal: 10,
     borderRadius: 4,
     elevation: 3,
     backgroundColor: '#4630EB',
   },
+  buttonPressed: {
+    backgroundColor: '#FFFFFF',
+  },
   buttonText: {
     color: 'white',
-    fontSize: 6,
+    fontSize: 10,
   },
   labelText: {
-    fontSize: 6,
+    fontSize: 10,
   },
   logEntriesContainer: {
     margin: 10,
-    height: 50,
+    height: 20,
     paddingVertical: 5,
     paddingHorizontal: 10,
     width: '90%',

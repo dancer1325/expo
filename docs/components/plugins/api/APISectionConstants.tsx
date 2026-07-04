@@ -1,5 +1,6 @@
 import { mergeClasses } from '@expo/styleguide';
 
+import { getTagData } from '~/components/plugins/api/APISectionUtils';
 import { CALLOUT, H2 } from '~/ui/components/Text';
 
 import { ConstantDefinitionData } from './APIDataTypes';
@@ -19,18 +20,26 @@ const renderConstant = (
   { name, comment, type }: ConstantDefinitionData,
   sdkVersion: string,
   apiName?: string
-): JSX.Element => (
-  <div key={`constant-definition-${name}`} className={STYLES_APIBOX}>
-    <APISectionDeprecationNote comment={comment} sticky />
-    <APIBoxHeader name={`${apiName ? `${apiName}.` : ''}${name}`} comment={comment} />
-    {type && (
-      <CALLOUT className={mergeClasses(STYLES_SECONDARY, ELEMENT_SPACING, VERTICAL_SPACING)}>
-        Type: <APIDataType typeDefinition={type} sdkVersion={sdkVersion} />
-      </CALLOUT>
-    )}
-    {comment && <APICommentTextBlock comment={comment} includePlatforms={false} inlineHeaders />}
-  </div>
-);
+) => {
+  const hideType = Boolean(getTagData('hideType', comment));
+
+  return (
+    <div key={`constant-definition-${name}`} className={STYLES_APIBOX}>
+      <APISectionDeprecationNote comment={comment} sticky />
+      <APIBoxHeader
+        name={`${apiName ? `${apiName}.` : ''}${name}`}
+        comment={comment}
+        deprecated={Boolean(getTagData('deprecated', comment))}
+      />
+      {type && !hideType && (
+        <CALLOUT className={mergeClasses(STYLES_SECONDARY, ELEMENT_SPACING, VERTICAL_SPACING)}>
+          Type: <APIDataType typeDefinition={type} sdkVersion={sdkVersion} />
+        </CALLOUT>
+      )}
+      {comment && <APICommentTextBlock comment={comment} includePlatforms={false} inlineHeaders />}
+    </div>
+  );
+};
 
 const APISectionConstants = ({ data, sdkVersion, apiName }: APISectionConstantsProps) =>
   data?.length ? (

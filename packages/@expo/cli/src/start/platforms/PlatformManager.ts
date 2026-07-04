@@ -2,11 +2,11 @@ import { getConfig } from '@expo/config';
 import assert from 'assert';
 import chalk from 'chalk';
 
-import { AppIdResolver } from './AppIdResolver';
-import { DeviceManager } from './DeviceManager';
 import { Log } from '../../log';
 import { CommandError, UnimplementedError } from '../../utils/errors';
 import { learnMore } from '../../utils/link';
+import type { AppIdResolver } from './AppIdResolver';
+import type { DeviceManager } from './DeviceManager';
 
 const debug = require('debug')('expo:start:platforms:platformManager') as typeof console.log;
 
@@ -144,7 +144,7 @@ export class PlatformManager<
     if (!(await deviceManager.isAppInstalledAndIfSoReturnContainerPathForIOSAsync(applicationId))) {
       throw new CommandError(
         `No development build (${applicationId}) for this project is installed. ` +
-          `Please make and install a development build on the device first.\n${learnMore(
+          `Install a development build on the target device and try again.\n${learnMore(
             'https://docs.expo.dev/development/build/'
           )}`
       );

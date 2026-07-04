@@ -3,18 +3,19 @@
 #import "EXAppState.h"
 #import "EXDevSettings.h"
 #import "EXDisabledDevLoadingView.h"
-#import "EXDisabledDevMenu.h"
+#import "EXExpoPerfMonitor.h"
 #import "EXDisabledRedBox.h"
 #import "EXVersionManagerObjC.h"
-#import "EXScopedBridgeModule.h"
 #import "EXStatusBarManager.h"
-#import "EXUnversioned.h"
 #import "EXTest.h"
+
+#import <string.h>
 
 #import <React/RCTAssert.h>
 #import <React/RCTDevMenu.h>
 #import <React/RCTDevSettings.h>
 #import <React/RCTExceptionsManager.h>
+#import <React/RCTBundleURLProvider.h>
 #import <React/RCTLog.h>
 #import <React/RCTRedBox.h>
 #import <React/RCTPackagerConnection.h>
@@ -31,9 +32,7 @@
 #import <React/CoreModulesPlugins.h>
 #import <React/RCTReloadCommand.h>
 
-#import <ExpoModulesCore/EXNativeModulesProxy.h>
 #import <ExpoModulesCore/EXModuleRegistryHolderReactModule.h>
-#import <react/config/ReactNativeConfig.h>
 #import <ReactCommon/RCTTurboModuleManager.h>
 
 
@@ -46,8 +45,13 @@
 #endif
 
 // Import 3rd party modules that need to be scoped.
+#if __has_include(<RNCAsyncStorage/RNCAsyncStorage.h>)
 #import <RNCAsyncStorage/RNCAsyncStorage.h>
+#endif
+
+#if __has_include(<RNCWebViewManager.h>)
 #import <RNCWebViewManager.h>
+#endif
 
 #import "EXScopedModuleRegistry.h"
 #import "EXScopedModuleRegistryAdapter.h"
@@ -60,14 +64,12 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
 
 @interface EXVersionManagerObjC ()
 
-// is this the first time this ABI has been touched at runtime?
 @property (nonatomic, strong) NSDictionary *params;
 @property (nonatomic, strong) EXManifestsManifest *manifest;
 @property (nonatomic, strong, nullable) EXVersionedNetworkInterceptor *networkInterceptor;
 
 // Legacy
 @property (nonatomic, strong) EXModuleRegistry *legacyModuleRegistry;
-@property (nonatomic, strong) EXNativeModulesProxy *legacyModulesProxy;
 
 @end
 
@@ -85,7 +87,6 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
  *
  * Kernel-only:
  *    EXKernel *kernel
- *    NSArray *supportedSdkVersions
  *    id exceptionsManagerDelegate
  */
 - (nonnull instancetype)initWithParams:(nonnull NSDictionary *)params
@@ -105,15 +106,17 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
 {
   // Register scoped 3rd party modules. Some of them are separate pods that
   // don't have access to EXScopedModuleRegistry and so they can't register themselves.
+#if __has_include(<RNCWebViewManager.h>)
   EXRegisterScopedModule([RNCWebViewManager class], EX_KERNEL_SERVICE_NONE, nil);
+#endif
 }
 
 - (void)hostDidStart:(NSURL *)bundleURL
 {
   if ([self _isDevModeEnabledForHost:bundleURL]) {
-    // Set the bundle url for the packager connection manually
-    NSString *packagerServerHostPort = [NSString stringWithFormat:@"%@:%@", bundleURL.host, bundleURL.port];
-    [[RCTPackagerConnection sharedPackagerConnection] reconnect:packagerServerHostPort];
+    RCTBundleURLProvider *settings = [RCTBundleURLProvider sharedSettings];
+    settings.packagerScheme = ([bundleURL.scheme isEqualToString:@"https"] || [bundleURL.scheme isEqualToString:@"exps"]) ? @"https" : @"http";
+
     RCTInspectorPackagerConnection *inspectorPackagerConnection = [RCTInspectorDevServerHelper connectWithBundleURL:bundleURL];
 
     NSDictionary<NSString *, id> *buildProps = [self.manifest getPluginPropertiesWithPackageName:@"expo-build-properties"];
@@ -130,7 +133,7 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
   // Keep in mind that it is possible this will return a EXDisabledRedBox
   RCTRedBox *redBox = (RCTRedBox *)[[host moduleRegistry] moduleForName:"RedBox"];
   [redBox setOverrideReloadAction:^{
-    [[NSNotificationCenter defaultCenter] postNotificationName:EX_UNVERSIONED(@"EXReloadActiveAppRequest") object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"EXReloadActiveAppRequest" object:nil];
   }];
 }
 
@@ -163,7 +166,7 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
   }
 
   items[@"dev-remote-debug"] = @{
-    @"label": @"Open JS Debugger",
+    @"label": @"Open DevTools",
     @"isEnabled": @YES
   };
 
@@ -230,23 +233,9 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
 {
   RCTAssertMainQueue();
   id devMenu = [self _moduleInstanceForHost:host named:@"DevMenu"];
-  // respondsToSelector: check is required because it's possible this bridge
-  // was instantiated with a `disabledDevMenu` instance and the gesture preference was recently updated.
   if ([devMenu respondsToSelector:@selector(show)]) {
     [((RCTDevMenu *)devMenu) show];
   }
-}
-
-- (void)disableRemoteDebuggingForHost:(id)host
-{
-  RCTDevSettings *devSettings = [self devSettings:host];
-  devSettings.isDebuggingRemotely = NO;
-}
-
-- (void)toggleRemoteDebuggingForHost:(id)host
-{
-  RCTDevSettings *devSettings = [self devSettings:host];
-  devSettings.isDebuggingRemotely = !devSettings.isDebuggingRemotely;
 }
 
 - (void)togglePerformanceMonitorForHost:(id)host
@@ -270,18 +259,11 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
   [devSettings toggleElementInspector];
 }
 
-- (uint32_t)addWebSocketNotificationHandler:(void (^)(NSDictionary<NSString *, id> *))handler
-                                    queue:(dispatch_queue_t)queue
-                                forMethod:(NSString *)method
-{
-  return [[RCTPackagerConnection sharedPackagerConnection] addNotificationHandler:handler queue:queue forMethod:method];
-}
-
 #pragma mark - internal
 
 - (BOOL)_isDevModeEnabledForHost:(NSURL *)bundleURL
 {
-  return ([RCTGetURLQueryParam(bundleURL, @"dev") boolValue]);
+  return ([RCTGetURLQueryParam(bundleURL, @"dev") boolValue] || _manifest.isDevelopmentMode);
 }
 
 - (void)_openJsInspector:(NSURL *)bundleURL
@@ -297,7 +279,12 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
 
 - (id<RCTTurboModule>)_moduleInstanceForHost:(id)host named:(NSString *)name
 {
-  return [[host moduleRegistry] moduleForName:[name UTF8String]];
+  const char *cName = [name UTF8String];
+  id module = [[host moduleRegistry] moduleForName:cName];
+  if (module && strcmp(cName, "PerfMonitor") == 0 && [module respondsToSelector:@selector(updateHost:)]) {
+    [module updateHost:host];
+  }
+  return module;
 }
 
 - (NSArray *)extraModules
@@ -317,22 +304,11 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
     }
   }
 
-  if (params[@"browserModuleClass"]) {
-    Class browserModuleClass = params[@"browserModuleClass"];
-    id homeModule = [[browserModuleClass alloc] initWithExperienceStableLegacyId:self.manifest.stableLegacyId
-                                                                        scopeKey:self.manifest.scopeKey
-                                                                    easProjectId:self.manifest.easProjectId
-                                                           kernelServiceDelegate:services[EX_UNVERSIONED(@"EXHomeModuleManager")]
-                                                                          params:params];
-    [extraModules addObject:homeModule];
-  }
-
   [extraModules addObject:[self getModuleInstanceFromClass:[self getModuleClassFromName:"DevSettings"]]];
   id exceptionsManager = [self getModuleInstanceFromClass:RCTExceptionsManagerCls()];
   if (exceptionsManager) {
     [extraModules addObject:exceptionsManager];
   }
-  [extraModules addObject:[self getModuleInstanceFromClass:[self getModuleClassFromName:"DevMenu"]]];
   [extraModules addObject:[self getModuleInstanceFromClass:[self getModuleClassFromName:"RedBox"]]];
   
   return extraModules;
@@ -386,11 +362,8 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
   if (strcmp(name, "DevSettings") == 0) {
     return EXDevSettings.class;
   }
-  if (strcmp(name, "DevMenu") == 0) {
-    if (![_params[@"isStandardDevMenuAllowed"] boolValue] || ![_params[@"isDeveloper"] boolValue]) {
-      // non-kernel, or non-development kernel, uses expo menu instead of RCTDevMenu
-      return EXDisabledDevMenu.class;
-    }
+  if (strcmp(name, "PerfMonitor") == 0) {
+    return EXExpoPerfMonitor.class;
   }
   if (strcmp(name, "RedBox") == 0) {
     if (![_params[@"isDeveloper"] boolValue]) {
@@ -432,7 +405,9 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
     } else {
       RCTLogWarn(@"No exceptions manager provided when building extra modules.");
     }
-  } else if (moduleClass == RNCAsyncStorage.class) {
+  }
+#if __has_include(<RNCAsyncStorage/RNCAsyncStorage.h>)
+  else if (moduleClass == RNCAsyncStorage.class) {
     NSString *documentDirectory;
     if (_params[@"fileSystemDirectories"]) {
       documentDirectory = _params[@"fileSystemDirectories"][@"documentDirectory"];
@@ -440,9 +415,10 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
       NSArray<NSString *> *documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
       documentDirectory = [documentPaths objectAtIndex:0];
     }
-    NSString *localStorageDirectory = [documentDirectory stringByAppendingPathComponent:EX_UNVERSIONED(@"RCTAsyncLocalStorage")];
+    NSString *localStorageDirectory = [documentDirectory stringByAppendingPathComponent:@"RCTAsyncLocalStorage"];
     return [[moduleClass alloc] initWithStorageDirectory:localStorageDirectory];
   }
+#endif
 
   return [moduleClass new];
 }

@@ -1,15 +1,15 @@
+<% if (project.platforms.includes('web')) { -%>
 import { registerWebModule, NativeModule } from 'expo';
+<%- webEventImport %>
+class <%- project.moduleName %> extends NativeModule<<%- webEventType %>><% if (webModuleSnippets) { %> {
+<%- webModuleSnippets %>}<% } else { %> {}<% } %>
 
-import { <%- project.moduleName %>Events } from './<%- project.name %>.types';
+export default registerWebModule(<%- project.moduleName %>, '<%- project.moduleName %>');
+<% } else { -%>
+import { registerWebModule, NativeModule } from 'expo';
+<%- webEventImport %>
+// <%- project.moduleName %> is not available on the web platform.
+class <%- project.moduleName %> extends NativeModule<<%- webEventType %>> {}
 
-class <%- project.moduleName %> extends NativeModule<<%- project.moduleName %>Events> {
-  PI = Math.PI;
-  async setValueAsync(value: string): Promise<void> {
-    this.emit('onChange', { value });
-  }
-  hello() {
-    return 'Hello world! 👋';
-  }
-}
-
-export default registerWebModule(<%- project.moduleName %>);
+export default registerWebModule(<%- project.moduleName %>, '<%- project.moduleName %>');
+<% } -%>

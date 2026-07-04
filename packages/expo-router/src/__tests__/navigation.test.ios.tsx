@@ -1,19 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { Text, View } from 'react-native';
+import { act, fireEvent } from '@testing-library/react-native';
+import { useEffect } from 'react';
+import { Text, View } from 'react-native';
 
 import {
   useRouter,
   useGlobalSearchParams,
   router,
   useLocalSearchParams,
-  Redirect,
   Slot,
   usePathname,
-  Link,
 } from '../exports';
+import { store } from '../global-state/router-store';
 import { Stack } from '../layouts/Stack';
 import { Tabs } from '../layouts/Tabs';
-import { act, fireEvent, renderRouter, screen } from '../testing-library';
+import { Link, Redirect } from '../link';
+import { renderRouter, screen } from '../testing-library';
 
 it('should respect `unstable_settings', () => {
   const render = (options: any = {}) =>
@@ -114,29 +116,21 @@ describe('hooks only', () => {
 });
 
 describe('imperative only', () => {
-  it('will throw if navigation is attempted before navigation is ready', async () => {
+  // The navigation action is offloaded until the navigation tree is ready.
+  it('can navigate before navigation is ready', async () => {
     renderRouter({
       index: function MyIndexRoute() {
-        return <Text>Press me</Text>;
+        router.push('/profile/test-name');
+        return <Text testID="index">Press me</Text>;
       },
       '/profile/[name]': function MyRoute() {
         const { name } = useGlobalSearchParams();
-        return <Text>{name}</Text>;
-      },
-      '+native-intent': {
-        redirectSystemPath() {
-          return new Promise(() => {}); // This never resolves
-        },
+        return <Text testID="profile-name">{name}</Text>;
       },
     });
 
-    expect(() => {
-      act(() => {
-        router.push('/profile/test-name');
-      });
-    }).toThrowError(
-      'Attempted to navigate before mounting the Root Layout component. Ensure the Root Layout component is rendering a Slot, or other navigator on the first render.'
-    );
+    expect(screen.queryByTestId('index')).toBeNull();
+    expect(screen.getByTestId('profile-name')).toBeOnTheScreen();
   });
 
   it('can handle navigation between routes', async () => {
@@ -480,12 +474,58 @@ it('can navigate to hoisted groups', () => {
   expect(screen.getByTestId('route')).toBeTruthy();
 });
 
-it('can navigate to nested groups', () => {
+it('can navigate to the index of a nested groups', () => {
   renderRouter({
     index: () => <></>,
     _layout: () => <Slot />,
     'example/(a,b)/_layout': () => <Slot />,
     'example/(a,b)/folder/(c,d)/_layout': () => <Slot />,
+    'example/(a,b)/folder/(c,d)/index': () => <Text testID="index" />,
+  });
+
+  expect(screen).toHavePathname('/');
+  act(() => router.push('/example/(a)/folder/(d)'));
+
+  expect(screen).toHavePathname('/example/folder');
+  expect(screen.getByTestId('index')).toBeTruthy();
+});
+
+it('can navigate to the first route of a nested group when there is not an index route', () => {
+  renderRouter({
+    index: () => <></>,
+    _layout: () => <Slot />,
+    'example/(a,b)/_layout': () => <Slot />,
+    'example/(a,b)/folder/(c,d)/_layout': () => <Slot />,
+    'example/(a,b)/folder/(c,d)/route': () => <Text testID="route" />,
+  });
+
+  expect(screen).toHavePathname('/');
+  act(() => router.push('/example/(a)/folder/(d)/route'));
+
+  expect(screen).toHavePathname('/example/folder/route');
+  expect(screen.getByTestId('route')).toBeTruthy();
+});
+
+it('can navigate to the index of a hoisted nested groups', () => {
+  renderRouter({
+    index: () => <></>,
+    _layout: () => <Slot />,
+    'example/(a,b)/_layout': () => <Slot />,
+    'example/(a,b)/folder/(c,d)/index': () => <Text testID="index" />,
+  });
+
+  expect(screen).toHavePathname('/');
+  act(() => router.push('/example/(a)/folder/(d)'));
+
+  expect(screen).toHavePathname('/example/folder');
+  expect(screen.getByTestId('index')).toBeTruthy();
+});
+
+it('can navigate to the first route of a hoisted nested group when there is not an index route', () => {
+  renderRouter({
+    index: () => <></>,
+    _layout: () => <Slot />,
+    'example/(a,b)/_layout': () => <Slot />,
     'example/(a,b)/folder/(c,d)/route': () => <Text testID="route" />,
   });
 
@@ -839,7 +879,9 @@ it('can replace across groups', async () => {
   expect(screen).toHaveSegments(['+not-found']);
 
   // Go to one
-  act(() => router.push('/one/screen'));
+  // Using replace here, so we don't create a history entry
+  // Otherwise canGoBack would be true
+  act(() => router.replace('/one/screen'));
   expect(screen).toHavePathname('/one/screen');
   expect(screen.getByTestId('one/screen')).toBeOnTheScreen();
 
@@ -1629,7 +1671,7 @@ describe('navigation action fallbacks', () => {
     expect(screen).toHavePathname('/');
   }
 
-  it.only('can fall back correctly for tab navigators', () => {
+  it('can fall back correctly for tab navigators', () => {
     renderRouter({
       _layout: () => <Tabs />,
       one: () => <Text testID="one" />,
@@ -1654,4 +1696,102 @@ describe('navigation action fallbacks', () => {
   //   runReplaceTest();
   //   runRedirectionTest();
   // });
+});
+
+it('multiple pushes in useEffect are executed in order and added to stack', () => {
+  renderRouter({
+    _layout: () => <Stack />,
+    index: function Index() {
+      const router = useRouter();
+      useEffect(() => {
+        router.push('/one');
+        router.push('/two');
+      }, []);
+      return <Text testID="index" />;
+    },
+    one: () => <Text testID="one" />,
+    two: () => <Text testID="two" />,
+  });
+  expect(screen.getByTestId('two')).toBeVisible();
+  expect(screen.queryByTestId('index')).toBeNull();
+  expect(screen.queryByTestId('one')).toBeNull();
+  expect(screen).toHavePathname('/two');
+
+  act(() => router.back());
+  expect(screen.getByTestId('one')).toBeVisible();
+  expect(screen.queryByTestId('index')).toBeNull();
+  expect(screen.queryByTestId('two')).toBeNull();
+  expect(screen).toHavePathname('/one');
+
+  act(() => router.back());
+  expect(screen.getByTestId('index')).toBeVisible();
+  expect(screen.queryByTestId('one')).toBeNull();
+  expect(screen.queryByTestId('two')).toBeNull();
+  expect(screen).toHavePathname('/');
+});
+
+it('multiple pushes to different stack are executed in order and added separately to parent stack', () => {
+  renderRouter(
+    {
+      _layout: () => <Stack />,
+      'a/_layout': () => <Stack />,
+      'b/_layout': () => <Stack />,
+      'a/c': function C() {
+        const router = useRouter();
+        return (
+          <Text
+            testID="c"
+            onPress={() => {
+              router.push('/b/d');
+              router.push('/b/e');
+            }}>
+            V
+          </Text>
+        );
+      },
+      'b/d': () => <Text testID="d">D</Text>,
+      'b/e': () => <Text testID="e">E</Text>,
+    },
+    {
+      initialUrl: '/a/c',
+    }
+  );
+
+  expect(screen.getByTestId('c')).toBeVisible();
+  expect(screen.queryByTestId('d')).toBeNull();
+  expect(screen.queryByTestId('e')).toBeNull();
+  expect(screen).toHavePathname('/a/c');
+
+  fireEvent.press(screen.getByTestId('c'));
+  expect(screen.getByTestId('e')).toBeVisible();
+  expect(screen.queryByTestId('c')).toBeNull();
+  expect(screen.queryByTestId('d')).toBeNull();
+  expect(screen).toHavePathname('/b/e');
+
+  expect(store.state!.index).toBe(0);
+  expect(store.state!.routes).toHaveLength(1);
+  expect(store.state!.routes[0]!.name).toBe('__root');
+  // Both pushes from 'c' will create new routes in root layout. This is because both pushes are happening on the same state, where there is no 'b' stack yet.
+  expect(store.state!.routes[0]!.state!.routes).toHaveLength(3);
+  expect(store.state!.routes[0]!.state!.routes[0]!.name).toBe('a');
+  expect(store.state!.routes[0]!.state!.routes[0]!.state!.routes).toHaveLength(1);
+  expect(store.state!.routes[0]!.state!.routes[0]!.state!.routes[0]!.name).toBe('c');
+  expect(store.state!.routes[0]!.state!.routes[1]!.name).toBe('b');
+  expect(store.state!.routes[0]!.state!.routes[1]!.state!.routes).toHaveLength(1);
+  expect(store.state!.routes[0]!.state!.routes[1]!.state!.routes[0]!.name).toBe('d');
+  expect(store.state!.routes[0]!.state!.routes[2]!.name).toBe('b');
+  expect(store.state!.routes[0]!.state!.routes[2]!.state!.routes).toHaveLength(1);
+  expect(store.state!.routes[0]!.state!.routes[2]!.state!.routes[0]!.name).toBe('e');
+
+  act(() => router.back());
+  expect(screen.getByTestId('d')).toBeVisible();
+  expect(screen.queryByTestId('c')).toBeNull();
+  expect(screen.queryByTestId('e')).toBeNull();
+  expect(screen).toHavePathname('/b/d');
+
+  act(() => router.back());
+  expect(screen.getByTestId('c')).toBeVisible();
+  expect(screen.queryByTestId('d')).toBeNull();
+  expect(screen.queryByTestId('e')).toBeNull();
+  expect(screen).toHavePathname('/a/c');
 });

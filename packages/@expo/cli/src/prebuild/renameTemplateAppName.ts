@@ -1,9 +1,7 @@
 import { IOSConfig } from '@expo/config-plugins';
-import { glob } from 'fast-glob';
 import fs from 'fs';
+import { glob } from 'glob';
 import path from 'path';
-
-import { ExtractProps } from '../utils/npm';
 
 const debug = require('debug')('expo:prebuild:copyTemplateFiles') as typeof console.log;
 
@@ -41,7 +39,7 @@ function escapeXMLCharacters(original: string): string {
  * `getTemplateFilesToRenameAsync()`.
  *
  * The file patterns are formatted as glob expressions to be interpreted by
- * [fast-glob](https://github.com/mrmlnc/fast-glob). Comments are supported with
+ * [glob](https://github.com/isaacs/node-glob). Comments are supported with
  * the `#` symbol, both in the plain-text file and string array formats.
  * Whitespace is trimmed and whitespace-only lines are ignored.
  *
@@ -81,44 +79,56 @@ export const defaultRenameConfig = [
  * The rename config is resolved in the order of preference:
  * Config provided as function param > defaultRenameConfig
  */
-export async function getTemplateFilesToRenameAsync({
-  cwd,
-  /**
-   * An array of patterns following the rename config format. If omitted, then
-   * we fall back to defaultRenameConfig.
-   * @see defaultRenameConfig
-   */
-  renameConfig: userConfig,
-}: Pick<ExtractProps, 'cwd'> & { renameConfig?: string[] }) {
+export async function getTemplateFilesToRenameAsync(
+  cwd: string,
+  {
+    renameConfig: userConfig,
+  }: {
+    /**
+     * An array of patterns following the rename config format. If omitted, then
+     * we fall back to defaultRenameConfig.
+     * @see defaultRenameConfig
+     */
+    renameConfig?: string[];
+  } = {}
+) {
   let config = userConfig ?? defaultRenameConfig;
 
   // Strip comments, trim whitespace, and remove empty lines.
-  config = config.map((line) => line.split(/(?<!\\)#/, 2)[0].trim()).filter((line) => line !== '');
+  config = config
+    .map((line) => line.split(/(?<!\\)#/, 3)[0]?.trim())
+    .filter((line): line is string => !!line);
 
   return await glob(config, {
     cwd,
     // `true` is consistent with .gitignore. Allows `*.xml` to match .xml files
     // in all subdirs.
-    baseNameMatch: true,
+    matchBase: true,
     dot: true,
     // Prevent climbing out of the template directory in case a template
     // includes a symlink to an external directory.
-    followSymbolicLinks: false,
+    follow: false,
+    // Do not match on directories, only files
+    // Without this patterns like `android/**/*.gradle` actually match the folder `android/.gradle`
+    nodir: true,
   });
 }
 
-export async function renameTemplateAppNameAsync({
-  cwd,
-  name,
-  files,
-}: Pick<ExtractProps, 'cwd' | 'name'> & {
-  /**
-   * An array of files to transform. Usually provided by calling
-   * getTemplateFilesToRenameAsync().
-   * @see getTemplateFilesToRenameAsync
-   */
-  files: string[];
-}) {
+export async function renameTemplateAppNameAsync(
+  cwd: string,
+  {
+    expName: name,
+    files,
+  }: {
+    expName: string;
+    /**
+     * An array of files to transform. Usually provided by calling
+     * getTemplateFilesToRenameAsync().
+     * @see getTemplateFilesToRenameAsync
+     */
+    files: string[];
+  }
+) {
   debug(`Got files to transform: ${JSON.stringify(files)}`);
 
   await Promise.all(

@@ -1,20 +1,26 @@
 ---
 title: Expo push notifications setup
 description: Learn how to set up push notifications, get credentials for development and production, and send a testing push notification.
+hasVideoLink: true
 ---
 
 import { Collapsible } from '~/ui/components/Collapsible';
 import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { NotificationsVideo } from '~/ui/components/NotificationsVideo';
+import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
 import { Terminal } from '~/ui/components/Snippet';
 import { Step } from '~/ui/components/Step';
 import { Tab, Tabs } from '~/ui/components/Tabs';
+import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 To utilize Expo push notification service, you must configure your app by installing a set of libraries, implement functions to handle notifications, and set up credentials for Android and iOS.
 
 Complete the steps outlined in this guide or follow the more detailed video below. At the end, you'll be able to send a push notification and receive it on a device.
 
-<NotificationsVideo />
+<VideoBoxLink
+  videoId="BCCjGtKtBjE"
+  title="Expo Notifications with EAS | Complete Guide"
+  description="Learn how to set up push notifications in an Expo project. This video covers configuring Firebase for FCM v1 on Android, setting up Android and iOS credentials on EAS, building with EAS Build, and testing with Expo Notifications tool."
+/>
 <br />
 
 To get the client-side ready for push notifications, the following things are required:
@@ -29,45 +35,75 @@ If you need finer-grained control over your notifications, communicating directl
 
 </Collapsible>
 
-## Prerequisites
+<Prerequisites>
+  <Requirement title="A device or emulator/simulator that supports push">
+    You can test push notifications on a physical Android or iOS device, on an Android Emulator with
+    Google Play services, or on an iOS Simulator running on Xcode 14 or later (macOS 13+, iOS 16+).
+  </Requirement>
+</Prerequisites>
 
-> **warning** **Important:** Push notifications are not supported on Android Emulators and iOS Simulators. A real device is required.
-
-The following steps described in this guide use [EAS Build](/build/introduction/). This is the easiest way to set up notifications since your EAS project will also contain the [notification credentials](#get-credentials-for-development-builds). However, you can use the `expo-notifications` library without EAS Build by building [your project locally](/guides/local-app-development/).
+The following steps in this guide use [EAS Build](/build/introduction/). This is the easiest way to set up notifications since your EAS project will also contain the [notification credentials](#get-credentials-for-development-builds). However, you can use the `expo-notifications` library without EAS Build by building [your project locally](/guides/local-app-development/).
 
 <Step label="1">
 
 ## Install libraries
 
-Run the following command to install the `expo-notifications`, `expo-device` and `expo-constants` libraries:
+Run the following command to install the `expo-notifications` and `expo-constants` libraries:
 
-<Terminal cmd={['$ npx expo install expo-notifications expo-device expo-constants']} />
+<Terminal
+  cmd={{
+    npm: ['$ npx expo install expo-notifications expo-constants'],
+    yarn: ['$ yarn expo install expo-notifications expo-constants'],
+    pnpm: ['$ pnpm expo install expo-notifications expo-constants'],
+    bun: ['$ bun expo install expo-notifications expo-constants'],
+  }}
+/>
 
 - [`expo-notifications`](/versions/latest/sdk/notifications) library is used to request a user's permission and to obtain the `ExpoPushToken` for sending push notifications.
-- [`expo-device`](/versions/latest/sdk/device) is used to check whether the app is running on a physical device.
 - [`expo-constants`](/versions/latest/sdk/constants) is used to get the `projectId` value from the app config.
 
 </Step>
 
 <Step label="2">
 
+## Add config plugin
+
+Add the `expo-notifications` plugin in the `plugins` array of your [app config](/workflow/configuration/):
+
+{/* prettier-ignore */}
+```json app.json
+{
+  "expo": {
+    /* @hide ... */ /* @end */
+    "plugins": [
+      /* @hide ... */ /* @end */
+      "expo-notifications"
+      ]
+  }
+}
+```
+
+</Step>
+
+<Step label="3">
+
 ## Add a minimal working example
 
 The code below shows a working example of how to register for, send, and receive push notifications in a React Native app. Copy and paste it into your project:
 
 ```tsx App.tsx
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Text, View, Button, Platform } from 'react-native';
-import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
 /* @info This handler determines how your app handles notifications that come in while the app is foregrounded. */
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 /* @end */
@@ -101,7 +137,7 @@ function handleRegistrationError(errorMessage: string) {
 
 async function registerForPushNotificationsAsync() {
   if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
+    await Notifications.setNotificationChannelAsync('default', {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
@@ -109,37 +145,32 @@ async function registerForPushNotificationsAsync() {
     });
   }
 
-  if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== 'granted') {
-      handleRegistrationError('Permission not granted to get push token for push notification!');
-      return;
-    }
-    const projectId =
-      Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-    if (!projectId) {
-      handleRegistrationError('Project ID not found');
-    }
-    try {
-      /* @info This fetches the Expo push token (if not previously fetched), which is unique to this device and projectID. */
-      const pushTokenString = (
-        await Notifications.getExpoPushTokenAsync({
-          projectId,
-        })
-      ).data;
-      /* @end */
-      console.log(pushTokenString);
-      return pushTokenString;
-    } catch (e: unknown) {
-      handleRegistrationError(`${e}`);
-    }
-  } else {
-    handleRegistrationError('Must use physical device for push notifications');
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
+  if (existingStatus !== 'granted') {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  }
+  if (finalStatus !== 'granted') {
+    handleRegistrationError('Permission not granted to get push token for push notification!');
+    return;
+  }
+  const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+  if (!projectId) {
+    handleRegistrationError('Project ID not found');
+  }
+  try {
+    /* @info This fetches the Expo push token (if not previously fetched), which is unique to this device and projectID. */
+    const pushTokenString = (
+      await Notifications.getExpoPushTokenAsync({
+        projectId,
+      })
+    ).data;
+    /* @end */
+    console.log(pushTokenString);
+    return pushTokenString;
+  } catch (e: unknown) {
+    handleRegistrationError(`${e}`);
   }
 }
 
@@ -148,8 +179,6 @@ export default function App() {
   const [notification, setNotification] = useState<Notifications.Notification | undefined>(
     undefined
   );
-  const notificationListener = useRef<Notifications.EventSubscription>();
-  const responseListener = useRef<Notifications.EventSubscription>();
 
   useEffect(() => {
     /* @info Gets the push token and displays it in the UI, or in case of an error, displays the error message. */
@@ -158,19 +187,17 @@ export default function App() {
       .catch((error: any) => setExpoPushToken(`${error}`));
     /* @end */
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+    const notificationListener = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
     });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+    const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
       console.log(response);
     });
 
     return () => {
-      notificationListener.current &&
-        Notifications.removeNotificationSubscription(notificationListener.current);
-      responseListener.current &&
-        Notifications.removeNotificationSubscription(responseListener.current);
+      notificationListener.remove();
+      responseListener.remove();
     };
   }, []);
 
@@ -208,7 +235,7 @@ One advantage of attributing the Expo push token to your project's ID is that it
 
 </Step>
 
-<Step label="3">
+<Step label="4">
 
 ## Get credentials for development builds
 
@@ -240,21 +267,28 @@ For Android and iOS, there are different requirements to set up your credentials
 
 </Step>
 
-<Step label="4">
+<Step label="5">
 ## Build the app
 
 <Terminal cmd={['$ eas build']} />
 
 </Step>
 
-<Step label="5">
+<Step label="6">
 ## Test using the push notifications tool
 
 After creating and installing the development build, you can use [Expo push notifications tool](https://expo.dev/notifications) to quickly send a test notification to your device.
 
 1. Start the development server for your project:
 
-   <Terminal cmd={['$ npx expo start']} />
+   <Terminal
+     cmd={{
+       npm: ['$ npx expo start'],
+       yarn: ['$ yarn expo start'],
+       pnpm: ['$ pnpm expo start'],
+       bun: ['$ bun expo start'],
+     }}
+   />
 
 2. Open the development build on your device.
 

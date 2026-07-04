@@ -17,7 +17,7 @@ export function withAnchor(Component: FC<PropsWithChildren<TextComponentProps>>)
     const slug = useSlug(id, children);
     return (
       <Component className="relative" data-id={slug} {...rest}>
-        <span className="invisible relative top-[-100px]" id={slug} />
+        <span className="invisible relative -top-25" id={slug} />
         <A href={`#${slug}`}>{children}</A>
       </Component>
     );
@@ -30,10 +30,8 @@ function useSlug(id: string | undefined, children: ReactNode) {
   const slugger = useContext(AnchorContext)!;
   let slugText = id;
 
-  if (!slugText) {
-    slugText = getTextFromChildren(children);
-    /** Eventually, we want to get rid of the auto-generating ID */
-  }
+  // Eventually, we want to get rid of the auto-generating ID
+  slugText ??= getTextFromChildren(children);
 
   return slugger.slug(slugText);
 }
@@ -44,7 +42,7 @@ export function getTextFromChildren(children: ReactNode): string {
       if (typeof child === 'string') {
         return child;
       }
-      if (isValidElement(child)) {
+      if (isValidElement<PropsWithChildren>(child)) {
         return getTextFromChildren(child.props.children);
       }
       return '';

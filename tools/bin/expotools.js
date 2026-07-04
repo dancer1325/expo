@@ -1,5 +1,4 @@
 'use strict';
-/* eslint-env node */
 
 // This script is just a wrapper around expotools that ensures node modules are installed
 // and TypeScript files are compiled. To make it work even when node_modules are empty,
@@ -22,6 +21,17 @@ function createLogModifier(modifier) {
     }
   };
 }
+
+/**
+ * Extract the complete spawn output, by line.
+ * This is useful for outputting errors encountered in spawn commands.
+ *
+ * @param {import('@expo/spawn-async').SpawnResult} result
+ */
+function getSpawnOutputLines(result) {
+  return result.output.map((line) => line.split('\n')).flat();
+}
+
 /**
  * Importing chalk directly may lead to errors
  * if it's not yet available on the machine.
@@ -43,19 +53,7 @@ maybeRebuildAndRun().catch((error) => {
 
 async function maybeRebuildAndRun() {
   const state = readState();
-  const dependenciesChecksum = await calculateDependenciesChecksumAsync();
   const sourceChecksum = await calculateSourceChecksumAsync();
-
-  // If `yarn.lock` checksum changed, reinstall expotools dependencies.
-  if (!state.dependenciesChecksum || state.dependenciesChecksum !== dependenciesChecksum) {
-    console.log(' 🧶 Yarning...');
-    try {
-      await spawnAsync('yarn', ['install'], { cwd: ROOT_PATH });
-    } catch (error) {
-      console.error(LogModifiers.error(` 💥 Yarning failed: ${error.stack}`));
-      process.exit(1);
-    }
-  }
 
   // If checksum of source files changed, rebuild TypeScript files.
   if (!state.sourceChecksum || state.sourceChecksum !== sourceChecksum || !buildFolderExists()) {
@@ -63,17 +61,23 @@ async function maybeRebuildAndRun() {
 
     try {
       // Compile TypeScript files into build folder.
-      await spawnAsync('yarn', ['run', 'build'], { cwd: ROOT_PATH });
+      await spawnAsync('pnpm', ['run', 'build'], { cwd: ROOT_PATH });
       state.schema = await getCommandsSchemaAsync();
     } catch (error) {
-      console.error(LogModifiers.error(` 💥 Rebuilding failed: ${error.stack}`));
+      console.error(LogModifiers.error(` 💥 Rebuilding failed:`));
+      console.error(
+        LogModifiers.error(
+          getSpawnOutputLines(error)
+            .map((line) => `    ${line}`)
+            .join('\n')
+        )
+      );
       process.exit(1);
     }
     console.log(` ✨ Successfully built ${LogModifiers.name('expotools')}\n`);
   }
 
   state.sourceChecksum = sourceChecksum || (await calculateSourceChecksumAsync());
-  state.dependenciesChecksum = dependenciesChecksum || (await calculateDependenciesChecksumAsync());
 
   saveState(state);
   run(state.schema);
@@ -97,17 +101,6 @@ async function calculateChecksumAsync(options) {
   return null;
 }
 
-async function calculateDependenciesChecksumAsync() {
-  return calculateChecksumAsync({
-    folders: {
-      exclude: ['*'],
-    },
-    files: {
-      include: ['yarn.lock', 'package.json'],
-    },
-  });
-}
-
 async function calculateSourceChecksumAsync() {
   return calculateChecksumAsync({
     folders: {
@@ -119,9 +112,6 @@ async function calculateSourceChecksumAsync() {
         '**.ts',
         '**.json',
         'expotools.js',
-        // swc build files
-        'taskfile.js',
-        'taskfile-swc.js',
         // type checking
         'tsconfig.json',
       ],

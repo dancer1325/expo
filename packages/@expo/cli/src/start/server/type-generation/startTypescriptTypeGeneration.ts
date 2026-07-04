@@ -1,15 +1,15 @@
 import { getConfig } from '@expo/config';
+import type Server from '@expo/metro/metro/Server';
 import fs from 'fs/promises';
-import { Server } from 'metro';
 import path from 'path';
 
+import { upsertGitIgnoreContents } from '../../../utils/mergeGitIgnorePaths';
+import { ensureDotExpoProjectDirectoryInitialized } from '../../project/dotExpo';
+import type { ServerLike } from '../BundlerDevServer';
+import { getRouterDirectoryModuleIdWithManifest } from '../metro/router';
 import { removeExpoEnvDTS, writeExpoEnvDTS } from './expo-env';
 import { setupTypedRoutes } from './routes';
 import { forceRemovalTSConfig, forceUpdateTSConfig } from './tsconfig';
-import { upsertGitIgnoreContents } from '../../../utils/mergeGitIgnorePaths';
-import { ensureDotExpoProjectDirectoryInitialized } from '../../project/dotExpo';
-import { ServerLike } from '../BundlerDevServer';
-import { getRouterDirectoryModuleIdWithManifest } from '../metro/router';
 
 export interface TypeScriptTypeGenerationOptions {
   server?: ServerLike;

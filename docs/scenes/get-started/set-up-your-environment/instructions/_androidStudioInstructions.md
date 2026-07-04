@@ -30,6 +30,92 @@
 * `adb --version`
   * check that you can run `adb` | your terminal
 
+By default, Android Studio will install the latest version of the Android SDK. However, Android 16 (`Baklava`) SDK is required to compile a React Native app.
+
+Open Android Studio, go to **Settings** &gt; **Languages & Frameworks** &gt; **Android SDK**. From the **SDK Platforms** tab, and under **Android 16 (`Baklava`)**, select **Android SDK Platform 36** and **Sources for Android 36**.
+
+<ContentSpotlight
+alt="Android SDK Platforms"
+src="/static/images/android-studio/sdk-platforms.webp"
+className="max-w-[640px]"
+/>
+
+</Step>
+
+<Step label="4">
+
+Then, click on the **SDK Tools** tab and make sure you have at least one version of the **Android SDK Build-Tools** and **Android Emulator** installed.
+
+<ContentSpotlight
+alt="Android SDK build tools."
+src="/static/images/android-studio/build-tools.webp"
+className="max-w-[640px]"
+/>
+
+</Step>
+
+<Step label="5">
+
+Copy or remember the path listed in the box that says **Android SDK Location**.
+
+<ContentSpotlight
+alt="Android SDK location"
+src="/static/images/android-studio/sdk-location.webp"
+className="max-w-[640px]"
+/>
+</Step>
+
+<Step label="6">
+
+Add the following lines to your **/.zprofile** or **~/.zshrc** (if you are using bash, then **~/.bash_profile** or **~/.bashrc**) config file:
+
+<Terminal
+cmd={[
+'$ export ANDROID_HOME=$HOME/Library/Android/sdk',
+'$ export PATH=$PATH:$ANDROID_HOME/emulator',
+'$ export PATH=$PATH:$ANDROID_HOME/platform-tools',
+]}
+cmdCopy="export ANDROID_HOME=$HOME/Library/Android/sdk && export PATH=$PATH:$ANDROID_HOME/emulator && export PATH=$PATH:$ANDROID_HOME/platform-tools"
+/>
+
+</Step>
+
+<Step label="7">
+
+Reload the path environment variables in your current shell:
+
+<Terminal
+cmd={['# for zsh', '$ source $HOME/.zshrc', '', '# for bash', '$ source $HOME/.bashrc']}
+/>
+
+</Step>
+
+<Step label="8">
+
+Finally, make sure that you can run `adb` from your terminal.
+
+<Collapsible summary="Troubleshooting: Android Studio not recognizing JDK">
+
+If Android Studio doesn't recognize your homebrew installed JDK, you can create a Gradle configuration file to explicitly set the Java path:
+
+1.  Create a Gradle properties file in your home directory:
+
+    <Terminal cmd={['$ touch ~/.gradle/gradle.properties']} />
+
+2.  Add the following line to the **gradle.properties** file, replacing the path with your actual Java installation path:
+
+    ```bash gradle.properties
+    java.home=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+    ```
+
+3.  If you have an existing `.gradle` folder in your project directory, delete it and reopen your project in Android Studio:
+
+    <Terminal cmd={['$ rm -rf .gradle']} />
+
+This should resolve issues with Android Studio not detecting your JDK installation.
+
+</Collapsible>
+
 ### | Windows
 
 * TODO:
@@ -52,7 +138,7 @@ In the Android Studio Setup Wizard, under **Install Type**, select **Standard** 
 
 <ContentSpotlight
   alt="Android Studio Setup Wizard asks for the type of installation."
-  src="/static/images/android-studio/windows-install-type.png"
+  src="/static/images/android-studio/windows-install-type.webp"
   className="max-w-[600px]"
 />
 
@@ -70,7 +156,7 @@ In the next window, accept licenses for all available components.
 
 <ContentSpotlight
   alt="Android Studio Setup Wizard asks to accept various licenses to install the tools."
-  src="/static/images/android-studio/windows-licenses.png"
+  src="/static/images/android-studio/windows-licenses.webp"
   className="max-w-[600px]"
 />
 
@@ -78,11 +164,37 @@ In the next window, accept licenses for all available components.
 
 <Step label="6">
 
+By default, Android Studio will install the latest version of the Android SDK. However, Android 16 (`Baklava`) SDK is required to compile a React Native app.
+
+Open Android Studio, go to **Settings** &gt; **Languages & Frameworks** &gt; **Android SDK**. From the **SDK Platforms** tab, and under **Android 16 (`Baklava`)**, select **Android SDK Platform 36** and **Sources for Android 36**.
+
+<ContentSpotlight
+  alt="Android SDK Platforms"
+  src="/static/images/android-studio/windows-sdk-platforms.webp"
+  className="max-w-[640px]"
+/>
+
+</Step>
+
+<Step label="7">
+
+Then, click on the **SDK Tools** tab and make sure you have at least one version of the **Android SDK Build-Tools** and **Android Emulator** installed.
+
+<ContentSpotlight
+  alt="Android SDK build tools"
+  src="/static/images/android-studio/windows-build-tools.webp"
+  className="max-w-[640px]"
+/>
+
+</Step>
+
+<Step label="8">
+
 After the tools installation is complete, configure the `ANDROID_HOME` environment variable. Go to **Windows Control Panel** > **User Accounts** > **User Accounts** (again) > **Change my environment variables** and click **New** to create a new `ANDROID_HOME` user variable. The value of this variable will point to the path to your Android SDK:
 
 <ContentSpotlight
   alt="Setting up ANDROID_HOME user variable."
-  src="/static/images/android-studio/windows-android-home-variable.png"
+  src="/static/images/android-studio/windows-android-home-variable.webp"
   className="max-w-[480px]"
 />
 
@@ -98,7 +210,7 @@ To find the location of the SDK in Android Studio manually, go to **Settings** >
 
 <ContentSpotlight
   alt="Android SDK location in Android Studio Settings."
-  src="/static/images/android-studio/windows-android-sdk-location.png"
+  src="/static/images/android-studio/windows-android-sdk-location.webp"
   className="max-w-[400px]"
 />
 
@@ -106,7 +218,7 @@ To find the location of the SDK in Android Studio manually, go to **Settings** >
 
 </Step>
 
-<Step label="7">
+<Step label="9">
 
 To verify that the new environment variable is loaded, open **PowerShell**, and copy and paste the following command:
 
@@ -116,13 +228,13 @@ The command will output all user environment variables. In this list, see if `AN
 
 </Step>
 
-<Step label="8">
+<Step label="10">
 
 To add platform-tools to the Path, go to **Windows Control Panel** > **User Accounts** > **User Accounts** (again) > **Change my environment variables** > **Path** > **Edit** > **New** and add the path to the platform-tools to the list as shown below:
 
 <ContentSpotlight
   alt="Setting up platform-tools user variable."
-  src="/static/images/android-studio/windows-platform-tools-path.png"
+  src="/static/images/android-studio/windows-platform-tools-path.webp"
   className="max-w-[480px]"
 />
 
@@ -138,7 +250,7 @@ By default, the platform-tools are installed at the following location:
 
 </Step>
 
-<Step label="9">
+<Step label="11">
 
 Finally, make sure that you can run `adb` from the PowerShell. For example, run the `adb --version` to see which version of the `adb` your system is running.
 

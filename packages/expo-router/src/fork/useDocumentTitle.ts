@@ -1,12 +1,13 @@
 /*
  * This file is unchanged, except for fixing imports and removing eslint comments
  */
+import * as React from 'react';
+
 import type {
   DocumentTitleOptions,
   NavigationContainerRef,
   ParamListBase,
-} from '@react-navigation/native';
-import * as React from 'react';
+} from '../react-navigation/native';
 
 // import type { DocumentTitleOptions } from './types';
 
@@ -14,7 +15,7 @@ import * as React from 'react';
  * Set the document title for the active screen
  */
 export function useDocumentTitle(
-  ref: React.RefObject<NavigationContainerRef<ParamListBase>>,
+  ref: React.RefObject<NavigationContainerRef<ParamListBase> | null>,
   {
     enabled = true,
     formatter = (options, route) => options?.title ?? route?.name,

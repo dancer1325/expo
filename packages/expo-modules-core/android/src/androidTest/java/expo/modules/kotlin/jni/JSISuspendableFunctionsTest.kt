@@ -3,7 +3,7 @@
 package expo.modules.kotlin.jni
 
 import com.google.common.truth.Truth
-import expo.modules.kotlin.RuntimeContext
+import expo.modules.kotlin.runtime.Runtime
 import expo.modules.kotlin.exception.CodedException
 import expo.modules.kotlin.functions.Coroutine
 import expo.modules.kotlin.jni.extensions.addSingleQuotes
@@ -14,6 +14,7 @@ import expo.modules.kotlin.types.Enumerable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Test
+import expo.modules.kotlin.types.OptimizedRecord
 
 class JSISuspendableFunctionsTest {
   enum class SimpleEnumClass : Enumerable {
@@ -142,6 +143,7 @@ class JSISuspendableFunctionsTest {
 
   @Test
   fun records_should_be_obtainable_as_function_argument() {
+    @OptimizedRecord
     class MyRecord : Record {
       @Field
       var x: Int = 0
@@ -198,7 +200,7 @@ class JSISuspendableFunctionsTest {
   }
 
   @Test(expected = PromiseException::class)
-  fun should_reject_if_js_value_cannot_be_passed() = withSingleModule({
+  fun should_throw_if_js_value_cannot_be_passed() = withSingleModule({
     AsyncFunction("f") Coroutine { _: Int -> }
   }) {
     callAsync("f", "Symbol()")
@@ -276,12 +278,12 @@ class JSISuspendableFunctionsTest {
     Truth.assertThat(e3).isEqualTo(3.0)
   }
 
-  private class MySharedRef(value: Int, runtimeContext: RuntimeContext) : SharedRef<Int>(value, runtimeContext)
+  private class MySharedRef(value: Int, runtime: Runtime) : SharedRef<Int>(value, runtime)
 
   @Test
   fun shared_ref_should_be_convertible() = withSingleModule({
     AsyncFunction("createRef") Coroutine { ->
-      MySharedRef(123, module!!.runtimeContext)
+      MySharedRef(123, module!!.runtime)
     }
     Function("getRef") { ref: MySharedRef ->
       ref.ref

@@ -12,7 +12,6 @@ final class CheckForUpdateProcedure: StateMachineProcedure {
   private let getLaunchedUpdate: () -> Update?
   private let successBlock: (_ checkForUpdateResult: CheckForUpdateResult) -> Void
   private let errorBlock: (_ error: Exception) -> Void
-
   private let fileDownloader: FileDownloader
 
   init(
@@ -20,6 +19,7 @@ final class CheckForUpdateProcedure: StateMachineProcedure {
     config: UpdatesConfig,
     selectionPolicy: SelectionPolicy,
     logger: UpdatesLogger,
+    updatesDirectory: URL,
     getLaunchedUpdate: @escaping () -> Update?,
     successBlock: @escaping (_: CheckForUpdateResult) -> Void,
     errorBlock: @escaping (_: Exception) -> Void
@@ -32,7 +32,12 @@ final class CheckForUpdateProcedure: StateMachineProcedure {
     self.successBlock = successBlock
     self.errorBlock = errorBlock
 
-    self.fileDownloader = FileDownloader(config: self.config)
+    self.fileDownloader = FileDownloader(
+      config: self.config,
+      logger: self.logger,
+      updatesDirectory: updatesDirectory,
+      database: self.database
+    )
   }
 
   func getLoggerTimerLabel() -> String {
@@ -40,7 +45,7 @@ final class CheckForUpdateProcedure: StateMachineProcedure {
   }
 
   func run(procedureContext: ProcedureContext) {
-    procedureContext.processStateEvent(UpdatesStateEventCheck())
+    procedureContext.processStateEvent(.check)
 
     database.databaseQueue.async {
       let embeddedUpdate = EmbeddedAppLoader.embeddedManifest(withConfig: self.config, database: self.database)
@@ -63,20 +68,20 @@ final class CheckForUpdateProcedure: StateMachineProcedure {
             switch updateDirective {
             case is NoUpdateAvailableUpdateDirective:
               self.successBlock(CheckForUpdateResult.noUpdateAvailable(reason: RemoteCheckResultNotAvailableReason.noUpdateAvailableOnServer))
-              procedureContext.processStateEvent(UpdatesStateEventCheckComplete())
+              procedureContext.processStateEvent(.checkCompleteUnavailable)
               procedureContext.onComplete()
               return
             case let rollBackUpdateDirective as RollBackToEmbeddedUpdateDirective:
               if !self.config.hasEmbeddedUpdate {
                 self.successBlock(CheckForUpdateResult.noUpdateAvailable(reason: RemoteCheckResultNotAvailableReason.rollbackNoEmbedded))
-                procedureContext.processStateEvent(UpdatesStateEventCheckComplete())
+                procedureContext.processStateEvent(.checkCompleteUnavailable)
                 procedureContext.onComplete()
                 return
               }
 
               guard let embeddedUpdate = embeddedUpdate else {
                 self.successBlock(CheckForUpdateResult.noUpdateAvailable(reason: RemoteCheckResultNotAvailableReason.rollbackNoEmbedded))
-                procedureContext.processStateEvent(UpdatesStateEventCheckComplete())
+                procedureContext.processStateEvent(.checkCompleteUnavailable)
                 procedureContext.onComplete()
                 return
               }
@@ -88,15 +93,13 @@ final class CheckForUpdateProcedure: StateMachineProcedure {
                 filters: manifestFilters
               ) {
                 self.successBlock(CheckForUpdateResult.noUpdateAvailable(reason: RemoteCheckResultNotAvailableReason.rollbackRejectedBySelectionPolicy))
-                procedureContext.processStateEvent(UpdatesStateEventCheckComplete())
+                procedureContext.processStateEvent(.checkCompleteUnavailable)
                 procedureContext.onComplete()
                 return
               }
 
               self.successBlock(CheckForUpdateResult.rollBackToEmbedded(commitTime: rollBackUpdateDirective.commitTime))
-              procedureContext.processStateEvent(
-                UpdatesStateEventCheckCompleteWithRollback(rollbackCommitTime: rollBackUpdateDirective.commitTime)
-              )
+              procedureContext.processStateEvent(.checkCompleteWithRollback(rollbackCommitTime: rollBackUpdateDirective.commitTime))
               procedureContext.onComplete()
               return
             default:
@@ -106,7 +109,7 @@ final class CheckForUpdateProcedure: StateMachineProcedure {
 
           guard let update = updateResponse.manifestUpdateResponsePart?.updateManifest else {
             self.successBlock(CheckForUpdateResult.noUpdateAvailable(reason: RemoteCheckResultNotAvailableReason.noUpdateAvailableOnServer))
-            procedureContext.processStateEvent(UpdatesStateEventCheckComplete())
+            procedureContext.processStateEvent(.checkCompleteUnavailable)
             procedureContext.onComplete()
             return
           }
@@ -138,7 +141,7 @@ final class CheckForUpdateProcedure: StateMachineProcedure {
 
           if shouldLaunch {
             self.successBlock(CheckForUpdateResult.updateAvailable(manifest: update.manifest.rawManifestJSON()))
-            procedureContext.processStateEvent(UpdatesStateEventCheckCompleteWithUpdate(manifest: update.manifest.rawManifestJSON()))
+            procedureContext.processStateEvent(.checkCompleteWithUpdate(manifest: update.manifest.rawManifestJSON()))
             procedureContext.onComplete()
             return
           }
@@ -147,11 +150,11 @@ final class CheckForUpdateProcedure: StateMachineProcedure {
             RemoteCheckResultNotAvailableReason.updatePreviouslyFailed :
             RemoteCheckResultNotAvailableReason.updateRejectedBySelectionPolicy
           self.successBlock(CheckForUpdateResult.noUpdateAvailable(reason: reason))
-          procedureContext.processStateEvent(UpdatesStateEventCheckComplete())
+          procedureContext.processStateEvent(.checkCompleteUnavailable)
           procedureContext.onComplete()
           return
         } errorBlock: { error in
-          procedureContext.processStateEvent(UpdatesStateEventCheckError(message: error.localizedDescription))
+          procedureContext.processStateEvent(.checkError(errorMessage: error.localizedDescription))
           self.successBlock(CheckForUpdateResult.error(error: error))
           procedureContext.onComplete()
           return

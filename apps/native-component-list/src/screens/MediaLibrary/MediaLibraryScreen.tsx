@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import * as FileSystem from 'expo-file-system';
-import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system/legacy';
+import * as MediaLibrary from 'expo-media-library/legacy';
 import React from 'react';
 import {
   Alert,
@@ -12,20 +12,22 @@ import {
   ListRenderItem,
   RefreshControl,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
-import MediaLibraryCell from './MediaLibraryCell';
+import { BodyText } from '../../components/BodyText';
 import Button from '../../components/Button';
 import HeadingText from '../../components/HeadingText';
 import Colors from '../../constants/Colors';
+import MediaLibraryCell from './MediaLibraryCell';
 
 const COLUMNS = 3;
 const PAGE_SIZE = COLUMNS * 10;
 const WINDOW_SIZE = Dimensions.get('window');
 
-const mediaTypeStates: { [key in MediaLibrary.MediaTypeValue]: MediaLibrary.MediaTypeValue } = {
+type MediaTypeWithoutPairedVideo = Exclude<MediaLibrary.MediaTypeValue, 'pairedVideo'>;
+
+const mediaTypeStates: Record<MediaTypeWithoutPairedVideo, MediaTypeWithoutPairedVideo> = {
   [MediaLibrary.MediaType.unknown]: MediaLibrary.MediaType.photo,
   [MediaLibrary.MediaType.photo]: MediaLibrary.MediaType.video,
   [MediaLibrary.MediaType.video]: MediaLibrary.MediaType.audio,
@@ -157,10 +159,10 @@ export default function MediaLibraryScreen({ navigation, route }: Props) {
   if (!permission.granted) {
     return (
       <View style={styles.permissions}>
-        <Text>
+        <BodyText>
           Missing MEDIA_LIBRARY permission. To continue, you'll need to allow media gallery access
           in Settings.
-        </Text>
+        </BodyText>
       </View>
     );
   }
@@ -181,7 +183,7 @@ function MediaLibraryView({ navigation, route, accessPrivileges }: Props) {
   const isLoadingAssets = React.useRef(false);
 
   const [sortBy, setSortBy] = React.useState<MediaLibrary.SortByKey>(MediaLibrary.SortBy.default);
-  const [mediaType, setMediaType] = React.useState<MediaLibrary.MediaTypeValue>(
+  const [mediaType, setMediaType] = React.useState<MediaTypeWithoutPairedVideo>(
     MediaLibrary.MediaType.photo
   );
 
@@ -217,6 +219,7 @@ function MediaLibraryView({ navigation, route, accessPrivileges }: Props) {
         first: PAGE_SIZE,
         after: state.endCursor ?? undefined,
         mediaType,
+        mediaSubtypes: [],
         sortBy,
         album: album?.id,
       });
@@ -339,7 +342,7 @@ function MediaLibraryView({ navigation, route, accessPrivileges }: Props) {
     if (state.assets.length === 0) {
       return (
         <View style={styles.noAssets}>
-          <Text>{`You don't have any assets with type: ${mediaType}`}</Text>
+          <BodyText>{`You don't have any assets with type: ${mediaType}`}</BodyText>
         </View>
       );
     }

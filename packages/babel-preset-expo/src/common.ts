@@ -1,16 +1,8 @@
-import { type ExpoBabelCaller } from '@expo/metro-config/build/babel-transformer';
-import path from 'path';
-
-export function hasModule(name: string): boolean {
-  try {
-    return !!require.resolve(name);
-  } catch (error: any) {
-    if (error.code === 'MODULE_NOT_FOUND' && error.message.includes(name)) {
-      return false;
-    }
-    throw error;
-  }
-}
+import type { NodePath, types as t } from '@babel/core';
+// @ts-expect-error: missing types
+import { addNamed as addNamedImport } from '@babel/helper-module-imports';
+import type { ExpoBabelCaller } from '@expo/metro-config/build/babel-transformer';
+import path from 'node:path';
 
 /** Determine which bundler is being used. */
 export function getBundler(caller?: any) {
@@ -30,7 +22,7 @@ export function getBundler(caller?: any) {
   return 'metro';
 }
 
-export function getPlatform(caller?: any) {
+export function getPlatform(caller?: any): string | null {
   assertExpoBabelCaller(caller);
   if (!caller) return null;
   if (caller.platform) return caller.platform;
@@ -40,7 +32,12 @@ export function getPlatform(caller?: any) {
   }
 
   // unknown
-  return caller.platform;
+  return caller.platform ?? null;
+}
+
+export function getEngine(caller?: any): 'hermes' | 'default' | (string & {}) {
+  assertExpoBabelCaller(caller);
+  return caller?.engine ?? 'default';
 }
 
 export function getPossibleProjectRoot(caller?: any) {
@@ -70,7 +67,9 @@ export function getIsDev(caller?: any) {
 export function getIsFastRefreshEnabled(caller?: any) {
   assertExpoBabelCaller(caller);
   if (!caller) return false;
-  return caller.isHMREnabled && !caller.isServer && !caller.isNodeModule && getIsDev(caller);
+  // NOTE(@kitten): `isHMREnabled` is always true in `@expo/metro-config`.
+  // However, we still use this option to ensure fast refresh is only enabled in supported runtimes (Metro + Expo)
+  return !!caller.isHMREnabled && !caller.isServer && !caller.isNodeModule && getIsDev(caller);
 }
 
 export function getIsProd(caller?: any) {
@@ -95,32 +94,76 @@ export function getReactCompiler(caller?: any) {
   return caller?.supportsReactCompiler ?? false;
 }
 
+export function getStaticESM(caller?: any): boolean | undefined {
+  assertExpoBabelCaller(caller);
+  return caller?.supportsStaticESM;
+}
+
 export function getIsServer(caller?: any) {
   assertExpoBabelCaller(caller);
   return caller?.isServer ?? false;
 }
 
+export function getIsDomComponent(caller?: any): boolean {
+  assertExpoBabelCaller(caller);
+  return caller?.isDomComponent ?? false;
+}
+
+export function getIsLoaderBundle(caller?: any) {
+  assertExpoBabelCaller(caller);
+  return caller?.isLoaderBundle ?? false;
+}
+
+export function getMetroSourceType(caller?: any) {
+  assertExpoBabelCaller(caller);
+  return caller?.metroSourceType;
+}
+
+export function getBabelRuntimeVersion(caller?: any) {
+  assertExpoBabelCaller(caller);
+  let babelRuntimeVersion: string | undefined;
+  if (typeof caller?.babelRuntimeVersion === 'string') {
+    babelRuntimeVersion = caller.babelRuntimeVersion;
+  } else {
+    try {
+      babelRuntimeVersion = require('@babel/runtime/package.json').version;
+    } catch (error: any) {
+      if (error.code !== 'MODULE_NOT_FOUND') throw error;
+    }
+  }
+  // NOTE(@kitten): The default shouldn't be higher than `expo/package.json`'s `@babel/runtime` version
+  // or `babel-preset-expo/package.json`'s peer dependency range for `@babel/runtime`
+  return babelRuntimeVersion ?? '^7.20.0';
+}
+
 export function getExpoRouterAbsoluteAppRoot(caller?: any): string {
   assertExpoBabelCaller(caller);
   const rootModuleId = caller?.routerRoot ?? './app';
-  if (path.isAbsolute(rootModuleId)) {
-    return rootModuleId;
+  const projectRoot = getPossibleProjectRoot(caller);
+  const resolved = path.isAbsolute(rootModuleId)
+    ? rootModuleId
+    : path.join(projectRoot || '/', rootModuleId);
+  // Silently fall back to the default if the configured router root escapes the project root, as a safety net
+  if (projectRoot && !isPathInside(resolved, projectRoot)) {
+    return path.join(projectRoot, 'app');
   }
-  const projectRoot = getPossibleProjectRoot(caller) || '/';
+  return resolved;
+}
 
-  return path.join(projectRoot, rootModuleId);
+function isPathInside(child: string, parent: string): boolean {
+  const relative = path.relative(parent, child);
+  return !!relative && !relative.startsWith('..') && !path.isAbsolute(relative);
 }
 
 export function getInlineEnvVarsEnabled(caller?: any): boolean {
   assertExpoBabelCaller(caller);
   const isWebpack = getBundler(caller) === 'webpack';
-  const isDev = getIsDev(caller);
   const isServer = getIsServer(caller);
   const isNodeModule = getIsNodeModule(caller);
   const preserveEnvVars = caller?.preserveEnvVars;
-  // Development env vars are added in the serializer to avoid caching issues in development.
+  // Development env vars are added using references to enable HMR in development.
   // Servers have env vars left as-is to read from the environment.
-  return !isNodeModule && !isWebpack && !isDev && !isServer && !preserveEnvVars;
+  return !isNodeModule && !isWebpack && !isServer && !preserveEnvVars;
 }
 
 export function getAsyncRoutes(caller?: any): boolean {
@@ -135,4 +178,44 @@ export function getAsyncRoutes(caller?: any): boolean {
     return false;
   }
   return caller?.asyncRoutes ?? false;
+}
+
+const getOrCreateInMap = <K, V>(
+  map: Map<K, V>,
+  key: K,
+  create: () => V
+): [value: V, didCreate: boolean] => {
+  if (!map.has(key)) {
+    const result = create();
+    map.set(key, result);
+    return [result, true];
+  }
+  return [map.get(key)!, false];
+};
+
+export function createAddNamedImportOnce(t: typeof import('@babel/core').types) {
+  const addedImportsCache = new Map<string, Map<string, t.Identifier>>();
+  return function addNamedImportOnce(path: NodePath<t.Node>, name: string, source: string) {
+    const [sourceCache] = getOrCreateInMap(
+      addedImportsCache,
+      source,
+      () => new Map<string, t.Identifier>()
+    );
+    const [identifier, didCreate] = getOrCreateInMap(sourceCache, name, () =>
+      addNamedImport(path, name, source)
+    );
+    // for cached imports, we need to clone the resulting identifier, because otherwise
+    // '@babel/plugin-transform-modules-commonjs' won't replace the references to the import for some reason.
+    // this is a helper for that.
+    return didCreate ? identifier : t.cloneNode(identifier);
+  };
+}
+
+const REGEXP_REPLACE_SLASHES = /\\/g;
+
+/**
+ * Convert any platform-specific path to a POSIX path.
+ */
+export function toPosixPath(filePath: string): string {
+  return filePath.replace(REGEXP_REPLACE_SLASHES, '/');
 }

@@ -1,13 +1,20 @@
-import AntDesign from '@expo/vector-icons/AntDesign';
+import Entypo from '@expo/vector-icons/Entypo';
 import { FlashList } from '@shopify/flash-list';
 import { VideoView, VideoSource, useVideoPlayer } from 'expo-video';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { styles, ViewSize } from './VideoFlatListScreen';
-import { localVideoSource } from './videoSources';
+import {
+  bigBuckBunnySource,
+  elephantsDreamSource,
+  hlsSource,
+  localVideoSource,
+} from './videoSources';
 
-const videoSources = Array(100).fill(localVideoSource);
+const videoSources = Array(20)
+  .fill([localVideoSource, bigBuckBunnySource, elephantsDreamSource, hlsSource])
+  .flat();
 
 type RenderItemProps = {
   item: VideoSource;
@@ -30,7 +37,10 @@ function RenderItem({ item, index, viewSize, visibleIndex }: RenderItemProps) {
 
   // Instead, we use the replace function
   useEffect(() => {
-    player.replace(item);
+    (async () => {
+      await player.replaceAsync(item);
+      player.currentTime = 10;
+    })();
   }, [index]);
 
   useEffect(() => {
@@ -47,21 +57,21 @@ function RenderItem({ item, index, viewSize, visibleIndex }: RenderItemProps) {
         player={player}
         style={styles.videoView}
         nativeControls={false}
-        contentFit="fill"
+        contentFit="contain"
         allowsVideoFrameAnalysis={false}
       />
       <View style={styles.overlayContainer}>
         <View style={styles.controlsContainer}>
-          <AntDesign
-            name={heart ? 'heart' : 'hearto'}
+          <Entypo
+            name={heart ? 'heart' : 'heart-outlined'}
             size={50}
             color="white"
             onPress={() => {
               setHeart(!heart);
             }}
           />
-          <AntDesign name="message1" size={50} color="white" />
-          <AntDesign name="cloudupload" size={50} color="white" />
+          <Entypo name="message" size={50} color="white" />
+          <Entypo name="upload-to-cloud" size={50} color="white" />
         </View>
       </View>
     </View>
@@ -101,7 +111,6 @@ export default function VideoFlatListScreen() {
           extraData={visibleIndex}
           decelerationRate={0.8}
           showsVerticalScrollIndicator={false}
-          estimatedItemSize={viewSize.height}
           drawDistance={viewSize.height * 2}
         />
       )}

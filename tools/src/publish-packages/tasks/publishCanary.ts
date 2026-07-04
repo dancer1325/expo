@@ -1,41 +1,28 @@
 import chalk from 'chalk';
-import path from 'path';
 import semver from 'semver';
 
+import Git from '../../Git';
+import logger from '../../Logger';
+import { sdkVersionAsync } from '../../ProjectVersions';
+import { Task } from '../../TasksRunner';
+import { runTurboTasksAsync } from '../../Turbo';
+import { runWithSpinner } from '../../Utils';
+import { resolveReleaseTypeAndVersion } from '../helpers';
+import { CommandOptions, Parcel, TaskArgs } from '../types';
+import { addTemplateTarball } from './addTemplateTarball';
+import { bundleIOSPrebuilds } from './bundleIOSPrebuilds';
 import { checkEnvironmentTask } from './checkEnvironmentTask';
 import { checkPackageAccess } from './checkPackageAccess';
 import { loadRequestedParcels } from './loadRequestedParcels';
-import { packPackageToTarball } from './packPackageToTarball';
+import { publishAndroidArtifacts } from './publishAndroidPackages';
 import { publishPackages } from './publishPackages';
+import { updateAndroidProjects } from './updateAndroidProjects';
 import { updateBundledNativeModulesFile } from './updateBundledNativeModulesFile';
 import { updateModuleTemplate } from './updateModuleTemplate';
 import { updatePackageVersions } from './updatePackageVersions';
 import { updateWorkspaceProjects } from './updateWorkspaceProjects';
-import { PACKAGES_DIR } from '../../Constants';
-import Git from '../../Git';
-import logger from '../../Logger';
-import { addTagAsync, getPackageViewAsync, publishPackageAsync } from '../../Npm';
-import {
-  getAvailableProjectTemplatesAsync,
-  updateTemplateVersionsAsync,
-} from '../../ProjectTemplates';
-import { sdkVersionAsync } from '../../ProjectVersions';
-import { Task } from '../../TasksRunner';
-import { runWithSpinner } from '../../Utils';
-import { resolveReleaseTypeAndVersion } from '../helpers';
-import { CommandOptions, Parcel, TaskArgs } from '../types';
 
-const { cyan, green } = chalk;
-
-/**
- * An array of packages whose version is constrained to the SDK version.
- */
-const SDK_CONSTRAINED_PACKAGES = ['expo', 'jest-expo', '@expo/config-types'];
-
-/**
- * Path to `bundledNativeModules.json` file.
- */
-const BUNDLED_NATIVE_MODULES_PATH = path.join(PACKAGES_DIR, 'expo', 'bundledNativeModules.json');
+const { cyan } = chalk;
 
 /**
  * Prepare packages to be published as canaries.
@@ -47,72 +34,68 @@ export const prepareCanaries = new Task<TaskArgs>(
   },
   async (parcels: Parcel[], options: CommandOptions) => {
     const canarySuffix = await getCurrentCanaryVersionSuffix();
-    const nextSdkVersion = await getNextSdkVersion();
+    const currentSdkVersion = await sdkVersionAsync();
+    const currentSdkMajor = semver.major(currentSdkVersion);
+    const currentBranch = await Git.getCurrentBranchNameAsync();
+    const isMain = currentBranch === 'main';
 
     for (const parcel of parcels) {
       const { pkg, state, pkgView } = parcel;
-      const baseVersion = SDK_CONSTRAINED_PACKAGES.includes(pkg.packageName)
-        ? nextSdkVersion
-        : resolveReleaseTypeAndVersion(parcel, options);
+      // On `main`, SDK-versioned packages are bumped to the next major for canary releases
+      // (e.g. 55.0.2 → 56.0.0-canary-...) since main represents next-SDK development.
+      // On `sdk-*` branches, they get a patch bump (e.g. 55.0.2 → 55.0.3-canary-...)
+      // since these are fixes for an already-released SDK.
+      const sdkBaseVersion = computeCanaryVersion(
+        pkg.packageVersion,
+        currentSdkMajor,
+        isMain,
+        await getNextSdkVersion()
+      );
+      const baseVersion =
+        sdkBaseVersion ?? (await resolveReleaseTypeAndVersion(parcel, options)).releaseVersion;
+
+      // Strip any pre-release tag from the baseVersion
+      // For example, convert "5.0.0-rc.0" or "5.0.0-preview.0" to "5.0.0"
+      // This is to ensure we don't stack the canary suffix on top of another
+      const cleanBaseVersion = semver.coerce(baseVersion)?.version ?? baseVersion;
 
       state.releaseVersion = findNextAvailableCanaryVersion(
-        `${baseVersion}-${canarySuffix}`,
+        `${cleanBaseVersion}-${canarySuffix}`,
         pkgView?.versions ?? []
       );
     }
 
-    // Override the tag option – canary releases should always use `canary` tag
-    options.tag = 'canary';
+    // Only use the `canary` tag when publishing from `main` or the latest `sdk-*` branch.
+    // Other branches publish canary versions without the `canary` dist-tag so they
+    // don't overwrite the canary tag that points at main/latest-sdk builds.
+    if (await shouldUseCanaryTag(currentBranch)) {
+      options.tag = 'canary';
+    } else {
+      options.tag = `canary-sdk-${currentSdkMajor}`;
+    }
   }
 );
 
-const publishCanaryProjectTemplates = new Task<TaskArgs>(
+export const buildCanaryPackages = new Task<TaskArgs>(
   {
-    name: 'publishCanaryProjectTemplates',
-    dependsOn: [prepareCanaries],
+    name: 'buildCanaryPackages',
+    dependsOn: [loadRequestedParcels],
   },
-  async (parcels: Parcel[], options: CommandOptions) => {
-    await runWithSpinner(
-      'Updating and publishing project templates',
-      async (step) => {
-        const templates = await getAvailableProjectTemplatesAsync();
-        const bundledNativeModules = require(BUNDLED_NATIVE_MODULES_PATH);
-        const expoVersion = await sdkVersionAsync();
-        const dependenciesToUpdate = {
-          ...bundledNativeModules,
-          expo: options.canary ? expoVersion : `~${expoVersion}`,
-        };
+  async (parcels: Parcel[]) => {
+    const packageNames = [
+      ...new Set(
+        parcels.filter((parcel) => parcel.pkg.scripts.build).map((parcel) => parcel.pkg.packageName)
+      ),
+    ];
+    if (packageNames.length === 0) {
+      return;
+    }
 
-        for (const template of templates) {
-          step.start(`Updating and publishing ${green(template.name)}`);
-
-          const templateView = await getPackageViewAsync(template.name);
-
-          // Canary project template uses the same version as the `expo` package that it depends on.
-          const canaryVersion = findNextAvailableCanaryVersion(
-            expoVersion,
-            templateView?.versions ?? []
-          );
-
-          // Update versions of the dependencies based on `bundledNativeModules.json`.
-          await updateTemplateVersionsAsync(template.path, canaryVersion, dependenciesToUpdate);
-
-          // Publish the project template with a `canary` tag.
-          await publishPackageAsync(template.path, {
-            tagName: 'canary',
-            dryRun: options.dry,
-          });
-
-          if (!options.dry) {
-            // Add additional `sdk-X` tag for canary templates.
-            // Prebuild command uses this tag to download the proper version of bare-minimum template.
-            const sdkTag = getSdkTagForVersion(canaryVersion);
-            await addTagAsync(template.name, canaryVersion, sdkTag);
-          }
-        }
-      },
-      'Updated and published project templates'
+    logger.info(
+      `\n🛠️  Building ${cyan(packageNames.length)} package${packageNames.length === 1 ? '' : 's'} with Turbo...`
     );
+
+    await runTurboTasksAsync(['build'], { filters: packageNames });
   }
 );
 
@@ -136,6 +119,9 @@ export const cleanWorkingTree = new Task<TaskArgs>(
             'packages/**/package.json',
             'packages/expo-module-template/$package.json',
             'packages/expo/bundledNativeModules.json',
+            'packages/**/expo-module.config.json',
+            'packages/**/build.gradle',
+            'pnpm-lock.yaml',
             'templates/*/package.json',
           ],
         });
@@ -144,7 +130,12 @@ export const cleanWorkingTree = new Task<TaskArgs>(
         await Git.cleanAsync({
           recursive: true,
           force: true,
-          paths: ['packages/**/*.tgz'],
+          paths: [
+            'packages/**/*.tgz',
+            'packages/**/local-maven-repo/**',
+            'packages/**/prebuilds/**',
+            'templates/**/*.tgz',
+          ],
         });
       },
       'Cleaned up the working tree'
@@ -163,13 +154,16 @@ export const publishCanaryPipeline = new Task<TaskArgs>(
       loadRequestedParcels,
       prepareCanaries,
       checkPackageAccess,
+      buildCanaryPackages,
       updatePackageVersions,
       updateBundledNativeModulesFile,
       updateModuleTemplate,
       updateWorkspaceProjects,
-      packPackageToTarball,
+      updateAndroidProjects,
+      publishAndroidArtifacts,
+      addTemplateTarball,
+      bundleIOSPrebuilds,
       publishPackages,
-      publishCanaryProjectTemplates,
       cleanWorkingTree,
     ],
   },
@@ -181,6 +175,43 @@ export const publishCanaryPipeline = new Task<TaskArgs>(
     );
   }
 );
+
+/**
+ * Returns `true` if the current branch should publish with the `canary` dist-tag.
+ * Only `main` and the latest `sdk-*` branch qualify.
+ */
+async function shouldUseCanaryTag(currentBranch: string): Promise<boolean> {
+  if (currentBranch === 'main') {
+    return true;
+  }
+  const sdkMatch = currentBranch.match(/^sdk-(\d+)$/);
+  if (!sdkMatch) {
+    return false;
+  }
+  const latestSdkBranch = await getLatestRemoteSdkBranchAsync();
+  return currentBranch === latestSdkBranch;
+}
+
+/**
+ * Lists remote `sdk-*` branches and returns the name of the one with the highest number.
+ */
+async function getLatestRemoteSdkBranchAsync(): Promise<string | null> {
+  const { stdout } = await Git.runAsync(['branch', '-r', '--list', 'origin/sdk-*']);
+  let maxSdk = -1;
+  let latestBranch: string | null = null;
+
+  for (const line of stdout.split('\n')) {
+    const match = line.trim().match(/^origin\/sdk-(\d+)$/);
+    if (match) {
+      const num = parseInt(match[1], 10);
+      if (num > maxSdk) {
+        maxSdk = num;
+        latestBranch = `sdk-${num}`;
+      }
+    }
+  }
+  return latestBranch;
+}
 
 /**
  * Returns a canary version suffix for the current date and HEAD commit hash.
@@ -199,6 +230,32 @@ async function getCurrentCanaryVersionSuffix() {
   });
 
   return `canary-${year}${month}${day}-${shortCommitHash}`;
+}
+
+/**
+ * Computes the base version for a canary release of an SDK-versioned package.
+ * Returns `null` if the package is not SDK-versioned.
+ *
+ * - On `main`: bumps to the next major SDK version (e.g. 55.0.2 → 56.0.0)
+ * - On SDK branches: bumps the patch version (e.g. 55.0.2 → 55.0.3)
+ */
+export function computeCanaryVersion(
+  packageVersion: string,
+  currentSdkMajor: number,
+  isMainBranch: boolean,
+  nextSdkVersion: string
+): string | null {
+  if (semver.major(packageVersion) !== currentSdkMajor) {
+    return null;
+  }
+  if (isMainBranch) {
+    return nextSdkVersion;
+  }
+  const patchVersion = semver.inc(packageVersion, 'patch');
+  if (!patchVersion) {
+    throw new Error(`Unable to compute patch version for ${packageVersion}`);
+  }
+  return patchVersion;
 }
 
 /**
@@ -241,12 +298,4 @@ async function getNextSdkVersion(): Promise<string> {
     throw new Error('Unable to obtain the next major SDK version');
   }
   return nextMajorVersion;
-}
-
-/**
- * Returns the SDK tag to use for the given package version.
- */
-function getSdkTagForVersion(version: string): string {
-  const major = semver.major(version);
-  return `sdk-${major}`;
 }

@@ -4,7 +4,7 @@ description: A library that allows creating a development build and includes use
 sourceCodeUrl: 'https://github.com/expo/expo/tree/main/packages/expo-dev-client'
 packageName: 'expo-dev-client'
 iconUrl: '/static/images/packages/expo-dev-client.png'
-platforms: ['android', 'ios']
+platforms: ['android', 'ios', 'tvos']
 ---
 
 * `expo-dev-client`
@@ -25,6 +25,24 @@ platforms: ['android', 'ios']
 If you are installing this in an [existing React Native app](/bare/overview/), start by installing [`expo`](/bare/installing-expo-modules/) in your project.
 Then, follow the instructions from [Install `expo-dev-client` in an existing React Native project](/bare/install-dev-builds-in-bare/).
 
+When you create a build with EAS Build, set `developmentClient` to `true` on a build profile in your **eas.json**. Without it, EAS Build produces a standalone build with no development tools. For example:
+
+```json eas.json
+{
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+      /* @hide ... */ /* @end */
+    }
+  }
+  /* @hide ... */ /* @end */
+}
+```
+
+For more information, see the [`developmentClient` property in the eas.json reference](/eas/json/#developmentclient).
+
+
 ## Configuration in app.json/app.config.js
 
 You can configure development client launcher using its built-in [config plugin](/config-plugins/introduction/) if you use config plugins in your project ([EAS Build](/build/introduction) or `npx expo run:[android|ios]`).
@@ -37,9 +55,16 @@ The plugin allows you to configure various properties that cannot be set at runt
   "expo": {
     "plugins": [
       [
-        "expo-dev-launcher",
+        "expo-dev-client",
         {
-          "launchMode": "most-recent"
+          "launchMode": "most-recent",
+          "defaultLaunchURL": "http://localhost:8081",
+          "android": {
+            "defaultLaunchURL": "http://10.0.2.2:8081"
+          },
+          "toolsButton": true,
+          "skipOnboarding": false,
+          "showMenuAtLaunch": true
         }
       ]
     ]
@@ -67,8 +92,36 @@ The plugin allows you to configure various properties that cannot be set at runt
       ].join('\n'),
       default: 'true',
     },
+    {
+      name: 'defaultLaunchURL',
+      description: [
+        'Launch directly into this URL instead of navigating to launcher screen.',
+        'If `launchMode` is set to `most-recent`, then launcher will use the `defaultLaunchURL` as a fallback.',
+      ].join('\n'),
+    },
+    {
+      name: 'toolsButton',
+      description: 'Whether to show the floating tools button.',
+      default: 'true',
+    },
+    {
+      name: 'skipOnboarding',
+      description:
+        'Skip the onboarding screen that shows in the dev menu on the first launch of the app.',
+      default: 'false',
+    },
+    {
+      name: 'showMenuAtLaunch',
+      description: 'Show the developer menu immediately after launching the app.',
+      default: 'true',
+    },
   ]}
 />
+
+## TV support
+
+- **Android TV**: All operations are supported, similar to an Android phone.
+- **Apple TV**: Basic operations with a local or tunneled packager are supported. Authentication to EAS and listing of EAS builds and updates is not yet supported.
 
 ## API
 

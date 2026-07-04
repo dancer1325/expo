@@ -10,7 +10,7 @@ runExportSideEffects();
 
 describe('static-rendering with a custom base path', () => {
   const projectRoot = getRouterE2ERoot();
-  const outputName = 'dist-static-rendering-asset-prefix';
+  const outputName = 'dist-static-rendering-base-path';
   const outputDir = path.join(projectRoot, outputName);
 
   beforeAll(async () => {
@@ -23,7 +23,6 @@ describe('static-rendering with a custom base path', () => {
         EXPO_USE_STATIC: 'static',
         E2E_ROUTER_SRC: 'static-rendering',
         E2E_ROUTER_ASYNC: 'development',
-        EXPO_USE_FAST_RESOLVER: 'true',
       },
     });
   });
@@ -58,8 +57,8 @@ describe('static-rendering with a custom base path', () => {
 
     const jsFiles = indexHtml
       .querySelectorAll('script')
-      .filter((script) => !!script.attributes.src)
-      .map((script) => script.attributes.src);
+      .map((script) => script.attributes.src)
+      .filter((src): src is string => !!src);
     expect(jsFiles).toEqual([
       expect.stringMatching(/\/one\/two\/_expo\/static\/js\/web\/entry-.*\.js/),
     ]);
@@ -69,7 +68,9 @@ describe('static-rendering with a custom base path', () => {
       return link.attributes.as !== 'font';
     });
 
-    const cssFiles = links.map((link) => link.attributes.href);
+    const cssFiles = links
+      .map((link) => link.attributes.href)
+      .filter((link): link is string => !!link);
 
     cssFiles.forEach((src) => {
       // Linked to the expected static location

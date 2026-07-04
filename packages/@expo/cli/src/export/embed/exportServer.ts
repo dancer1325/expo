@@ -4,7 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import { ExpoConfig, modifyConfigAsync, PackageJSONConfig } from '@expo/config';
+import type { ExpoConfig, PackageJSONConfig } from '@expo/config';
+import { modifyConfigAsync } from '@expo/config';
 import spawnAsync from '@expo/spawn-async';
 import chalk from 'chalk';
 import fs from 'fs';
@@ -14,14 +15,15 @@ import path from 'path';
 import { disableNetwork } from '../../api/settings';
 import { Log } from '../../log';
 import { isSpawnResultError } from '../../start/platforms/ios/xcrun';
-import { MetroBundlerDevServer } from '../../start/server/metro/MetroBundlerDevServer';
+import type { MetroBundlerDevServer } from '../../start/server/metro/MetroBundlerDevServer';
 import { removeAsync } from '../../utils/dir';
 import { env } from '../../utils/env';
 import { CommandError } from '../../utils/errors';
 import { exportApiRoutesStandaloneAsync } from '../exportStaticAsync';
-import { copyPublicFolderAsync } from '../publicFolder';
-import { ExportAssetMap, persistMetroFilesAsync } from '../saveAssets';
-import { Options } from './resolveOptions';
+import { copyPublicFolderAsync, getPublicFolderPath } from '../publicFolder';
+import type { ExportAssetMap } from '../saveAssets';
+import { persistMetroFilesAsync } from '../saveAssets';
+import type { Options } from './resolveOptions';
 import {
   isExecutingFromXcodebuild,
   logInXcode,
@@ -65,7 +67,7 @@ export async function exportStandaloneServerAsync(
     apiRoutesOnly: true,
   });
 
-  const publicPath = path.resolve(projectRoot, env.EXPO_PUBLIC_FOLDER);
+  const publicPath = getPublicFolderPath(projectRoot);
 
   // Copy over public folder items
   await copyPublicFolderAsync(publicPath, serverOutput);
@@ -132,6 +134,7 @@ export async function exportStandaloneServerAsync(
 
   // If the user hasn't manually defined the server URL, write the deployed server URL to the app.json.
   if (userDefinedServerUrl) {
+    Log.log('Skip automatically linking server origin to native container');
     return;
   }
   Log.log('Writing generated server URL to app.json');
@@ -199,21 +202,25 @@ async function runServerDeployCommandAsync(
   }
 
   // TODO: Only allow EAS deployments when staging is enabled, this is because the feature is still staging-only.
-  if (!deployScript && !env.EXPO_STAGING) {
+  if (!env.EXPO_UNSTABLE_DEPLOY_SERVER) {
     return false;
   }
 
-  const globalBin = getCommandBin('eas');
-  if (!globalBin) {
-    // This should never happen from EAS Builds.
-    // Possible to happen when building locally with `npx expo run`
-    logMetroErrorInXcode(
-      projectRoot,
-      `eas-cli is not installed globally, skipping server deployment. Install EAS CLI with 'npm install -g eas-cli'.`
-    );
-    return false;
+  if (!env.EAS_BUILD) {
+    // This check helps avoid running EAS if the user isn't a user of EAS.
+    // We only need to run it when building outside of EAS.
+    const globalBin = getCommandBin('eas');
+    if (!globalBin) {
+      // This should never happen from EAS Builds.
+      // Possible to happen when building locally with `npx expo run`
+      logMetroErrorInXcode(
+        projectRoot,
+        `eas-cli is not installed globally, skipping server deployment. Install EAS CLI with 'npm install -g eas-cli'.`
+      );
+      return false;
+    }
+    debug('Found eas-cli:', globalBin);
   }
-  debug('Found eas-cli:', globalBin);
 
   let json: any;
   try {
@@ -240,8 +247,8 @@ async function runServerDeployCommandAsync(
 
       // results = DEPLOYMENT_SUCCESS_FIXTURE;
       results = await spawnAsync(
-        'node',
-        [globalBin, 'deploy', '--non-interactive', '--json', `--export-dir=${exportDir}`],
+        'npx',
+        ['eas-cli', 'deploy', '--non-interactive', '--json', `--export-dir=${exportDir}`],
         spawnOptions
       );
 

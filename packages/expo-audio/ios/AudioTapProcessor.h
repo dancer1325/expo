@@ -5,11 +5,13 @@ typedef void (^SampleBufferCallback)(AudioBuffer *audioBuffer, long frameCount, 
 
 @interface AudioTapProcessor : NSObject
 
-@property (nonatomic, copy) SampleBufferCallback sampleBufferCallback;
-@property (nonatomic, strong) AVPlayerItem *playerItem;
+@property (nonatomic, copy, nullable) SampleBufferCallback sampleBufferCallback;
+@property (nonatomic, strong, readonly) AVPlayer *player;
+@property (nonatomic, readonly) BOOL isTapInstalled;
 
-- (instancetype)initWithPlayerItem:(AVPlayerItem *)playerItem;
-- (bool)installTap;
+- (instancetype)initWithPlayer:(AVPlayer *)player;
+- (BOOL)installTap;
 - (void)uninstallTap;
+- (void)invalidate;
 
 @end

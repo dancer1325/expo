@@ -9,7 +9,8 @@ import * as Log from '../../log';
 import { delayAsync, resolveWithTimeout } from '../../utils/delay';
 import { env } from '../../utils/env';
 import { CommandError } from '../../utils/errors';
-import { isNgrokClientError, NgrokInstance, NgrokResolver } from '../doctor/ngrok/NgrokResolver';
+import type { NgrokInstance } from '../doctor/ngrok/NgrokResolver';
+import { isNgrokClientError, NgrokResolver } from '../doctor/ngrok/NgrokResolver';
 import { hasAdbReverseAsync, startAdbReverseAsync } from '../platforms/android/adbReverse';
 import { ProjectSettings } from '../project/settings';
 
@@ -170,7 +171,7 @@ export class AsyncNgrok {
           if (status === 'closed') {
             Log.error(
               chalk.red(
-                'Tunnel connection has been closed. This is often related to intermittent connection problems with the Ngrok servers. Restart the dev server to try connecting to Ngrok again.'
+                'Tunnel connection has been closed. This is often related to intermittent connection issues between the dev server and ngrok. Restart the dev server to try connecting to ngrok again.'
               ) + chalk.gray('\nCheck the Ngrok status page for outages: https://status.ngrok.com/')
             );
           } else if (status === 'connected') {

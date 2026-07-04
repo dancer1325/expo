@@ -6,15 +6,329 @@
 
 ### 🎉 New features
 
-- [Android] Add support for the `Google Code Scanner`, similar to the `DataScannerViewController` used on iOS. ([#33347](https://github.com/expo/expo/pull/33347) by [@alanjhughes](https://github.com/alanjhughes))
+- Enabled responsive capture and fast capture prioritization on iOS for lower shutter lag and faster successive photo captures.
+- [Android] Add `PhotographicSensitivity` to returned EXIF metadata. ([#47222](https://github.com/expo/expo/pull/47222) by [@Wenszel](https://github.com/Wenszel))
 
 ### 🐛 Bug fixes
 
+- [Android] Use the selected camera to determine video stabilization support. ([#45896](https://github.com/expo/expo/pull/45896) by [@vivekjm](https://github.com/vivekjm))
+- Host the iOS camera preview on the view's backing layer so it no longer zooms into place on launch. ([#47172](https://github.com/expo/expo/pull/47172) by [@alanjhughes](https://github.com/alanjhughes))
+- Replace the deprecated `videoOrientation` API with `AVCaptureDevice.RotationCoordinator` for the iOS camera preview. ([#47172](https://github.com/expo/expo/pull/47172) by [@alanjhughes](https://github.com/alanjhughes))
+- Fix dark frames and the preview rotating into place on iOS launch by fully configuring the camera session before it starts running. ([#47173](https://github.com/expo/expo/pull/47173) by [@alanjhughes](https://github.com/alanjhughes))
+- Default the iOS camera `pictureSize` to `photo` instead of `high`. ([#47173](https://github.com/expo/expo/pull/47173) by [@alanjhughes](https://github.com/alanjhughes))
+
+### 💡 Others
+
+## 56.0.7 — 2026-05-21
+
+### 🐛 Bug fixes
+
+- Fix an ES module import error in the typed config plugin. ([#46089](https://github.com/expo/expo/pull/46089) by [@zoontek](https://github.com/zoontek))
+
+## 56.0.6 — 2026-05-21
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.5 — 2026-05-13
+
+### 🐛 Bug fixes
+
+- [iOS] Fix `itf14` barcode type not detecting generic Interleaved 2 of 5 barcodes, so behavior matches Android's `FORMAT_ITF`. ([#44796](https://github.com/expo/expo/pull/44796) by [@mduchev](https://github.com/mduchev))
+
+## 56.0.4 — 2026-05-13
+
+### 💡 Others
+
+- Updated permission hook imports to be imported from `expo` instead of `expo-modules-core` ([#45565](https://github.com/expo/expo/pull/45565) by [@Wenszel](https://github.com/Wenszel))
+
+## 56.0.3 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.1 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+### 🛠 Breaking changes
+
+- Bumped minimum iOS/tvOS version to 16.4, macOS to 13.4. ([#43296](https://github.com/expo/expo/pull/43296) by [@tsapeta](https://github.com/tsapeta))
+
+### 🎉 New features
+
+- Expose a typed config plugin function ([#44098](https://github.com/expo/expo/pull/44098) by [@zoontek](https://github.com/zoontek))
+
+### 🐛 Bug fixes
+
+- [iOS] Fix camera activity indicator remaining active after `CameraView.launchScanner` is interactively dismissed and the app is backgrounded/foregrounded. ([#45063](https://github.com/expo/expo/pull/45063) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Remove `RECORD_AUDIO` from the manifest so `recordAudioAndroid` depends on the plugin. ([#45132](https://github.com/expo/expo/pull/45132) by [@alanjhughes](https://github.com/alanjhughes))
+
+### 💡 Others
+
+- [iOS] Added explicit `import React` for xcframework compatibility. ([#44248](https://github.com/expo/expo/pull/44248) by [@chrfalch](https://github.com/chrfalch))
+- [iOS] Extract barcode scanning (ZXingObjC) into a separate `ExpoCameraBarcodeScanning` companion pod. Disabling barcode scanning via config plugin now correctly excludes ZXingObjC from precompiled builds, reducing binary size. (by [@chrfalch](https://github.com/chrfalch)) ([#44766](https://github.com/expo/expo/pull/44766) by [@chrfalch](https://github.com/chrfalch))
+
+## 55.0.18 - 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.17 - 2026-05-04
+
+### 🐛 Bug fixes
+
+- [iOS] Fix orientation issue caused by upstream changes. ([#44171](https://github.com/expo/expo/pull/44171) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 55.0.16 - 2026-04-21
+
+### 🐛 Bug fixes
+
+- [iOS] Fix inconsistent barcode `type` value returned by ZXing fallback scanner (code39, pdf417, codabar) — it now returns the same format as the AVFoundation scanner (e.g. `"code39"` instead of `"org.iso.Code39"`). ([#44726](https://github.com/expo/expo/pull/44726) by [@jensdev](https://github.com/jensdev))
+
+## 55.0.15 - 2026-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.14 - 2026-04-07
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.13 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.12 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.11 - 2026-03-24
+
+### 🐛 Bug fixes
+
+- [iOS] Use runtime camera availability checks in Simulator so camera code paths can run when a runtime video device is present while preserving fallback behavior when no device is available. (by [@kmagiera](https://github.com/kmagiera)) ([#44159](https://github.com/expo/expo/pull/44159) by [@kmagiera](https://github.com/kmagiera)) ([#44159](https://github.com/expo/expo/pull/44159) by [@kmagiera](https://github.com/kmagiera), [@kmagiera](https://github.com/kmagiera))
+
+## 55.0.10 - 2026-03-17
+
+### 🐛 Bug fixes
+
+- [Web] Fix `isAvailableAsync` returning `true` on devices without a camera. ([#43932](https://github.com/expo/expo/pull/43932) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 55.0.9 — 2026-02-25
+
+### 🎉 New features
+
+- [Web] Expands support for barcode types that can be scanned. ([#43403](https://github.com/expo/expo/pull/43403) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 55.0.8 — 2026-02-25
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.7 — 2026-02-20
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.6 — 2026-02-16
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.5 — 2026-02-08
+
+### 🐛 Bug fixes
+
+- [iOS] Fixed a number of configuration issues and error inconsistencies. ([#42926](https://github.com/expo/expo/pull/42926) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 55.0.4 — 2026-02-03
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.3 — 2026-01-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 🎉 New features
+
+- Allow disabling the barcode scanner functionality via config plugin. ([#40444](https://github.com/expo/expo/pull/40444) by [@alanjhughes](https://github.com/alanjhughes))
+- Allow users to set video stabilization mode when recording videos. ([#41666](https://github.com/expo/expo/pull/41666) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Add support for screen flash on the front camera. ([#41667](https://github.com/expo/expo/pull/41667) by [@alanjhughes](https://github.com/alanjhughes))
+
+### 🐛 Bug fixes
+
+- [Android] Fix certain exif keys being dropped because of invalid values. ([#41043](https://github.com/expo/expo/pull/41043) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Fix camera not being recreated on the old architecture. ([#41405](https://github.com/expo/expo/pull/41405) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Return correct size information when using image refs. ([#41658](https://github.com/expo/expo/pull/41658) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Fix incorrect isPinchToZoomEnabled default value for scanner. ([#41803](https://github.com/expo/expo/pull/41803) by [@hssdiv](https://github.com/hssdiv))
+
+## 17.0.10 - 2025-12-05
+
+_This version does not introduce any user-facing changes._
+
+## 17.0.9 - 2025-11-03
+
+### 💡 Others
+
+- [iOS] Support all valid gps tags from `CGImageProperties` in exif data. ([#40801](https://github.com/expo/expo/pull/40801) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 17.0.8 — 2025-09-16
+
+### 🐛 Bug fixes
+
+- [Android] Fix barcode scanner on devices without access to Google Play Services. ([#39612](https://github.com/expo/expo/pull/39612) by [@behenate](https://github.com/behenate))
+
+## 17.0.7 — 2025-09-10
+
+### 🐛 Bug fixes
+
+- [Android] Fix errors on devices that do not have Google Play Services installed. ([#39455](https://github.com/expo/expo/pull/39455) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 17.0.6 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 17.0.5 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 17.0.4 — 2025-08-27
+
+_This version does not introduce any user-facing changes._
+
+## 17.0.3 — 2025-08-25
+
+### 🐛 Bug fixes
+
+- [Android] Fix early tear down from `onDetachedFromWindow`. ([#39119](https://github.com/expo/expo/pull/39119) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 17.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 17.0.1 — 2025-08-15
+
+### 💡 Others
+
+- Update typings for `typescript@5.9` ([#38833](https://github.com/expo/expo/pull/38833) by [@kitten](https://github.com/kitten))
+
+## 17.0.0 — 2025-08-13
+
+### 🎉 New features
+
+- [Android] Add support for Meta Quest passthrough camera ([#37748](https://github.com/expo/expo/pull/37748) by [@behenate](https://github.com/behenate))
+
+### 🐛 Bug fixes
+
+- [iOS] Fixes returning `PictureRef` objects.([#37393](https://github.com/expo/expo/pull/37393) by [@alanjhughes](https://github.com/alanjhughes))
+- Fix barcode options to correctly handle empty barcodeTypes ([#38100](https://github.com/expo/expo/pull/38100) by [@LeonDvlpmnt](https://github.com/LeonDvlpmnt))
+- [Android] Add dismissScanner to module to prevent undefined error. ([#38129](https://github.com/expo/expo/pull/38129) by [@LeonDvlpmnt](https://github.com/LeonDvlpmnt))
+- [Android] Correctly handle errors when using `launchScanner`. ([#38322](https://github.com/expo/expo/pull/38322) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Fix `videoQuality` and `pictureSize` affecting modes they don't apply too. ([#38757](https://github.com/expo/expo/pull/38757) by [@alanjhughes](https://github.com/alanjhughes))
+
+### 💡 Others
+
+- Use pointerEvents style instead of prop for components on web. ([#38023](https://github.com/expo/expo/pull/38023) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 16.1.10 - 2025-07-01
+
+### 📚 3rd party library updates
+
+- [Android] Bumped MLKit barcode scanner to 17.3.0 for Android 16KB page size support. ([#37454](https://github.com/expo/expo/pull/37454) by [@kudo](https://github.com/kudo))
+
+## 16.1.9 - 2025-06-26
+
+_This version does not introduce any user-facing changes._
+
+## 16.1.8 - 2025-06-10
+
+_This version does not introduce any user-facing changes._
+
+## 16.1.7 - 2025-06-04
+
+### 🐛 Bug fixes
+
+- [Android] Fix the scenario where switching apps results in the loss of the recording video by throwing an error. ([#36854](https://github.com/expo/expo/pull/36854) by [@ladeira1](https://github.com/ladeira1))
+- [Android] Fix barcode scanner coordinates to UI mapping. ([#37198](https://github.com/expo/expo/pull/37198) by [@alanjhughes](https://github.com/alanjhughes))
+
+### 💡 Others
+
+- [Android] Make `createCamera` a suspend function. ([#37038](https://github.com/expo/expo/pull/37038) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 16.1.6 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 16.1.5 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 16.1.4 — 2025-04-23
+
+### 🎉 New features
+
+- [iOS] Support selecting which lens to use for the camera. ([#36233](https://github.com/expo/expo/pull/36233) by [@alanjhughes](https://github.com/alanjhughes))
+
+### 💡 Others
+
+- [Web] Remove `forwardRef` from Camera component. ([#36320](https://github.com/expo/expo/pull/36320) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 16.1.3 — 2025-04-21
+
+### 💡 Others
+
+- [iOS] Remove unnecessary async calls. ([#36222](https://github.com/expo/expo/pull/36222) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 16.1.2 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 16.1.1 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 16.1.0 — 2025-04-04
+
+### 🎉 New features
+
+- [Android] Add support for the `Google Code Scanner`, similar to the `DataScannerViewController` used on iOS. ([#33347](https://github.com/expo/expo/pull/33347) by [@alanjhughes](https://github.com/alanjhughes))
+- Add support for pausing and resuming a video recording. ([#34002](https://github.com/expo/expo/pull/34002) by [@alanjhughes](https://github.com/alanjhughes))
+- Support returning image ref ([#34656](https://github.com/expo/expo/pull/34656) and ([#34693](https://github.com/expo/expo/pull/34693) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Support better formatted data on barcode scanning results. ([#34801](https://github.com/expo/expo/pull/34801) by [@alanjhughes](https://github.com/alanjhughes))
+- Support saving images PNGs in native. ([#35615](https://github.com/expo/expo/pull/35615) by [@alanjhughes](https://github.com/alanjhughes))
+
+### 🐛 Bug fixes
+
+- [web] Fix camera not being released after use. ([#35202](https://github.com/expo/expo/pull/35202) by [@eliottg](https://github.com/EliottG-Bam))
 - Fix `zoom` on Android and adjust the magnitude on iOS. ([#33319](https://github.com/expo/expo/pull/33319) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Fix setting `videoQuality` prop. ([#34082](https://github.com/expo/expo/pull/34082) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Fix an issue where the camera image is pixelated when using the gl integration. ([#34174](https://github.com/expo/expo/pull/34174) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Fix setting the camera preview provider. ([#34302](https://github.com/expo/expo/pull/34302) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Fix initial roation when used with `react-native-screens`. ([#34721](https://github.com/expo/expo/pull/34721) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Fix performance regression. ([#34750](https://github.com/expo/expo/pull/34750) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Attempt to fix `setLinearZoom` incompatability with some devices. ([#34757](https://github.com/expo/expo/pull/34757) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Fix flash. ([#34893](https://github.com/expo/expo/pull/34893) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Attempts to address crash that occurs more frequently on iPads. ([#34915](https://github.com/expo/expo/pull/34915) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Control barcode scanner on session queue. ([#35107](https://github.com/expo/expo/pull/35107) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Don't throw when setting the aspect ratio and instead fallback safely. ([#35614](https://github.com/expo/expo/pull/35614) by [@alanjhughes](https://github.com/alanjhughes))
 
 ### 💡 Others
 
 - On `Android`, parse the `pictureSize` prop safely to prevent invalid values causing exceptions. ([#33566](https://github.com/expo/expo/pull/33566) by [@alanjhughes](https://github.com/alanjhughes))
+- [Android] Started using expo modules gradle plugin. ([#34176](https://github.com/expo/expo/pull/34176) by [@lukmccall](https://github.com/lukmccall))
+- [apple] Migrate remaining `expo-module.config.json` to unified platform syntax. ([#34445](https://github.com/expo/expo/pull/34445) by [@reichhartd](https://github.com/reichhartd))
+- Add warning when rendering `children` in the `CameraView`. ([#34969](https://github.com/expo/expo/pull/34969) by [@alanjhughes](https://github.com/alanjhughes))
+- [iOS] Fix warnings which will become errors in Swift 6. ([#35428](https://github.com/expo/expo/pull/35428) by [@behenate](https://github.com/behenate))
 
 ## 16.0.8 - 2024-11-29
 

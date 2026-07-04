@@ -1,5 +1,5 @@
-import { createCachedFetch, getResponseDataOrThrow } from './rest/client';
 import { CommandError } from '../utils/errors';
+import { createCachedFetch, getResponseDataOrThrow } from './rest/client';
 
 interface NativeModule {
   npmPackage: string;
@@ -34,7 +34,7 @@ export async function getNativeModuleVersionsAsync(
   const fetchAsync = createCachedFetch({
     cacheDirectory: 'native-modules-cache',
     // 1 minute cache
-    ttl: 1000 * 60 * 1,
+    ttl: 1000 * 60,
   });
   const response = await fetchAsync(`sdks/${sdkVersion}/native-modules`);
   if (!response.ok) {

@@ -8,7 +8,6 @@ import expo.modules.updates.UpdatesConfiguration.CheckAutomaticallyConfiguration
 import expo.modules.updates.db.entity.AssetEntity
 import expo.modules.updates.logging.UpdatesErrorCode
 import expo.modules.updates.logging.UpdatesLogger
-import org.apache.commons.io.FileUtils
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -20,7 +19,6 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.experimental.and
 
 /**
  * Miscellaneous helper functions that are used by multiple classes in the library.
@@ -88,13 +86,19 @@ object UpdatesUtils {
   @Throws(NoSuchAlgorithmException::class, IOException::class)
   fun sha256(file: File): ByteArray {
     try {
+      val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
       FileInputStream(file).use { inputStream ->
         DigestInputStream(
           inputStream,
           MessageDigest.getInstance("SHA-256")
         ).use { digestInputStream ->
-          val md = digestInputStream.messageDigest
-          return md.digest()
+          while (true) {
+            val bytesRead = digestInputStream.read(buffer)
+            if (bytesRead == -1) {
+              break
+            }
+          }
+          return digestInputStream.messageDigest.digest()
         }
       }
     } catch (e: NoSuchAlgorithmException) {
@@ -112,13 +116,17 @@ object UpdatesUtils {
       // write file atomically by writing it to a temporary path and then renaming
       // this protects us against partially written files if the process is interrupted
       val tmpFile = File(destination.absolutePath + ".tmp")
-      FileUtils.copyInputStreamToFile(digestInputStream, tmpFile)
+      tmpFile.parentFile?.mkdirs()
+      digestInputStream.use { input ->
+        tmpFile.outputStream().use { output ->
+          input.copyTo(output)
+        }
+      }
 
       // this message digest must be read after the input stream has been consumed in order to get the hash correctly
       val md = digestInputStream.messageDigest
       val hash = md.digest()
-      // base64url - https://datatracker.ietf.org/doc/html/rfc4648#section-5
-      val hashBase64String = Base64.encodeToString(hash, Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP)
+      val hashBase64String = toBase64Url(hash)
       if (expectedBase64URLEncodedHash != null && expectedBase64URLEncodedHash != hashBase64String) {
         throw IOException("File download was successful but base64url-encoded SHA-256 did not match expected; expected: $expectedBase64URLEncodedHash; actual: $hashBase64String")
       }
@@ -141,11 +149,15 @@ object UpdatesUtils {
     }
   }
 
+  fun toBase64Url(bytes: ByteArray): String {
+    return Base64.encodeToString(bytes, Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP)
+  }
+
+  /**
+   * Create an asset filename in file system (files are saved in the `.expo-internal` directory)
+   */
   fun createFilenameForAsset(asset: AssetEntity): String {
-    var fileExtension: String? = ""
-    if (asset.type != null) {
-      fileExtension = if (asset.type!!.startsWith(".")) asset.type else "." + asset.type
-    }
+    val fileExtension = asset.getFileExtension()
     return if (asset.key == null) {
       // create a filename that's unlikely to collide with any other asset
       "asset-" + Date().time + "-" + Random().nextInt() + fileExtension
@@ -172,6 +184,7 @@ object UpdatesUtils {
         }
         !cm.isActiveNetworkMetered
       }
+
       CheckAutomaticallyConfiguration.ALWAYS -> true
     }
   }
@@ -181,7 +194,7 @@ object UpdatesUtils {
   fun bytesToHex(bytes: ByteArray): String {
     val hexChars = CharArray(bytes.size * 2)
     for (j in bytes.indices) {
-      val v = (bytes[j] and 0xFF.toByte()).toInt()
+      val v = bytes[j].toInt() and 0xFF
       hexChars[j * 2] = HEX_ARRAY[v ushr 4]
       hexChars[j * 2 + 1] = HEX_ARRAY[v and 0x0F]
     }
@@ -241,10 +254,12 @@ object UpdatesUtils {
           // Value is "double-quoted". That's valid and our regex group already strips the quotes.
           parameter.group(3)
         }
+
         token.startsWith("'") && token.endsWith("'") && token.length > 2 -> {
           // If the token is 'single-quoted' it's invalid! But we're lenient and strip the quotes.
           token.substring(1, token.length - 1)
         }
+
         else -> token
       }
 

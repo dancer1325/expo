@@ -1,10 +1,11 @@
 import assert from 'assert';
 import chalk from 'chalk';
 
-import { canResolveDevClient, hasDirectDevClientDependency } from './detectDevClient';
 import { Log } from '../log';
+import { envIsWebcontainer } from '../utils/env';
 import { AbortCommandError, CommandError } from '../utils/errors';
 import { resolvePortAsync } from '../utils/port';
+import { canResolveDevClient, hasDirectDevClientDependency } from './detectDevClient';
 
 export type Options = {
   privateKeyPath: string | null;
@@ -35,6 +36,10 @@ export async function resolveOptionsAsync(projectRoot: string, args: any): Promi
     localhost: args['--localhost'],
     tunnel: args['--tunnel'],
   });
+
+  if (args['--https']) {
+    Log.warn(chalk`{bold --https} option is deprecated in favor of {bold --tunnel}`);
+  }
 
   // User can force the default target by passing either `--dev-client` or `--go`. They can also
   // swap between them during development by pressing `s`.
@@ -142,6 +147,12 @@ export function resolveHostType(options: {
   } else if (options.localhost) {
     return 'localhost';
   }
+
+  // If no option is provided, and we are running in Stackblitz, enable tunnel by default
+  if (envIsWebcontainer()) {
+    return 'tunnel';
+  }
+
   return 'lan';
 }
 
@@ -159,7 +170,7 @@ export async function resolvePortsAsync(
       // Default web port
       fallbackPort: 19006,
     });
-    if (!webpackPort) {
+    if (webpackPort == null) {
       throw new AbortCommandError();
     }
     multiBundlerSettings.webpackPort = webpackPort;
@@ -171,7 +182,7 @@ export async function resolvePortsAsync(
       defaultPort: options.port,
       fallbackPort,
     });
-    if (!metroPort) {
+    if (metroPort == null) {
       throw new AbortCommandError();
     }
     multiBundlerSettings.metroPort = metroPort;

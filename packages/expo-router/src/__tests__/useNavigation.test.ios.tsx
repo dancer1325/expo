@@ -1,7 +1,5 @@
-import { NavigationProp } from '@react-navigation/native';
-import React from 'react';
-
 import Stack from '../layouts/Stack';
+import type { NavigationProp } from '../react-navigation/native';
 import { renderRouter } from '../testing-library';
 import { useNavigation } from '../useNavigation';
 
@@ -23,6 +21,25 @@ it('can resolve the base navigator', () => {
   expect(navigation).toBeDefined();
   // This is the base navigator when there are no layout files
   expect(navigation?.getId()).toBe('/expo-router/build/views/Navigator');
+});
+
+it('can resolve the parent of a nested navigator', () => {
+  let navigation: Navigation;
+
+  renderRouter({
+    _layout: () => <Stack />,
+    '(app)/_layout': () => <Stack />,
+    '(app)/index': function Index() {
+      navigation = useNavigation();
+
+      return null;
+    },
+  });
+
+  expect(navigation).toBeDefined();
+  // Narrows type for TypeScript
+  if (!navigation) throw new Error('Expected navigation to be defined');
+  expect(navigation.getId()).toBe('/(app)');
 });
 
 it('can resolve the root navigator', () => {

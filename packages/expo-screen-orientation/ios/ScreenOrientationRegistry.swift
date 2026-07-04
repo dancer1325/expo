@@ -1,4 +1,5 @@
 import Foundation
+internal import React
 import ExpoModulesCore
 
 public protocol ScreenOrientationController: AnyObject {
@@ -57,10 +58,7 @@ public class ScreenOrientationRegistry: NSObject, UIApplicationDelegate {
    Called by ScreenOrientationAppDelegate in order to set initial interface orientation.
    */
   public func updateCurrentScreenOrientation() {
-    let windows = UIApplication.shared.windows
-    if !windows.isEmpty {
-      self.currentScreenOrientation = windows[0].windowScene?.interfaceOrientation ?? .unknown
-    }
+      self.currentScreenOrientation = rootViewController?.view.window?.windowScene?.interfaceOrientation ?? .unknown
   }
 
   deinit {
@@ -95,10 +93,9 @@ public class ScreenOrientationRegistry: NSObject, UIApplicationDelegate {
         let windowScene = self.rootViewController?.view.window?.windowScene
         windowScene?.requestGeometryUpdate(.iOS(interfaceOrientations: orientationMask))
         self.rootViewController?.setNeedsUpdateOfSupportedInterfaceOrientations()
-      } else {
-        UIDevice.current.setValue(newOrientation.rawValue, forKey: "orientation")
-        UIViewController.attemptRotationToDeviceOrientation()
       }
+      UIDevice.current.setValue(newOrientation.rawValue, forKey: "orientation")
+      UIViewController.attemptRotationToDeviceOrientation()
 
       if self.currentScreenOrientation == .unknown {
         // CurrentScreenOrientation might be unknown (especially just after launch), but at this point we already know it.
@@ -204,9 +201,15 @@ public class ScreenOrientationRegistry: NSObject, UIApplicationDelegate {
    Called at the end of the screen orientation change. Notifies the controllers about the orientation change.
    */
   func screenOrientationDidChange(_ newScreenOrientation: UIInterfaceOrientation) {
-    queue.async(flags: .barrier) {
-      self.currentScreenOrientation = newScreenOrientation
-
+    queue.sync(flags: .barrier) {
+      // Write with the barrier:
+      if self.currentScreenOrientation != newScreenOrientation {
+        // Only change if necessary, to prevent listeners from re-calling this method.
+        self.currentScreenOrientation = newScreenOrientation
+      }
+    }
+    queue.async {
+      // Read without the barrier:
       for controller in self.orientationControllers {
         controller.screenOrientationDidChange(newScreenOrientation)
       }

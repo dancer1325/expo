@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import fs from 'fs';
 import { join } from 'path';
 
 export type ContentsJsonImageIdiom =
@@ -50,10 +50,6 @@ export interface ContentsJson {
   };
 }
 
-export function createContentsJsonItem(item: ContentsJsonImage): ContentsJsonImage {
-  return item;
-}
-
 /**
  * Writes the Config.json which is used to assign images to their respective platform, dpi, and idiom.
  *
@@ -64,9 +60,8 @@ export async function writeContentsJsonAsync(
   directory: string,
   { images }: Pick<ContentsJson, 'images'>
 ): Promise<void> {
-  await fs.ensureDir(directory);
-
-  await fs.writeFile(
+  await fs.promises.mkdir(directory, { recursive: true });
+  await fs.promises.writeFile(
     join(directory, 'Contents.json'),
     JSON.stringify(
       {

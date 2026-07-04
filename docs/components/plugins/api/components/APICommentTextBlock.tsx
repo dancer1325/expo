@@ -2,15 +2,14 @@ import { mergeClasses } from '@expo/styleguide';
 import { CodeSquare01Icon } from '@expo/styleguide-icons/outline/CodeSquare01Icon';
 import type { ReactNode } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkSupsub from 'remark-supersub';
-import { InlineHelp } from 'ui/components/InlineHelp';
 
+import { InlineHelp } from '~/ui/components/InlineHelp';
 import { Tag } from '~/ui/components/Tag/Tag';
 import { CALLOUT } from '~/ui/components/Text';
 
-import { MDComponents } from '../types';
-import { APIBoxSectionHeader } from './APIBoxSectionHeader';
 import { CommentData } from '../APIDataTypes';
 import {
   getAllTagData,
@@ -20,11 +19,12 @@ import {
   parseCommentContent,
 } from '../APISectionUtils';
 import { ELEMENT_SPACING, STYLES_SECONDARY } from '../styles';
+import { APIBoxSectionHeader } from './APIBoxSectionHeader';
 import { APISectionPlatformTags } from './APISectionPlatformTags';
 
 type Props = {
   comment?: CommentData;
-  components?: MDComponents;
+  components?: Components;
   beforeContent?: ReactNode;
   afterContent?: ReactNode;
   includePlatforms?: boolean;
@@ -43,12 +43,9 @@ export const APICommentTextBlock = ({
   emptyCommentFallback,
 }: Props) => {
   const content = comment?.summary ? getCommentContent(comment.summary) : undefined;
+  const hasContent = (content?.length ?? 0) > 0 || Boolean(afterContent);
 
-  if (emptyCommentFallback && !content?.length) {
-    return <span className="text-quaternary">{emptyCommentFallback}</span>;
-  }
-
-  const paramTags = content ? getParamTags(content) : undefined;
+  const paramTags = hasContent ? getParamTags(content) : undefined;
   const parsedContent = (
     <ReactMarkdown components={mdComponents} remarkPlugins={[remarkGfm, remarkSupsub]}>
       {parseCommentContent(paramTags ? content?.replaceAll(PARAM_TAGS_REGEX, '') : content)}
@@ -56,26 +53,41 @@ export const APICommentTextBlock = ({
   );
 
   const examples = getAllTagData('example', comment);
-  const exampleText = examples?.map((example, index) => (
-    <div key={'example-' + index} className={mergeClasses(ELEMENT_SPACING, 'last:[&>*]:!mb-0')}>
-      {inlineHeaders ? (
-        <CALLOUT className="my-1.5 flex flex-row items-center gap-1.5 font-medium text-tertiary">
-          <CodeSquare01Icon className="icon-sm -mt-px text-icon-tertiary" />
-          Example
-        </CALLOUT>
-      ) : (
-        <APIBoxSectionHeader text="Example" className="-mx-4 mb-3 mt-1" Icon={CodeSquare01Icon} />
-      )}
-      <ReactMarkdown components={mdComponents} remarkPlugins={[remarkGfm, remarkSupsub]}>
-        {getCommentContent(example.content ?? example.name)}
-      </ReactMarkdown>
-    </div>
-  ));
+  const exampleContent = examples?.map((example, index) => {
+    const exampleText = getCommentContent(example.content ?? example.name);
+    const isMultiline = /[\n\r]/.test(exampleText);
+
+    return (
+      <div
+        key={'example-' + index}
+        className={mergeClasses(
+          ELEMENT_SPACING,
+          !isMultiline && 'flex items-center gap-1.5',
+          '[&>*:last-child]:mb-0!'
+        )}>
+        {inlineHeaders ? (
+          <CALLOUT
+            className={mergeClasses(
+              'my-1.5 flex flex-row items-center gap-1.5 font-medium text-tertiary',
+              !isMultiline && 'my-0'
+            )}>
+            <CodeSquare01Icon aria-hidden="true" className="-mt-px icon-sm text-icon-tertiary" />
+            Example
+          </CALLOUT>
+        ) : (
+          <APIBoxSectionHeader text="Example" className="-mx-4 mt-1 mb-3" Icon={CodeSquare01Icon} />
+        )}
+        <ReactMarkdown components={mdComponents} remarkPlugins={[remarkGfm, remarkSupsub]}>
+          {exampleText}
+        </ReactMarkdown>
+      </div>
+    );
+  });
 
   const see = getTagData('see', comment);
-  const seeText = see && (
+  const seeContent = see && (
     <InlineHelp
-      className={mergeClasses('shadow-none', `!${ELEMENT_SPACING}`)}
+      className={mergeClasses('shadow-none', 'mb-2.5! [table_&]:last:mb-0!', '[table_&]:mt-2')}
       size="sm"
       type="info-light">
       <ReactMarkdown components={mdComponents} remarkPlugins={[remarkGfm, remarkSupsub]}>
@@ -87,7 +99,11 @@ export const APICommentTextBlock = ({
   const hasPlatforms = (getAllTagData('platform', comment)?.length || 0) > 0;
 
   return (
-    <div className={mergeClasses(includeSpacing && 'px-4 [table_&]:!mb-0 [table_&]:px-0')}>
+    <div
+      className={mergeClasses(
+        includeSpacing && hasContent && 'px-4 [table_&]:mb-0! [table_&]:px-0',
+        emptyCommentFallback && !hasContent && 'text-quaternary'
+      )}>
       {includePlatforms && hasPlatforms && (
         <APISectionPlatformTags
           comment={comment}
@@ -103,11 +119,12 @@ export const APICommentTextBlock = ({
         </>
       )}
       {beforeContent}
+      {Boolean(emptyCommentFallback) && !hasContent && emptyCommentFallback}
       {parsedContent}
       {afterContent}
-      {afterContent && !exampleText && <br />}
-      {seeText}
-      {exampleText}
+      {afterContent && !exampleContent && <br />}
+      {seeContent}
+      {exampleContent}
     </div>
   );
 };

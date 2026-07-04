@@ -7,10 +7,13 @@ import { StyleSheet, Text, View, Platform, Image } from 'react-native';
 
 import { usePathname, useRouter } from '../hooks';
 import { Link } from '../link/Link';
+import { useRoute } from '../react-navigation/native';
+import type { Href } from '../types';
 import { useNavigation } from '../useNavigation';
+import { isRoutePreloadedInStack } from '../utils/stack';
 import { Pressable } from '../views/Pressable';
-
-const useLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : function () {};
+import { NoSSR } from './NoSSR';
+import { useSafeLayoutEffect } from './useSafeLayoutEffect';
 
 /**
  * Default screen for unmatched routes.
@@ -18,9 +21,21 @@ const useLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : 
  * @hidden
  */
 export function Unmatched() {
+  // Following the https://github.com/expo/expo/blob/ubax/router/move-404-and-sitemap-to-root/packages/expo-router/src/getRoutesSSR.ts#L51
+  // we need to ensure that the Unmatched component is not rendered on the server.
+  return (
+    <NoSSR>
+      <UnmatchedInner />
+    </NoSSR>
+  );
+}
+
+function UnmatchedInner() {
   const [render, setRender] = React.useState(false);
 
   const router = useRouter();
+  const route = useRoute();
+
   const navigation = useNavigation();
   const pathname = usePathname();
   const url = createURL(pathname);
@@ -29,14 +44,20 @@ export function Unmatched() {
     setRender(true);
   }, []);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      title: 'Not Found',
-    });
-  }, [navigation]);
+  const isFocused = navigation.isFocused();
+  const isPreloaded = isRoutePreloadedInStack(navigation.getState(), route);
+
+  /** This route may be prefetched if a <Link prefetch href="/<unmatched>" /> is used */
+  useSafeLayoutEffect(() => {
+    if (!isPreloaded || (isPreloaded && isFocused)) {
+      navigation.setOptions({
+        title: 'Not Found',
+      });
+    }
+  }, [isFocused, isPreloaded, navigation]);
 
   return (
-    <View style={styles.container}>
+    <View testID="expo-router-unmatched" style={styles.container}>
       <NotFoundAsset />
       <Text role="heading" aria-level={1} style={styles.title}>
         Unmatched Route
@@ -45,7 +66,7 @@ export function Unmatched() {
         Page could not be found.
       </Text>
       {render ? (
-        <Link href={pathname} replace {...Platform.select({ native: { asChild: true } })}>
+        <Link href={pathname as Href} replace {...Platform.select({ native: { asChild: true } })}>
           <Pressable>
             {({ hovered, pressed }) => (
               <Text
@@ -82,7 +103,7 @@ export function Unmatched() {
                 if (router.canGoBack()) {
                   router.back();
                 } else {
-                  router.replace('/');
+                  router.replace('/' as Href);
                 }
               }}
               style={[

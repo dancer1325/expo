@@ -1,5 +1,7 @@
-import { ConfigPlugin, withPlugins } from '@expo/config-plugins';
+import type { ConfigPlugin } from '@expo/config-plugins';
+import { withPlugins } from '@expo/config-plugins';
 
+import { withAndroidModulesProjectBuildGradle } from './withAndroidGradles';
 import { withAndroidModulesMainActivity } from './withAndroidModulesMainActivity';
 import { withAndroidModulesMainApplication } from './withAndroidModulesMainApplication';
 import { withAndroidModulesSettingGradle } from './withAndroidSettingsGradle';
@@ -9,5 +11,6 @@ export const withAndroidModules: ConfigPlugin = (config) => {
     withAndroidModulesMainApplication,
     withAndroidModulesMainActivity,
     withAndroidModulesSettingGradle,
+    withAndroidModulesProjectBuildGradle,
   ]);
 };

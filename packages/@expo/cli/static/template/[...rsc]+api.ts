@@ -1,6 +1,5 @@
-import { getRscMiddleware } from '@expo/server/build/middleware/rsc';
-import { renderRscAsync } from 'expo-router/build/rsc/middleware';
-
+import { renderRscAsync } from '@expo/router-server/build/rsc/middleware';
+import { getRscMiddleware } from 'expo-server/private';
 import { resolve } from 'node:path';
 
 // Target the `dist/server` directory.

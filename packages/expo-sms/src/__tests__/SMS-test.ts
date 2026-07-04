@@ -1,8 +1,8 @@
-import { Platform } from 'expo-modules-core';
+import { Platform } from 'expo';
 
 import ExpoSMS from '../ExpoSMS';
 import * as SMS from '../SMS';
-import { SMSAttachment } from '../SMS.types';
+import type { SMSAttachment } from '../SMS.types';
 
 it(`normalizes one phone number into an array`, async () => {
   try {
@@ -11,7 +11,7 @@ it(`normalizes one phone number into an array`, async () => {
 
     await SMS.sendSMSAsync(['0123456789', '9876543210'], 'test');
     expect(ExpoSMS.sendSMSAsync).toHaveBeenLastCalledWith(['0123456789', '9876543210'], 'test', {});
-  } catch (e) {
+  } catch (e: any) {
     if (Platform.OS === 'web') {
       expect(e.code).toBe('ERR_UNAVAILABLE');
     }
@@ -41,7 +41,7 @@ it(`normalizes attachments parameter to always pass array to native`, async () =
     expect(ExpoSMS.sendSMSAsync).toHaveBeenLastCalledWith(['0123456789'], 'test', {
       attachments: Platform.OS === 'android' ? [imageAttachment] : multipleAttachments,
     });
-  } catch (e) {
+  } catch (e: any) {
     if (Platform.OS === 'web') {
       expect(e.code).toBe('ERR_UNAVAILABLE');
     }

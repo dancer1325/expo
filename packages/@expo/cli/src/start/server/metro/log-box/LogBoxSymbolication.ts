@@ -5,7 +5,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import { parse, StackFrame as UpstreamStackFrame } from 'stacktrace-parser';
+import type { StackFrame as UpstreamStackFrame } from 'stacktrace-parser';
+import { parse } from 'stacktrace-parser';
+
+import { fetch } from '../../../../utils/fetch';
 
 export type CodeFrame = {
   content: string;
@@ -27,12 +30,14 @@ export type SymbolicatedStackTrace = {
   codeFrame?: CodeFrame;
 };
 
-export type StackFrame = UpstreamStackFrame & { collapse?: boolean };
+export type StackFrame = UpstreamStackFrame & {
+  collapse?: boolean;
+};
 
 const cache: Map<StackFrame[], Promise<SymbolicatedStackTrace>> = new Map();
 
 /**
- * Sanitize because sometimes, `symbolicateStackTrace` gives us invalid values.
+ * Sanitize because sometimes `symbolicateStackTrace` gives us invalid values.
  */
 const sanitize = ({
   stack: maybeStack,
@@ -51,7 +56,7 @@ const sanitize = ({
       collapse = maybeFrame.collapse;
     }
     stack.push({
-      arguments: [],
+      arguments: maybeFrame.arguments?.map((arg) => String(arg)) ?? [],
       column: maybeFrame.column,
       file: maybeFrame.file,
       lineNumber: maybeFrame.lineNumber,
@@ -84,6 +89,9 @@ async function symbolicateStackTrace(stack: UpstreamStackFrame[]): Promise<Symbo
 
   return fetch(baseUrl + '/symbolicate', {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ stack }),
   }).then((res) => res.json());
 }
@@ -97,6 +105,24 @@ export function parseErrorStack(stack?: string): (UpstreamStackFrame & { collaps
   }
 
   return parse(stack).map((frame) => {
+    // Add back support for Hermes native calls:
+    // `    at apply (native)`
+    // Which are parsed to:
+    // {
+    //   "file": null,
+    //   "methodName": "apply",
+    //   "arguments": ["native"],
+    //   "lineNumber": null,
+    //   "column": null,
+    //   "collapse": false
+    // },
+    // https://github.com/facebook/react-native/blob/f0ad39446404bb6e027d0c486b579c312f35180a/packages/react-native/Libraries/Core/Devtools/parseHermesStack.js#L70
+    if (frame.file == null && frame.arguments?.length === 1 && frame.arguments[0] === 'native') {
+      // Use `<native>` to match the `<anonymous>` and `<unknown>` used by other runtimes.
+      frame.file = '<native>';
+      frame.arguments = [];
+    }
+
     // frame.file will mostly look like `http://localhost:8081/index.bundle?platform=web&dev=true&hot=false`
     return {
       ...frame,

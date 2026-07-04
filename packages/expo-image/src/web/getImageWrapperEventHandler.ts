@@ -1,13 +1,15 @@
-import { ImageWrapperEvents } from './ImageWrapper.types';
-import { ImageSource } from '../Image.types';
+import type { SyntheticEvent } from 'react';
+
+import type { ImageSource } from '../Image.types';
 import { isBlurhashString } from '../utils/resolveSources';
+import type { ImageWrapperEvents } from './ImageWrapper.types';
 
 export function getImageWrapperEventHandler(
   events: ImageWrapperEvents | undefined,
   source: ImageSource
 ) {
   return {
-    onLoad: (event) => {
+    onLoad: (event: SyntheticEvent<HTMLImageElement, Event>) => {
       events?.onLoad?.forEach((e) => e?.(event));
 
       if (typeof window !== 'undefined') {

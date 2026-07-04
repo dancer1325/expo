@@ -1,29 +1,28 @@
 #import "EXVersionManagerObjC.h"
 
-#if __has_include(<React-RCTAppDelegate/RCTAppDelegate.h>)
-#import <React-RCTAppDelegate/RCTAppDelegate.h>
-#elif __has_include(<React_RCTAppDelegate/RCTAppDelegate.h>)
-// for importing the header from framework, the dash will be transformed to underscore
-#import <React_RCTAppDelegate/RCTAppDelegate.h>
-#endif
-
+#import <Expo/RCTAppDelegateUmbrella.h>
 #import <React/RCTJavaScriptLoader.h>
 
 @class RCTHost;
+@class EXAppContext;
 
 NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^OnLoad)(NSURL *sourceURL, RCTSourceLoadBlock loadCallback);
 
-@interface ExpoAppInstance : RCTAppDelegate
+@interface ExpoAppInstance : RCTDefaultReactNativeFactoryDelegate
 
 @property(atomic, strong, nonnull) NSURL *sourceURL;
 @property(atomic, strong, nonnull) EXVersionManagerObjC *manager;
-@property (nonatomic, nonnull) OnLoad onLoad;
+@property(nonatomic, nonnull) OnLoad onLoad;
+@property(nonatomic, strong, nonnull) RCTReactNativeFactory *reactNativeFactory;
 
 - (instancetype)initWithSourceURL:(NSURL *)sourceURL manager:(EXVersionManagerObjC *)manager onLoad:(OnLoad)onLoad;
 
-- (RCTRootViewFactory *)createRCTRootViewFactory;
+/**
+ * Creates a new app context configured for Expo Go.
+ */
+- (EXAppContext *)createExpoGoAppContext;
 
 @end
 

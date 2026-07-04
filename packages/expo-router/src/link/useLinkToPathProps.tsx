@@ -1,11 +1,12 @@
-import { MouseEvent } from 'react';
-import { GestureResponderEvent, Platform } from 'react-native';
+import type { MouseEvent } from 'react';
+import type { GestureResponderEvent } from 'react-native';
+import { Platform } from 'react-native';
 
-import { useExpoRouter } from '../global-state/router-store';
-import { LinkToOptions } from '../global-state/routing';
-import { stripGroupSegmentsFromPath } from '../matchers';
-import { emitDomLinkEvent } from './useDomComponentNavigation';
+import { emitDomLinkEvent } from '../domComponents/emitDomEvent';
 import { appendBaseUrl } from '../fork/getPathFromState-forks';
+import type { LinkToOptions } from '../global-state/routing';
+import { linkTo } from '../global-state/routing';
+import { stripGroupSegmentsFromPath } from '../matchers';
 import { shouldLinkExternally } from '../utils/url';
 
 function eventShouldPreventDefault(
@@ -37,8 +38,6 @@ type UseLinkToPathPropsOptions = LinkToOptions & {
 };
 
 export default function useLinkToPathProps({ href, ...options }: UseLinkToPathPropsOptions) {
-  const { linkTo } = useExpoRouter();
-
   const onPress = (event?: MouseEvent<HTMLAnchorElement> | GestureResponderEvent) => {
     if (shouldHandleMouseEvent(event)) {
       if (emitDomLinkEvent(href, options)) {

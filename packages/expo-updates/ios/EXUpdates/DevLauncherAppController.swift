@@ -45,13 +45,27 @@ enum DevLauncherAppControllerError: Int, Error, LocalizedError {
  */
 @objc(EXUpdatesDevLauncherController)
 @objcMembers
-public final class DevLauncherAppController: NSObject, InternalAppControllerInterface, UpdatesExternalInterface {
+public final class DevLauncherAppController: NSObject, InternalAppControllerInterface, UpdatesDevLauncherInterface {
+  public func subscribeToUpdatesStateChanges(_ listener: any UpdatesStateChangeListener) -> UpdatesStateChangeSubscription {
+    return DisabledUpdatesStateChangeSubscription()
+  }
+
+  public var launchedUpdateId: UUID?
+
+  public var embeddedUpdateId: UUID?
+
+  public var requestHeaders: [String : String]?
+  
+  public var isEnabled: Bool
+  public let isStarted = false
+
   public let eventManager: UpdatesEventManager = NoOpUpdatesEventManager()
+  public var reloadScreenManager: Reloadable? = ReloadScreenManager()
 
   private let logger = UpdatesLogger()
 
   public weak var delegate: AppControllerDelegate?
-  public weak var updatesExternalInterfaceDelegate: (any EXUpdatesInterface.UpdatesExternalInterfaceDelegate)?
+  public weak var updatesExternalInterfaceDelegate: (any UpdatesExternalInterfaceDelegate)?
 
   public func launchAssetUrl() -> URL? {
     return launcher?.launchAssetUrl
@@ -59,6 +73,10 @@ public final class DevLauncherAppController: NSObject, InternalAppControllerInte
 
   public var launchAssetURL: URL? {
     launcher?.launchAssetUrl
+  }
+
+  public var launchAssetPath: String? {
+    launcher?.launchAssetUrl?.relativePath
   }
 
   public var runtimeVersion: String? {
@@ -99,10 +117,14 @@ public final class DevLauncherAppController: NSObject, InternalAppControllerInte
     self.updatesDirectory = updatesDirectory
     self.database = updatesDatabase
     self.directoryDatabaseException = directoryDatabaseException
-    self.defaultSelectionPolicy = SelectionPolicyFactory.filterAwarePolicy(
-      withRuntimeVersion: initialUpdatesConfiguration.let { it in it.runtimeVersion } ?? "1"
+    self.defaultSelectionPolicy = SelectionPolicy(
+      launcherSelectionPolicy: LauncherSelectionPolicyDevelopmentClient(
+        runtimeVersion: initialUpdatesConfiguration.let { it in it.runtimeVersion } ?? "1",
+        config: self.config),
+      loaderSelectionPolicy: LoaderSelectionPolicyDevelopmentClient(config: self.config),
+      reaperSelectionPolicy: ReaperSelectionPolicyDevelopmentClient()
     )
-
+    self.isEnabled = false
     super.init()
   }
 
@@ -276,7 +298,8 @@ public final class DevLauncherAppController: NSObject, InternalAppControllerInte
       config: configuration,
       database: self.database,
       directory: self.updatesDirectory!,
-      completionQueue: self.controllerQueue
+      completionQueue: self.controllerQueue,
+      logger: self.logger
     )
     launcher.launchUpdate(withSelectionPolicy: self.selectionPolicy()) { error, success in
       if !success {
@@ -301,7 +324,8 @@ public final class DevLauncherAppController: NSObject, InternalAppControllerInte
         database: database,
         directory: updatesDirectory,
         selectionPolicy: selectionPolicy(),
-        launchedUpdate: launchedUpdate
+        launchedUpdate: launchedUpdate,
+        logger: self.logger
       )
     }
   }
@@ -343,6 +367,14 @@ public final class DevLauncherAppController: NSObject, InternalAppControllerInte
 
   public func setExtraParam(key: String, value: String?, success successBlockArg: @escaping () -> Void, error errorBlockArg: @escaping (ExpoModulesCore.Exception) -> Void) {
     errorBlockArg(NotAvailableInDevClientException("Updates.setExtraParamAsync()"))
+  }
+
+  public func setUpdateURLAndRequestHeadersOverride(_ configOverride: UpdatesConfigOverride?) throws {
+    throw NotAvailableInDevClientException("Updates.setUpdateURLAndRequestHeadersOverride() is not supported in development builds.")
+  }
+
+  public func setUpdateRequestHeadersOverride(_ requestHeaders: [String: String]?) throws {
+    throw NotAvailableInDevClientException("Updates.setUpdateRequestHeadersOverride() is not supported in development builds.")
   }
 }
 

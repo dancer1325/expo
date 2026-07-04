@@ -3,11 +3,13 @@ import requireString from 'require-from-string';
 
 import { satisfyExpoVersion } from '../ExpoResolver';
 import { normalizeOptionsAsync } from '../Options';
+import { resolveProjectWorkflowAsync } from '../ProjectWorkflow';
 
 jest.mock('fs/promises');
 // Mock cpus to return a single core for consistent snapshot testing
 jest.mock('os', () => ({ cpus: jest.fn().mockReturnValue([0]) }));
 jest.mock('../ExpoResolver');
+jest.mock('../ProjectWorkflow');
 
 describe(normalizeOptionsAsync, () => {
   afterEach(() => {
@@ -16,11 +18,14 @@ describe(normalizeOptionsAsync, () => {
 
   it('should return the default options if no options are provided', async () => {
     const options = await normalizeOptionsAsync('/app');
-    // @ts-expect-error: mutate the objects to only show patterns in the snapshot
-    options.ignorePathMatchObjects = options.ignorePathMatchObjects.map(({ pattern }) => pattern);
-    // @ts-expect-error: mutate the objects to only show patterns in the snapshot
-    options.ignoreDirMatchObjects = options.ignoreDirMatchObjects.map(({ pattern }) => pattern);
-    expect(options).toMatchSnapshot();
+    expect(options.ignorePathMatchObjects.length).toBeGreaterThan(0);
+    expect(options.ignoreDirMatchObjects.length).toBeGreaterThan(0);
+
+    // Because the default ignored paths change over time, we don't want to snapshot them.
+    const snapshotOptions: Partial<typeof options> = { ...options };
+    delete snapshotOptions.ignorePathMatchObjects;
+    delete snapshotOptions.ignoreDirMatchObjects;
+    expect(snapshotOptions).toMatchSnapshot();
   });
 
   it('should respect ignorePaths from both config and options', async () => {
@@ -83,6 +88,34 @@ module.exports = config;
       expect(hashAlgorithm).toBe('md5');
     });
   });
+
+  it('should not overwrite config options from null explicit options', async () => {
+    await jest.isolateModulesAsync(async () => {
+      const configContents = `\
+/** @type {import('@expo/fingerprint').Config} */
+const config = {
+  concurrentIoLimit: 10,
+  debug: true,
+  hashAlgorithm: 'sha256',
+};
+module.exports = config;
+`;
+      vol.fromJSON({ '/app/fingerprint.config.js': configContents });
+      jest.doMock('/app/fingerprint.config.js', () => requireString(configContents), {
+        virtual: true,
+      });
+
+      const { concurrentIoLimit, debug, hashAlgorithm } = await normalizeOptionsAsync('/app', {
+        // Explicitly pass `null` to verify it does not overwrite the config value.
+        concurrentIoLimit: null as unknown as number,
+        debug: undefined,
+        hashAlgorithm: 'md5',
+      });
+      expect(concurrentIoLimit).toBe(10);
+      expect(debug).toBe(true);
+      expect(hashAlgorithm).toBe('md5');
+    });
+  });
 });
 
 describe(`normalizeOptionsAsync - enableReactImportsPatcher`, () => {
@@ -97,7 +130,7 @@ describe(`normalizeOptionsAsync - enableReactImportsPatcher`, () => {
     >;
     mockSatisfyExpoVersion.mockReturnValueOnce(true);
     const options = await normalizeOptionsAsync('/app');
-    expect(mockSatisfyExpoVersion.mock.calls[0][1]).toBe('<52.0.0');
+    expect(mockSatisfyExpoVersion.mock.calls[0]![1]).toBe('<52.0.0');
     expect(options.enableReactImportsPatcher).toBe(true);
   });
 
@@ -123,5 +156,18 @@ module.exports = config;
       const options = await normalizeOptionsAsync('/app');
       expect(options.enableReactImportsPatcher).toBe(true);
     });
+  });
+
+  it('should ignore native files for CNG projects', async () => {
+    const mockResolveProjectWorkflowAsync = resolveProjectWorkflowAsync as jest.MockedFunction<
+      typeof resolveProjectWorkflowAsync
+    >;
+    mockResolveProjectWorkflowAsync.mockResolvedValue('managed');
+    const { ignorePathMatchObjects, ignoreDirMatchObjects } = await normalizeOptionsAsync('/app');
+    expect(ignorePathMatchObjects.map(({ pattern }) => pattern)).toContain('android/**/*');
+    expect(ignorePathMatchObjects.map(({ pattern }) => pattern)).toContain('ios/**/*');
+    expect(ignoreDirMatchObjects.map(({ pattern }) => pattern)).toContain('android');
+    expect(ignoreDirMatchObjects.map(({ pattern }) => pattern)).toContain('ios');
+    mockResolveProjectWorkflowAsync.mockReset();
   });
 });

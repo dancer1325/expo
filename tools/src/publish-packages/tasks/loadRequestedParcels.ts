@@ -2,7 +2,7 @@ import chalk from 'chalk';
 
 import * as Changelogs from '../../Changelogs';
 import Git from '../../Git';
-import { getListOfPackagesAsync, Package } from '../../Packages';
+import { DependencyKind, getListOfPackagesAsync, Package } from '../../Packages';
 import { Task } from '../../TasksRunner';
 import { runWithSpinner } from '../../Utils';
 import { PackagesGraph, PackagesGraphNode } from '../../packages-graph';
@@ -25,11 +25,11 @@ export const loadRequestedParcels = new Task<TaskArgs>(
 
     const allPackages = await runWithSpinner(
       'Loading requested workspace packages',
-      () => getListOfPackagesAsync(),
+      async () => await getListOfPackagesAsync(),
       'Loaded requested workspace packages'
     );
 
-    const graph = new PackagesGraph(allPackages);
+    const graph = new PackagesGraph(allPackages.filter((pkg) => !pkg.packageJson.private));
     const allPackagesObj = allPackages.reduce((acc, pkg) => {
       acc[pkg.packageName] = pkg;
       return acc;
@@ -45,6 +45,16 @@ export const loadRequestedParcels = new Task<TaskArgs>(
     const filteredPackages = allPackages.filter((pkg) => {
       const isPrivate = pkg.packageJson.private;
       const isIncluded = packageNames.length === 0 || packageNames.includes(pkg.packageName);
+      const isTemplate = pkg.isTemplate();
+
+      const isExpoModuleScripts = pkg.packageName === 'expo-module-scripts';
+      if (isExpoModuleScripts && !options.includeExpoModuleScripts) {
+        return false;
+      }
+      if (options.templatesOnly) {
+        // Only include templates when the flag is on
+        return !isPrivate && isIncluded && isTemplate;
+      }
       return !isPrivate && isIncluded;
     });
 
@@ -60,7 +70,7 @@ export const loadRequestedParcels = new Task<TaskArgs>(
 
         // Include dependencies if only some specific packages were requested.
         const dependenciesParcels =
-          options.deps && packageNames.length > 0
+          options.deps && !options.templatesOnly && packageNames.length > 0
             ? await createParcelsForDependenciesOf(requestedParcels)
             : new Set<Parcel>();
 
@@ -112,8 +122,9 @@ export async function createParcelsForDependenciesOf(parcels: Set<Parcel>): Prom
   const allDependencies = new Set<Parcel>();
 
   for (const parcel of parcels) {
-    // Add all dependencies of the current package.
-    const dependencies = await createParcelsForGraphNodes(parcel.graphNode.getAllDependencies());
+    const dependencies = await createParcelsForGraphNodes(
+      parcel.graphNode.getAllDependencies([DependencyKind.Normal, DependencyKind.Optional])
+    );
 
     for (const dependencyParcel of dependencies) {
       parcel.dependencies.add(dependencyParcel);

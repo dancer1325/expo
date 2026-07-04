@@ -9,7 +9,7 @@ jest.mock('../exportHermes', () => {
   };
 });
 
-jest.mock('../findUpPackageJsonPath', () => ({
+jest.mock('../../utils/findUpPackageJsonPath', () => ({
   findUpPackageJsonPath: jest.fn(() => null),
 }));
 
@@ -172,28 +172,6 @@ describe('metro require', () => {
       }),
     ]);
   });
-
-  it(`require.resolveWeak`, async () => {
-    // Basically just bundle splitting...
-    const [[, , graph], artifacts] = await serializeOptimizeAsync({
-      'index.js': `
-          const Math = require.resolveWeak('./math');
-          console.log('keep', Math.add(1, 2));
-        `,
-      'math.js': `
-          module.exports.add = function add(a, b) {
-            return subtract(a, b);
-          }
-
-          module.exports.subtract = function subtract(a, b) {
-            return a - b;
-          }
-        `,
-    });
-
-    expectImports(graph, '/app/index.js').toEqual([]);
-    expect(artifacts[0].source).not.toMatch('subtract');
-  });
 });
 
 describe('cjs', () => {
@@ -295,29 +273,29 @@ describe('cjs', () => {
     expect(artifacts[0].source).toMatch('_$$_REQUIRE(_dependencyMap[0]);');
 
     expect(artifacts[0].source).toMatchInlineSnapshot(`
-          "__d(function (global, _$$_REQUIRE, _$$_IMPORT_DEFAULT, _$$_IMPORT_ALL, module, exports, _dependencyMap) {
-            const {
-              add
-            } = _$$_REQUIRE(_dependencyMap[0]);
-            console.log('keep', add(1, 2));
-          },"/app/index.js",["/app/math.js"]);
-          __d(function (global, _$$_REQUIRE, _$$_IMPORT_DEFAULT, _$$_IMPORT_ALL, module, exports, _dependencyMap) {
-            "use strict";
+      "__d(function (global, _$$_REQUIRE, _$$_IMPORT_DEFAULT, _$$_IMPORT_ALL, module, exports, _dependencyMap) {
+        const {
+          add
+        } = _$$_REQUIRE(_dependencyMap[0]);
+        console.log('keep', add(1, 2));
+      },"/app/index.js",["/app/math.js"]);
+      __d(function (global, _$$_REQUIRE, _$$_IMPORT_DEFAULT, _$$_IMPORT_ALL, module, exports, _dependencyMap) {
+        "use strict";
 
-            Object.defineProperty(exports, '__esModule', {
-              value: true
-            });
-            function add(a, b) {
-              return subtract(a, b);
-            }
-            function subtract(a, b) {
-              return a - b;
-            }
-            exports.add = add;
-            exports.subtract = subtract;
-          },"/app/math.js",[]);
-          TEST_RUN_MODULE("/app/index.js");"
-        `);
+        Object.defineProperty(exports, '__esModule', {
+          value: true
+        });
+        exports.add = add;
+        exports.subtract = subtract;
+        function add(a, b) {
+          return subtract(a, b);
+        }
+        function subtract(a, b) {
+          return a - b;
+        }
+      },"/app/math.js",[]);
+      TEST_RUN_MODULE("/app/index.js");"
+    `);
   });
 });
 
@@ -364,4 +342,110 @@ it(`cannot expands export all statements with cjs usage`, async () => {
   );
   expect(artifact.source).toMatch('z1');
   expect(artifact.source).toMatch('z2');
+});
+
+it(`recursively expands export all statements with nested statements`, async () => {
+  const [, [artifact]] = await serializeOptimizeAsync({
+    'index.js': `
+          import { z1, DDD } from './x0';
+          console.log(z1, DDD);
+        `,
+    'x0.js': `
+         export * from './x1';
+         export * from './x2';
+        `,
+    'x1.js': `
+      export const z1 = 0;
+      export * from './x2';
+      
+      `,
+    'x2.js': `
+      export const z2 = 0;
+      export const z3 = 0;
+        `,
+  });
+
+  expect(artifact.source).toMatch('z1');
+  expect(artifact.source).toMatch('z3');
+  expect(artifact.source).toMatch('z2');
+  expect(artifact.source).toMatchInlineSnapshot(`
+    "__d(function (global, _$$_REQUIRE, _$$_IMPORT_DEFAULT, _$$_IMPORT_ALL, module, exports, _dependencyMap) {
+      "use strict";
+
+      console.log(_$$_REQUIRE(_dependencyMap[0]).z1, _$$_REQUIRE(_dependencyMap[0]).DDD);
+    },"/app/index.js",["/app/x0.js"]);
+    __d(function (global, _$$_REQUIRE, _$$_IMPORT_DEFAULT, _$$_IMPORT_ALL, module, exports, _dependencyMap) {
+      "use strict";
+
+      Object.defineProperty(exports, '__esModule', {
+        value: true
+      });
+      Object.keys(_$$_REQUIRE(_dependencyMap[0])).forEach(function (k) {
+        if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) {
+          Object.defineProperty(exports, k, {
+            enumerable: true,
+            get: function () {
+              return _$$_REQUIRE(_dependencyMap[0])[k];
+            }
+          });
+        }
+      });
+      Object.keys(_$$_REQUIRE(_dependencyMap[1])).forEach(function (k) {
+        if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) {
+          Object.defineProperty(exports, k, {
+            enumerable: true,
+            get: function () {
+              return _$$_REQUIRE(_dependencyMap[1])[k];
+            }
+          });
+        }
+      });
+    },"/app/x0.js",["/app/x1.js","/app/x2.js"]);
+    __d(function (global, _$$_REQUIRE, _$$_IMPORT_DEFAULT, _$$_IMPORT_ALL, module, exports, _dependencyMap) {
+      "use strict";
+
+      Object.defineProperty(exports, '__esModule', {
+        value: true
+      });
+      Object.defineProperty(exports, "z1", {
+        enumerable: true,
+        get: function () {
+          return z1;
+        }
+      });
+      Object.keys(_$$_REQUIRE(_dependencyMap[0])).forEach(function (k) {
+        if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) {
+          Object.defineProperty(exports, k, {
+            enumerable: true,
+            get: function () {
+              return _$$_REQUIRE(_dependencyMap[0])[k];
+            }
+          });
+        }
+      });
+      const z1 = 0;
+    },"/app/x1.js",["/app/x2.js"]);
+    __d(function (global, _$$_REQUIRE, _$$_IMPORT_DEFAULT, _$$_IMPORT_ALL, module, exports, _dependencyMap) {
+      "use strict";
+
+      Object.defineProperty(exports, '__esModule', {
+        value: true
+      });
+      Object.defineProperty(exports, "z2", {
+        enumerable: true,
+        get: function () {
+          return z2;
+        }
+      });
+      Object.defineProperty(exports, "z3", {
+        enumerable: true,
+        get: function () {
+          return z3;
+        }
+      });
+      const z2 = 0;
+      const z3 = 0;
+    },"/app/x2.js",[]);
+    TEST_RUN_MODULE("/app/index.js");"
+  `);
 });

@@ -37,7 +37,7 @@ public protocol AppLoaderTaskDelegate: AnyObject {
   func appLoaderTaskDidFinishAllLoading(_: AppLoaderTask)
 }
 
-public enum RemoteCheckResultNotAvailableReason {
+public enum RemoteCheckResultNotAvailableReason: String {
   /**
    * No update manifest or rollback directive received from the update server.
    */
@@ -73,6 +73,7 @@ public protocol AppLoaderTaskSwiftDelegate: AnyObject {
   func appLoaderTaskDidStartCheckingForRemoteUpdate(_: AppLoaderTask)
   func appLoaderTask(_: AppLoaderTask, didFinishCheckingForRemoteUpdateWithRemoteCheckResult remoteCheckResult: RemoteCheckResult)
   func appLoaderTask(_: AppLoaderTask, didLoadAsset asset: UpdateAsset, successfulAssetCount: Int, failedAssetCount: Int, totalAssetCount: Int)
+  func appLoaderTask(_: AppLoaderTask, didUpdateProgress progress: Double)
 }
 
 @objc(EXUpdatesBackgroundUpdateStatus)
@@ -132,7 +133,8 @@ public final class AppLoaderTask: NSObject {
     database: UpdatesDatabase,
     directory: URL,
     selectionPolicy: SelectionPolicy,
-    delegateQueue: DispatchQueue
+    delegateQueue: DispatchQueue,
+    logger: UpdatesLogger
   ) {
     self.config = config
     self.database = database
@@ -145,7 +147,7 @@ public final class AppLoaderTask: NSObject {
     self.isUpToDate = false
     self.delegateQueue = delegateQueue
     self.loaderTaskQueue = DispatchQueue(label: "expo.loader.LoaderTaskQueue")
-    self.logger = UpdatesLogger()
+    self.logger = logger
   }
 
   public func start() {
@@ -260,7 +262,8 @@ public final class AppLoaderTask: NSObject {
         database: database,
         directory: directory,
         selectionPolicy: selectionPolicy,
-        launchedUpdate: launchedUpdate
+        launchedUpdate: launchedUpdate,
+        logger: self.logger
       )
     }
   }
@@ -323,7 +326,7 @@ public final class AppLoaderTask: NSObject {
   }
 
   private func launch(withCompletion completion: @escaping (_ error: UpdatesError?, _ success: Bool) -> Void) {
-    let launcher = AppLauncherWithDatabase(config: config, database: database, directory: directory, completionQueue: loaderTaskQueue)
+    let launcher = AppLauncherWithDatabase(config: config, database: database, directory: directory, completionQueue: loaderTaskQueue, logger: self.logger)
     candidateLauncher = launcher
     launcher.launchUpdate(withSelectionPolicy: selectionPolicy, completion: completion)
   }
@@ -337,6 +340,17 @@ public final class AppLoaderTask: NSObject {
       launchedUpdate: candidateLauncher?.launchedUpdate,
       completionQueue: loaderTaskQueue
     )
+
+    remoteAppLoader?.assetLoadProgressBlock = { [weak self] progress in
+      guard let self else {
+        return
+      }
+      if let swiftDelegate = self.swiftDelegate {
+        self.delegateQueue.async {
+          swiftDelegate.appLoaderTask(self, didUpdateProgress: progress)
+        }
+      }
+    }
 
     if let swiftDelegate = self.swiftDelegate {
       self.delegateQueue.async {
@@ -476,7 +490,8 @@ public final class AppLoaderTask: NSObject {
           config: self.config,
           database: self.database,
           directory: self.directory,
-          completionQueue: self.loaderTaskQueue
+          completionQueue: self.loaderTaskQueue,
+          logger: self.logger
         )
         newLauncher.launchUpdate(withSelectionPolicy: self.selectionPolicy) { error, success in
           if success {
@@ -490,14 +505,9 @@ public final class AppLoaderTask: NSObject {
             self.finish(withError: error)
             self.logger.warn(message: "Downloaded update but failed to relaunch: \(error?.localizedDescription ?? "")")
           }
+          self.didFinishBackgroundUpdate(withStatus: .updateAvailable, update: updateBeingLaunched, error: error)
           self.isRunning = false
           self.runReaper()
-
-          self.delegate.let { it in
-            self.delegateQueue.async {
-              it.appLoaderTaskDidFinishAllLoading(self)
-            }
-          }
         }
       } else {
         self.didFinishBackgroundUpdate(withStatus: .updateAvailable, update: updateBeingLaunched, error: nil)

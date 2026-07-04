@@ -1,4 +1,7 @@
 const path = require('node:path');
+
+const subdomain = process.env.EXPO_TUNNEL_SUBDOMAIN ?? 'expo-e2e-universal-linking';
+
 /** @type {import('expo/config').ExpoConfig} */
 module.exports = {
   name: 'Router E2E',
@@ -11,7 +14,13 @@ module.exports = {
   userInterfaceStyle: 'automatic',
   ios: {
     supportsTablet: true,
-    bundleIdentifier: 'dev.expo.routere2e',
+    appleTeamId: process.env.APPLE_TEAM_ID,
+    bundleIdentifier: process.env.APPLE_BUNDLE_ID ?? 'com.expo.routere2e',
+    associatedDomains: [
+      `applinks:${subdomain}.ngrok.io`,
+      `webcredentials:${subdomain}.ngrok.io`,
+      `activitycontinuation:${subdomain}.ngrok.io`,
+    ],
   },
   android: {
     package: 'dev.expo.routere2e',
@@ -19,25 +28,29 @@ module.exports = {
   // For testing the output bundle
   jsEngine: process.env.E2E_ROUTER_JS_ENGINE ?? (process.env.E2E_ROUTER_SRC ? 'jsc' : 'hermes'),
   newArchEnabled: true,
-  splash: {
-    image: './assets/splash.png',
-    resizeMode: 'contain',
-    backgroundColor: '#ffffff',
-  },
   experiments: {
+    autolinkingModuleResolution: true,
     baseUrl: process.env.EXPO_E2E_BASE_PATH || undefined,
     tsconfigPaths: process.env.EXPO_USE_PATH_ALIASES,
     typedRoutes: true,
-    reactCanary: process.env.E2E_CANARY_ENABLED,
     reactCompiler: process.env.E2E_ROUTER_COMPILER,
     reactServerComponentRoutes: process.env.E2E_RSC_ENABLED,
-    reactServerFunctions: process.env.EXPO_UNSTABLE_SERVER_FUNCTIONS,
+    reactServerFunctions: process.env.E2E_SERVER_FUNCTIONS,
   },
   web: {
     output: process.env.EXPO_USE_STATIC ?? 'static',
     bundler: 'metro',
+    favicon: process.env.E2E_FAVICON || undefined,
   },
   plugins: [
+    [
+      'expo-splash-screen',
+      {
+        image: './assets/splash-icon.png',
+        resizeMode: 'contain',
+        backgroundColor: '#ffffff',
+      },
+    ],
     [
       'expo-build-properties',
       {
@@ -46,7 +59,6 @@ module.exports = {
         },
       },
     ],
-
     [
       'expo-router',
       {
@@ -57,9 +69,32 @@ module.exports = {
               ? false
               : process.env.E2E_ROUTER_ASYNC || false,
         root: path.join('__e2e__', process.env.E2E_ROUTER_SRC ?? 'static-rendering', 'app'),
-        origin: 'http://localhost:3000/',
+        origin: 'http://localhost:8081/',
         sitemap:
           process.env.E2E_ROUTER_SITEMAP === 'false' ? false : process.env.E2E_ROUTER_SITEMAP,
+        redirects: process.env.E2E_ROUTER_REDIRECTS
+          ? JSON.parse(process.env.E2E_ROUTER_REDIRECTS)
+          : undefined,
+        rewrites: process.env.E2E_ROUTER_REWRITES
+          ? JSON.parse(process.env.E2E_ROUTER_REWRITES)
+          : undefined,
+        headers: process.env.E2E_ROUTER_HEADERS
+          ? JSON.parse(process.env.E2E_ROUTER_HEADERS)
+          : process.env.E2E_ROUTER_HEADERS_PREDEFINED
+            ? {
+                'X-Powered-By': 'expo-server',
+                'Set-Cookie': ['session=123', 'token=xyz'],
+              }
+            : undefined,
+        unstable_useServerDataLoaders: process.env.E2E_ROUTER_SERVER_LOADERS === 'true',
+        unstable_useServerMiddleware: process.env.E2E_ROUTER_SERVER_MIDDLEWARE === 'true',
+        unstable_useServerRendering: process.env.E2E_ROUTER_SERVER_RENDERING === 'true',
+      },
+    ],
+    [
+      'expo-asset',
+      {
+        assets: ['./assets/expo-logo.png', './assets/expo-transparent.png'],
       },
     ],
   ],

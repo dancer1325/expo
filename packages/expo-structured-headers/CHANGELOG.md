@@ -10,6 +10,38 @@
 
 ### 💡 Others
 
+## 56.0.0 — 2026-05-05
+
+### 🛠 Breaking changes
+
+- Bumped minimum iOS/tvOS version to 16.4, macOS to 13.4. ([#43296](https://github.com/expo/expo/pull/43296) by [@tsapeta](https://github.com/tsapeta))
+
+## 55.0.2 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 💡 Others
+
+- Remove iOS test files from the published package content. ([#39547](https://github.com/expo/expo/pull/39547) by [@Simek](https://github.com/Simek))
+
+## 5.0.0 — 2025-08-13
+
+### 🎉 New features
+
+- Add support for macOS. ([#37629](https://github.com/expo/expo/pull/37629) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+## 4.1.0 — 2025-04-04
+
+### 💡 Others
+
+- [Android] Started using expo modules gradle plugin. ([#34176](https://github.com/expo/expo/pull/34176) by [@lukmccall](https://github.com/lukmccall))
+
 ## 4.0.0 — 2024-10-22
 
 ### 🛠 Breaking changes

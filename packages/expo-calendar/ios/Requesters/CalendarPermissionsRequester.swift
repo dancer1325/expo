@@ -1,5 +1,6 @@
 import ExpoModulesCore
 import EventKit
+internal import React
 
 public class CalendarPermissionsRequester: NSObject, EXPermissionsRequester {
   private let eventStore: EKEventStore
@@ -26,12 +27,11 @@ public class CalendarPermissionsRequester: NSObject, EXPermissionsRequester {
     if Bundle.main.object(forInfoDictionaryKey: description) != nil {
       permissions = EKEventStore.authorizationStatus(for: .event)
     } else {
-      EXFatal(MissingCalendarPListValueException(description))
       permissions = .denied
     }
 
     switch permissions {
-    case .restricted, .denied:
+    case .restricted, .denied, .writeOnly:
       status = EXPermissionStatusDenied
     case .notDetermined:
       status = EXPermissionStatusUndetermined

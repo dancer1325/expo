@@ -1,6 +1,7 @@
 import { useRouter } from 'next/compat/router';
 import { useEffect, useState, PropsWithChildren } from 'react';
-import { InlineHelp } from 'ui/components/InlineHelp';
+
+import { InlineHelp } from '~/ui/components/InlineHelp';
 
 type Props = PropsWithChildren<{
   showForQuery?: string;
@@ -11,8 +12,11 @@ export default function RedirectNotification({ showForQuery = 'redirected', chil
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    const referrer = document.referrer;
+    const isFromSdk = referrer?.endsWith('/sdk') || referrer?.endsWith('/sdk/');
+
     if (router?.query) {
-      setVisible(router.query.hasOwnProperty(showForQuery));
+      setVisible(!isFromSdk && router.query.hasOwnProperty(showForQuery));
     }
   }, [router?.query]);
 

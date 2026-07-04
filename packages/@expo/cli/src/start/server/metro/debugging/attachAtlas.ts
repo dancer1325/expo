@@ -1,9 +1,9 @@
+import type { ConfigT as MetroConfig } from '@expo/metro/metro-config';
 import type { Server as ConnectServer } from 'connect';
-import type { ConfigT as MetroConfig } from 'metro-config';
 
-import { AtlasPrerequisite } from './AtlasPrerequisite';
 import { env } from '../../../../utils/env';
-import { type EnsureDependenciesOptions } from '../../../doctor/dependencies/ensureDependenciesAsync';
+import type { EnsureDependenciesOptions } from '../../../doctor/dependencies/ensureDependenciesAsync';
+import { AtlasPrerequisite } from './AtlasPrerequisite';
 
 const debug = require('debug')('expo:metro:debugging:attachAtlas') as typeof console.log;
 
@@ -18,7 +18,7 @@ type AttachAtlasOptions = Pick<EnsureDependenciesOptions, 'exp'> & {
 export async function attachAtlasAsync(
   options: AttachAtlasOptions
 ): Promise<void | ReturnType<typeof import('expo-atlas/cli').createExpoAtlasMiddleware>> {
-  if (!env.EXPO_UNSTABLE_ATLAS) {
+  if (!env.EXPO_ATLAS) {
     return;
   }
 
@@ -48,7 +48,8 @@ function attachAtlasToDevServer(
     return debug('Atlas is not installed in the project, skipping initialization');
   }
 
-  const instance = atlas.createExpoAtlasMiddleware(options.metroConfig);
+  // TODO(@kitten): Atlas' typings don't match @expo/metro yet
+  const instance = atlas.createExpoAtlasMiddleware(options.metroConfig as any);
   options.middleware.use('/_expo/atlas', instance.middleware);
   debug('Attached Atlas middleware for development on: /_expo/atlas');
   return instance;
@@ -80,7 +81,8 @@ async function attachAtlasToExport(
     debug('(Re)created Atlas file at:', filePath);
   }
 
-  atlas.withExpoAtlas(options.metroConfig);
+  // TODO(@kitten): Atlas' typings don't match @expo/metro yet
+  atlas.withExpoAtlas(options.metroConfig as any);
   debug('Attached Atlas to Metro config for exporting');
 }
 
@@ -99,7 +101,7 @@ function importAtlasForExport(projectRoot: string): null | typeof import('expo-a
  * @internal
  */
 export async function waitUntilAtlasExportIsReadyAsync(projectRoot: string) {
-  if (!env.EXPO_UNSTABLE_ATLAS) return;
+  if (!env.EXPO_ATLAS) return;
 
   const atlas = importAtlasForExport(projectRoot);
 

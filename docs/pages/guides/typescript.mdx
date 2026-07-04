@@ -6,7 +6,10 @@ description: An in-depth guide on configuring an Expo project with TypeScript.
 import { Collapsible } from '~/ui/components/Collapsible';
 import { Terminal } from '~/ui/components/Snippet';
 import { Step } from '~/ui/components/Step';
+import { Tab, Tabs, TabsGroup } from '~/ui/components/Tabs';
 import { CODE } from '~/ui/components/Text';
+
+<TabsGroup>
 
 Expo has first-class support for [TypeScript](https://www.typescriptlang.org/). The JavaScript interface of Expo SDK is written in TypeScript.
 
@@ -16,7 +19,14 @@ This guide provides a quick way to get started for a new project and also steps 
 
 To create a new project, use the default template which includes base TypeScript configuration, example code, and basic navigation structure:
 
-<Terminal cmd={['$ npx create-expo-app@latest']} />
+<Terminal
+  cmd={{
+    npm: ['$ npx create-expo-app@latest --template default@sdk-57'],
+    yarn: ['$ yarn create expo-app --template default@sdk-57'],
+    pnpm: ['$ pnpm create expo-app --template default@sdk-57'],
+    bun: ['$ bun create expo --template default@sdk-57'],
+  }}
+/>
 
 After you create a new project using the command above, make sure to follow instructions from:
 
@@ -45,15 +55,35 @@ Rename files to convert them to TypeScript. For example, start with the root com
 
 To install required `devDependencies` such as `typescript` and `@types/react` in **package.json**:
 
+<Tabs>
+
+<Tab label="macOS/Linux">
+
 <Terminal
-  cmd={[
-    '# For all other package managers',
-    '$ npx expo install -- --save-dev typescript @types/react',
-    '',
-    '# For yarn',
-    '$ yarn add -D typescript @types/react',
-  ]}
+  cmd={{
+    npm: ['$ npx expo install typescript @types/react --dev'],
+    yarn: ['$ yarn expo install typescript @types/react --dev'],
+    pnpm: ['$ pnpm expo install typescript @types/react --dev'],
+    bun: ['$ bun expo install typescript @types/react --dev'],
+  }}
 />
+
+</Tab>
+
+<Tab label="Windows">
+
+<Terminal
+  cmd={{
+    npm: ['$ npx expo install typescript @types/react "--" --dev'],
+    yarn: ['$ yarn expo install typescript @types/react "--" --dev'],
+    pnpm: ['$ pnpm expo install typescript @types/react "--" --dev'],
+    bun: ['$ bun expo install typescript @types/react "--" --dev'],
+  }}
+/>
+
+</Tab>
+
+</Tabs>
 
 > **info** Alternatively, run `npx expo start` command to install `typescript` and `@types/react` dev dependencies.
 
@@ -61,7 +91,14 @@ To install required `devDependencies` such as `typescript` and `@types/react` in
 
 To type check your project's files run `tsc` command within the root of your project directory:
 
-<Terminal cmd={['# For npm', '$ npm run tsc', '', '# For yarn', '$ yarn tsc']} />
+<Terminal
+  cmd={{
+    npm: ['$ npm run tsc'],
+    yarn: ['$ yarn run tsc'],
+    pnpm: ['$ pnpm run tsc'],
+    bun: ['$ bun run tsc'],
+  }}
+/>
 
 </Collapsible>
 
@@ -71,14 +108,22 @@ To type check your project's files run `tsc` command within the root of your pro
 
 ### Add base configuration with tsconfig.json
 
-A project's **tsconfig.json** should extend the `expo/tsconfig.base` by default. You can automatically generate a **tsconfig.json** file by running the command:
+A project's **tsconfig.json** should extend `expo/tsconfig.base` by default. You can automatically generate a **tsconfig.json** file by running the command:
 
-<Terminal cmd={['$ npx expo customize tsconfig.json']} />
+<Terminal
+  cmd={{
+    npm: ['$ npx expo customize tsconfig.json'],
+    yarn: ['$ yarn expo customize tsconfig.json'],
+    pnpm: ['$ pnpm expo customize tsconfig.json'],
+    bun: ['$ bun expo customize tsconfig.json'],
+  }}
+/>
 
 The default configuration in **tsconfig.json** is user-friendly and encourages adoption. If you prefer **strict type checking** and reduce the chances of runtime errors, enable `strict` under [`compilerOptions`](https://www.typescriptlang.org/docs/handbook/compiler-options.html):
 
 ```json tsconfig.json
 {
+  "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true
   }
@@ -97,6 +142,7 @@ For example, to import `Button` component from **src/components/Button.tsx** usi
 
 ```json tsconfig.json
 {
+  "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -106,7 +152,7 @@ For example, to import `Button` component from **src/components/Button.tsx** usi
 }
 ```
 
-<Collapsible summary="Disable path aliases for SDK 50 and above">
+<Collapsible summary="Disable path aliases">
 
 `tsconfigPaths` is enabled by default which allows you to set path aliases. You can disable it by setting `tsconfigPaths` to `false` in the project's [app config](/workflow/configuration/):
 
@@ -130,7 +176,7 @@ When using path aliases, consider the following:
 - If not using TypeScript, **jsconfig.json** can serve as an alternative to **tsconfig.json**.
 - Path aliases add additional resolution time when defined.
 - Path aliases are only supported by Metro (including Metro web) and not by the deprecated `@expo/webpack-config`.
-- Bare projects require additional setup for this feature. See the [Metro setup guide](/versions/latest/config/metro#bare-workflow-setup) for more information.
+- [Existing React Native projects](/bare/overview/) require additional setup for this feature. See the [Metro setup guide](/versions/latest/config/metro#existing-react-native-apps) for more information.
 
 </Step>
 
@@ -142,6 +188,7 @@ To enable absolute imports from a project's root directory, define [`compilerOpt
 
 ```json tsconfig.json
 {
+  "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "baseUrl": "./"
   }
@@ -163,7 +210,7 @@ When using absolute imports, consider the following:
 - Restarting Expo CLI is necessary to update [`compilerOptions.baseUrl`](https://www.typescriptlang.org/docs/handbook/module-resolution.html#base-url) after modifying the **tsconfig.json**.
 - If you're not using TypeScript, **jsconfig.json** can serve as an alternative to **tsconfig.json**.
 - Absolute imports are only supported by Metro (including Metro web) and not by `@expo/webpack-config`.
-- Bare projects require additional setup for this feature. See the [versioned Metro setup guide](/versions/latest/config/metro#bare-workflow-setup) for more information.
+- Existing React Native projects require additional setup for this feature. See the [versioned Metro setup guide](/versions/latest/config/metro#existing-react-native-apps) for more information.
 
 </Step>
 
@@ -173,24 +220,46 @@ Some Expo libraries provide both static types and type generation capabilities. 
 
 ## TypeScript for project's config files
 
-Additional setup is required to use TypeScript for configuration files such as **metro.config.js** or **app.config.js**. You need to utilize [`ts-node` require hook](https://github.com/TypeStrong/ts-node#programmatic) to import TypeScript files within your JS config file. This hook allows TypeScript imports while keeping the root file as JavaScript.
+Additional setup is required to use TypeScript for configuration files such as **metro.config.js** or **app.config.js**.
+
+Install [`tsx`](https://tsx.is/) as a dev dependency and utilize its [`tsx/cjs` require hook](https://tsx.is/dev-api/entry-point#commonjs-mode-only) to import TypeScript files within your JS configuration file. This hook allows TypeScript imports while keeping the root file as JavaScript. The command below adds `tsx` so `import 'tsx/cjs'` works in the following sub-section examples.
+
+<Tabs>
+
+<Tab label="macOS/Linux">
 
 <Terminal
-  cmd={[
-    '# For all other package managers',
-    '$ npx expo install -- --save-dev ts-node',
-    '',
-    '# For yarn',
-    '$ yarn add -D ts-node',
-  ]}
+  cmd={{
+    npm: ['$ npx expo install tsx --dev'],
+    yarn: ['$ yarn expo install tsx --dev'],
+    pnpm: ['$ pnpm expo install tsx --dev'],
+    bun: ['$ bun expo install tsx --dev'],
+  }}
 />
+
+</Tab>
+
+<Tab label="Windows">
+
+<Terminal
+  cmd={{
+    npm: ['$ npx expo install tsx "--" --dev'],
+    yarn: ['$ yarn expo install tsx "--" --dev'],
+    pnpm: ['$ pnpm expo install tsx "--" --dev'],
+    bun: ['$ bun expo install tsx "--" --dev'],
+  }}
+/>
+
+</Tab>
+
+</Tabs>
 
 ### metro.config.js
 
 Update **metro.config.js** to require **metro.config.ts** file:
 
 ```js metro.config.js
-require('ts-node/register');
+require('tsx/cjs'); // Add this to import TypeScript files
 module.exports = require('./metro.config.ts');
 ```
 
@@ -209,7 +278,7 @@ module.exports = config;
 Install the `@expo/webpack-config` package.
 
 ```js webpack.config.js
-require('ts-node/register');
+require('tsx/cjs'); // Add this to import TypeScript files
 module.exports = require('./webpack.config.ts');
 ```
 
@@ -231,7 +300,7 @@ module.exports = async function (env: Environment, argv: Arguments) {
 **app.config.ts** is supported by default. However, it doesn't support external TypeScript modules, or **tsconfig.json** customization. You can use the following approach to get a more comprehensive TypeScript setup:
 
 ```ts app.config.ts
-import 'ts-node/register'; // Add this to import TypeScript files
+import 'tsx/cjs'; // Add this to import TypeScript files
 import { ExpoConfig } from 'expo/config';
 
 const config: ExpoConfig = {
@@ -251,3 +320,5 @@ Some language features may require additional configuration. For example, if you
 A good place to start learning TypeScript is the official [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html).
 
 **For TypeScript and React components,** we recommend referring to the [React TypeScript CheatSheet](https://github.com/typescript-cheatsheets/react) to learn how to type your React components in a variety of common situations.
+
+</TabsGroup>

@@ -1,4 +1,4 @@
-const eslint = require('eslint');
+const eslint = require('eslint8');
 const path = require('path');
 
 const checkPrettierRulesAsync = require('./tools/checkPrettierRulesAsync');
@@ -29,9 +29,9 @@ it(`lints with the React Native config`, async () => {
     ['fixtures/*all*', 'fixtures/*native*'],
   );
   for (const result of results) {
-    const relativeFilePath = path.relative(__dirname, result.filePath);
+    const platformIndependentPath = path.relative(__dirname, result.filePath).replace(/\\/g, '/');
     delete result.filePath;
-    expect(result).toMatchSnapshot(relativeFilePath);
+    expect(result).toMatchSnapshot(platformIndependentPath);
   }
 }, 20000);
 

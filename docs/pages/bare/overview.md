@@ -20,7 +20,9 @@ There's so much more to explore, and the links below will help you to explore th
 
 Below are four suggested phases of incremental adoption. These phases generally progress from quick changes to improve developer experience, to more significant workflow and codebase optimizations.
 
-Only the first phase &mdhash; prerequisites &mdhash; is required by other phases. After following its instructions, you can skip to the tools and services that are most relevant to your goals in adopting Expo.
+Only the first phase — prerequisites — is required by other phases. After following its instructions, you can skip to the tools and services that are most relevant to your goals in adopting Expo.
+
+{/* Note: This "Prerequisites" heading intentionally does not use the <Prerequisites> component. It is a phase label in the "Incremental adoption steps" sequence (alongside "Quick wins", "New workflows", "New mindsets") and its body is navigational BoxLinks, not a checklist of requirements to complete before reading the page. */}
 
 ### Prerequisites
 
@@ -160,7 +162,7 @@ The `expo` package has a small footprint since it only includes a minimal set of
 
 <Collapsible summary="Why did React Native recommend using Expo?">
 
-Most React Native developers solve common problems when building an app, such as implementing navigation, accessing Native APIs, upgrading to new versions, and more. This requires using a specific set of tools and libraries to build and maintain your app &mdash; which means you are creating your own framework.
+Most React Native developers solve common problems when building an app, such as implementing navigation, accessing Native APIs, upgrading to new versions, and more. This requires using a specific set of tools and libraries to build and maintain your app — which means you are creating your own framework.
 
 Expo solves these problems by providing a set of primitives and helping you (the developer) to focus on building your app. It also offers tools to iterate faster in development. For more information, see [Why React Native recommends using a framework](https://reactnative.dev/blog/2024/06/25/use-a-framework-to-build-react-native-apps).
 
@@ -168,7 +170,7 @@ Expo solves these problems by providing a set of primitives and helping you (the
 
 <Collapsible summary="Do I have to get rid of my native projects to use Expo?">
 
-By default, Expo projects created with `create-expo-app` use [Continuous Native Generation (CNG)](/workflow/continuous-native-generation/) and do not contain android and ios native directories. If you incrementally adopt Expo in your existing React Native app, you don't have to remove these directories. You can use `npx expo run:[android|ios]` as an alternative to commands offered by `@react-native-community/cli` to compile your app locally and keep the configuration of your native projects.
+By default, Expo projects created with `create-expo-app` use [Continuous Native Generation (CNG)](/workflow/continuous-native-generation/) and do not contain **android** and **ios** native directories. If you incrementally adopt Expo in your existing React Native app, you don't have to remove these directories. You can use `npx expo run:[android|ios]` as an alternative to commands offered by `@react-native-community/cli` to compile your app locally and keep the configuration of your native projects.
 
 </Collapsible>
 

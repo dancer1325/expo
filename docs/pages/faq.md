@@ -165,13 +165,15 @@ Source: [3.3.1 APIs and Functionality - B. Executable Code](https://developer.ap
 
 ## Should I use Expo CLI or React Native Community CLI?
 
-Expo CLI offers the same core functionality as React Native Community CLI (also known as "React Native CLI") with additional features such as automatic [TypeScript setup](/guides/typescript), [web support](/workflow/web), [auto installing compatible libraries](/more/expo-cli/#install), [improved native build commands](/more/expo-cli#compiling), [tunneling](/more/expo-cli#tunneling), [Prebuild](/workflow/prebuild), and [more](/more/expo-cli).
+Expo CLI offers the same core functionality as React Native Community CLI (also known as "React Native CLI") with additional features such as automatic [TypeScript setup](/guides/typescript), [web support](/workflow/web), [auto installing compatible libraries](/more/expo-cli/#install), [improved native build commands](/more/expo-cli#compiling), [tunneling](/more/expo-cli#tunneling), [Prebuild](/more/glossary-of-terms/#prebuild), and [more](/more/expo-cli).
 
 It can be used simultaneously with React Native Community. Regardless of which CLI you use, you can use any part of the [Expo SDK](/versions/latest/) and [Expo Application Services](/eas) with your project. For more information, see:
 
 - Learn how you can migrate to use Expo CLI in an [existing React Native project](/bare/using-expo-cli/).
 - Learn about the benefits of [using a framework to build React Native apps](https://reactnative.dev/blog/2024/06/25/use-a-framework-to-build-react-native-apps).
 - Learn about the benefits of migrating to Expo CLI such as improved app performance, expedites release, and fostering stronger collaboration across you team in [this blog post](https://expo.dev/blog/from-rnc-cli-to-expo).
+
+> **Note:** EAS Build is compatible with existing React Native projects (where native directories are checked into version control). When these directories are present, EAS Build does not run the prebuild step, as that could overwrite any manual customizations you have made to the native project files. You'll have to configure the native directories on your own with native tools such as Android Studio or Xcode.
 
 ## Is Expo Go open source?
 
@@ -219,6 +221,14 @@ For more information on what current limitations exist with EAS, see the followi
 #### EAS and bare React Native projects
 
 EAS Build is compatible with bare (existing) React Native projects (where native directories are checked in version control). When these directories are present, it does not run prebuild, as that could overwrite any manual customizations you have made to the native project files. You'll have to configure the native directories on your own with native tools such as Android Studio or Xcode.
+
+## Is ejecting deprecated?
+
+> **warning** **This concept is deprecated.** The `expo eject` command was removed in SDK 46. Expo now uses [Continuous Native Generation (CNG)](/workflow/continuous-native-generation/). To access or customize native code, run [`npx expo prebuild`](/workflow/continuous-native-generation/#usage) to generate native directories, then modify them directly or use [config plugins](/config-plugins/introduction/).
+
+Yes, eject is a deprecated term and is no longer necessary. When Expo was first released, apps had larger native binary sizes and didn't support custom native code without "ejecting". This changed in December 2020 with the release of [EAS Build](/build/introduction) which supports any React Native app. The concept of "ejecting" was replaced by the [`npx expo prebuild`](/more/glossary-of-terms/#prebuild) command in SDK 41 (April 2021), which continuously generates native projects based on the libraries in your project and the app config (**app.json**). The `expo eject` command was fully deprecated in SDK 46 (August 2022).
+
+Unlike the previous eject workflow, authors can configure their libraries to work with Expo Prebuild by creating a [config plugin](/config-plugins/introduction/). This means you can use any library with Expo Prebuild. You can also use any custom native code with Expo Prebuild by creating a [development build](/develop/development-builds/introduction/). Learn more in the [Expo Prebuild documentation](/workflow/continuous-native-generation).
 
 ### Expo Go
 

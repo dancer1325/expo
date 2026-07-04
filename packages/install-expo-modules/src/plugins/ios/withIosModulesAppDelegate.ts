@@ -1,6 +1,8 @@
-import { ConfigPlugin, IOSConfig, withAppDelegate, withDangerousMod } from '@expo/config-plugins';
+import type { ConfigPlugin } from '@expo/config-plugins';
+import { IOSConfig, withAppDelegate, withDangerousMod } from '@expo/config-plugins';
 import {
   addObjcImports,
+  addSwiftImports,
   insertContentsInsideObjcFunctionBlock,
   insertContentsInsideSwiftFunctionBlock,
 } from '@expo/config-plugins/build/ios/codeMod';
@@ -130,6 +132,78 @@ export function updateModulesAppDelegateObjcHeader(
 }
 
 export function updateModulesAppDelegateSwift(
+  contents: string,
+  sdkVersion: string | undefined
+): string {
+  if (sdkVersion) {
+    if (semver.lt(sdkVersion, '52.0.0')) {
+      return updateModulesAppDelegateSwiftLegacy(contents, sdkVersion);
+    }
+    if (semver.lt(sdkVersion, '53.0.0')) {
+      return updateModulesAppDelegateSwiftSdk52(contents, sdkVersion);
+    }
+  }
+
+  // Add imports if needed.
+  // SDK 55+ uses `internal import` to match ExpoModulesProvider.swift (Swift 6 compatibility).
+  const useInternalImport = sdkVersion && semver.gte(sdkVersion, '55.0.0');
+  if (!contents.match(/^(internal\s+)?import\s+Expo\s*$/m)) {
+    contents = addSwiftImports(contents, ['Expo']);
+    if (useInternalImport) {
+      contents = contents.replace(/^import Expo$/m, 'internal import Expo');
+    }
+  }
+
+  // Replace superclass with ExpoAppDelegate
+  contents = contents.replace(
+    /^(class\s+AppDelegate\s*:\s*)UIResponder,\s*UIApplicationDelegate(\W+)/m,
+    '$1ExpoAppDelegate$2'
+  );
+  // Add `override` keyword and return super call to didFinishLaunchingWithOptions
+  contents = contents.replace(
+    /\b(func application\([\s\S]+?didFinishLaunchingWithOptions launchOptions[\s\S]+?\{[\s\S]+?)(return true)([\s\S]+?\})/m,
+    'override $1return super.application(application, didFinishLaunchingWithOptions: launchOptions)$3'
+  );
+
+  // Use Expo classes
+  contents = contents.replace(/\b(RCTReactNativeFactory)(\()/, 'ExpoReactNativeFactory$2');
+  contents = contents.replace(
+    /\bRCTDefaultReactNativeFactoryDelegate\b/,
+    'ExpoReactNativeFactoryDelegate'
+  );
+  contents = contents.replace(
+    /(\boverride.*\ssourceURL\(.*\{[\s\S]+?)(\s+self\.bundleURL\(\))/m,
+    `$1\
+    // needed to return the correct URL for expo-dev-client.
+    bridge.bundleURL ?? bundleURL()`
+  );
+
+  return contents;
+}
+
+function updateModulesAppDelegateSwiftSdk52(
+  contents: string,
+  sdkVersion: string | undefined
+): string {
+  // Add imports if needed
+  if (!contents.match(/^import\s+Expo\s*$/m)) {
+    contents = addSwiftImports(contents, ['Expo']);
+  }
+  // SDK 52 serves ExpoAppDelegate from ExpoModulesCore. We also need to import it.
+  if (!contents.match(/^import\s+ExpoModulesCore\s*$/m)) {
+    contents = addSwiftImports(contents, ['ExpoModulesCore']);
+  }
+
+  // Replace superclass with ExpoAppDelegate
+  contents = contents.replace(
+    /^(class\s+AppDelegate\s*:\s*)RCTAppDelegate(\W+)/m,
+    '$1ExpoAppDelegate$2'
+  );
+
+  return contents;
+}
+
+function updateModulesAppDelegateSwiftLegacy(
   contents: string,
   sdkVersion: string | undefined
 ): string {

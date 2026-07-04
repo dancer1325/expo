@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import path from 'path';
 
 import { selectPackagesToPublish } from './selectPackagesToPublish';
-import { podInstallAsync } from '../../CocoaPods';
+import { podUpdateAsync } from '../../CocoaPods';
 import logger from '../../Logger';
 import { Task } from '../../TasksRunner';
 import { filterAsync } from '../../Utils';
@@ -20,7 +20,11 @@ export const updateIosProjects = new Task<TaskArgs>(
     dependsOn: [selectPackagesToPublish],
     filesToStage: ['apps/*/ios/**'],
   },
-  async (parcels: Parcel[]) => {
+  async (parcels: Parcel[], options) => {
+    // Skip when publishing templates only
+    if (options.templatesOnly) {
+      return;
+    }
     logger.info('\n🍎 Updating iOS projects...');
 
     const nativeApps = Workspace.getNativeApps();
@@ -42,10 +46,14 @@ export const updateIosProjects = new Task<TaskArgs>(
 
         logger.log('  ', `${green(nativeApp.packageName)}: Reinstalling pods...`);
 
-        // `pod install` sometimes fails, but it's not needed to properly
-        // publish packages, so let's just continue if that happens.
+        // Use `pod update`: we just bumped these pods' versions, and precompiled modules
+        // register them as `:podspec =>` sources, which trip CocoaPods' strict version-drift check on
+        // `pod install`. `pod update <names>` re-resolves only the bumped
+        // pods and is correct in source mode too. Failures are non-fatal.
         try {
-          await podInstallAsync(path.join(nativeApp.path, 'ios'), { noRepoUpdate: true });
+          await podUpdateAsync(path.join(nativeApp.path, 'ios'), podspecNames, {
+            noRepoUpdate: true,
+          });
         } catch (e) {
           logger.debug(e.stderr || e.stdout);
           logger.error('🍎 Failed to install pods in', green(nativeApp.packageName));

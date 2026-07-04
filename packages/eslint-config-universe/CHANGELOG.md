@@ -10,6 +10,61 @@
 
 ### 💡 Others
 
+## 15.2.0 — 2026-05-20
+
+_This version does not introduce any user-facing changes._
+
+## 15.1.1 — 2026-05-13
+
+### 💡 Others
+
+- Bump to `eslint-plugin-react-hooks@^7.0.0` ([#43820](https://github.com/expo/expo/pull/43820) by [@hassankhan](https://github.com/hassankhan))
+
+## 15.1.0 — 2026-05-05
+
+### 🎉 New features
+
+- Disabled `import/no-named-as-default` in both core and TypeScript presets ([#45088](https://github.com/expo/expo/pull/45088) by [@hassankhan](https://github.com/hassankhan))
+
+## 15.0.4 - 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.3 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.2 — 2025-04-23
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.1 — 2025-04-23
+
+### 🐛 Bug fixes
+
+- Allow both eslint@8 and eslint@9 in peer deps ([#36200](https://github.com/expo/expo/pull/36200) by [@kadikraman](https://github.com/kadikraman))
+
+## 15.0.0 — 2025-04-23
+
+### 🎉 New features
+
+- Add support for flat config ([#36200](https://github.com/expo/expo/pull/36200) by [@kadikraman](https://github.com/kadikraman))
+
+## 14.2.0 — 2025-04-09
+
+### 💡 Others
+
+- Update `@typescript-eslint` dependencies for better compatibility with TypeScript. ([#36043](https://github.com/expo/expo/pull/36043) by [@Simek](https://github.com/Simek))
+- Update `prettier` dependency to new minor version. ([#36043](https://github.com/expo/expo/pull/36043) by [@Simek](https://github.com/Simek))
+- Update other packages patch version for various fixes. ([#36043](https://github.com/expo/expo/pull/36043) by [@Simek](https://github.com/Simek))
+
+## 14.1.0 — 2025-04-04
+
+### 💡 Others
+
+- Update `@typescript-eslint` dependencies for better compatibility with TypeScript. ([#33849](https://github.com/expo/expo/pull/33849) by [@Simek](https://github.com/Simek))
+- Update `eslint-plugin-react-hooks` dependency to new major version. ([#33849](https://github.com/expo/expo/pull/33849) by [@Simek](https://github.com/Simek))
+
 ## 14.0.0 — 2024-10-22
 
 ### 🛠 Breaking changes

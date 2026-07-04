@@ -89,13 +89,20 @@ export default [
     name: 'buildArtifactPaths',
     type: 'string[]',
     description: [
-      'List of paths (or patterns) where EAS Build is going to look for the build artifacts. Use `applicationArchivePath` for specifying the path for uploading the application archive. Build artifacts are uploaded even if the build fails. EAS Build uses the `fast-glob` npm library for [pattern matching](https://github.com/mrmlnc/fast-glob#pattern-syntax).',
+      'List of paths (or patterns) where EAS Build is going to look for the build artifacts. Use `applicationArchivePath` for specifying the path for uploading the application archive. Build artifacts are uploaded even if the build fails. EAS Build uses [glob patterns](https://github.com/isaacs/node-glob#glob-primer) for pattern matching.',
     ],
   },
   {
     name: 'node',
     type: 'string',
     description: ['Version of Node.js used for build.'],
+  },
+  {
+    name: 'corepack',
+    type: 'boolean',
+    description: [
+      'If set to `true`, [corepack](https://nodejs.org/api/corepack.html) will be enabled at the beginning of build process. Defaults to `false`.',
+    ],
   },
   {
     name: 'yarn',
@@ -110,7 +117,9 @@ export default [
   {
     name: 'bun',
     type: 'string',
-    description: ['Version of Bun used for build. You can also use a specific version. Learn [how to configure the exact version in eas.json](/guides/using-bun/#customize-bun-version-on-eas).'],
+    description: [
+      'Version of Bun used for build. You can also use a specific version. Learn [how to configure the exact version in eas.json](/guides/using-bun/#customize-bun-version-on-eas).',
+    ],
   },
   {
     name: 'expoCli',
@@ -169,7 +178,7 @@ export default [
     description: [
       'Custom workflow file name that will be used to run this build. You can also specify this property on platform level for platform-specific workflows. [Learn more](/custom-builds/get-started/).',
       '',
-      'Example: `"config": "production.yml"` will use workflow from `.eas/build/production.yml`.'
+      'Example: `"config": "production.yml"` will use workflow from `.eas/build/production.yml`.',
     ],
   },
   {
@@ -178,5 +187,5 @@ export default [
     description: [
       'The environment used to apply environment variables for the build process. [Learn more](/eas/environment-variables).',
     ],
-  }
+  },
 ];

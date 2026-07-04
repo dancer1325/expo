@@ -5,19 +5,6 @@ afterEach(() => {
   NETWORK_RESPONSE_STORAGE.clear();
 });
 
-it('is disabled when device capability includes `nativeNetworkInspection`', () => {
-  // @ts-expect-error There are more capabilities, but we only care about this one
-  const connection = mockConnection({ page: { capabilities: { nativeNetworkInspection: true } } });
-  const handler = new NetworkResponseHandler(connection);
-  expect(handler.isEnabled()).toBe(false);
-});
-
-it('is enabled when device capability is missing `nativeNetworkInspection`', () => {
-  const connection = mockConnection();
-  const handler = new NetworkResponseHandler(connection);
-  expect(handler.isEnabled()).toBe(true);
-});
-
 it('responds to response body from device and debugger', () => {
   const connection = mockConnection();
   const handler = new NetworkResponseHandler(connection);
@@ -69,6 +56,23 @@ it('does not respond to non-existing response', () => {
   ).toBe(false);
 
   expect(connection.debugger.sendMessage).not.toHaveBeenCalled();
+});
+
+it('evicts the oldest entry once the storage exceeds its cap', () => {
+  const connection = mockConnection();
+  const handler = new NetworkResponseHandler(connection);
+
+  // 512 is the cap; pushing 513 entries should drop the oldest.
+  for (let i = 0; i < 513; i++) {
+    handler.handleDeviceMessage({
+      method: 'Expo(Network.receivedResponseBody)',
+      params: { requestId: String(i), body: '', base64Encoded: false },
+    });
+  }
+
+  expect(NETWORK_RESPONSE_STORAGE.size).toBe(512);
+  expect(NETWORK_RESPONSE_STORAGE.has('0')).toBe(false);
+  expect(NETWORK_RESPONSE_STORAGE.has('512')).toBe(true);
 });
 
 // Known issue of the collision and will be resolved later

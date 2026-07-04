@@ -1,20 +1,27 @@
-import { Dependency, MixedOutput, Module, ReadOnlyGraph, SerializerOptions } from 'metro';
-import CountingSet from 'metro/src/lib/CountingSet';
+import type {
+  Dependency,
+  MixedOutput,
+  Module,
+  ReadOnlyGraph,
+  SerializerOptions,
+} from '@expo/metro/metro/DeltaBundler/types';
+import CountingSet from '@expo/metro/metro/lib/CountingSet';
+import metroConfigDefaults from '@expo/metro/metro-config/defaults';
 import * as path from 'path';
 
-import { JsTransformOptions } from '../../../transform-worker/metro-transform-worker';
+import type { JsTransformOptions } from '../../../transform-worker/metro-transform-worker';
 import * as expoMetroTransformWorker from '../../../transform-worker/transform-worker';
+import { wrapTransformResultMaps } from '../../packedMap';
 
 export const projectRoot = '/app';
 
-const METRO_CONFIG_DEFAULTS =
-  require('metro-config/src/defaults/index').getDefaultValues() as import('metro-config').ConfigT;
+const METRO_CONFIG_DEFAULTS = metroConfigDefaults.getDefaultValues(null);
 
 function toDependencyMap(...deps: Dependency[]): Map<string, Dependency> {
   const map = new Map();
 
   for (const dep of deps) {
-    map.set(dep.data.data.key ?? dep.absolutePath, dep);
+    map.set(dep.data.data.key ?? ('absolutePath' in dep ? dep.absolutePath : undefined), dep);
   }
 
   return map;
@@ -46,12 +53,25 @@ export async function microBundle({
       'react-server-dom-webpack/server',
       'react-server-dom-webpack/client',
       'expo-router/rsc/internal',
+      'react/compiler-runtime',
     ]) {
       if (id === mid && !fullFs[mid]) {
         fullFs[mid] = `
                 module.exports = () => 'MOCK'
             `;
         return mid;
+      }
+    }
+
+    // Handle node_modules subpath imports like 'react/compiler-runtime'
+    if (!id.startsWith('.') && !id.startsWith('/')) {
+      const nodeModulePath = 'node_modules/' + id + '.js';
+      if (fullFs[nodeModulePath] != null) {
+        return nodeModulePath;
+      }
+      const nodeModuleIndexPath = 'node_modules/' + id + '/index.js';
+      if (fullFs[nodeModuleIndexPath] != null) {
+        return nodeModuleIndexPath;
       }
     }
 
@@ -76,26 +96,24 @@ export async function microBundle({
     isServer?: boolean;
     isReactServer?: boolean;
     inlineSourceMaps?: boolean;
-    hot?: boolean;
     minify?: boolean;
     splitChunks?: boolean;
     treeshake?: boolean;
     optimize?: boolean;
     inlineRequires?: boolean;
+    reactCompiler?: boolean;
   };
   preModulesFs?: Record<string, string>;
 }): Promise<
-  [
-    string,
-    readonly Module<MixedOutput>[],
-    ReadOnlyGraph<MixedOutput>,
-    SerializerOptions<MixedOutput>,
-  ]
+  [string, readonly Module<MixedOutput>[], ReadOnlyGraph<MixedOutput>, SerializerOptions]
 > {
-  const fullFs = {
+  const fullFs: Record<string, string> = {
     'expo-router/rsc/internal': ``,
     'react-server-dom-webpack/server': ``,
     'react-server-dom-webpack/client': ``,
+    'react/compiler-runtime': `
+    module.exports.c = function c(size) { return new Array(size); };
+`,
 
     'expo-mock/async-require': `
     module.exports = () => 'MOCK'
@@ -116,7 +134,6 @@ export async function microBundle({
   const absEntry = path.join(projectRoot, entry);
   const dev = options.dev ?? true;
   const transformOptions: PickPartial<JsTransformOptions, 'inlinePlatform' | 'inlineRequires'> = {
-    hot: options.hot ?? false,
     minify: options.minify ?? false,
     dev,
     type: 'module',
@@ -125,11 +142,12 @@ export async function microBundle({
     inlineRequires: options.inlineRequires ?? false,
     customTransformOptions: {
       __proto__: null,
-      bytecode: options.hermes,
+      bytecode: options.hermes ? '1' : undefined,
       baseUrl: options.baseUrl,
       engine: options.hermes ? 'hermes' : undefined,
       environment: options.isReactServer ? 'react-server' : options.isServer ? 'node' : undefined,
       optimize: options.optimize ?? options.treeshake,
+      reactCompiler: options.reactCompiler ? 'true' : undefined,
     },
     // NOTE: This is non-standard but it provides a cleaner output
     experimentalImportSupport: true,
@@ -149,7 +167,8 @@ export async function microBundle({
       const id = queue.shift()!;
       const absPath = path.join(projectRoot, id);
       if (visited.has(absPath)) {
-        modules.get(absPath)?.inverseDependencies.add(parent?.path);
+        const mod = modules.get(absPath);
+        if (mod && parent?.path) mod.inverseDependencies.add(parent.path);
         continue;
       }
       visited.add(absPath);
@@ -237,6 +256,8 @@ export async function microBundle({
               output: options.output,
               includeSourceMaps: options.sourceMaps,
               splitChunks: options.splitChunks,
+              // NOTE(cedric): exporting mode should always be provided explicitly, but we can't easily do that in the tests
+              exporting: !dev,
             }
           : undefined,
 
@@ -247,19 +268,19 @@ export async function microBundle({
       asyncRequireModulePath: 'expo-mock/async-require',
 
       sourceUrl: options.sourceUrl,
-      createModuleId(filePath) {
+      createModuleId(filePath: string) {
         return filePath as unknown as number;
       },
       dev,
-      getRunModuleStatement(moduleId) {
+      getRunModuleStatement(moduleId: number | string) {
         return `TEST_RUN_MODULE(${JSON.stringify(moduleId)});`;
       },
       includeAsyncPaths: dev,
-      shouldAddToIgnoreList(module) {
+      shouldAddToIgnoreList(_module: Module) {
         return false;
       },
       modulesOnly: false,
-      processModuleFilter(module) {
+      processModuleFilter(_module: Module) {
         return true;
       },
       projectRoot,
@@ -271,7 +292,7 @@ export async function microBundle({
       _test_getPackageJson(dir: string) {
         const packageJsonPath = findUpPackageJsonPath(projectRoot, dir);
         if (packageJsonPath) {
-          return [JSON.parse(fullFs[packageJsonPath]), packageJsonPath];
+          return [JSON.parse(fullFs[packageJsonPath]!), packageJsonPath];
         }
         return [null, null];
       },
@@ -291,25 +312,29 @@ export async function parseModule(
   const absoluteFilePath = path.join(projectRoot, relativeFilePath);
   const codeBuffer = Buffer.from(code);
 
-  const { output, dependencies } = await expoMetroTransformWorker.transform(
-    // TODO: Maybe just pull from expo/metro-config to ensure correctness over time.
-    {
-      ...METRO_CONFIG_DEFAULTS.transformer,
-      asyncRequireModulePath: 'expo-mock/async-require',
-      unstable_allowRequireContext: true,
-      allowOptionalDependencies: true,
-      assetPlugins: [],
-      babelTransformerPath: '@expo/metro-config/build/babel-transformer',
-      ...transformConfig,
-    },
-    projectRoot,
-    absoluteFilePath,
-    codeBuffer,
-    {
-      inlineRequires: false,
-      ...transformOptions,
-      inlinePlatform: true,
-    }
+  // Mirror the production `Bundler.transformFile` wrapper so test
+  // fixtures see the same `data.map` shape readers do.
+  const { output, dependencies } = wrapTransformResultMaps(
+    await expoMetroTransformWorker.transform(
+      // TODO: Maybe just pull from expo/metro-config to ensure correctness over time.
+      {
+        ...METRO_CONFIG_DEFAULTS.transformer,
+        asyncRequireModulePath: 'expo-mock/async-require',
+        unstable_allowRequireContext: true,
+        allowOptionalDependencies: true,
+        assetPlugins: [],
+        babelTransformerPath: '@expo/metro-config/build/babel-transformer',
+        ...transformConfig,
+      },
+      projectRoot,
+      absoluteFilePath,
+      codeBuffer,
+      {
+        inlineRequires: false,
+        ...transformOptions,
+        inlinePlatform: true,
+      }
+    )
   );
 
   return {
@@ -324,8 +349,6 @@ export async function parseModule(
       }))
     ),
     inverseDependencies: new CountingSet(),
-
-    // @ts-expect-error
     output,
   };
 }

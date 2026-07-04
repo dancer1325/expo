@@ -4,17 +4,13 @@ import {
   parsePathFromExpoGoLink,
 } from '../extractPathFromURL';
 
-declare global {
-  // eslint-disable-next-line no-var
-  var expo: any;
-}
-
 describe(extractExpoPathFromURL, () => {
   beforeEach(() => {
     if (typeof expo === 'undefined') {
+      // Partial mock of ExpoGlobal
       globalThis.expo = {
         modules: {},
-      };
+      } as unknown as typeof expo;
     }
     delete expo.modules.ExpoGo;
   });
@@ -68,6 +64,7 @@ describe(extractExpoPathFromURL, () => {
         'invalid',
         'scheme_with|unusual%characters:///',
         'scheme_with|unusual%characters://expo.host/?hello-bar',
+        '/?url=https://expo.dev',
       ])(`parses %p`, (url) => {
         expo.modules.ExpoGo = exenv;
 

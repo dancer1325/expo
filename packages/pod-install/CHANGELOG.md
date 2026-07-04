@@ -6,9 +6,115 @@
 
 ### 🎉 New features
 
+- Support Bundler-managed CocoaPods installations ([#43605](https://github.com/expo/expo/pull/43605) by [@tiwari91](https://github.com/tiwari91), [@kitten](https://github.com/kitten))
+
 ### 🐛 Bug fixes
 
 ### 💡 Others
+
+## 1.0.17 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.16 — 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.15 - 2026-04-07
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.14 — 2026-02-20
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.13 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.12 — 2026-01-23
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.11 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.10 — 2026-01-21
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.9 - 2025-12-05
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.8 - 2025-11-17
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.7 — 2025-09-11
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.6 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.5 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.4 — 2025-08-27
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.3 — 2025-08-25
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 1.0.0 — 2025-08-13
+
+_This version does not introduce any user-facing changes._
+
+## 0.3.10 - 2025-07-03
+
+_This version does not introduce any user-facing changes._
+
+## 0.3.9 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 0.3.8 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 0.3.7 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 0.3.6 — 2025-04-08
+
+_This version does not introduce any user-facing changes._
+
+## 0.3.5 - 2025-03-31
+
+_This version does not introduce any user-facing changes._
+
+## 0.3.4 - 2025-01-10
+
+_This version does not introduce any user-facing changes._
+
+## 0.3.3 - 2025-01-08
+
+_This version does not introduce any user-facing changes._
 
 ## 0.3.2 — 2024-11-15
 

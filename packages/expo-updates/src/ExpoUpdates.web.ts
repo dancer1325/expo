@@ -1,18 +1,18 @@
 import { NativeModule, registerWebModule } from 'expo-modules-core';
 
-import {
+import type {
   UpdatesCheckAutomaticallyNativeValue,
   UpdatesEvents,
   UpdatesModuleInterface,
 } from './ExpoUpdatesModule.types';
-import {
+import type {
   Manifest,
   UpdatesNativeStateMachineContext,
   UpdateCheckResultNotAvailable,
   UpdatesLogEntry,
   UpdateFetchResultFailure,
-  UpdateCheckResultNotAvailableReason,
 } from './Updates.types';
+import { UpdateCheckResultNotAvailableReason } from './Updates.types';
 
 class ExpoUpdatesModule extends NativeModule<UpdatesEvents> implements UpdatesModuleInterface {
   isEmergencyLaunch: boolean = false;
@@ -37,12 +37,15 @@ class ExpoUpdatesModule extends NativeModule<UpdatesEvents> implements UpdatesMo
     lastCheckForUpdateTimeString?: string | undefined;
     rollbackString?: string | undefined;
   } = {
+    isStartupProcedureRunning: false,
     isUpdateAvailable: false,
     isUpdatePending: false,
     isChecking: false,
     isDownloading: false,
     isRestarting: false,
+    restartCount: 0,
     sequenceNumber: 0,
+    downloadProgress: 0,
   };
 
   async reload(): Promise<void> {
@@ -75,4 +78,4 @@ class ExpoUpdatesModule extends NativeModule<UpdatesEvents> implements UpdatesMo
   }
 }
 
-export default registerWebModule(ExpoUpdatesModule);
+export default registerWebModule(ExpoUpdatesModule, 'ExpoUpdates');

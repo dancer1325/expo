@@ -5,7 +5,7 @@ import EventKitUI
 
 public class CalendarModule: Module {
   private var permittedEntities: EKEntityMask = .event
-  private static let sharedEventStore = EKEventStore()
+  public static let sharedEventStore = EKEventStore()
   private var eventStore: EKEventStore {
     return CalendarModule.sharedEventStore
   }
@@ -156,7 +156,7 @@ public class CalendarModule: Module {
       return serialize(attendees: attendees)
     }
 
-    AsyncFunction("getRemindersAsync") { (startDateStr: String, endDateStr: String, calendarIds: [String?], status: String?, promise: Promise) in
+    AsyncFunction("getRemindersAsync") { (startDateStr: String?, endDateStr: String?, calendarIds: [String?], status: String?, promise: Promise) in
       try checkRemindersPermissions()
       var reminderCalendars = [EKCalendar]()
       let startDate = parse(date: startDateStr)
@@ -219,16 +219,18 @@ public class CalendarModule: Module {
         }
       }
 
-      if let url = maybeSetUrl(details.url) {
-        reminder.url = url
+      if let url = details.url {
+        reminder.url = URL(string: url)
       }
 
+      let isAllDay = details.allDay ?? false
+
       if let startDate {
-        reminder.startDateComponents = createDateComponents(for: startDate)
+        reminder.startDateComponents = createDateComponents(for: startDate, allDay: isAllDay)
       }
 
       if let dueDate {
-        reminder.dueDateComponents = createDateComponents(for: dueDate)
+        reminder.dueDateComponents = createDateComponents(for: dueDate, allDay: isAllDay)
       }
 
       if let completionDate {
@@ -274,7 +276,7 @@ public class CalendarModule: Module {
     AsyncFunction("getCalendarPermissionsAsync") { (promise: Promise) in
       appContext?.permissions?.getPermissionUsingRequesterClass(
         CalendarPermissionsRequester.self,
-        resolve: promise.resolver,
+        resolve: promise.legacyResolver,
         reject: promise.legacyRejecter
       )
     }
@@ -282,7 +284,7 @@ public class CalendarModule: Module {
     AsyncFunction("requestCalendarPermissionsAsync") { (promise: Promise) in
       appContext?.permissions?.askForPermission(
         usingRequesterClass: CalendarPermissionsRequester.self,
-        resolve: promise.resolver,
+        resolve: promise.legacyResolver,
         reject: promise.legacyRejecter
       )
     }
@@ -290,7 +292,7 @@ public class CalendarModule: Module {
     AsyncFunction("getRemindersPermissionsAsync") { (promise: Promise) in
       appContext?.permissions?.getPermissionUsingRequesterClass(
         RemindersPermissionRequester.self,
-        resolve: promise.resolver,
+        resolve: promise.legacyResolver,
         reject: promise.legacyRejecter
       )
     }
@@ -298,12 +300,15 @@ public class CalendarModule: Module {
     AsyncFunction("requestRemindersPermissionsAsync") { (promise: Promise) in
       appContext?.permissions?.askForPermission(
         usingRequesterClass: RemindersPermissionRequester.self,
-        resolve: promise.resolver,
-        reject: promise.legacyRejecter)
+        resolve: promise.legacyResolver,
+        reject: promise.legacyRejecter
+      )
     }
 
     AsyncFunction("createEventInCalendarAsync") { (event: Event, promise: Promise) in
-      try checkCalendarPermissions()
+      if #unavailable(iOS 17.0) {
+        try checkCalendarPermissions()
+      }
       guard calendarDialogDelegate == nil else {
         throw EventDialogInProgressException()
       }
@@ -387,8 +392,8 @@ public class CalendarModule: Module {
       }
     }
 
-    if let url = maybeSetUrl(event.url) {
-      calendarEvent.url = url
+    if let url = event.url {
+      calendarEvent.url = URL(string: url)
     }
 
     if let startDate = event.startDate {
@@ -441,12 +446,14 @@ public class CalendarModule: Module {
       throw PermissionsManagerNotFoundException()
     }
 
-    var requester: AnyClass?
+    var requester: EXPermissionsRequester.Type?
     switch entity {
     case .event:
       requester = CalendarPermissionsRequester.self
     case .reminder:
       requester = RemindersPermissionRequester.self
+    @unknown default:
+      requester = nil
     }
     if let requester, !permissionsManager.hasGrantedPermission(usingRequesterClass: requester) {
       let message = requester.permissionType().uppercased()
@@ -470,13 +477,6 @@ public class CalendarModule: Module {
 
     eventStore.reset()
     permittedEntities.insert(entity == .event ? .event : .reminder)
-  }
-
-  private func maybeSetUrl(_ url: String?) -> URL? {
-    if let urlString = url?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed), let url = URL(string: urlString) {
-      return url
-    }
-    return nil
   }
 
   private func getReminder(from details: Reminder) throws -> EKReminder {
@@ -584,7 +584,7 @@ public class CalendarModule: Module {
       return firstEvent
     }
 
-    guard let firstEventStart = firstEvent.startDate, firstEventStart.compare(startDate) == .orderedSame else {
+    if let firstEventStart = firstEvent.startDate, firstEventStart.compare(startDate) == .orderedSame {
       return firstEvent
     }
 
@@ -594,10 +594,8 @@ public class CalendarModule: Module {
     )
 
     for event in events {
-      if event.calendarItemIdentifier != id {
-        break
-      }
-      if let eventStart = event.startDate, eventStart.compare(startDate) == .orderedSame {
+      if event.calendarItemIdentifier == firstEvent.calendarItemIdentifier,
+        let eventStart = event.startDate, eventStart.compare(startDate) == .orderedSame {
         return event
       }
     }

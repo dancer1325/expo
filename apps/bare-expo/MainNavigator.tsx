@@ -1,19 +1,33 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  BottomTabNavigationOptions,
+  createBottomTabNavigator,
+} from '@react-navigation/bottom-tabs';
+import { LinkingOptions } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTheme } from 'ThemeProvider';
 import * as Linking from 'expo-linking';
+import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { ToastAndroid, Platform } from 'react-native';
-import TestSuite from 'test-suite/AppNavigator';
+import { Platform } from 'react-native';
+import { TestStackNavigator } from 'test-suite/TestStackNavigator';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { AppMetrics } from 'expo-observe';
+import { ObserveNavigationContainer } from 'expo-observe/integrations/react-navigation';
 
-type NavigationRouteConfigMap = React.ReactElement;
+import Playground from './Playground';
+
+type NavigationRouteConfigMap = React.ComponentType & {
+  navigationOptions?: BottomTabNavigationOptions;
+};
+
+const testSuiteRouteName = 'test-suite';
 
 type RoutesConfig = {
-  'test-suite': NavigationRouteConfigMap;
+  [testSuiteRouteName]: NavigationRouteConfigMap;
   apis?: NavigationRouteConfigMap;
   components?: NavigationRouteConfigMap;
+  playground: NavigationRouteConfigMap;
 };
 
 type NativeComponentListExportsType = null | {
@@ -30,14 +44,13 @@ export function optionalRequire(requirer: () => { default: React.ComponentType }
     return null;
   }
 }
-
 const routes: RoutesConfig = {
-  'test-suite': TestSuite,
+  [testSuiteRouteName]: TestStackNavigator,
+  playground: Playground,
 };
 
-// We'd like to get rid of `native-component-list` being a part of the final bundle.
-// Otherwise, some tests may fail due to timeouts (bundling takes significantly more time).
-// See `babel.config.js` and `moduleResolvers/nullResolver.js` for more details.
+// TODO vonovak there's potential for skipping the require of APIs tab as it's not used in CI
+// could use metro config to exclude it from bundling
 const NativeComponentList: NativeComponentListExportsType = optionalRequire(() =>
   require('native-component-list/src/navigation/MainNavigators')
 ) as any;
@@ -48,8 +61,6 @@ const Search = optionalRequire(() =>
   require('native-component-list/src/screens/SearchScreen')
 ) as any;
 
-const DevMenu = optionalRequire(() => require('expo-dev-menu')) as any;
-
 const nclLinking: Record<string, any> = {};
 if (NativeComponentList) {
   routes.apis = NativeComponentList.apis.navigator;
@@ -59,7 +70,7 @@ if (NativeComponentList) {
 }
 
 const Tab = createBottomTabNavigator();
-const Switch = createStackNavigator();
+const Switch = createNativeStackNavigator();
 
 const linking: LinkingOptions<object> = {
   prefixes: [
@@ -71,10 +82,10 @@ const linking: LinkingOptions<object> = {
   config: {
     screens: {
       main: {
-        initialRouteName: 'test-suite',
+        initialRouteName: testSuiteRouteName,
         screens: {
-          'test-suite': {
-            path: 'test-suite',
+          [testSuiteRouteName]: {
+            path: testSuiteRouteName,
             screens: {
               select: '',
               run: '/run',
@@ -103,26 +114,26 @@ function TabNavigator() {
         },
       }}
       safeAreaInsets={Platform.select({
-        android: {
-          bottom: 5,
-        },
         default: undefined,
       })}
-      initialRouteName="test-suite">
-      {Object.keys(routes).map((name) => (
-        <Tab.Screen
-          name={name}
-          key={name}
-          component={routes[name]}
-          options={routes[name].navigationOptions}
-        />
-      ))}
+      initialRouteName={testSuiteRouteName}>
+      {Object.entries(routes).map(([name, component]) =>
+        component ? (
+          <Tab.Screen
+            name={name}
+            key={name}
+            component={component}
+            options={component.navigationOptions}
+          />
+        ) : null
+      )}
     </Tab.Navigator>
   );
 }
 const PERSISTENCE_KEY = 'NAVIGATION_STATE_V1';
 
-export default () => {
+export default function MainNavigator() {
+  const { name: themeName } = useTheme();
   const [isReady, setIsReady] = React.useState(Platform.OS === 'web');
   const [initialState, setInitialState] = React.useState();
 
@@ -130,54 +141,9 @@ export default () => {
     if (isReady) {
       return;
     }
-    const setupDevMenuItems = async () => {
+    const restoreState = async () => {
       const key = 'PERSIST_NAV_STATE';
       const persistenceEnabled = !!(await AsyncStorage.getItem(key));
-
-      // on Android, we need to keep the title of the item the same
-      // because updating dev menu items currently doesn't work
-      // TODO https://linear.app/expo/issue/ENG-12786
-      const label = Platform.select({
-        ios: persistenceEnabled
-          ? '✗  Disable navigation state persistence'
-          : '✓  Enable navigation state persistence',
-        default: 'Toggle navigation state persistence',
-      });
-      const devMenuItems = [
-        {
-          shouldCollapse: true,
-          name: label,
-          callback: async () => {
-            if (Platform.OS === 'android') {
-              // because the label is always the same, we show a toast to inform
-              // whether the persistence is going to be enabled or disabled
-              const message = persistenceEnabled
-                ? 'Navigation state persistence disabled'
-                : 'Navigation state persistence enabled';
-              ToastAndroid.show(message, ToastAndroid.LONG);
-            }
-            try {
-              if (persistenceEnabled) {
-                await AsyncStorage.removeItem(key);
-              } else {
-                await AsyncStorage.setItem(key, 'true');
-              }
-              // refresh the dev menu labels with latest preference
-              await setupDevMenuItems();
-            } catch (err) {
-              console.error(err);
-            }
-          },
-        },
-      ];
-
-      if (DevMenu) {
-        await DevMenu.registerDevMenuItems(devMenuItems);
-      }
-      return persistenceEnabled;
-    };
-    const restoreState = async () => {
-      const persistenceEnabled = await setupDevMenuItems();
 
       if (persistenceEnabled) {
         const initialUrl = await Linking.getInitialURL();
@@ -195,27 +161,37 @@ export default () => {
     };
     restoreState()
       .catch(console.error)
-      .finally(() => setIsReady(true));
+      .finally(() => {
+        setIsReady(true);
+        AppMetrics.markInteractive({
+          params: {
+            theme: themeName,
+          },
+        });
+      });
   }, [isReady]);
 
   if (!isReady) {
     return null;
   }
   return (
-    <NavigationContainer
-      linking={linking}
-      initialState={initialState}
-      onStateChange={(state) => {
-        AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state)).catch(console.error);
-      }}>
-      <Switch.Navigator
-        screenOptions={{ headerShown: false }}
-        initialRouteName="main"
-        id={undefined}>
-        {Redirect && <Switch.Screen name="redirect" component={Redirect} />}
-        {Search && <Switch.Screen name="searchNavigator" component={Search} />}
-        <Switch.Screen name="main" component={TabNavigator} />
-      </Switch.Navigator>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ObserveNavigationContainer
+        linking={linking}
+        initialState={initialState}
+        onStateChange={(state) => {
+          AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state)).catch(console.error);
+        }}>
+        <Switch.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName="main"
+          id={undefined}>
+          {Redirect && <Switch.Screen name="redirect" component={Redirect} />}
+          {Search && <Switch.Screen name="searchNavigator" component={Search} />}
+          <Switch.Screen name="main" component={TabNavigator} />
+        </Switch.Navigator>
+        <StatusBar style={themeName === 'light' ? 'dark' : 'light'} />
+      </ObserveNavigationContainer>
+    </GestureHandlerRootView>
   );
-};
+}

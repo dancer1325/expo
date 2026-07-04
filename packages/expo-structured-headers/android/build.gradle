@@ -1,25 +1,25 @@
-apply plugin: 'com.android.library'
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
 
 group = 'host.exp.exponent'
-version = '4.0.0'
+version = '56.0.0'
 
-def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
-apply from: expoModulesCorePlugin
-applyKotlinExpoModulesCorePlugin()
-useCoreDependencies()
-useDefaultAndroidSdkVersions()
-useExpoPublishing()
+expoModule {
+  canBePublished false
+}
 
 android {
   namespace "expo.modules.structuredheaders"
   defaultConfig {
     versionCode 1
-    versionName '4.0.0'
+    versionName '56.0.0'
   }
 }
 
 dependencies {
-  implementation "androidx.appcompat:appcompat:1.2.0"
+  implementation "androidx.appcompat:appcompat:1.7.1"
 
   testImplementation 'junit:junit:4.13.2'
   testImplementation 'commons-codec:commons-codec:1.14'

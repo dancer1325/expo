@@ -22,10 +22,20 @@ type ExecuteOptions = Omit<execa.Options, 'cwd'> & {
 export async function executeAsync(
   cwd: string,
   commandOrFlags: string[] = [],
-  { command, verbose, ...spawnOptions }: ExecuteOptions = {}
+  { command, env, verbose, ...spawnOptions }: ExecuteOptions = {}
 ) {
+  // Strip npm_config_minimum_release_age inherited from the monorepo's pnpm-workspace.yaml,
+  // as it blocks recently published packages without the matching exclusion list.
+  const { npm_config_minimum_release_age, ...processEnv } = process.env;
   const [bin, ...flags] = command ? command.concat(commandOrFlags) : commandOrFlags;
-  const child = execa(bin, flags, { ...spawnOptions, cwd });
+
+  const child = execa(bin!, flags, {
+    ...spawnOptions,
+    cwd,
+    env: { ...processEnv, ...env },
+    extendEnv: false,
+  });
+
   const log = createVerboseLogger({ verbose, prefix: 'execute' });
 
   log(bin, ...flags, { ...spawnOptions, cwd });
@@ -108,7 +118,7 @@ export async function waitForProcessOutput<T>(
 export async function waitForProcessReady<T>(
   child: ChildProcess,
   resolver: () => Promise<T>,
-  timeoutMs = 60_000
+  timeoutMs = 120_000
 ) {
   // See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers
   let resolve: (value: T | PromiseLike<T>) => void;

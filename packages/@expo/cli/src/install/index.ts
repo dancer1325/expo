@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import chalk from 'chalk';
 
-import { Command } from '../../bin/cli';
+import type { Command } from '../index';
 import { assertWithOptionsArgs, printHelp } from '../utils/args';
 
 export const expoInstall: Command = async (argv) => {
@@ -9,6 +9,7 @@ export const expoInstall: Command = async (argv) => {
     {
       // Other options are parsed manually.
       '--help': Boolean,
+      '--json': Boolean,
       // Aliases
       '-h': '--help',
     },
@@ -25,12 +26,14 @@ export const expoInstall: Command = async (argv) => {
       `npx expo install`,
       [
         `--check     Check which installed packages need to be updated`,
+        '--dev       Save the dependencies as devDependencies',
         `--fix       Automatically update any invalid package versions`,
         chalk`--npm       Use npm to install dependencies. {dim Default when package-lock.json exists}`,
         chalk`--yarn      Use Yarn to install dependencies. {dim Default when yarn.lock exists}`,
-        chalk`--bun       Use bun to install dependencies. {dim Default when bun.lockb exists}`,
+        chalk`--bun       Use bun to install dependencies. {dim Default when bun.lock or bun.lockb exists}`,
         chalk`--pnpm      Use pnpm to install dependencies. {dim Default when pnpm-lock.yaml exists}`,
         `-h, --help  Usage info`,
+        `--json      Output dependency information in JSON format with --check flag`,
       ].join('\n'),
       [
         '',

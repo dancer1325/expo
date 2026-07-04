@@ -1,3 +1,4 @@
+// @ts-nocheck — vendored verbatim from Metro (see header URL); kept loosely typed to ease upstream syncs
 /**
  * Copyright © 2024 650 Industries.
  * Copyright (c) Meta Platforms, Inc. and affiliates.
@@ -84,7 +85,7 @@ describe('require', () => {
       );
 
     moduleSystem.__d(mockFactory, 1, [2, 3]);
-    expect(mockFactory).not.toBeCalled();
+    expect(mockFactory).not.toHaveBeenCalled();
 
     const m = moduleSystem.__r(1);
     expect(mockFactory.mock.calls.length).toBe(1);
@@ -117,8 +118,8 @@ describe('require', () => {
     expect(moduleSystem.__r).not.toBeUndefined();
     expect(moduleSystem.__d).not.toBeUndefined();
 
-    expect(moduleSystem.nativeRequire).not.toBeCalled();
-    expect(mockFactory).not.toBeCalled();
+    expect(moduleSystem.nativeRequire).not.toHaveBeenCalled();
+    expect(mockFactory).not.toHaveBeenCalled();
 
     const CASES = [
       [1, 1, 0],
@@ -133,7 +134,7 @@ describe('require', () => {
       const m = moduleSystem.__r(moduleId);
 
       expect(moduleSystem.nativeRequire.mock.calls.length).toBe(1);
-      expect(moduleSystem.nativeRequire).toBeCalledWith(localId, bundleId);
+      expect(moduleSystem.nativeRequire).toHaveBeenCalledWith(localId, bundleId);
 
       expect(mockFactory.mock.calls.length).toBe(1);
       expect(mockFactory.mock.calls[0][0]).toBe(moduleSystem);
@@ -222,39 +223,39 @@ describe('require', () => {
       seg[2].modules.map(({ moduleId }) => moduleId)
     );
 
-    expect(seg[0].definer).not.toBeCalled();
-    expect(seg[0].modules[0].factory).not.toBeCalled();
+    expect(seg[0].definer).not.toHaveBeenCalled();
+    expect(seg[0].modules[0].factory).not.toHaveBeenCalled();
     expect(__r(seg[0].modules[0].moduleId)).toBe(seg[0].modules[0].exports);
     expect(__r(seg[0].modules[0].moduleId)).toBe(seg[0].modules[0].exports);
-    expect(seg[0].modules[1].factory).not.toBeCalled();
+    expect(seg[0].modules[1].factory).not.toHaveBeenCalled();
     expect(__r(seg[0].modules[1].moduleId)).toBe(seg[0].modules[1].exports);
     expect(__r(seg[0].modules[1].moduleId)).toBe(seg[0].modules[1].exports);
 
-    expect(seg[1].definer).not.toBeCalled();
-    expect(seg[1].modules[0].factory).not.toBeCalled();
+    expect(seg[1].definer).not.toHaveBeenCalled();
+    expect(seg[1].modules[0].factory).not.toHaveBeenCalled();
     expect(__r(seg[1].modules[0].moduleId)).toBe(seg[1].modules[0].exports);
     expect(__r(seg[1].modules[0].moduleId)).toBe(seg[1].modules[0].exports);
-    expect(seg[1].modules[1].factory).not.toBeCalled();
+    expect(seg[1].modules[1].factory).not.toHaveBeenCalled();
     expect(__r(seg[1].modules[1].moduleId)).toBe(seg[1].modules[1].exports);
     expect(__r(seg[1].modules[1].moduleId)).toBe(seg[1].modules[1].exports);
 
-    expect(seg[2].definer).not.toBeCalled();
-    expect(seg[2].modules[0].factory).not.toBeCalled();
+    expect(seg[2].definer).not.toHaveBeenCalled();
+    expect(seg[2].modules[0].factory).not.toHaveBeenCalled();
     expect(__r(seg[2].modules[0].moduleId)).toBe(seg[2].modules[0].exports);
     expect(__r(seg[2].modules[0].moduleId)).toBe(seg[2].modules[0].exports);
-    expect(seg[2].modules[1].factory).not.toBeCalled();
+    expect(seg[2].modules[1].factory).not.toHaveBeenCalled();
     expect(__r(seg[2].modules[1].moduleId)).toBe(seg[2].modules[1].exports);
     expect(__r(seg[2].modules[1].moduleId)).toBe(seg[2].modules[1].exports);
 
-    expect(seg[0].definer).toBeCalledTimes(2);
-    expect(seg[1].definer).toBeCalledTimes(2);
-    expect(seg[2].definer).toBeCalledTimes(2);
-    expect(seg[0].modules[0].factory).toBeCalledTimes(1);
-    expect(seg[0].modules[1].factory).toBeCalledTimes(1);
-    expect(seg[1].modules[0].factory).toBeCalledTimes(1);
-    expect(seg[1].modules[1].factory).toBeCalledTimes(1);
-    expect(seg[2].modules[0].factory).toBeCalledTimes(1);
-    expect(seg[2].modules[1].factory).toBeCalledTimes(1);
+    expect(seg[0].definer).toHaveBeenCalledTimes(2);
+    expect(seg[1].definer).toHaveBeenCalledTimes(2);
+    expect(seg[2].definer).toHaveBeenCalledTimes(2);
+    expect(seg[0].modules[0].factory).toHaveBeenCalledTimes(1);
+    expect(seg[0].modules[1].factory).toHaveBeenCalledTimes(1);
+    expect(seg[1].modules[0].factory).toHaveBeenCalledTimes(1);
+    expect(seg[1].modules[1].factory).toHaveBeenCalledTimes(1);
+    expect(seg[2].modules[0].factory).toHaveBeenCalledTimes(1);
+    expect(seg[2].modules[1].factory).toHaveBeenCalledTimes(1);
 
     // eslint-disable-next-line no-bitwise
     const NONEXISTENT_MODULE_ID = 50 << (16 + 5);
@@ -448,6 +449,96 @@ describe('require', () => {
       );
 
       expect(() => moduleSystem.__r(0)).toThrow('Requiring unknown module "99"');
+    });
+
+    it('throws an error with moduleIdHint when requiring a null module in dev mode', () => {
+      createModuleSystem(moduleSystem, true, '');
+
+      createModule(
+        moduleSystem,
+        0,
+        'foo.js',
+        (global, require, importDefault, importAll, module) => {
+          require(null, 'optional-module');
+        }
+      );
+
+      expect(() => moduleSystem.__r(0)).toThrow("Cannot find module 'optional-module'");
+    });
+
+    it('throws a generic error when requiring a null module without moduleIdHint', () => {
+      createModuleSystem(moduleSystem, true, '');
+
+      createModule(
+        moduleSystem,
+        0,
+        'foo.js',
+        (global, require, importDefault, importAll, module) => {
+          require(null);
+        }
+      );
+
+      expect(() => moduleSystem.__r(0)).toThrow('Cannot find module');
+    });
+
+    it('throws a generic error when requiring a null module in prod mode', () => {
+      createModuleSystem(moduleSystem, false, '');
+
+      createModule(
+        moduleSystem,
+        0,
+        'foo.js',
+        (global, require, importDefault, importAll, module) => {
+          require(null, 'optional-module');
+        }
+      );
+
+      expect(() => moduleSystem.__r(0)).toThrow('Cannot find module');
+    });
+
+    it('passes moduleIdHint through importDefault to require', () => {
+      createModuleSystem(moduleSystem, true, '');
+
+      createModule(
+        moduleSystem,
+        0,
+        'foo.js',
+        (global, require, importDefault, importAll, module) => {
+          importDefault(null, 'my-optional-dep');
+        }
+      );
+
+      expect(() => moduleSystem.__r(0)).toThrow("Cannot find module 'my-optional-dep'");
+    });
+
+    it('passes moduleIdHint through importAll to require', () => {
+      createModuleSystem(moduleSystem, true, '');
+
+      createModule(
+        moduleSystem,
+        0,
+        'foo.js',
+        (global, require, importDefault, importAll, module) => {
+          importAll(null, 'my-optional-dep');
+        }
+      );
+
+      expect(() => moduleSystem.__r(0)).toThrow("Cannot find module 'my-optional-dep'");
+    });
+
+    it('includes moduleIdHint in unknown module errors', () => {
+      createModuleSystem(moduleSystem, false, '');
+
+      createModule(
+        moduleSystem,
+        0,
+        'foo.js',
+        (global, require, importDefault, importAll, module) => {
+          require(999, 'missing-module');
+        }
+      );
+
+      expect(() => moduleSystem.__r(0)).toThrow('Requiring unknown module "999"');
     });
 
     it('throws an error when a module throws an error', () => {

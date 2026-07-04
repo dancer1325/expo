@@ -1,7 +1,7 @@
 import { isRunningInExpoGo } from 'expo';
 
 import { optionalRequire } from '../../navigation/routeBuilder';
-import ComponentListScreen, { ListElement } from '../ComponentListScreen';
+import ComponentListScreen, { apiScreensToListElements } from '../ComponentListScreen';
 
 export const ModulesCoreScreens = [
   {
@@ -25,18 +25,19 @@ if (!isRunningInExpoGo()) {
     name: 'Benchmarks',
     route: 'modulescore/benchmarks',
     getComponent() {
-      return optionalRequire(() => require('./ModulesBenchmarksScreen'));
+      return optionalRequire(() => require('./Benchmarks/ModulesBenchmarksScreen'));
+    },
+  });
+  ModulesCoreScreens.push({
+    name: 'Jest Mock Generator',
+    route: 'modulescore/jest-mock-generator',
+    getComponent() {
+      return optionalRequire(() => require('./JestMockGeneratorScreen'));
     },
   });
 }
 
 export default function ModulesCoreScreen() {
-  const apis: ListElement[] = ModulesCoreScreens.map((screen) => {
-    return {
-      name: screen.name,
-      isAvailable: true,
-      route: `/apis/${screen.route}`,
-    };
-  });
+  const apis = apiScreensToListElements(ModulesCoreScreens);
   return <ComponentListScreen apis={apis} sort={false} />;
 }

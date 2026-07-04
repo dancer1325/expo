@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { resolveWorkspaceRoot } from 'resolve-workspace-root';
 
-import { PackageManagerOptions } from '../PackageManager';
+import type { PackageManagerOptions } from '../PackageManager';
 import { BunPackageManager } from '../node/BunPackageManager';
 import { NpmPackageManager } from '../node/NpmPackageManager';
 import { PnpmPackageManager } from '../node/PnpmPackageManager';
@@ -23,6 +23,7 @@ export const NPM_LOCK_FILE = 'package-lock.json';
 export const YARN_LOCK_FILE = 'yarn.lock';
 export const PNPM_LOCK_FILE = 'pnpm-lock.yaml';
 export const BUN_LOCK_FILE = 'bun.lockb';
+export const BUN_TEXT_LOCK_FILE = 'bun.lock';
 
 /** The order of the package managers to use when resolving automatically */
 export const RESOLUTION_ORDER: NodePackageManager['name'][] = ['bun', 'yarn', 'npm', 'pnpm'];
@@ -37,23 +38,21 @@ export function resolvePackageManager(
   preferredManager?: NodePackageManager['name']
 ): NodePackageManager['name'] | null {
   const root = resolveWorkspaceRoot(projectRoot) ?? projectRoot;
-  const lockFiles: Record<NodePackageManager['name'], string> = {
-    npm: NPM_LOCK_FILE,
-    pnpm: PNPM_LOCK_FILE,
-    yarn: YARN_LOCK_FILE,
-    bun: BUN_LOCK_FILE,
+  const lockFiles: Record<NodePackageManager['name'], string[]> = {
+    npm: [NPM_LOCK_FILE],
+    pnpm: [PNPM_LOCK_FILE],
+    yarn: [YARN_LOCK_FILE],
+    bun: [BUN_TEXT_LOCK_FILE, BUN_LOCK_FILE],
   };
 
   if (preferredManager) {
-    if (fs.existsSync(path.join(root, lockFiles[preferredManager]))) {
-      return preferredManager;
-    }
-
-    return null;
+    return lockFiles[preferredManager].some((file) => fs.existsSync(path.join(root, file)))
+      ? preferredManager
+      : null;
   }
 
   for (const managerName of RESOLUTION_ORDER) {
-    if (fs.existsSync(path.join(root, lockFiles[managerName]))) {
+    if (lockFiles[managerName].some((file) => fs.existsSync(path.join(root, file)))) {
       return managerName;
     }
   }
@@ -81,14 +80,13 @@ export function createForProject(
   }
 
   switch (resolvePackageManager(projectRoot)) {
-    case 'npm':
-      return new NpmPackageManager({ cwd: projectRoot, ...options });
     case 'pnpm':
       return new PnpmPackageManager({ cwd: projectRoot, ...options });
     case 'yarn':
       return new YarnPackageManager({ cwd: projectRoot, ...options });
     case 'bun':
       return new BunPackageManager({ cwd: projectRoot, ...options });
+    case 'npm':
     default:
       return new NpmPackageManager({ cwd: projectRoot, ...options });
   }

@@ -1,10 +1,10 @@
 {
-  "platforms": [
-    "apple"
-  ],
+  "platforms": ["apple", "android"],
+  "coreFeatures": ["swiftui", "compose"],
   "apple": {
-    "modules": [
-      "MeshGradientModule"
-    ]
+    "modules": ["MeshGradientModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.meshgradient.MeshGradientModule"]
   }
 }

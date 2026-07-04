@@ -1,6 +1,5 @@
 import * as PackageManager from '@expo/package-manager';
-import requireGlobal from 'requireg';
-import resolveFrom from 'resolve-from';
+import { resolveFrom, resolveGlobal } from '@expo/require-utils';
 import semver from 'semver';
 
 import * as Log from '../../../log';
@@ -133,10 +132,7 @@ export class ExternalModule<TModule> {
       return await this.resolveAsync({ shouldPrompt: false });
     }
 
-    throw new CommandError(
-      'EXTERNAL_MODULE_AVAILABILITY',
-      `Please install ${packageName} and try again`
-    );
+    throw new CommandError('EXTERNAL_MODULE_AVAILABILITY', `Install ${packageName} and try again`);
   }
 
   /** Get the module. */
@@ -161,12 +157,18 @@ export class ExternalModule<TModule> {
 
   /** Resolve a copy that's installed in the project. Exposed for testing. */
   _resolveLocal(moduleId: string): string {
-    return resolveFrom(this.projectRoot, moduleId);
+    const target = resolveFrom(this.projectRoot, moduleId);
+    if (!target) {
+      throw Object.assign(new Error(`Module "${moduleId}" could not be resolved in the project.`), {
+        code: 'MODULE_NOT_FOUND',
+      });
+    }
+    return target;
   }
 
   /** Resolve a copy that's installed globally. Exposed for testing. */
   _resolveGlobal(moduleId: string): string {
-    return requireGlobal.resolve(moduleId);
+    return resolveGlobal(moduleId);
   }
 
   /** Resolve the module and verify the version. Exposed for testing. */

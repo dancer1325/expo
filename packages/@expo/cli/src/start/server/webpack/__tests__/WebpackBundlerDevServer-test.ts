@@ -1,7 +1,7 @@
 import { vol } from 'memfs';
 import webpack from 'webpack';
 
-import { BundlerStartOptions } from '../../BundlerDevServer';
+import type { BundlerStartOptions } from '../../BundlerDevServer';
 import { getPlatformBundlers } from '../../platformBundlers';
 import { WebpackBundlerDevServer } from '../WebpackBundlerDevServer';
 
@@ -45,7 +45,7 @@ describe('bundleAsync', () => {
     devServer['loadConfigAsync'] = jest.fn(async () => ({}));
 
     await devServer.bundleAsync({ mode: 'development', clear: true });
-    expect(devServer['clearWebProjectCacheAsync']).toBeCalled();
+    expect(devServer['clearWebProjectCacheAsync']).toHaveBeenCalled();
     expect(devServer['loadConfigAsync']).toHaveBeenCalledWith({
       isImageEditingEnabled: true,
       mode: 'development',
@@ -119,6 +119,6 @@ describe('broadcastMessage', () => {
     expect(
       // @ts-expect-error
       devServer.getInstance().server.sendMessage
-    ).toBeCalledWith(undefined, 'content-changed', { foo: true });
+    ).toHaveBeenCalledWith(undefined, 'content-changed', { foo: true });
   });
 });

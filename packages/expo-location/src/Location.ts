@@ -1,9 +1,8 @@
-import { isRunningInExpoGo } from 'expo';
-import { PermissionResponse, createPermissionHook, Platform } from 'expo-modules-core';
+import { createPermissionHook, isRunningInExpoGo, Platform, type PermissionResponse } from 'expo';
 
 import ExpoLocation from './ExpoLocation';
-import {
-  LocationAccuracy,
+import type {
+  LocationErrorCallback,
   LocationCallback,
   LocationGeocodedAddress,
   LocationGeocodedLocation,
@@ -17,8 +16,16 @@ import {
   LocationRegion,
   LocationSubscription,
   LocationTaskOptions,
+  MotionActivityCallback,
+  MotionActivityObject,
 } from './Location.types';
-import { LocationSubscriber, HeadingSubscriber } from './LocationSubscribers';
+import { LocationAccuracy } from './Location.types';
+import {
+  LocationSubscriber,
+  HeadingSubscriber,
+  LocationErrorSubscriber,
+  MotionActivitySubscriber,
+} from './LocationSubscribers';
 
 // Flag for warning about background services not being available in Expo Go
 let warnAboutExpoGoDisplayed = false;
@@ -87,24 +94,30 @@ export async function getLastKnownPositionAsync(
 
 // @needsAudit
 /**
- * Subscribe to location updates from the device. Please note that updates will only occur while the
- * application is in the foreground. To get location updates while in background you'll need to use
+ * Subscribe to location updates from the device. Updates will only occur while the application is in
+ * the foreground. To get location updates while in background you'll need to use
  * [`startLocationUpdatesAsync`](#locationstartlocationupdatesasynctaskname-options).
  * @param options
  * @param callback This function is called on each location update. It receives an object of type
  * [`LocationObject`](#locationobject) as the first argument.
+ * @param errorHandler This function is called when an error occurs. It receives a string with the
+ * error message as the first argument.
  * @return A promise which fulfills with a [`LocationSubscription`](#locationsubscription) object.
  */
 export async function watchPositionAsync(
   options: LocationOptions,
-  callback: LocationCallback
+  callback: LocationCallback,
+  errorHandler?: LocationErrorCallback
 ): Promise<LocationSubscription> {
   const watchId = LocationSubscriber.registerCallback(callback);
+  errorHandler && LocationErrorSubscriber.registerCallbackForId(watchId, errorHandler);
+
   await ExpoLocation.watchPositionImplAsync(watchId, options);
 
   return {
     remove() {
       LocationSubscriber.unregisterCallback(watchId);
+      errorHandler && LocationErrorSubscriber.unregisterCallback(watchId);
     },
   };
 }
@@ -116,17 +129,28 @@ export async function watchPositionAsync(
  * @return A promise which fulfills with an object of type [`LocationHeadingObject`](#locationheadingobject).
  */
 export async function getHeadingAsync(): Promise<LocationHeadingObject> {
-  return new Promise(async (resolve) => {
+  return new Promise(async (resolve, reject) => {
     let tries = 0;
+    let subscriber: LocationSubscription | undefined = undefined;
 
-    const subscription = await watchHeadingAsync((heading) => {
-      if (heading.accuracy > 1 || tries > 5) {
-        subscription.remove();
-        resolve(heading);
-      } else {
-        tries += 1;
-      }
-    });
+    try {
+      subscriber = await watchHeadingAsync(
+        (heading) => {
+          if (heading.accuracy > 1 || tries > 5) {
+            subscriber?.remove();
+            resolve(heading);
+          } else {
+            tries += 1;
+          }
+        },
+        (reason) => {
+          subscriber?.remove();
+          reject(reason);
+        }
+      );
+    } catch (e) {
+      reject(e);
+    }
   });
 }
 
@@ -136,20 +160,26 @@ export async function getHeadingAsync(): Promise<LocationHeadingObject> {
  *
  * @param callback This function is called on each compass update. It receives an object of type
  * [LocationHeadingObject](#locationheadingobject) as the first argument.
+ * @param errorHandler This function is called when an error occurs. It receives a string with the
+ * error message as the first argument.
  * @return A promise which fulfills with a [`LocationSubscription`](#locationsubscription) object.
  *
  * @platform android
  * @platform ios
  */
 export async function watchHeadingAsync(
-  callback: LocationHeadingCallback
+  callback: LocationHeadingCallback,
+  errorHandler?: LocationErrorCallback
 ): Promise<LocationSubscription> {
   const watchId = HeadingSubscriber.registerCallback(callback);
+  errorHandler && LocationErrorSubscriber.registerCallbackForId(watchId, errorHandler);
+
   await ExpoLocation.watchDeviceHeading(watchId);
 
   return {
     remove() {
       HeadingSubscriber.unregisterCallback(watchId);
+      errorHandler && LocationErrorSubscriber.unregisterCallback(watchId);
     },
   };
 }
@@ -315,6 +345,123 @@ export async function hasServicesEnabledAsync(): Promise<boolean> {
   return await ExpoLocation.hasServicesEnabledAsync();
 }
 
+/**
+ * Checks user's permissions for accessing motion activity data.
+ * @return A promise that fulfills with an object of type [`PermissionResponse`](#permissionresponse).
+ *
+ * @platform android
+ * @platform ios
+ */
+export async function getMotionActivityPermissionsAsync(): Promise<PermissionResponse> {
+  return await ExpoLocation.getMotionActivityPermissionsAsync();
+}
+
+/**
+ * Asks the user to grant permissions for motion activity detection.
+ * On Android 10+, this requests the `ACTIVITY_RECOGNITION` runtime permission.
+ * On iOS, this triggers the system prompt for Motion and Fitness access the first time it is called.
+ * @return a promise that fulfills with an object of type [`PermissionResponse`](#permissionresponse).
+ *
+ * @platform android
+ * @platform ios
+ */
+export async function requestMotionActivityPermissionsAsync(): Promise<PermissionResponse> {
+  return await ExpoLocation.requestMotionActivityPermissionsAsync();
+}
+
+/**
+ * Checks or requests permissions for motion activity detection.
+ * This uses both `requestMotionActivityPermissionsAsync` and `getMotionActivityPermissionsAsync`
+ * to interact with the permissions.
+ *
+ * @example
+ * ```ts
+ * const [status, requestPermission] = Location.useMotionActivityPermissions();
+ * ```
+ *
+ * @platform android
+ * @platform ios
+ */
+export const useMotionActivityPermissions = createPermissionHook({
+  getMethod: getMotionActivityPermissionsAsync,
+  requestMethod: requestMotionActivityPermissionsAsync,
+});
+
+// --- Motion activity
+
+/**
+ * Fetches the current motion activity status of the device by subscribing to the first available
+ * activity update and immediately unsubscribing afterwards.
+ * The returned promise fulfills with the same object shape as the `watchMotionActivityAsync`
+ * callback.
+ *
+ * The method uses the  Google Play Services activity
+ * recognition (Android) or platform's motion coprocessor (iOS) and does **not** require location permissions.
+ * On Android 10+, the `ACTIVITY_RECOGNITION` runtime permission must be granted beforehand.
+ *  On iOS, the system will prompt the user for Motion and Fitness access the first time this method is called.
+ *
+ *
+ * @return a promise which fulfills with a [`MotionActivityObject`](#motionactivityobject).
+ *
+ * @platform android
+ * @platform ios
+ */
+export async function getMotionActivityAsync(): Promise<MotionActivityObject> {
+  return new Promise(async (resolve, reject) => {
+    let subscriber: LocationSubscription | undefined;
+    try {
+      subscriber = await watchMotionActivityAsync(
+        (activity) => {
+          subscriber?.remove();
+          resolve(activity);
+        },
+        (reason) => {
+          subscriber?.remove();
+          reject(new Error(reason));
+        }
+      );
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+/**
+ * Subscribes to motion activity updates from the device. The callback fires whenever the
+ * platform's motion coprocessor detects a change in the user's activity. Only foreground use
+ * is supported - updates pause when the app is backgrounded and resume when it returns to
+ * the foreground.
+ *
+ * @param callback This function is called on each motion activity update. It receives an object
+ * of type [`MotionActivityObject`](#motionactivityobject) as the first argument.
+ * @param errorHandler This function is called if the platform reports an error (for example,
+ * when activity recognition permission is denied). It receives a string message as the
+ * first argument.
+ * @return a promise which fulfills with a [`LocationSubscription`](#locationsubscription) object.
+ *
+ * @platform android
+ * @platform ios
+ */
+export async function watchMotionActivityAsync(
+  callback: MotionActivityCallback,
+  errorHandler?: LocationErrorCallback
+): Promise<LocationSubscription> {
+  const watchId = MotionActivitySubscriber.registerCallback(callback);
+  errorHandler && LocationErrorSubscriber.registerCallbackForId(watchId, errorHandler);
+
+  await ExpoLocation.watchMotionActivityImplAsync(watchId);
+
+  return {
+    remove() {
+      MotionActivitySubscriber.unregisterCallback(watchId);
+      // forgetCallback instead of unregisterCallback: removeWatchAsync is already
+      // called above; calling it again for the error subscriber would hit the
+      // location-permission guard and throw for motion-activity-only callers.
+      errorHandler && LocationErrorSubscriber.forgetCallback(watchId);
+    },
+  };
+}
+
 // --- Background location updates
 
 function _validate(taskName: string) {
@@ -327,7 +474,7 @@ function _validate(taskName: string) {
         'Background location is limited in Expo Go:\n' +
         'On Android, it is not available at all.\n' +
         'On iOS, it works when running in the Simulator.\n' +
-        'Please use a development build to avoid limitations. Learn more: https://expo.fyi/dev-client.';
+        'You can use this API, and all others, in a development build. Learn more: https://expo.fyi/dev-client.';
       console.warn(message);
       warnAboutExpoGoDisplayed = true;
     }

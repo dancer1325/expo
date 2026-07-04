@@ -92,7 +92,6 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
             WebView.setWebContentsDebuggingEnabled(true)
         }
         webView.setDownloadListener(DownloadListener { url, userAgent, contentDisposition, mimetype, contentLength ->
-            webView.setIgnoreErrFailedForThisURL(url)
             val module = webView.reactApplicationContext.getNativeModule(RNCWebViewModule::class.java) ?: return@DownloadListener
             val request: DownloadManager.Request = try {
                 DownloadManager.Request(Uri.parse(url))
@@ -341,11 +340,9 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
         }
         "injectJavaScript" -> webView.evaluateJavascriptWithFallback(args.getString(0))
         "loadUrl" -> {
-          if (args == null) {
-            throw RuntimeException("Arguments for loading an url are null!")
-          }
+          val url = args?.getString(0) ?: throw RuntimeException("Arguments for loading an url are null!")
           webView.progressChangedFilter.setWaitingForCommandLoadUrl(false)
-          webView.loadUrl(args.getString(0))
+          webView.loadUrl(url)
         }
         "requestFocus" -> webView.requestFocus()
         "clearFormData" -> webView.clearFormData()
@@ -716,5 +713,12 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
 
     fun setWebviewDebuggingEnabled(viewWrapper: RNCWebViewWrapper, enabled: Boolean) {
         RNCWebView.setWebContentsDebuggingEnabled(enabled)
+    }
+
+    fun setPaymentRequestEnabled(viewWrapper: RNCWebViewWrapper, enabled: Boolean) {
+        val view = viewWrapper.webView
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.PAYMENT_REQUEST)) {
+            WebSettingsCompat.setPaymentRequestEnabled(view.settings, enabled)
+        }
     }
 }

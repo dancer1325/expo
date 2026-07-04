@@ -6,11 +6,552 @@
 
 ### 🎉 New features
 
-- Add support for `/* webpackIgnore: true */` magic comment in code splitting. ([#33366](https://github.com/expo/expo/pull/33366) by [@EvanBacon](https://github.com/EvanBacon))
+### 🐛 Bug fixes
+
+- Fix stack frame collapsing for Windows paths. ([#46645](https://github.com/expo/expo/pull/46645) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+- Bump `hermes-parser` to `^0.36.0` to parse newer Flow syntax (e.g. `readonly` property modifiers) shipped in recent React Native versions ([#46636](https://github.com/expo/expo/pull/46636) by [@zoontek](https://github.com/zoontek))
+- Treat dynamic imports with rejection handlers as optional dependencies, ported from [react/metro#1697](https://github.com/react/metro/pull/1697) ([#47334](https://github.com/expo/expo/pull/47334) by [@kitten](https://github.com/kitten))
+
+### 💡 Others
+
+- Add misc. OOT platforms as base `react-native` paths for module configs like `getPolyfills` ([#46344](https://github.com/expo/expo/pull/46344) by [@kitten](https://github.com/kitten))
+- Vendor `msgpackr` dependency to remove `msgpackr-extract` postinstall warning ([#46676](https://github.com/expo/expo/pull/46676) by [@kitten](https://github.com/kitten))
+- [Internal] Deduplicate find-up `package.json` search utilities ([#47127](https://github.com/expo/expo/pull/47127) by [@kitten](https://github.com/kitten))
+- [Internal] Pass through the `media` query of `css-external` assets in metadata ([#46984](https://github.com/expo/expo/pull/46984) by [@hassankhan](https://github.com/hassankhan))
+
+## 56.0.13 — 2026-05-26
 
 ### 🐛 Bug fixes
 
+- Improve `BinaryFileStore`'s concurrency handling ([#46171](https://github.com/expo/expo/pull/46171) by [@kitten](https://github.com/kitten))
+
+## 56.0.12 — 2026-05-23
+
+### 🎉 New features
+
+- Add `loadUserConfig`, abstracting Expo's loading of Metro configs ([#46155](https://github.com/expo/expo/pull/46155) by [@kitten](https://github.com/kitten))
+
 ### 💡 Others
+
+- Switch Metro config resolution to `@expo/require-utils`, aligning with `@expo/config` and `@expo/config-plugins` ([#46155](https://github.com/expo/expo/pull/46155) by [@kitten](https://github.com/kitten))
+- Drop support for loading Metro configs outside the server root, from yaml files, and from `package.json:metro` outside the project root ([#46155](https://github.com/expo/expo/pull/46155) by [@kitten](https://github.com/kitten))
+- [Internal] Remove `@expo/metro-config/exports` ([#46164](https://github.com/expo/expo/pull/46164) by [@kitten](https://github.com/kitten))
+
+## 56.0.11 — 2026-05-20
+
+### 🐛 Bug fixes
+
+- Add missing HTML attribute escaping for inserted asset URLs ([#45848](https://github.com/expo/expo/pull/45848) by [@kitten](https://github.com/kitten))
+- Derive chunk renaming from intrinsic hash of topological transitive async chunks ([#46003](https://github.com/expo/expo/pull/46003) by [@kitten](https://github.com/kitten))
+
+### 💡 Others
+
+- Bump to `@expo/spawn-async@^1.8.0` ([#45999](https://github.com/expo/expo/pull/45999) by [@kitten](https://github.com/kitten))
+
+## 56.0.10 — 2026-05-19
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.9 — 2026-05-15
+
+### 💡 Others
+
+- Switch to msgpackr-backed binary file store ([#45656](https://github.com/expo/expo/pull/45656) by [@kitten](https://github.com/kitten))
+
+## 56.0.8 — 2026-05-13
+
+### 💡 Others
+
+- Skip Babel transform for CSS's JS mount module ([#45657](https://github.com/expo/expo/pull/45657) by [@kitten](https://github.com/kitten))
+
+## 56.0.7 — 2026-05-13
+
+### 💡 Others
+
+- Bump to `picomatch@^4.0.4` ([#45698](https://github.com/expo/expo/pull/45698) by [@kitten](https://github.com/kitten))
+
+## 56.0.6 — 2026-05-11
+
+### 🛠 Breaking changes
+
+- Replace source-map representation used internally, and source-map format returned by transformer, reducing peak and retained memory usage ([#45594](https://github.com/expo/expo/pull/45594) by [@kitten](https://github.com/kitten))
+
+### 💡 Others
+
+- Bump to `postcss@^8.5.14` ([#45626](https://github.com/expo/expo/pull/45626) by [@kitten](https://github.com/kitten))
+
+## 56.0.5 — 2026-05-08
+
+### 💡 Others
+
+- Thread `excludeSource` through to source map serialization ([#45507](https://github.com/expo/expo/pull/45507) by [@kitten](https://github.com/kitten))
+- Rename cache then asynchronously delete to remove `--clear` penalty ([#45553](https://github.com/expo/expo/pull/45553) by [@kitten](https://github.com/kitten))
+
+## 56.0.4 — 2026-05-07
+
+### 💡 Others
+
+- Drop obsolete `EXPO_USE_EXOTIC` flag warning ([#45494](https://github.com/expo/expo/pull/45494) by [@kitten](https://github.com/kitten))
+- Fall back to our own Babel cache key with custom Babel transformer ([#45495](https://github.com/expo/expo/pull/45495) by [@kitten](https://github.com/kitten))
+
+## 56.0.3 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.2 — 2026-05-06
+
+### 💡 Others
+
+- Update `blockList` pattern to exclude `.expo/web/cache`, `<root>/ios/Pods`, `<root>/android/app/build`, and `<root>/android/.gradle` ([#45418](https://github.com/expo/expo/pull/45418) by [@kitten](https://github.com/kitten))
+
+## 56.0.1 — 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+### 🎉 New features
+
+- Add Hermes V1 detection ([#43080](https://github.com/expo/expo/pull/43080) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+### 🐛 Bug fixes
+
+- Respect `enableBabelRCLookup` in `loadBabelConfig` to skip Babel config file discovery ([#44841](https://github.com/expo/expo/pull/44841) by [@zoontek](https://github.com/zoontek))
+- Fix mangled async chunk filenames for catch-all routes ([#43547](https://github.com/expo/expo/pull/43547) by [@hassankhan](https://github.com/hassankhan))
+- Fixed DOM Components rendering issues on Android 9 devices. ([#43156](https://github.com/expo/expo/pull/43156) by [@kudo](https://github.com/kudo))
+
+### 💡 Others
+
+- Delete Hermes v1 detection as it's the default ([#45263](https://github.com/expo/expo/pull/45263) by [@kitten](https://github.com/kitten))
+- Add more stringent Babel config detection that disables redundant Babel config/rc file crawling, and support more Babel config filenames by default ([#45254](https://github.com/expo/expo/pull/45254) by [@kitten](https://github.com/kitten))
+- Use Babel config path hint to Expo Metro transformer and add `loadPartialConfigSync` cache key to invalidate Babel transform cache more granularly ([#45260](https://github.com/expo/expo/pull/45260) by [@kitten](https://github.com/kitten))
+- Skip `generateImportNames` traversal/phase when live bindings import/export support is enabled ([#45349](https://github.com/expo/expo/pull/45349) by [@kitten](https://github.com/kitten))
+- Bump to `@expo/metro@56.0.0` and `metro@0.84.4` ([#45404](https://github.com/expo/expo/pull/45404) by [@kitten](https://github.com/kitten))
+
+## 55.0.20 - 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.19 - 2026-05-04
+
+### 🐛 Bug fixes
+
+- Fix `BABEL_ENV` being incorrectly restored ([#45348](https://github.com/expo/expo/pull/45348) by [@kitten](https://github.com/kitten))
+
+## 55.0.16 - 2026-04-13
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.15 - 2026-04-09
+
+### 💡 Others
+
+- Remove outdated `watcher.unstable_workerThreads` option ([#44591](https://github.com/expo/expo/pull/44591) by [@kitten](https://github.com/kitten))
+
+## 55.0.14 - 2026-04-07
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.13 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.11 - 2026-03-19
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.10 - 2026-03-17
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.9 — 2026-02-25
+
+### 💡 Others
+
+- Bump to `babel-plugin-syntax-hermes-parser@^0.32.0` ([#43429](https://github.com/expo/expo/pull/43429) by [@kitten](https://github.com/kitten))
+
+## 55.0.8 — 2026-02-25
+
+### 🐛 Bug fixes
+
+- Fix basename matching for `picomatch` in side-effect matcher ([#43395](https://github.com/expo/expo/pull/43395) by [@kitten](https://github.com/kitten))
+
+### 💡 Others
+
+- Revert: Set default `resolver.useWatchman: undefined` value (enables it by default, as before) ([#43251](https://github.com/expo/expo/pull/43251) by [@kitten](https://github.com/kitten))
+- Replace `minimatch` with `picomatch` ([#43323](https://github.com/expo/expo/pull/43323) by [@kitten](https://github.com/kitten))
+
+## 55.0.7 — 2026-02-20
+
+### 💡 Others
+
+- Set default `resolver.useWatchman: undefined` value (enables it by default, as before) ([#43251](https://github.com/expo/expo/pull/43251) by [@kitten](https://github.com/kitten))
+
+## 55.0.6 — 2026-02-16
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.5 — 2026-02-08
+
+### 💡 Others
+
+- Switch to `@expo/env`'s `parseEnv` helper ([#42763](https://github.com/expo/expo/pull/42763) by [@kitten](https://github.com/kitten))
+
+## 55.0.4 — 2026-02-03
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.3 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-23
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+### 🐛 Bug fixes
+
+- Fix AST serialization for tree shaking with react compiler. ([#42445](https://github.com/expo/expo/pull/42445) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 55.0.0 — 2026-01-21
+
+### 🎉 New features
+
+- Enable unstable worker threads for transformer by default ([#41714](https://github.com/expo/expo/pull/41714) by [@EvanBacon](https://github.com/EvanBacon))
+- Add `toString()` to image assets on web (excluding RSC) for easier asset resolution. ([#40895](https://github.com/expo/expo/pull/40895) by [@EvanBacon](https://github.com/EvanBacon))
+- Ensure `loader()` functions are stripped from client bundles ([#40670](https://github.com/expo/expo/pull/40670) by [@hassankhan](https://github.com/hassankhan))
+- Add support for server data loaders in server export mode ([#41934](https://github.com/expo/expo/pull/41934) by [@hassankhan](https://github.com/hassankhan))
+
+### 🐛 Bug fixes
+
+- Fix output typings to remove unreachable transitive dependencies from them ([#41676](https://github.com/expo/expo/pull/41676) by [@kitten](https://github.com/kitten))
+- Fix `minifierPath` resolution for cache key generation for strict isolated installations ([#41686](https://github.com/expo/expo/pull/41686) by [@kitten](https://github.com/kitten))
+- Avoid module ID collision between loader and render bundles ([#42245](https://github.com/expo/expo/pull/42245) by [@hassankhan](https://github.com/hassankhan))
+- Use `unstable_createWorker` helper to instantiate `Worker`s, allowing worker support to bypass CORP/COEP errors ([#42340](https://github.com/expo/expo/pull/42340) by [@kitten](https://github.com/kitten))
+
+### 💡 Others
+
+- Defer loading metro export sources on basic config loading. ([#42053](https://github.com/expo/expo/pull/42053) by [@EvanBacon](https://github.com/EvanBacon))
+- Bump to `@expo/metro@54.2.0` and `metro@0.83.3` ([#41142](https://github.com/expo/expo/pull/41142) by [@kitten](https://github.com/kitten))
+- Suppress `browserslist` output ([#42071](https://github.com/expo/expo/pull/42071) by [@hassankhan](https://github.com/hassankhan))
+- Remove unused `LoadOptions` type export ([#42082](https://github.com/expo/expo/pull/42082) by [@kitten](https://github.com/kitten))
+
+## 54.0.10 - 2025-12-04
+
+### 💡 Others
+
+- Update to `glob@^13.0.0` ([#41079](https://github.com/expo/expo/pull/41079) by [@kitten](https://github.com/kitten))
+
+## 54.0.9 - 2025-11-07
+
+_This version does not introduce any user-facing changes._
+
+## 54.0.8 - 2025-10-28
+
+### 🐛 Bug fixes
+
+- Fix `transformer.asyncRequireModulePath` polluting cache with absolute path in transform output ([#40584](https://github.com/expo/expo/pull/40584) by [@kitten](https://github.com/kitten))
+
+## 54.0.7 - 2025-10-20
+
+### 💡 Others
+
+- Bump to `@expo/metro@54.1.0` and `metro@0.83.2` ([#39826](https://github.com/expo/expo/pull/39826) by [@kitten](https://github.com/kitten))
+
+## 54.0.5 - 2025-09-22
+
+### 🐛 Bug fixes
+
+- Prevent fast refresh on generated type declarations changes ([#39835](https://github.com/expo/expo/pull/39835) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+
+## 54.0.4 - 2025-09-18
+
+### 💡 Others
+
+- Bump to `@expo/metro@~54.0.0` ([#39800](https://github.com/expo/expo/pull/39800) by [@kitten](https://github.com/kitten))
+- Rename to `@expo/server` to `expo-server` ([#40087](https://github.com/expo/expo/pull/40087) by [@kitten](https://github.com/kitten))
+
+## 54.0.3 — 2025-09-12
+
+### 💡 Others
+
+- Add fallback resolution for `@expo/metro-runtime` pre-module ([#39603](https://github.com/expo/expo/pull/39603) by [@kitten](https://github.com/kitten))
+
+## 54.0.2 — 2025-09-11
+
+### 🛠 Breaking changes
+
+- Increase strictness of namespace imports ([#39545](https://github.com/expo/expo/pull/39545) by [@kitten](https://github.com/kitten))
+
+## 54.0.1 — 2025-09-10
+
+### 🐛 Bug fixes
+
+- Add worklets version to transform key ([#39541](https://github.com/expo/expo/pull/39541) by [@brentvatne](https://github.com/brentvatne))
+
+## 54.0.0 — 2025-09-10
+
+### 🎉 New features
+
+- Updated `lightningcss` to `^1.30.1` ([#39506](https://github.com/expo/expo/pull/39506) by [@marklawlor](https://github.com/marklawlor))
+
+### 🐛 Bug fixes
+
+- Collapse `InternalBytecode.js` stack frames ([#39490](https://github.com/expo/expo/pull/39490) by [@kitten](https://github.com/kitten))
+
+## 0.21.11 — 2025-09-08
+
+### 🐛 Bug fixes
+
+- Collapse `unknown` and `<anonymous>` stack frames ([#39407](https://github.com/expo/expo/pull/39407) by [@kitten](https://github.com/kitten))
+- Prevent unclear errors from being thrown when loading config ([#39384](https://github.com/expo/expo/pull/39384) by [@kitten](https://github.com/kitten))
+- Fix expansion of `ExportAllDeclaration` during tree-shaking not ignoring `default` export specifier and duplicating existing specifiers ([#39420](https://github.com/expo/expo/pull/39420) by [@kitten](https://github.com/kitten))
+
+## 0.21.10 — 2025-09-04
+
+### 🐛 Bug fixes
+
+- Add null-bound call expression `(0, x.y)` around rebound member accesses generated by Import Export Plugin ([#39362](https://github.com/expo/expo/pull/39362) by [@kitten](https://github.com/kitten))
+
+## 0.21.9 — 2025-09-03
+
+### 💡 Others
+
+- Revamp Import Export Plugin for higher compliance, reliable removal of double-requires, and tracing of unused imports. This also fixes an edge case for colliding export names and reexport-all order ([#39282](https://github.com/expo/expo/pull/39282) by [@kitten](https://github.com/kitten))
+- Move unused elimination from Import Export Plugin into Tree Shaking Plugin. Elimination should only be executed when tree shaking is enabled. ([#39351](https://github.com/expo/expo/pull/39351) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+- Merge renameTopLevelModuleVariables into importExportLiveBindings plugin ([#39321](https://github.com/expo/expo/pull/39321) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+
+## 0.21.8 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 0.21.7 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 0.21.6 — 2025-08-27
+
+### 💡 Others
+
+- Set default `enableBabelRuntime` minimum Babel runtime version to the project's installed version, if any ([#39040](https://github.com/expo/expo/pull/39040) by [@kitten](https://github.com/kitten))
+
+## 0.21.5 — 2025-08-25
+
+### 💡 Others
+
+- Refactor Import Export Plugin for better live bindings support ([#39083](https://github.com/expo/expo/pull/39083) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+
+## 0.21.4 — 2025-08-21
+
+### 🐛 Bug fixes
+
+- Fix live binding of default exports ([#38976](https://github.com/expo/expo/pull/38976) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+
+### 💡 Others
+
+- Add supervisor transformer that loads a custom configured transformer, annotates initialization errors, and enforces a single Metro version ([#38961](https://github.com/expo/expo/pull/38961) by [@kitten](https://github.com/kitten))
+
+## 0.21.3 — 2025-08-19
+
+### 🐛 Bug fixes
+
+- Fix live binding export deduplication failing to trigger ([#38951](https://github.com/expo/expo/pull/38951) by [@kitten](https://github.com/kitten))
+- Fix undeclared namespace when exporting default imports ([#38975](https://github.com/expo/expo/pull/38975) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+
+## 0.21.2 — 2025-08-16
+
+### 🐛 Bug fixes
+
+- Export all expression should not overwrite named exports of a module when import export plugin with live bindings is used (default) ([#38894](https://github.com/expo/expo/pull/38894) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+
+## 0.21.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 0.21.0 — 2025-08-13
+
+### 🎉 New features
+
+- Add internal support for exporting native assets for hosting. ([#38265](https://github.com/expo/expo/pull/38265) by [@EvanBacon](https://github.com/EvanBacon))
+- Add `browserslist` and automatic vendor prefixing support ([#37489](https://github.com/expo/expo/pull/37489) by [@EvanBacon](https://github.com/EvanBacon))
+- Fork Import Export Plugin from `metro` and enhance its syntax support (`experimentalImportSupport` now supports export namespace from, export destructed named object, live bindings by default and more) ([#38135](https://github.com/expo/expo/pull/38135) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+- Enable ESM Import Export Support by default ([#38298](https://github.com/expo/expo/pull/38298)) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+- Allow running server middleware with `+middleware.ts` ([#38330](https://github.com/expo/expo/pull/38330) by [@hassankhan](https://github.com/hassankhan))
+- Create `metro-runtime` and `common` chunks when bundle splitting is enabled ([#38339](https://github.com/expo/expo/pull/38339) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+
+### 🐛 Bug fixes
+
+- Fix caching across devices. ([#38476](https://github.com/expo/expo/pull/38476) by [@EvanBacon](https://github.com/EvanBacon))
+- Ensure react-native projects without Expo code-loading can use async routes. ([#38587](https://github.com/expo/expo/pull/38587) by [@EvanBacon](https://github.com/EvanBacon))
+- Fix Fast Refresh on web by calling `module.hot.accept()` in the transformer. ([#37767](https://github.com/expo/expo/pull/37767) by [@hirbod](https://github.com/hirbod))
+- Fix failing build with tree shaking due to missing import location ([#37916](https://github.com/expo/expo/pull/37916) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+
+### 💡 Others
+
+- Improve debug logs and types of `import-export-plugin` ([#38203](https://github.com/expo/expo/pull/38203) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+- Fix Babel dependencies by removing reliance on `@babel/parser`, `@babel/types`, and `@babel/template`, and adding missing `@babel/code-frame` dependency ([#38171](https://github.com/expo/expo/pull/38171) by [@kitten](https://github.com/kitten))
+- Switch Metro imports to `@expo/metro` wrapper package ([#38166](https://github.com/expo/expo/pull/38166) by [@kitten](https://github.com/kitten))
+- Fix `@react-native/js-polyfills`, `hermes-parser`, and `babel-preset-expo` (fallback) dependency resolution for isolated dependencies ([#38535](https://github.com/expo/expo/pull/38535) by [@kitten](https://github.com/kitten))
+- Resolve `react-native` from project root when looking up Hermes compiler ([#38547](https://github.com/expo/expo/pull/38547) by [@kitten](https://github.com/kitten))
+- Import `getDefaultConfig` and `mergeConfig` from pinned `metro-config` version ([#38682](https://github.com/expo/expo/pull/38682) by [@kitten](https://github.com/kitten))
+
+## 0.20.17 - 2025-07-03
+
+_This version does not introduce any user-facing changes._
+
+## 0.20.16 - 2025-07-02
+
+### 🐛 Bug fixes
+
+- Fix require path of assets with RSC client references ([#37663](https://github.com/expo/expo/pull/37663) by [@byCedric](https://github.com/byCedric))
+
+## 0.20.15 - 2025-06-18
+
+### 🐛 Bug fixes
+
+- Fix tree shaking overlapping exports ([#36717](https://github.com/expo/expo/pull/36717) by [@EvanBacon](https://github.com/EvanBacon))
+- Update to `getenv@2.0.0` to support upper case boolean environment variables ([#36688](https://github.com/expo/expo/pull/36688) by [@stephenlacy](https://github.com/stephenlacy))
+
+### 💡 Others
+
+- Remove flipper hack support from types. ([#37532](https://github.com/expo/expo/pull/37532) by [@EvanBacon](https://github.com/EvanBacon))
+- Remove "Please" from warnings and errors ([#36862](https://github.com/expo/expo/pull/36862) by [@brentvatne](https://github.com/brentvatne))
+
+## 0.20.14 — 2025-05-06
+
+### 🐛 Bug fixes
+
+- Fix issue with HMR env vars in development not being readable in development. ([#36652](https://github.com/expo/expo/pull/36652) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 0.20.13 — 2025-05-03
+
+### 🐛 Bug fixes
+
+- Avoid mixing up ESM imports with non-ESM imports when collecting dependencies of single line files. ([#36594](https://github.com/expo/expo/pull/36594) by [@byCedric](https://github.com/byCedric))
+
+## 0.20.12 — 2025-05-01
+
+### 🐛 Bug fixes
+
+- Fix env vars when no .env files are defined. ([#36513](https://github.com/expo/expo/pull/36513) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 0.20.11 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 0.20.10 — 2025-04-30
+
+### 💡 Others
+
+- Pass `metroSourceType` from Babel transformer options via Babel caller ([#36463](https://github.com/expo/expo/pull/36463) by [@kitten](https://github.com/kitten))
+
+## 0.20.9 — 2025-04-28
+
+_This version does not introduce any user-facing changes._
+
+## 0.20.8 — 2025-04-28
+
+### 🐛 Bug fixes
+
+- Remove absolute paths from server components output. ([#35276](https://github.com/expo/expo/pull/35276) by [@EvanBacon](https://github.com/EvanBacon))
+- Fix importing polyfills. ([#36406](https://github.com/expo/expo/pull/36406) by [@EvanBacon](https://github.com/EvanBacon))
+
+### 💡 Others
+
+- Move virtual rsc entry to expo ([#36408](https://github.com/expo/expo/pull/36408) by [@EvanBacon](https://github.com/EvanBacon))
+- Shim web streams API when bundling for native client environments. ([#36407](https://github.com/expo/expo/pull/36407) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 0.20.7 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 0.20.6 — 2025-04-23
+
+### 🎉 New features
+
+- Add hot reloading for environment variables. ([#36189](https://github.com/expo/expo/pull/36189) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 0.20.5 — 2025-04-21
+
+### 🐛 Bug fixes
+
+- Add `exporting` config option for serializer to generate correct entry bundle file name. ([#35563](https://github.com/expo/expo/pull/35563) by [@byCedric](https://github.com/byCedric))
+
+### 💡 Others
+
+- Collapse more unused stacks. ([#36272](https://github.com/expo/expo/pull/36272) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 0.20.4 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 0.20.3 — 2025-04-11
+
+### 🐛 Bug fixes
+
+- Fix `withSerializerPlugins` maintaining original Metro config reference - receiving serializer customization changes. ([#36099](https://github.com/expo/expo/pull/36099) by [@byCedric](https://github.com/byCedric))
+
+## 0.20.2 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 0.20.1 — 2025-04-08
+
+### 💡 Others
+
+- Update RSC tests. ([#35957](https://github.com/expo/expo/pull/35957) by [@EvanBacon](https://github.com/EvanBacon))
+- Add backup stack trace ([#35913](https://github.com/expo/expo/pull/35913) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 0.20.0 — 2025-04-04
+
+### 🎉 New features
+
+- Add support for `Worker` and `require.unstable_resolveWorker()`. ([#34938](https://github.com/expo/expo/pull/34938) by [@EvanBacon](https://github.com/EvanBacon))
+- Include import hints for all optional imports. ([#35239](https://github.com/expo/expo/pull/35239) by [@EvanBacon](https://github.com/EvanBacon))
+- Add support for `postcss.config.mjs`. ([#34840](https://github.com/expo/expo/pull/34840) by [@EvanBacon](https://github.com/EvanBacon))
+- Fork `asyncRequireModulePath` to support adding custom require types (Workers) in the future. ([#35110](https://github.com/expo/expo/pull/35110) by [@EvanBacon](https://github.com/EvanBacon))
+- Add support for `require.resolveWeak` with tree shaking. ([#34988](https://github.com/expo/expo/pull/34988) by [@EvanBacon](https://github.com/EvanBacon))
+- Remove need for `expo-asset/tools/hashAssetFiles` and add legacy support for projects that still have it. ([#34208](https://github.com/expo/expo/pull/34208) by [@EvanBacon](https://github.com/EvanBacon))
+- Add support for `/* webpackIgnore: true */` magic comment in code splitting. ([#33366](https://github.com/expo/expo/pull/33366) by [@EvanBacon](https://github.com/EvanBacon))
+- Add support for new unstable `isESMImport` resolution. ([#35306](https://github.com/expo/expo/pull/35306) by [@byCedric](https://github.com/byCedric))
+
+### 🐛 Bug fixes
+
+- Remove empty files during bundle splitting. ([#35277](https://github.com/expo/expo/pull/35277) by [@EvanBacon](https://github.com/EvanBacon))
+- Prevent bumping specificity of hot-reloaded CSS style tags. ([#35123](https://github.com/expo/expo/pull/35123) by [@kitten](https://github.com/kitten))
+- Unwrap PostCSS when imported ESM through require on Node 22/23. ([#35268](https://github.com/expo/expo/pull/35268) by [@byCedric](https://github.com/byCedric))
+- Remove hardcoded `require` and `import` condition names to support improved Metro ESM resolution. ([#35520](https://github.com/expo/expo/pull/35520) by [@byCedric](https://github.com/byCedric))
+
+### 💡 Others
+
+- Fix internal monorepo types on Metro require. ([#35859](https://github.com/expo/expo/pull/35859) by [@EvanBacon](https://github.com/EvanBacon))
+- Drop `fs-extra` in favor of `fs`. ([#35036](https://github.com/expo/expo/pull/35036) by [@kitten](https://github.com/kitten))
+- Upgrade to `minimatch@9` ([#35313](https://github.com/expo/expo/pull/35313) by [@kitten](https://github.com/kitten))
+
+### ⚠️ Notices
+
+- Added support for React Native 0.76.x. ([#31552](https://github.com/expo/expo/pull/31552) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+## 0.19.12 - 2025-03-11
+
+### 🐛 Bug fixes
+
+- Fix tree shaking multiple exports in the same variable declaration. ([#35330](https://github.com/expo/expo/pull/35330) by [@EvanBacon](https://github.com/EvanBacon))
+- Fixed DOM Components support for updates. ([#35280](https://github.com/expo/expo/pull/35280), [#35290](https://github.com/expo/expo/pull/35290) by [@kudo](https://github.com/kudo))
+
+## 0.19.11 - 2025-02-19
+
+_This version does not introduce any user-facing changes._
+
+## 0.19.10 - 2025-02-14
+
+_This version does not introduce any user-facing changes._
+
+## 0.19.9 - 2025-01-10
+
+_This version does not introduce any user-facing changes._
 
 ## 0.19.8 - 2024-12-16
 

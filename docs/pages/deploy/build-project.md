@@ -63,7 +63,7 @@ To create a production build, run the following command for a platform:
   </Tab>
 </Tabs>
 
-You can attach a message to the build by passing `--message` to the build command, for example, `eas build --platform ios --message "Some message"`. The message will appear on the Expo dashboard. It comes in handy when you want to specify the purpose of the build for your team.
+You can attach a message to the build by passing `--message` to the build command, for example, `eas build --platform ios --message "Some message"`. The message will appear on the EAS dashboard. It comes in handy when you want to specify the purpose of the build for your team.
 
 Alternatively, you can use `--platform all` option to build for Android and iOS at the same time:
 
@@ -109,11 +109,43 @@ By default, the `eas build` command will wait for your build to complete, but yo
 
 If you are a member of an organization and your build is on its behalf, you will find the build details on [the build dashboard for that account](https://expo.dev/accounts/[account]/builds).
 
-## Production builds locally
+## Create builds automatically
 
-To create a production build locally, see the following React Native guides for more information on the necessary steps for Android and iOS.
+You can automatically create builds on commits to specific branches with [EAS Workflows](/eas/workflows/introduction/). First, you'll need to [configure your project](/eas/workflows/get-started/), add a file named **.eas/workflows/create-builds.yml** at the root of your project, then add the following workflow configuration:
 
-These guides assume your project has **android** and/or **ios** directories containing the respective native projects. If you use [Continuous Native Generation](/workflow/continuous-native-generation) then you will need to run [prebuild](/workflow/prebuild) to generate the directories before following the guides.
+```yaml .eas/workflows/create-builds.yml
+name: Create builds
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  build_android:
+    name: Build Android app
+    type: build
+    params:
+      platform: android
+      profile: production
+  build_ios:
+    name: Build iOS app
+    type: build
+    params:
+      platform: ios
+      profile: production
+```
+
+The workflow above will create Android and iOS builds on every commit to your project's `main` branch. You can also run this workflow manually with the following EAS CLI command:
+
+<Terminal cmd={['$ eas workflow:run create-builds.yml']} />
+
+Learn more about common patterns with the [workflows examples guide](/eas/workflows/examples/introduction).
+
+## Release builds locally
+
+To create a release (also known as production) build locally, see the following React Native guides for more information on the necessary steps for Android and iOS.
+
+These guides assume your project has **android** and/or **ios** directories containing the respective native projects. If you use [Continuous Native Generation](/workflow/continuous-native-generation) then you will need to run [prebuild](/more/glossary-of-terms/#prebuild) to generate the directories before following the guides.
 
 > **Note**: Following the guide below, in step four, when you build the release **.aab** for Android, run `./gradlew app:bundleRelease` from the **android** directory instead of `npx react-native build-android --mode=release`.
 

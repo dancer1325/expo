@@ -1,6 +1,9 @@
 import { ThemeProvider } from 'ThemeProvider';
+import BenchmarkHelper from 'benchmark-helper';
+import { Observe, ObserveRoot } from 'expo-observe';
 import * as Splashscreen from 'expo-splash-screen';
 import React from 'react';
+import * as DevMenu from 'expo-dev-menu';
 
 import MainNavigator, { optionalRequire } from './MainNavigator';
 
@@ -11,7 +14,28 @@ try {
   // do nothing
 }
 
+DevMenu.registerDevMenuItems([
+  {
+    name: 'Action 1',
+    callback: () => {
+      console.log('Action 1 executed');
+    },
+    shouldCollapse: true,
+  },
+  {
+    name: 'Action 2',
+    callback: () => {
+      console.log('Action 2 executed');
+    },
+    shouldCollapse: false,
+  },
+]);
+
 Splashscreen.setOptions({ fade: true, duration: 800 });
+
+// Require the `BackgroundTaskScreen` component from `native-component-list` if it's available
+// so that we load the module and register its background task on startup.
+optionalRequire(() => require('native-component-list/src/screens/BackgroundTaskScreen'));
 
 // Require the `BackgroundFetchScreen` component from `native-component-list` if it's available
 // so that we load the module and register its background task on startup.
@@ -42,6 +66,14 @@ function useLoaded() {
   return isLoaded;
 }
 
+Observe.configure({
+  dispatchingEnabled: true,
+  sampleRate: 0.9,
+  integrations: {
+    'react-navigation': true,
+  },
+});
+
 export default function Main() {
   React.useEffect(() => {
     try {
@@ -64,5 +96,15 @@ export default function Main() {
 
   const isLoaded = useLoaded();
 
-  return <ThemeProvider>{isLoaded ? <MainNavigator /> : null}</ThemeProvider>;
+  React.useEffect(() => {
+    if (isLoaded) {
+      BenchmarkHelper.reportFullyDrawn();
+    }
+  }, [isLoaded]);
+
+  return (
+    <ObserveRoot>
+      <ThemeProvider>{isLoaded ? <MainNavigator /> : null}</ThemeProvider>
+    </ObserveRoot>
+  );
 }

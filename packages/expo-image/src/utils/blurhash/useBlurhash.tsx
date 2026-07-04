@@ -4,8 +4,8 @@
 
 import { useEffect, useState, useMemo } from 'react';
 
-import decode from './decode';
 import { isBlurhashString } from '../resolveSources';
+import decode from './decode';
 
 const DEFAULT_SIZE = {
   width: 32,
@@ -16,7 +16,7 @@ const DEFAULT_SIZE = {
 const scaleRatio = 10;
 
 export function useBlurhash(
-  blurhash: { uri?: string; width?: number; height?: number } | undefined | null,
+  blurhash: { uri?: string; width?: number | null; height?: number | null } | undefined | null,
   punch: number = 1
 ) {
   punch = punch || 1;

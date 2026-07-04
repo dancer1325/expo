@@ -7,7 +7,9 @@
 #import "EXUpdatesDatabaseManager.h"
 #import "EXUpdatesManager.h"
 
-#import <React/RCTBridge.h>
+#import <React/RCTEventDispatcher.h>
+
+@class RCTBridge;
 
 @import EXManifests;
 @import EXUpdates;
@@ -43,7 +45,7 @@ ofDownloadWithManifest:(EXManifestsManifest * _Nullable)manifest
              };
   }
   if (appRecord.status == kEXKernelAppRecordStatusRunning) {
-    RCTEventDispatcher *dispatcher = [[appRecord.appManager.reactHost moduleRegistry] moduleForName:"EventDispatcher"];
+    RCTEventDispatcher *dispatcher = [appRecord.appManager.reactModuleRegistry moduleForName:"EventDispatcher"];
     [dispatcher sendAppEventWithName:EXUpdatesEventName body:@[EXUpdatesEventName, body]];
   }
 }

@@ -1,5 +1,5 @@
 import type { RouteNode } from './Route';
-import { matchDeepDynamicRouteName, matchDynamicName } from './matchers';
+import { matchDynamicName } from './matchers';
 
 export type Screen =
   | string
@@ -20,21 +20,17 @@ function convertDynamicRouteToReactNavigation(segment: string): string {
   if (segment === '+not-found') {
     return '*not-found';
   }
-
-  const rest = matchDeepDynamicRouteName(segment);
-  if (rest != null) {
-    return '*' + rest;
-  }
   const dynamicName = matchDynamicName(segment);
-
-  if (dynamicName != null) {
-    return `:${dynamicName}`;
+  if (dynamicName && !dynamicName.deep) {
+    return `:${dynamicName.name}`;
+  } else if (dynamicName?.deep) {
+    return '*' + dynamicName.name;
+  } else {
+    return segment;
   }
-
-  return segment;
 }
 
-function parseRouteSegments(segments: string): string {
+export function parseRouteSegments(segments: string): string {
   return (
     // NOTE(EvanBacon): When there are nested routes without layouts
     // the node.route will be something like `app/home/index`
@@ -93,16 +89,17 @@ export function getReactNavigationScreensConfig(
   );
 }
 
-export function getReactNavigationConfig(routes: RouteNode, metaOnly: boolean) {
+export function getReactNavigationConfig(routeTree: RouteNode | null, metaOnly: boolean) {
   const config = {
     initialRouteName: undefined,
-    screens: getReactNavigationScreensConfig(routes.children, metaOnly),
+    screens: routeTree ? getReactNavigationScreensConfig(routeTree.children, metaOnly) : {},
   };
 
-  if (routes.initialRouteName) {
+  if (routeTree?.initialRouteName) {
     // We're using LinkingOptions the generic type is `object` instead of a proper ParamList.
     // So we need to cast the initialRouteName to `any` to avoid type errors.
-    config.initialRouteName = routes.initialRouteName as any;
+    config.initialRouteName = routeTree.initialRouteName as any;
   }
+
   return config;
 }

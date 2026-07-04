@@ -1,4 +1,4 @@
-import * as Calendar from 'expo-calendar';
+import * as Calendar from 'expo-calendar/legacy';
 import { UnavailabilityError } from 'expo-modules-core';
 import { Platform } from 'react-native';
 
@@ -106,6 +106,27 @@ export async function test(t) {
           new Date(2019, 3, 2),
           new Date(2019, 3, 5)
         );
+
+        t.expect(Array.isArray(reminders)).toBe(true);
+        t.expect(reminders.length).toBe(1);
+        t.expect(reminders[0].id).toBe(reminderId);
+        testReminderShape(t, reminders[0]);
+      });
+
+      t.afterAll(async () => {
+        await Calendar.deleteReminderAsync(reminderId);
+      });
+    });
+
+    t.describe('getRemindersAsync() with minimal parameters', () => {
+      let reminderId;
+
+      t.beforeAll(async () => {
+        reminderId = await createTestReminderAsync(calendarId);
+      });
+
+      t.it('returns an array of reminders', async () => {
+        const reminders = await Calendar.getRemindersAsync([calendarId]);
 
         t.expect(Array.isArray(reminders)).toBe(true);
         t.expect(reminders.length).toBe(1);

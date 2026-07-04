@@ -5,12 +5,12 @@ import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtim
 import { type NextRouter } from 'next/router';
 import { type PropsWithChildren, type ReactElement } from 'react';
 
-import { HeadingManager } from '~/common/headingManager';
+import { createHeadingManager } from '~/common/headingManager';
 import { HeadingsContext } from '~/common/withHeadingManager';
 
 const Wrapper = ({ children }: PropsWithChildren) => (
   <TooltipProvider>
-    <HeadingsContext.Provider value={new HeadingManager(new GithubSlugger(), { headings: [] })}>
+    <HeadingsContext.Provider value={createHeadingManager(new GithubSlugger(), { headings: [] })}>
       {children}
     </HeadingsContext.Provider>
   </TooltipProvider>
@@ -25,6 +25,8 @@ export function renderWithHeadings(
 
 export function renderWithTestRouter(element: ReactElement, router: Partial<NextRouter> = {}) {
   return render(
-    <RouterContext.Provider value={router as NextRouter}>{element}</RouterContext.Provider>
+    <TooltipProvider>
+      <RouterContext.Provider value={router as NextRouter}>{element}</RouterContext.Provider>
+    </TooltipProvider>
   );
 }

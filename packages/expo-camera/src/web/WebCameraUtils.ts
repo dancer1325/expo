@@ -1,10 +1,4 @@
-/* eslint-env browser */
-import invariant from 'invariant';
-
-import * as CapabilityUtils from './WebCapabilityUtils';
-import { CameraTypeToFacingMode, ImageTypeFormat, MinimumConstraints } from './WebConstants';
-import { requestUserMediaAsync } from './WebUserMediaManager';
-import {
+import type {
   CameraType,
   CameraCapturedPicture,
   ImageSize,
@@ -12,6 +6,10 @@ import {
   WebCameraSettings,
   CameraPictureOptions,
 } from '../Camera.types';
+/* eslint-env browser */
+import * as CapabilityUtils from './WebCapabilityUtils';
+import { CameraTypeToFacingMode, ImageTypeFormat, MinimumConstraints } from './WebConstants';
+import { requestUserMediaAsync } from './WebUserMediaManager';
 
 interface ConstrainLongRange {
   max?: number;
@@ -36,18 +34,8 @@ export function toDataURL(
   imageType: ImageType,
   quality: number
 ): string {
-  const types = ['png', 'jpg'];
-  invariant(
-    types.includes(imageType),
-    `expo-camera: ${imageType} is not a valid ImageType. Expected a string from: ${types.join(', ')}`
-  );
-
   const format = ImageTypeFormat[imageType];
   if (imageType === 'jpg') {
-    invariant(
-      quality <= 1 && quality >= 0,
-      `expo-camera: ${quality} is not a valid image quality. Expected a number from 0...1`
-    );
     return canvas.toDataURL(format, quality);
   } else {
     return canvas.toDataURL(format);
@@ -63,39 +51,15 @@ export function hasValidConstraints(
 }
 
 function ensureCameraPictureOptions(config: CameraPictureOptions): CameraPictureOptions {
-  const captureOptions = {
-    scale: 1,
-    imageType: 'png' as ImageType,
-    isImageMirror: false,
+  return {
+    ...config,
+    scale: config.scale ?? 1,
+    imageType: config.imageType ?? 'png',
+    isImageMirror: config.isImageMirror ?? false,
   };
-
-  for (const key in config) {
-    if (key in config && config[key] !== undefined && key in captureOptions) {
-      captureOptions[key] = config[key];
-    }
-  }
-  return captureOptions;
 }
 
 const DEFAULT_QUALITY = 0.92;
-
-export function captureImageData(
-  video: HTMLVideoElement | null,
-  pictureOptions: Pick<CameraPictureOptions, 'scale' | 'isImageMirror'> = {}
-): ImageData | null {
-  if (!video || video.readyState !== video.HAVE_ENOUGH_DATA) {
-    return null;
-  }
-  const canvas = captureImageContext(video, pictureOptions);
-
-  const context = canvas.getContext('2d', { alpha: false });
-  if (!context || !canvas.width || !canvas.height) {
-    return null;
-  }
-
-  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-  return imageData;
-}
 
 export function captureImageContext(
   video: HTMLVideoElement,
@@ -220,13 +184,8 @@ export async function getStreamDevice(
   preferredWidth?: number | ConstrainLongRange,
   preferredHeight?: number | ConstrainLongRange
 ): Promise<MediaStream> {
-  const constraints: MediaStreamConstraints = getIdealConstraints(
-    preferredCameraType,
-    preferredWidth,
-    preferredHeight
-  );
-  const stream: MediaStream = await requestUserMediaAsync(constraints);
-  return stream;
+  const constraints = getIdealConstraints(preferredCameraType, preferredWidth, preferredHeight);
+  return requestUserMediaAsync(constraints);
 }
 
 export function isWebKit(): boolean {
@@ -234,11 +193,13 @@ export function isWebKit(): boolean {
 }
 
 export function compareStreams(a: MediaStream | null, b: MediaStream | null): boolean {
-  if (!a || !b) {
+  const settingsA = a?.getTracks()[0]?.getSettings();
+  const settingsB = b?.getTracks()[0]?.getSettings();
+
+  if (!settingsA || !settingsB) {
     return false;
   }
-  const settingsA = a.getTracks()[0].getSettings();
-  const settingsB = b.getTracks()[0].getSettings();
+
   return settingsA.deviceId === settingsB.deviceId;
 }
 
@@ -248,24 +209,18 @@ export function capture(
   config: CameraPictureOptions
 ): CameraCapturedPicture {
   const base64 = captureImage(video, config);
+  const { width = 0, height = 0 } = settings;
 
   const capturedPicture: CameraCapturedPicture = {
     uri: base64,
     base64,
-    width: 0,
-    height: 0,
+    width,
+    height,
+    format: config.imageType ?? 'jpg',
+    exif: settings,
   };
 
-  if (settings) {
-    const { width = 0, height = 0 } = settings;
-    capturedPicture.width = width;
-    capturedPicture.height = height;
-    capturedPicture.exif = settings;
-  }
-
-  if (config.onPictureSaved) {
-    config.onPictureSaved(capturedPicture);
-  }
+  config.onPictureSaved?.(capturedPicture);
   return capturedPicture;
 }
 
@@ -307,7 +262,7 @@ async function onCapabilitiesReady(
     'sharpness',
     'focusDistance',
     'zoom',
-  ];
+  ] as const;
 
   for (const property of clampedValues) {
     if (capabilities[property]) {
@@ -316,8 +271,8 @@ async function onCapabilitiesReady(
   }
 
   function validatedInternalConstrainedValue<IConvertedType>(
-    constraintKey: string,
-    settingsKey: string,
+    constraintKey: keyof MediaTrackCapabilities,
+    settingsKey: keyof WebCameraSettings,
     converter: (settingValue: any) => IConvertedType
   ) {
     const convertedSetting = converter(settings[settingsKey]);
@@ -364,72 +319,46 @@ export function stopMediaStream(stream: MediaStream | null) {
   if (!stream) {
     return;
   }
-  if (stream.getAudioTracks) {
-    stream.getAudioTracks().forEach((track) => track.stop());
-  }
-  if (stream.getVideoTracks) {
-    stream.getVideoTracks().forEach((track) => track.stop());
-  }
-  if (isMediaStreamTrack(stream)) {
-    stream.stop();
-  }
+  stream.getAudioTracks().forEach((track) => track.stop());
+  stream.getVideoTracks().forEach((track) => track.stop());
 }
 
-export function setVideoSource(
+export function setVideoSource(video: HTMLVideoElement, stream: MediaStream | null): void {
+  video.srcObject = stream;
+}
+
+export function isCapabilityAvailable(
   video: HTMLVideoElement,
-  stream: MediaStream | MediaSource | Blob | null
-): void {
-  const createObjectURL = window.URL.createObjectURL ?? window.webkitURL.createObjectURL;
-
-  if (typeof video.srcObject !== 'undefined') {
-    video.srcObject = stream;
-  } else if (typeof (video as any).mozSrcObject !== 'undefined') {
-    (video as any).mozSrcObject = stream;
-  } else if (stream && createObjectURL) {
-    video.src = createObjectURL(stream as MediaSource | Blob);
-  }
-
-  if (!stream) {
-    const revokeObjectURL = window.URL.revokeObjectURL ?? window.webkitURL.revokeObjectURL;
-    const source = video.src ?? video.srcObject ?? (video as any).mozSrcObject;
-    if (revokeObjectURL && typeof source === 'string') {
-      revokeObjectURL(source);
-    }
-  }
-}
-
-export function isCapabilityAvailable(video: HTMLVideoElement, keyName: string): boolean {
+  keyName: keyof MediaTrackCapabilities
+): boolean {
   const stream = video.srcObject;
 
   if (stream instanceof MediaStream) {
-    const videoTrack = stream.getVideoTracks()[0];
-    return videoTrack.getCapabilities?.()?.[keyName];
+    const capability = stream.getVideoTracks()[0]?.getCapabilities()[keyName];
+    return !!capability;
   }
 
   return false;
-}
-
-function isMediaStreamTrack(input: any): input is MediaStreamTrack {
-  return typeof input.stop === 'function';
 }
 
 function convertNormalizedSetting(range: MediaSettingsRange, value?: number): number | undefined {
   if (!value) {
     return;
   }
+  // TODO(@kitten): Handle undefined values / normalize explicitly
   // convert the normalized incoming setting to the native camera zoom range
-  const converted = convertRange(value, [range.min, range.max]);
+  const converted = convertRange(value, [range.min!, range.max!]);
   // clamp value so we don't get an error
-  return Math.min(range.max, Math.max(range.min, converted));
+  return Math.min(range.max!, Math.max(range.min!, converted));
 }
 
-function convertRange(value: number, r2: number[], r1: number[] = [0, 1]): number {
+function convertRange(value: number, r2: [number, number], r1: [number, number] = [0, 1]): number {
   return ((value - r1[0]) * (r2[1] - r2[0])) / (r1[1] - r1[0]) + r2[0];
 }
 
 function validatedConstrainedValue<T>(props: {
-  constraintKey: string;
-  settingsKey: string;
+  constraintKey: keyof MediaTrackCapabilities;
+  settingsKey: keyof WebCameraSettings;
   convertedSetting: T;
   capabilities: MediaTrackCapabilities;
   settings: WebCameraSettings;

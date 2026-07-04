@@ -1,5 +1,6 @@
 import { LinkBase, mergeClasses } from '@expo/styleguide';
 import { TriangleDownIcon } from '@expo/styleguide-icons/custom/TriangleDownIcon';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/compat/router';
 import {
   type ComponentType,
@@ -7,6 +8,7 @@ import {
   type ReactNode,
   useRef,
   useEffect,
+  useState,
 } from 'react';
 
 import withHeadingManager, { HeadingManagerProps } from '~/common/withHeadingManager';
@@ -35,6 +37,7 @@ const Collapsible: ComponentType<CollapsibleProps> = withHeadingManager(
     headingManager,
     open = false,
   }: CollapsibleProps & HeadingManagerProps) => {
+    const [isOpen, setIsOpen] = useState(open);
     const router = useRouter();
     const detailsRef = useRef<HTMLDetailsElement>(null);
 
@@ -47,7 +50,7 @@ const Collapsible: ComponentType<CollapsibleProps> = withHeadingManager(
     useEffect(() => {
       if (router?.asPath) {
         const splitUrl = router.asPath.split('#');
-        const hash = splitUrl.length ? splitUrl[1] : undefined;
+        const hash = splitUrl.length > 0 ? splitUrl[1] : undefined;
         if (hash && hash === heading.current.slug) {
           detailsRef?.current?.setAttribute('open', '');
         }
@@ -58,14 +61,18 @@ const Collapsible: ComponentType<CollapsibleProps> = withHeadingManager(
       <details
         ref={detailsRef}
         id={heading.current.slug}
+        onToggle={event => {
+          setIsOpen(event.currentTarget.open);
+        }}
         className={mergeClasses(
           'mb-3 scroll-m-4 rounded-md border border-default bg-default p-0',
           '[&[open]]:shadow-xs',
           '[h4+&]:mt-3 [li>&]:mt-3 [p+&]:mt-3',
           className
         )}
-        open={open}
-        data-testid={testID}>
+        open={isOpen}
+        data-testid={testID}
+        data-md="collapsible">
         <summary
           className={mergeClasses(
             'group m-0 grid cursor-pointer grid-cols-[min-content_auto_min-content_1fr] items-center rounded-md bg-subtle p-1.5 pr-3',
@@ -73,8 +80,9 @@ const Collapsible: ComponentType<CollapsibleProps> = withHeadingManager(
             '[&_h4]:my-0',
             '[&_code]:mt-px [&_code]:inline [&_code]:bg-element [&_code]:pb-px [&_code]:text-[85%] [&_code]:leading-snug'
           )}>
-          <div className="ml-1.5 mr-2 mt-[5px] self-baseline">
+          <div className="mt-1.25 mr-2 ml-1.5 self-baseline">
             <TriangleDownIcon
+              aria-hidden="true"
               className={mergeClasses(
                 'icon-sm text-icon-default',
                 '-rotate-90 transition-transform duration-200',
@@ -97,13 +105,25 @@ const Collapsible: ComponentType<CollapsibleProps> = withHeadingManager(
             }}
             className="ml-auto inline rounded-md p-1 hocus:bg-element"
             aria-label="Permalink">
-            <PermalinkIcon className="icon-sm invisible inline-flex group-hover:visible group-focus-visible:visible" />
+            <PermalinkIcon className="invisible inline-flex icon-sm group-hover:visible group-focus-visible:visible" />
           </LinkBase>
           <div />
         </summary>
-        <div className={mergeClasses('px-5 py-4', 'last:[&>*]:!mb-1 [&_p]:ml-0 [&_pre>pre]:mt-0')}>
-          {children}
-        </div>
+        <motion.div
+          initial={false}
+          animate={{
+            transition: { type: 'tween' },
+            height: isOpen ? 'auto' : 0,
+          }}
+          className="overflow-hidden">
+          <div
+            className={mergeClasses(
+              'px-5 py-4',
+              '[&_p]:ml-0 [&_pre>pre]:mt-0 [&>*:last-child]:mb-1!'
+            )}>
+            {children}
+          </div>
+        </motion.div>
       </details>
     );
   }

@@ -1,6 +1,6 @@
-import { createPermissionHook, PermissionResponse } from 'expo-modules-core';
+import { createPermissionHook, type PermissionResponse } from 'expo';
 
-import { BarcodeScanningResult, BarcodeType } from './Camera.types';
+import type { BarcodeScanningResult, BarcodeType } from './Camera.types';
 import CameraManager from './ExpoCameraManager';
 
 export { default as CameraView } from './CameraView';
@@ -91,6 +91,7 @@ export async function scanFromURLAsync(
 }
 
 export * from './Camera.types';
+export * from './PictureRef';
 
 /**
  * @hidden

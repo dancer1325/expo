@@ -32,6 +32,17 @@ class UpdatesStateMachineInstrumentationTest {
     }
   }
 
+  private fun UpdatesStateMachine.resetAndIncrementRestartCountTest() {
+    val method: Method = UpdatesStateMachine::class.java.getDeclaredMethod("resetAndIncrementRestartCount")
+    method.isAccessible = true
+
+    try {
+      method.invoke(this)
+    } catch (e: InvocationTargetException) {
+      throw e.targetException
+    }
+  }
+
   private fun UpdatesStateMachine.getState(): UpdatesStateValue {
     val field: Field = UpdatesStateMachine::class.java.getDeclaredField("state")
     field.isAccessible = true
@@ -39,7 +50,7 @@ class UpdatesStateMachineInstrumentationTest {
   }
 
   private val androidContext = InstrumentationRegistry.getInstrumentation().context
-  private val logger = UpdatesLogger(androidContext)
+  private val logger = UpdatesLogger(androidContext.filesDir)
 
   // Test classes
   class TestStateChangeEventManager : IUpdatesEventManager {
@@ -53,14 +64,63 @@ class UpdatesStateMachineInstrumentationTest {
   @Test
   fun test_defaultState() {
     val testStateChangeEventManager = TestStateChangeEventManager()
-    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.values().toSet())
+    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.entries.toSet())
     Assert.assertEquals(UpdatesStateValue.Idle, machine.getState())
+  }
+
+  @Test
+  fun test_sequenceNumbers() {
+    val testStateChangeEventManager = TestStateChangeEventManager()
+    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.entries.toSet())
+    Assert.assertEquals(UpdatesStateValue.Idle, machine.getState())
+
+    Assert.assertEquals(0, machine.context.sequenceNumber)
+
+    machine.processEventTest(UpdatesStateEvent.StartStartup())
+    machine.processEventTest(UpdatesStateEvent.Check())
+    machine.processEventTest(UpdatesStateEvent.CheckCompleteUnavailable())
+    machine.processEventTest(UpdatesStateEvent.EndStartup())
+
+    Assert.assertEquals(4, machine.context.sequenceNumber)
+  }
+
+  @Test
+  fun test_restart() {
+    val testStateChangeEventManager = TestStateChangeEventManager()
+    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.entries.toSet())
+    Assert.assertEquals(UpdatesStateValue.Idle, machine.getState())
+
+    Assert.assertEquals(false, machine.context.isRestarting)
+    machine.processEventTest(UpdatesStateEvent.Restart())
+    Assert.assertEquals(true, machine.context.isRestarting)
+    Assert.assertEquals(1, machine.context.sequenceNumber)
+
+    machine.resetAndIncrementRestartCountTest()
+    Assert.assertEquals(1, machine.context.restartCount)
+    Assert.assertEquals(false, machine.context.isRestarting)
+    Assert.assertEquals(2, machine.context.sequenceNumber)
+  }
+
+  @Test
+  fun test_handleStartStartupAndEndStartup() {
+    val testStateChangeEventManager = TestStateChangeEventManager()
+    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.entries.toSet())
+
+    machine.processEventTest(UpdatesStateEvent.StartStartup())
+
+    Assert.assertEquals(UpdatesStateValue.Idle, machine.getState())
+    Assert.assertTrue(testStateChangeEventManager.lastContext!!.isStartupProcedureRunning)
+
+    machine.processEventTest(UpdatesStateEvent.EndStartup())
+
+    Assert.assertEquals(UpdatesStateValue.Idle, machine.getState())
+    Assert.assertFalse(testStateChangeEventManager.lastContext!!.isStartupProcedureRunning)
   }
 
   @Test
   fun test_handleCheckAndCheckCompleteAvailable() {
     val testStateChangeEventManager = TestStateChangeEventManager()
-    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.values().toSet())
+    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.entries.toSet())
 
     machine.processEventTest(UpdatesStateEvent.Check())
 
@@ -85,7 +145,7 @@ class UpdatesStateMachineInstrumentationTest {
   @Test
   fun test_handleCheckCompleteUnavailable() {
     val testStateChangeEventManager = TestStateChangeEventManager()
-    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.values().toSet())
+    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.entries.toSet())
 
     machine.processEventTest(UpdatesStateEvent.Check())
 
@@ -109,7 +169,7 @@ class UpdatesStateMachineInstrumentationTest {
   @Test
   fun test_handleDownloadAndDownloadComplete() {
     val testStateChangeEventManager = TestStateChangeEventManager()
-    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.values().toSet())
+    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.entries.toSet())
 
     machine.processEventTest(UpdatesStateEvent.Download())
 
@@ -139,9 +199,27 @@ class UpdatesStateMachineInstrumentationTest {
   }
 
   @Test
+  fun test_handleDownloadProgress() {
+    val testStateChangeEventManager = TestStateChangeEventManager()
+    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.entries.toSet())
+
+    machine.processEventTest(UpdatesStateEvent.Download())
+    Assert.assertEquals(UpdatesStateValue.Downloading, machine.getState())
+    Assert.assertEquals(0.0, testStateChangeEventManager.lastContext!!.downloadProgress, 0.001)
+
+    machine.processEventTest(UpdatesStateEvent.DownloadProgress(0.5))
+    Assert.assertEquals(UpdatesStateValue.Downloading, machine.getState())
+    Assert.assertEquals(0.5, testStateChangeEventManager.lastContext!!.downloadProgress, 0.001)
+
+    machine.processEventTest(UpdatesStateEvent.DownloadComplete())
+    Assert.assertEquals(UpdatesStateValue.Idle, machine.getState())
+    Assert.assertEquals(1.0, testStateChangeEventManager.lastContext!!.downloadProgress, 0.001)
+  }
+
+  @Test
   fun test_handleRollback() {
     val testStateChangeEventManager = TestStateChangeEventManager()
-    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.values().toSet())
+    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.entries.toSet())
     val commitTime = Date()
     machine.processEventTest(UpdatesStateEvent.Check())
 
@@ -167,7 +245,7 @@ class UpdatesStateMachineInstrumentationTest {
   @Test
   fun test_checkError() {
     val testStateChangeEventManager = TestStateChangeEventManager()
-    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.values().toSet())
+    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.entries.toSet())
 
     machine.processEventTest(UpdatesStateEvent.Check())
 
@@ -195,7 +273,7 @@ class UpdatesStateMachineInstrumentationTest {
   @Test
   fun test_invalidTransitions() {
     val testStateChangeEventManager = TestStateChangeEventManager()
-    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.values().toSet())
+    val machine = UpdatesStateMachine(logger, testStateChangeEventManager, UpdatesStateValue.entries.toSet())
     machine.processEventTest(UpdatesStateEvent.Check())
     Assert.assertEquals(UpdatesStateValue.Checking, machine.getState())
 

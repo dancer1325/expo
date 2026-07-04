@@ -1,9 +1,9 @@
 ---
 title: Configure status bar, splash screen and app icon
 description: In this tutorial, learn the basics of how to configure a status bar, app icon, and splash screen.
+hasVideoLink: true
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
 import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 import { ProgressTracker } from '~/ui/components/ProgressTracker';
 import { Step } from '~/ui/components/Step';
@@ -14,6 +14,7 @@ In this chapter, we'll address some app details before deploying our app to an a
 <VideoBoxLink
   videoId="OgGCYdElcZo"
   title="Watch: Adding the finishing touches to your universal Expo app"
+  description="Configure the status bar, customize your app icon, and set up the splash screen before deploying to the app store."
 />
 
 ---
@@ -31,9 +32,9 @@ Inside **app/\_layout.tsx**:
 
 {/* prettier-ignore */}
 ```tsx app/_layout.tsx
-import { Stack } from "expo-router";
+import { Stack } from 'expo-router';
 /* @tutinfo */
-import { StatusBar } from "expo-status-bar";
+import { StatusBar } from 'expo-status-bar';
 /* @end */
 
 export default function RootLayout() {
@@ -43,7 +44,6 @@ export default function RootLayout() {
     /* @end */
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
       </Stack>
       /* @tutinfo */<StatusBar style="light" />
     </>
@@ -56,7 +56,7 @@ Let's take a look at our app now on Android, and iOS:
 
 <ContentSpotlight
   alt="StatusBar with light style shown on both Android and iOS."
-  src="/static/images/tutorial/statusbar-example.png"
+  src="/static/images/tutorial/statusbar-example.webp"
   className="max-w-[480px]"
 />
 
@@ -68,7 +68,11 @@ Let's take a look at our app now on Android, and iOS:
 
 Inside the project, there's an **icon.png** file inside the **assets/images** directory. This is our app icon. It's a 1024px by 1024px image and looks as shown below:
 
-<ContentSpotlight src="/static/images/tutorial/icon.png" className="max-w-[150px]" />
+<ContentSpotlight
+  alt="The default app icon: a dark rounded square showing a white photo glyph with a yellow smiley face."
+  src="/static/images/tutorial/icon.webp"
+  className="max-w-[150px]"
+/>
 
 Like the splash screen image, the `"icon"` property in the **app.json** file configures the app icon's path. By default, a new Expo project defines the correct path to `"./assets/images/icon.png"`. We don't have to change anything.
 
@@ -78,8 +82,8 @@ You can see the icon in various places in Expo Go. Here is an example of the app
 
 <ContentSpotlight
   alt="Splash screen on Developer Menu in Expo Go app."
-  src="/static/images/tutorial/app-icon-visible.png"
-  className="max-w-[250px]"
+  src="/static/images/tutorial/app-icon-visible.webp"
+  className="max-w-[240px]"
 />
 
 </Step>
@@ -92,26 +96,27 @@ A splash screen is visible before the app's content is loaded. It uses a smaller
 
 The [`expo-splash-screen`](/versions/latest/sdk/splash-screen/) plugin already comes pre-installed in every project created using `create-expo-app`. This library provides a config plugin to configure the splash screen.
 
-In **app.json**, the `expo-splash-screen` plugin is already configured to use the app's icon as the splash screen image with the following snippet so we don't have to change anything. Let's take a look at our app now on Android and iOS:
+In **app.json**, the `expo-splash-screen` plugin is already configured to use the app's icon as the splash screen image (provided in the [downloadable assets](/tutorial/create-your-first-app/#download-assets)) with the following snippet so we don't have to change anything:
 
-<ContentSpotlight file="tutorial/splash-screen.mp4" />
-
-<Collapsible summary="Is the app loading too quickly for you to get a good look at the splash screen?">
-
-You can display the splash screen for longer intervals by using `preventAutoHideAsync()` method from `expo-splash-screen` library. This method delays hiding the splash screen until you call `hideAsync()`.
-
-Add the following code in **app/\_layout.tsx** to delay hiding the splash screen for five seconds.
-
-```tsx app/_layout.tsx
-import * as SplashScreen from 'expo-splash-screen';
-
-SplashScreen.preventAutoHideAsync();
-setTimeout(SplashScreen.hideAsync, 5000);
+```json app.json
+{
+  "plugins": [
+    /* @hide ... */ /* @end */
+    [
+      "expo-splash-screen",
+      {
+        "image": "./assets/images/splash-icon.png"
+        /* @hide ... */ /* @end */
+      }
+    ]
+  ]
+}
 ```
 
-Don't forget to remove this code when you are done testing your splash screen.
+However, **to test the splash screen, we cannot use Expo Go or a [development build](/develop/development-builds/introduction/)**. To test it, we need to create a preview or a production build of our app. We recommend going through the following resources to learn more about the splash screen configuration and how to test it:
 
-</Collapsible>
+- [Create a splash screen icon](/develop/user-interface/splash-screen-and-app-icon/#splash-screen) guide to learn how splash screen icon is configured.
+- To learn how to create a preview build, see [Internal distribution](/tutorial/eas/internal-distribution-builds/) guide in EAS Tutorial, or to create production builds see guides for [Android](/tutorial/eas/android-production-build/) and [iOS](/tutorial/eas/ios-production-build/).
 
 </Step>
 

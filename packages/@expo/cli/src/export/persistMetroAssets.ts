@@ -8,13 +8,13 @@
  * Based on the community asset persisting for Metro but with base path and web support:
  * https://github.com/facebook/react-native/blob/d6e0bc714ad4d215ede4949d3c4f44af6dea5dd3/packages/community-cli-plugin/src/commands/bundle/saveAssets.js#L1
  */
+import type { AssetData } from '@expo/metro/metro';
 import fs from 'fs';
-import type { AssetData } from 'metro';
 import path from 'path';
 
-import { getAssetLocalPath } from './metroAssetLocalPath';
-import { ExportAssetMap } from './saveAssets';
 import { Log } from '../log';
+import { drawableFileTypes, getAssetLocalPath } from './metroAssetLocalPath';
+import type { ExportAssetMap } from './saveAssets';
 
 function cleanAssetCatalog(catalogDir: string): void {
   const files = fs.readdirSync(catalogDir).filter((file) => file.endsWith('.imageset'));
@@ -43,6 +43,12 @@ export async function persistMetroAssetsAsync(
   if (outputDirectory == null) {
     Log.warn('Assets destination folder is not set, skipping...');
     return;
+  }
+
+  // For iOS, we need to ensure that the outputDirectory exists.
+  // The bundle code and images build phase script always tries to access this folder
+  if (platform === 'ios' && !fs.existsSync(outputDirectory)) {
+    fs.mkdirSync(outputDirectory, { recursive: true });
   }
 
   let assetsToCopy: AssetData[] = [];
@@ -77,15 +83,18 @@ export async function persistMetroAssetsAsync(
   } else {
     assetsToCopy = [...assets];
   }
+  if (platform === 'android') {
+    await createKeepFileAsync(assetsToCopy, outputDirectory);
+  }
 
   const batches: Record<string, string> = {};
 
   for (const asset of assetsToCopy) {
     const validScales = new Set(filterPlatformAssetScales(platform, asset.scales));
     for (let idx = 0; idx < asset.scales.length; idx++) {
-      const scale = asset.scales[idx];
+      const scale = asset.scales[idx]!;
       if (validScales.has(scale)) {
-        const src = asset.files[idx];
+        const src = asset.files[idx]!;
         const dest = getAssetLocalPath(asset, { platform, scale, baseUrl });
         if (files) {
           const data = await fs.promises.readFile(src);
@@ -104,6 +113,24 @@ export async function persistMetroAssetsAsync(
   if (!files) {
     await copyInBatchesAsync(batches);
   }
+}
+
+export async function createKeepFileAsync(
+  assets: AssetData[],
+  outputDirectory: string
+): Promise<void> {
+  if (!assets.length) {
+    return;
+  }
+  const assetsList = [];
+  for (const asset of assets) {
+    const prefix = drawableFileTypes.has(asset.type) ? 'drawable' : 'raw';
+    assetsList.push(`@${prefix}/${getResourceIdentifier(asset)}`);
+  }
+  const keepPath = path.join(outputDirectory, 'raw/keep.xml');
+  const content = `<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="${assetsList.join(',')}" />`;
+  await fs.promises.mkdir(path.dirname(keepPath), { recursive: true });
+  await fs.promises.writeFile(keepPath, content);
 }
 
 export function getAssetIdForLogGrouping(
@@ -162,7 +189,7 @@ function getImageSet(
       return {
         name: `${fileName + suffix}.${asset.type}`,
         scale,
-        src: asset.files[idx],
+        src: asset.files[idx]!,
       };
     }),
   };
@@ -183,7 +210,7 @@ export function copyInBatchesAsync(filesToCopy: Record<string, string>) {
       if (queue.length) {
         // queue.length === 0 is checked in previous branch, so this is string
         const src = queue.shift() as string;
-        const dest = filesToCopy[src];
+        const dest = filesToCopy[src]!;
         copy(src, dest, copyNext);
       } else {
         resolve();
@@ -193,7 +220,7 @@ export function copyInBatchesAsync(filesToCopy: Record<string, string>) {
   });
 }
 
-function copy(src: string, dest: string, callback: (error: NodeJS.ErrnoException) => void): void {
+function copy(src: string, dest: string, callback: (error?: NodeJS.ErrnoException) => void): void {
   fs.mkdir(path.dirname(dest), { recursive: true }, (err?) => {
     if (err) {
       callback(err);
@@ -208,7 +235,7 @@ const ALLOWED_SCALES: { [key: string]: number[] } = {
 };
 
 export function filterPlatformAssetScales(platform: string, scales: number[]): number[] {
-  const whitelist: number[] = ALLOWED_SCALES[platform];
+  const whitelist: number[] = ALLOWED_SCALES[platform]!;
   if (!whitelist) {
     return scales;
   }
@@ -217,7 +244,7 @@ export function filterPlatformAssetScales(platform: string, scales: number[]): n
     // No matching scale found, but there are some available. Ideally we don't
     // want to be in this situation and should throw, but for now as a fallback
     // let's just use the closest larger image
-    const maxScale = whitelist[whitelist.length - 1];
+    const maxScale = whitelist[whitelist.length - 1]!;
     for (const scale of scales) {
       if (scale > maxScale) {
         result.push(scale);
@@ -227,7 +254,7 @@ export function filterPlatformAssetScales(platform: string, scales: number[]): n
 
     // There is no larger scales available, use the largest we have
     if (!result.length) {
-      result.push(scales[scales.length - 1]);
+      result.push(scales[scales.length - 1]!);
     }
   }
   return result;

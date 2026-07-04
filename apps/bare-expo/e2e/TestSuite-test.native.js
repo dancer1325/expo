@@ -1,14 +1,16 @@
 /**
- * The test cases for bare-expo E2E testing.
+ * The test cases for bare-expo E2E testing. The Maestro flow is generated from this list
+ * (see `createMaestroFlowAsync`), so adding or removing an entry is all that's needed; each
+ * test must also be registered in `apps/test-suite/TestModules.ts` so the app can run it.
  */
-export const TESTS = [
+const TESTS = [
+  'AppMetrics',
   'Basic',
   // 'Asset',
   // 'FileSystem',
   // 'Font',
-  'Permissions',
   // 'Blur',
-  'LinearGradient',
+  // 'LinearGradient',
   'Constants',
   // 'Contacts',
   'Crypto',
@@ -18,11 +20,10 @@ export const TESTS = [
   // 'SecureStore',
   // 'Segment',
   'SQLite',
-  'Random',
-  'Permissions',
   'KeepAwake',
   // 'Audio',
-  'HTML',
-  'FileSystem@next',
+  'FileSystem',
   'Fetch',
 ];
+
+module.exports = { TESTS };

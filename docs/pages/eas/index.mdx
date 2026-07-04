@@ -8,8 +8,10 @@ description: Learn about Expo Application Services (EAS) for Expo and React Nati
 import { BuildIcon } from '@expo/styleguide-icons/custom/BuildIcon';
 import { EasMetadataIcon } from '@expo/styleguide-icons/custom/EasMetadataIcon';
 import { EasSubmitIcon } from '@expo/styleguide-icons/custom/EasSubmitIcon';
+import { ActivityIcon } from '@expo/styleguide-icons/outline/ActivityIcon';
+import { Cloud01Icon } from '@expo/styleguide-icons/outline/Cloud01Icon';
 import { DataIcon } from '@expo/styleguide-icons/outline/DataIcon';
-import { Dataflow01Icon } from '@expo/styleguide-icons/outline/Dataflow01Icon';
+import { Dataflow03Icon } from '@expo/styleguide-icons/outline/Dataflow03Icon';
 import { LayersTwo02Icon } from '@expo/styleguide-icons/outline/LayersTwo02Icon';
 
 import { BoxLink } from '~/ui/components/BoxLink';
@@ -17,6 +19,13 @@ import { BoxLink } from '~/ui/components/BoxLink';
 Expo Application Services (EAS) are deeply integrated cloud services for Expo and React Native apps, from the team behind Expo.
 
 Read the full pitch at [expo.dev/eas](https://expo.dev/eas), or follow the links below to learn how to get started.
+
+<BoxLink
+  title="EAS Workflows"
+  description="Automate your development and release workflows with CI/CD jobs."
+  href="/eas/workflows/introduction/"
+  Icon={Dataflow03Icon}
+/>
 
 <BoxLink
   title="EAS Build"
@@ -33,29 +42,36 @@ Read the full pitch at [expo.dev/eas](https://expo.dev/eas), or follow the links
 />
 
 <BoxLink
+  title="EAS Hosting"
+  description="Deploy Expo Router and React Native web apps and API routes."
+  href="/eas/hosting/introduction"
+  Icon={Cloud01Icon}
+/>
+
+<BoxLink
   title="EAS Update"
-  description="Address small bugs and push quick fixes directly to end-users."
+  description="Address small bugs and push quick fixes directly to end users."
   href="/eas-update/introduction"
   Icon={LayersTwo02Icon}
 />
 
 <BoxLink
-  title="EAS Metadata (In Beta)"
+  title="EAS Metadata (in preview)"
   description="Upload all app store information required to get your app published."
   href="/eas/metadata/"
   Icon={EasMetadataIcon}
 />
 
 <BoxLink
-  title="EAS Insights (In Preview)"
+  title="EAS Insights (in preview)"
   description="View analytics about a project's performance, usage, and reach."
   href="/eas-insights/introduction/"
   Icon={DataIcon}
 />
 
 <BoxLink
-  title="EAS Workflows (In Preview)"
-  description="Automate your development release workflows."
-  href="/eas-workflows/get-started/"
-  Icon={Dataflow01Icon}
+  title="EAS Observe (in open beta)"
+  description="Monitor your app's performance in production."
+  href="/eas/observe/introduction/"
+  Icon={ActivityIcon}
 />

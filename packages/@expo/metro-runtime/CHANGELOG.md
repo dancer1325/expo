@@ -10,6 +10,208 @@
 
 ### 💡 Others
 
+- [Internal] Update logbox imports ([#46640](https://github.com/expo/expo/pull/46640) by [@kitten](https://github.com/kitten))
+
+## 56.0.13 — 2026-05-26
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.12 — 2026-05-23
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.11 — 2026-05-21
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.10 — 2026-05-20
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.9 — 2026-05-19
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.8 — 2026-05-13
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.7 — 2026-05-13
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.6 — 2026-05-12
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.5 — 2026-05-08
+
+### 💡 Others
+
+- Remove pinned dependencies ([#45520](https://github.com/expo/expo/pull/45520) by [@kitten](https://githun.com/kitten))
+
+## 56.0.4 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.3 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.1 — 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+### ⚠️ Notices
+
+- Added support for React Native 0.84.x. ([#43018](https://github.com/expo/expo/pull/43018) by [@chrfalch](https://github.com/chrfalch))
+
+## 55.0.11 - 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.10 - 2026-04-21
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.9 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.8 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.7 - 2026-03-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.6 — 2026-02-16
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.5 — 2026-02-08
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.4 — 2026-02-03
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.3 — 2026-01-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 🎉 New features
+
+- Move error overlay UI to `@expo/log-box` package ([#39958](https://github.com/expo/expo/pull/39958) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+
+### ⚠️ Notices
+
+- Added support for React Native 0.82.x. ([#39678](https://github.com/expo/expo/pull/39678) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+## 6.1.2 — 2025-09-12
+
+### 🐛 Bug fixes
+
+- Move `@expo/metro-runtime` to peer dependencies, since that conveys our intention better ([#39603](https://github.com/expo/expo/pull/39603) by [@kitten](https://github.com/kitten))
+
+## 6.1.1 — 2025-08-26
+
+### 🐛 Bug fixes
+
+- Avoid sending compilation errors back to Metro terminal from the application runtime ([#39142](https://github.com/expo/expo/pull/39142) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+
+## 6.1.0 — 2025-08-19
+
+### 🎉 New features
+
+- Pass errors, synthetic and owners stacks to Metro Dev Server terminal ([#38871](https://github.com/expo/expo/pull/38871) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+
+## 6.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.1 — 2025-08-15
+
+### 🐛 Bug fixes
+
+- Show `console.error` and LogBox for unhandled promise rejection in development ([#38834](https://github.com/expo/expo/pull/38834) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+
+## 6.0.0 — 2025-08-13
+
+### 🛠 Breaking changes
+
+- Move async-require and fast refresh to `expo`. ([#36405](https://github.com/expo/expo/pull/36405) by [@EvanBacon](https://github.com/EvanBacon))
+
+### 💡 Others
+
+- noop unused code on native to suppress react-native import warnings. ([#38495](https://github.com/expo/expo/pull/38495) by [@EvanBacon](https://github.com/EvanBacon))
+- Update dependencies to align with transitive dependencies ([#38532](https://github.com/expo/expo/pull/38532) by [@kitten](https://github.com/kitten))
+
+## 5.0.4 — 2025-04-28
+
+### 💡 Others
+
+- Move virtual RSC client boundary entry point to `expo`. ([#36408](https://github.com/expo/expo/pull/36408) by [@EvanBacon](https://github.com/EvanBacon))
+- Remove `/symbolicate` import. ([#36409](https://github.com/expo/expo/pull/36409) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 5.0.3 — 2025-04-28
+
+### 💡 Others
+
+- Remove `web-streams-polyfill` in favor of `expo` support. ([#36407](https://github.com/expo/expo/pull/36407) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 5.0.2 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.1 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.0 — 2025-04-04
+
+### 🛠 Breaking changes
+
+- Remove global polyfill for deprecated `setImmediate` function. ([#35373](https://github.com/expo/expo/pull/35373) by [@EvanBacon](https://github.com/EvanBacon))
+
+### 🐛 Bug fixes
+
+- Parse errors with Babel code frames as syntax errors on Windows. ([#34017](https://github.com/expo/expo/pull/34017) by [@byCedric](https://github.com/byCedric))
+- Fixed broken async import. ([#34824](https://github.com/expo/expo/pull/34824) by [@kudo](https://github.com/kudo))
+
+### 💡 Others
+
+- Remove unused log. ([#35894](https://github.com/expo/expo/pull/35894) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 4.0.1 - 2025-01-19
+
+### 🐛 Bug fixes
+
+- Only reload RSC for a given platform. ([#34216](https://github.com/expo/expo/pull/34216) by [@EvanBacon](https://github.com/EvanBacon))
+
+### 💡 Others
+
+- fix: add e2e testing to server function errors ([#33971](https://github.com/expo/expo/pull/33971) by [@EvanBacon](https://github.com/EvanBacon))
+- Use `window.location` polyfill for server requests. ([#32099](https://github.com/expo/expo/pull/32099) by [@EvanBacon](https://github.com/EvanBacon))
+
 ## 4.0.0 — 2024-11-11
 
 _This version does not introduce any user-facing changes._

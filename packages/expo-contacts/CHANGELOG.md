@@ -6,14 +6,289 @@
 
 ### 🎉 New features
 
-- added the ability to read and write starred property (as "isFavorite") of contacts on Android ([#33208](https://github.com/expo/expo/pull/33208) by [@NorseGaud](https://github.com/NorseGaud))
-- Add `presentAccessPickerAsync` function that presents the iOS 18.0+ picker for limited contacts access. ([#33771](https://github.com/expo/expo/pull/33771) by [@tsapeta](https://github.com/tsapeta))
+- [iOS] Add `cancelButtonTitle` and `showsCancelButton` options to contact forms. ([#46960](https://github.com/expo/expo/pull/46960) by [@Wenszel](https://github.com/Wenszel))
+- [iOS] Add `preventAnimation` option to `presentCreateForm`. ([#46960](https://github.com/expo/expo/pull/46960) by [@Wenszel](https://github.com/Wenszel))
 
 ### 🐛 Bug fixes
 
+- Fix `getDetails` throwing NPE on malformed label ([#46405](https://github.com/expo/expo/pull/46405) by [@Wenszel](https://github.com/Wenszel))
+
 ### 💡 Others
 
-- Use the `src` folder as the Metro target.
+## 56.0.7 — 2026-05-21
+
+### 🐛 Bug fixes
+
+- Fix an ES module import error in the typed config plugin. ([#46089](https://github.com/expo/expo/pull/46089) by [@zoontek](https://github.com/zoontek))
+
+## 56.0.6 — 2026-05-20
+
+### 🛠 Breaking changes
+
+- Promote the object-oriented Contacts API to the root `expo-contacts` import and move the legacy API to `expo-contacts/legacy`. ([#46037](https://github.com/expo/expo/pull/46037) by [@Wenszel](https://github.com/Wenszel))
+
+### 🐛 Bug fixes
+
+- Fix `expo-contacts/next` throwing `Cannot find native module 'ExpoContactsNext'` when imported on web by adding a web shim. ([#46018](https://github.com/expo/expo/pull/46018) by [@zoontek](https://github.com/zoontek))
+
+## 56.0.5 — 2026-05-19
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.4 — 2026-05-13
+
+### 💡 Others
+
+- Updated permission type and permission status imports to be imported from `expo` instead of `expo-modules-core` ([#45565](https://github.com/expo/expo/pull/45565) by [@Wenszel](https://github.com/Wenszel))
+
+## 56.0.3 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.1 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+### 🛠 Breaking changes
+
+- [next] Fix permission functions, presentPicker cancel, presentAccessPicker types ([#44847](https://github.com/expo/expo/pull/44847) by [@Wenszel](https://github.com/Wenszel))
+- Bumped minimum iOS/tvOS version to 16.4, macOS to 13.4. ([#43296](https://github.com/expo/expo/pull/43296) by [@tsapeta](https://github.com/tsapeta))
+
+### 🎉 New features
+
+- Expose a typed config plugin function ([#44098](https://github.com/expo/expo/pull/44098) by [@zoontek](https://github.com/zoontek))
+
+### 💡 Others
+
+- Mark legacy API deprecated ([#44845](https://github.com/expo/expo/pull/44845) by [@Wenszel](https://github.com/Wenszel))
+- [next] Improve contact observer implementation ([#44773](https://github.com/expo/expo/pull/44773) by [@Wenszel](https://github.com/Wenszel))
+
+## 55.0.14 - 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.13 - 2026-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.12 - 2026-04-07
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.11 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.10 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.9 - 2026-03-17
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.8 — 2026-02-25
+
+### 🐛 Bug fixes
+
+- Fix `editWithForm` throws error ([#43315](https://github.com/expo/expo/pull/43315) by [@Wenszel](https://github.com/Wenszel))
+
+## 55.0.7 — 2026-02-20
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.6 — 2026-02-16
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.5 — 2026-02-08
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.4 — 2026-02-03
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.3 — 2026-01-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 🎉 New features
+
+- Add `Contacts@Next` ([#40886](https://github.com/expo/expo/pull/40886) by [@Wenszel](https://github.com/Wenszel))
+- [Android] Implement `hasContactsAsync` function ([#40756](https://github.com/expo/expo/pull/40756) by [@hryhoriiK97](https://github.com/hryhoriiK97))
+
+### 🐛 Bug fixes
+
+- [Android] Fix updating contact with existing image ([#42133](https://github.com/expo/expo/pull/42133) by [@Wenszel](https://github.com/wenszel))
+- [Android] Fix adding contact when default account is set to cloud ([#42203](https://github.com/expo/expo/pull/42203) by [@Wenszel](https://github.com/Wenszel))
+
+### 💡 Others
+
+- Added contact image uri validation. ([#39658](https://github.com/expo/expo/pull/39658) by [@hryhoriiK97](https://github.com/hryhoriiK97))
+- [ios] create `CNContactStore` lazily ([#42096](https://github.com/expo/expo/pull/42096) by [@vonovak](https://github.com/vonovak))
+- [Android] Removed unused `androidx.annotation:annotation` dependency ([#39761](https://github.com/expo/expo/pull/39761) by [@lukmccall](https://github.com/lukmccall))
+
+## 15.0.11 - 2025-12-05
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.10 - 2025-10-20
+
+### 💡 Others
+
+- Added ContactSerializationException for error handling. ([#40426](https://github.com/expo/expo/pull/40426) by [@hryhoriiK97](https://github.com/hryhoriiK97))
+
+## 15.0.9 - 2025-10-01
+
+### 🐛 Bug fixes
+
+- [iOS] Fixed issue with missing `namePrefix` on iOS ([#39974](https://github.com/expo/expo/pull/39974) by [@hryhoriiK97](https://github.com/hryhoriiK97))
+- [iOS] Fixed phonetic name fields being assigned to wrong keys ([#40013](https://github.com/expo/expo/pull/40013) by [@hryhoriiK97](https://github.com/hryhoriiK97))
+
+## 15.0.8 — 2025-09-10
+
+### 🎉 New features
+
+- Added `addContactsChangeListener()` to detect contact changes with platform-specific behavior. . ([#39434](https://github.com/expo/expo/pull/39434) by [@hryhoriiK97](https://github.com/hryhoriiK97))
+
+### 💡 Others
+
+- Extracted the read permission check from `FileSystemUtilities` ([#39210](https://github.com/expo/expo/pull/39210) by [@kosmydel](https://github.com/kosmydel))
+
+## 15.0.7 — 2025-09-02
+
+### 💡 Others
+
+- Improved type safety with NewContact and ExistingContact types. ([#39269](https://github.com/expo/expo/pull/39269) by [@hryhoriiK97](https://github.com/hryhoriiK97))
+
+## 15.0.6 — 2025-08-31
+
+### 🐛 Bug fixes
+
+- [iOS] Fixed issue with missing `instantMessageAddresses` on iOS ([#38985](https://github.com/expo/expo/pull/38985) by [@hryhoriiK97](https://github.com/hryhoriiK97))
+- [iOS] Added handling for optional labels. ([#38985](https://github.com/expo/expo/pull/39247) by [@hryhoriiK97](https://github.com/hryhoriiK97))
+
+## 15.0.5 — 2025-08-27
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.4 — 2025-08-25
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.3 — 2025-08-21
+
+### 🐛 Bug fixes
+
+- fix `CNContactViewController` presentation ([#39004](https://github.com/expo/expo/pull/39004) by [@vonovak](https://github.com/vonovak))
+- [iOS] Fixed undefined labels for emails in contacts. ([#39222](https://github.com/expo/expo/pull/39222) by [@NorseGaud](https://github.com/hryhoriiK97)
+
+## 15.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 15.0.0 — 2025-08-13
+
+_This version does not introduce any user-facing changes._
+
+## 14.2.5 - 2025-06-04
+
+### 🐛 Bug fixes
+
+- [Android] fixed `updateContactAsync()` removing contact rawDates / birthday ([#37054](https://github.com/expo/expo/pull/37054) by [@NorseGaud](https://github.com/NorseGaud)
+
+### 💡 Others
+
+- Remove "Please" from warnings and errors ([#36862](https://github.com/expo/expo/pull/36862) by [@brentvatne](https://github.com/brentvatne))
+
+## 14.2.4 — 2025-05-08
+
+### 🐛 Bug fixes
+
+- Make `Contact.id` required for `updateContactAsync` ([#36603](https://github.com/expo/expo/pull/36603) by [@NorseGaud](https://github.com/NorseGaud))
+
+## 14.2.3 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 14.2.2 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 14.2.1 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 14.2.0 — 2025-04-11
+
+### 🎉 New features
+
+- [iOS] Disambiguated `limited` permission status from `granted`. ([#35772](https://github.com/expo/expo/pull/35772) by [@clarkg](https://github.com/clarkg))
+
+## 14.1.1 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 14.1.0 — 2025-04-04
+
+- Fixed an issue on iOS where social profile urls were badly stored. ([#31771](https://github.com/expo/expo/pull/31771) by [@mlecoq](https://github.com/mlecoq))
+
+### 🎉 New features
+
+- added the ability to change isFavorite property of contacts on Android (using updateContactAsync) ([#34483](https://github.com/expo/expo/pull/34483) by [@NorseGaud](https://github.com/NorseGaud))
+- Add `presentAccessPickerAsync` function that presents the iOS 18.0+ picker for limited contacts access. ([#33771](https://github.com/expo/expo/pull/33771) by [@tsapeta](https://github.com/tsapeta))
+- [iOS] Exposed `ContactAccessButton` from SwiftUI. ([#33782](https://github.com/expo/expo/pull/33782) by [@tsapeta](https://github.com/tsapeta))
+
+### 🐛 Bug fixes
+
+- Fixed `the native view manager required by name (ExpoContactAccessButton) from NativeViewManagerAdapter isn't exported` warning. ([#33993](https://github.com/expo/expo/pull/33993) by [@lukmccall](https://github.com/lukmccall))
+
+### 💡 Others
+
+- [docs] Removed iOS platform only for the `updateContactAsync` method ([#34488](https://github.com/expo/expo/pull/34488) by [@chrfalch](https://github.com/chrfalch))
+- Use the `src` folder as the Metro target. ([#33781](https://github.com/expo/expo/pull/33781) by [@tsapeta](https://github.com/tsapeta))
+- [Android] Started using expo modules gradle plugin. ([#34176](https://github.com/expo/expo/pull/34176) by [@lukmccall](https://github.com/lukmccall))
+- [apple] Migrate remaining `expo-module.config.json` to unified platform syntax. ([#34445](https://github.com/expo/expo/pull/34445) by [@reichhartd](https://github.com/reichhartd))
+- [iOS] Fix warnings which will become errors in Swift 6. ([#35288](https://github.com/expo/expo/pull/35288) by [@behenate](https://github.com/behenate)), ([#35428](https://github.com/expo/expo/pull/35428) by [@behenate](https://github.com/behenate))
+- Migrated SwiftUI views with backward compatible `WithHostingView`. ([#35553](https://github.com/expo/expo/pull/35553) by [@kudo](https://github.com/kudo))
+
+## 14.0.5 - 2025-01-31
+
+### 🐛 Bug fixes
+
+- [Android] Fixed saving a contact with photos on Android. ([#34432](https://github.com/expo/expo/pull/34432) by [@chrfalch](https://github.com/chrfalch))
+- Fixed corrupted contact after `updateContactAsync`. ([#34186](https://github.com/expo/expo/pull/34186) by [@freeboub](https://github.com/34186)) ([#34186](https://github.com/expo/expo/pull/34186) by [@34186](https://github.com/34186))
+
+## 14.0.4 - 2025-01-27
+
+### 🎉 New features
+
+- added the ability to read and write starred property (as "isFavorite") of contacts on Android ([#33208](https://github.com/expo/expo/pull/33208) by [@NorseGaud](https://github.com/NorseGaud))
+
+## 14.0.3 - 2025-01-10
+
+_This version does not introduce any user-facing changes._
 
 ## 14.0.2 — 2024-11-07
 

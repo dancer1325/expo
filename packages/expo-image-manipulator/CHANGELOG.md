@@ -8,10 +8,245 @@
 
 ### 🐛 Bug fixes
 
-- Changed `export` to `export type` for TS type declarations. ([#33446](https://github.com/expo/expo/pull/33446) by [@j-piasecki](https://github.com/j-piasecki))
-- Fixed `saveAsync` not respecting the format and compression quality. ([#33690](https://github.com/expo/expo/pull/33690) by [@tsapeta](https://github.com/tsapeta))
+### 💡 Others
+
+## 56.0.15 — 2026-05-26
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.14 — 2026-05-23
+
+### 🐛 Bug fixes
+
+- [Web] Throw an error when requested mime type is not supported. ([#46165](https://github.com/expo/expo/pull/46165) by [@alanjhughes](https://github.com/alanjhughes))
+
+## 56.0.13 — 2026-05-21
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.12 — 2026-05-21
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.11 — 2026-05-20
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.10 — 2026-05-19
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.9 — 2026-05-15
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.8 — 2026-05-13
+
+### 🐛 Bug fixes
+
+- [Android] Save manipulated images in the scoped cache directory. ([#45708](https://github.com/expo/expo/pull/45708) by [@mvincentong](https://github.com/mvincentong))
+
+## 56.0.7 — 2026-05-13
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.6 — 2026-05-11
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.5 — 2026-05-08
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.4 — 2026-05-07
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.3 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.1 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+### 🛠 Breaking changes
+
+- Bumped minimum iOS/tvOS version to 16.4, macOS to 13.4. ([#43296](https://github.com/expo/expo/pull/43296) by [@tsapeta](https://github.com/tsapeta))
+
+## 55.0.16 - 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.15 - 2026-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.14 - 2026-04-07
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.13 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.12 - 2026-04-02
 
 ### 💡 Others
+
+- [iOS] Use `internal import SDWebImageWebPCoder` to hide third-party dependency from public module interface. ([#44248](https://github.com/expo/expo/pull/44248) by [@chrfalch](https://github.com/chrfalch))
+
+## 55.0.11 - 2026-03-17
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.10 - 2026-03-11
+
+### 🐛 Bug fixes
+
+- [iOS] Preserve HEIC orientation when loading local files for image manipulation. ([#43725](https://github.com/expo/expo/pull/43725) by [@maxsz](https://github.com/maxsz))
+
+## 55.0.9 — 2026-02-25
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.8 — 2026-02-20
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.7 — 2026-02-20
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.6 — 2026-02-16
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.5 — 2026-02-08
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.4 — 2026-02-03
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.3 — 2026-01-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 🐛 Bug fixes
+
+- Fix image manipulator in Expo Go. ([#42347](https://github.com/expo/expo/pull/42347) by [@aleqsio](https://github.com/aleqsio))
+- fix TS build issue ([#41448](https://github.com/expo/expo/pull/41448) by [@vonovak](https://github.com/vonovak))
+
+### 💡 Others
+
+- [Android] Removed unused `androidx.annotation:annotation` dependency ([#39764](https://github.com/expo/expo/pull/39764) by [@lukmccall](https://github.com/lukmccall))
+- [iOS] Removed dependency on `expo-image-loader` on iOS. ([#41395](https://github.com/expo/expo/pull/41395) by [@tsapeta](https://github.com/tsapeta))
+
+## 14.0.8 - 2025-12-05
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.7 — 2025-09-10
+
+### 💡 Others
+
+- Extracted the read permission check from `FileSystemUtilities` ([#39210](https://github.com/expo/expo/pull/39210) by [@kosmydel](https://github.com/kosmydel))
+
+## 14.0.6 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.5 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.4 — 2025-08-27
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.3 — 2025-08-25
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.0 — 2025-08-13
+
+### 🎉 New features
+
+- [iOS] Add Apple TV support. ([#38513](https://github.com/expo/expo/pull/38513) by [@douglowder](https://github.com/douglowder))
+
+## 13.1.7 — 2025-05-08
+
+### 🐛 Bug fixes
+
+- Fix `ReferenceError` during export for web. ([#36703](https://github.com/expo/expo/pull/36703) by [@aleqsio](https://github.com/aleqsio))
+
+## 13.1.6 — 2025-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.5 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.4 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.3 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.2 — 2025-04-11
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.1 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.0 — 2025-04-04
+
+### 🐛 Bug fixes
+
+- Changed `export` to `export type` for TS type declarations. ([#33446](https://github.com/expo/expo/pull/33446) by [@j-piasecki](https://github.com/j-piasecki))
+- Fixed `saveAsync` not respecting the format and compression quality. ([#33690](https://github.com/expo/expo/pull/33690) by [@tsapeta](https://github.com/tsapeta))
+- [Web] Overwrite class `name` property in `ImageManipulator`. ([#35806](https://github.com/expo/expo/pull/35806) by [@alimek](https://github.com/alimek))
+
+### 💡 Others
+
+- [Android] Started using expo modules gradle plugin. ([#34176](https://github.com/expo/expo/pull/34176) by [@lukmccall](https://github.com/lukmccall))
+- [apple] Migrate remaining `expo-module.config.json` to unified platform syntax. ([#34445](https://github.com/expo/expo/pull/34445) by [@reichhartd](https://github.com/reichhartd))
+- [iOS] Fix warnings which will become errors in Swift 6. ([#35288](https://github.com/expo/expo/pull/35288) by [@behenate](https://github.com/behenate))
+
+## 13.0.6 - 2025-01-10
+
+_This version does not introduce any user-facing changes._
 
 ## 13.0.5 — 2024-10-29
 

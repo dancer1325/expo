@@ -22,10 +22,14 @@ description: Learn about getting started with Expo modules API.
       * reuse it | MULTIPLE projects or
       * publish it | npm
 
+## Add a new module | existing application
+
+<Step label="1">
 ## Add a NEW module | existing application
 
 ### Create the local Expo module
 
+TODO: add rest of commands
 * `npx create-expo-module@latest --local`
   * 👀recommended way -- to create a -- local Expo module 👀
   * provide module name | CLI prompt
@@ -38,24 +42,31 @@ description: Learn about getting started with Expo modules API.
 * TODO:
 Import the local module in your application, for example in **App.js** or **App.tsx** or **app/index.tsx**:
 
-```tsx App.tsx
+```tsx src/app/index.tsx
 /* @hide ...*/ /* @end */
-import { hello } from './modules/my-module';
+import MyModule from '@/modules/my-module';
 
-export default function App() {
+export default function HomeScreen() {
   return (
     <View style={styles.container}>
       /* @info In the component, return the result of the native method. */
-      <Text>{hello()}</Text>
+      <Text>{MyModule.hello()}</Text>
       /* @end */
     </View>
   );
 }
 ```
 
-Start the development sever in your terminal so that when you edit the native module and build the app in the next step, the changes will be reflected in the app:
+Start the development server in your terminal so that when you edit the native module and build the app in the next step, the changes will be reflected in the app:
 
-<Terminal cmd={['$ npx expo start']} />
+<Terminal
+  cmd={{
+    npm: ['$ npx expo start'],
+    yarn: ['$ yarn expo start'],
+    pnpm: ['$ pnpm expo start'],
+    bun: ['$ bun expo start'],
+  }}
+/>
 
 Congratulations! You have created a local Expo module.
 You can now start working on it.
@@ -97,6 +108,7 @@ You have to repeat the build step anytime you make a change to the native code t
 
 ### Create the Expo module
 
+TODO: add rest of commands
 * `npx create-expo-module@latest my-module-name`
   * create a 
     * NEW Expo module -- from -- scratch &
@@ -107,11 +119,25 @@ You have to repeat the build step anytime you make a change to the native code t
 * TODO:
 Navigate to the module directory and then open the Android and/or iOS example project by running the following commands:
 
-<Terminal cmd={[`$ cd my-module`, `$ npm run open:android`, `$ npm run open:ios`]} />
+<Terminal
+  cmd={{
+    npm: [`$ cd my-module`, `$ npm run open:android`, `$ npm run open:ios`],
+    yarn: [`$ cd my-module`, `$ yarn run open:android`, `$ yarn run open:ios`],
+    pnpm: [`$ cd my-module`, `$ pnpm run open:android`, `$ pnpm run open:ios`],
+    bun: [`$ cd my-module`, `$ bun run open:android`, `$ bun run open:ios`],
+  }}
+/>
 
-Go to **example** directory and start the development sever in your terminal so that when you edit the native module and build the app in the next step, the changes will be reflected in the app:
+Go to **example** directory and start the development server in your terminal so that when you edit the native module and build the app in the next step, the changes will be reflected in the app:
 
-<Terminal cmd={['$ cd example', '$ npx expo start']} cmdCopy="cd example && npx expo start" />
+<Terminal
+  cmd={{
+    npm: ['$ cd example', '$ npx expo start'],
+    yarn: ['$ cd example', '$ yarn expo start'],
+    pnpm: ['$ cd example', '$ pnpm expo start'],
+    bun: ['$ cd example', '$ bun expo start'],
+  }}
+/>
 
 > **Note:** If you're using Windows, you can open the example project by opening the **android** directory in Android Studio, but you cannot open the iOS project files.
 

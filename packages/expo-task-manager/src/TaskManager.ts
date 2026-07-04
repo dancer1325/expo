@@ -1,8 +1,15 @@
-import { isRunningInExpoGo } from 'expo';
-import { LegacyEventEmitter, UnavailabilityError } from 'expo-modules-core';
-import { Platform } from 'react-native';
+import { Platform, UnavailabilityError } from 'expo';
+import { LegacyEventEmitter } from 'expo-modules-core';
+import { AppRegistry } from 'react-native';
 
 import ExpoTaskManager from './ExpoTaskManager';
+
+// Register a no-op headless task so that HeadlessJsTaskContext.startTask()
+// doesn't log a warning. On Android, TaskService registers a headless task
+// in native code to keep JS timers alive during background task execution.
+if (Platform.OS === 'android') {
+  AppRegistry.registerHeadlessTask('expo-task-manager', () => async () => {});
+}
 
 // @needsAudit @docsMissing
 /**
@@ -66,7 +73,12 @@ export interface TaskManagerTask {
   taskName: string;
 
   /**
-   * Type of the task which depends on how the task was registered.
+   * Type of the task which depends on how the task was registered. Standard
+   * values emitted by Expo SDK libraries are `'location'` and `'geofencing'`
+   * (`expo-location`), `'backgroundFetch'` (`expo-background-fetch`),
+   * `'expo-background-task'` on Android or `'backgroundTask'` on iOS
+   * (`expo-background-task`), and `'remote-notification'`
+   * (`expo-notifications`). User-registered tasks may have any string value.
    */
   taskType: string;
 
@@ -93,20 +105,7 @@ const tasks: Map<string, TaskManagerTaskExecutor<any>> = new Map<
   TaskManagerTaskExecutor<any>
 >();
 
-let warnedAboutExpoGo = false;
-
 function _validate(taskName: unknown) {
-  if (isRunningInExpoGo()) {
-    if (!warnedAboutExpoGo) {
-      const message =
-        '`TaskManager` functionality is limited in Expo Go:\n' +
-        'On Android, it is not available at all.\n' +
-        'On iOS, it is limited to foreground execution.\n' +
-        'Please use a development build to avoid limitations. Learn more: https://expo.fyi/dev-client.';
-      console.warn(message);
-      warnedAboutExpoGo = true;
-    }
-  }
   if (!taskName || typeof taskName !== 'string') {
     throw new TypeError('`taskName` must be a non-empty string.');
   }
@@ -114,11 +113,10 @@ function _validate(taskName: unknown) {
 
 // @needsAudit
 /**
- * Defines task function. It must be called in the global scope of your JavaScript bundle.
- * In particular, it cannot be called in any of React lifecycle methods like `componentDidMount`.
- * This limitation is due to the fact that when the application is launched in the background,
- * we need to spin up your JavaScript app, run your task and then shut down — no views are mounted
- * in this scenario.
+ * Defines task function. It must be called in the global scope of your JavaScript bundle,
+ * not inside a React component. When the application is launched in
+ * the background, no components are mounted, so the task must already be registered at
+ * module load time.
  *
  * @param taskName Name of the task. It must be the same as the name you provided when registering the task.
  * @param taskExecutor A function that will be invoked when the task with given `taskName` is executed.
@@ -270,7 +268,7 @@ if (ExpoTaskManager) {
         }
       } else {
         console.warn(
-          `TaskManager: Task "${taskName}" has been executed but looks like it is not defined. Please make sure that "TaskManager.defineTask" is called during initialization phase.`
+          `TaskManager: Execution of "${taskName}" was requested but looks like it is not defined. Available tasks: [${[...tasks.keys()].join(', ')}]. Make sure that "TaskManager.defineTask" is called during initialization phase.`
         );
         // No tasks defined -> we need to notify about finish anyway.
         await ExpoTaskManager.notifyTaskFinishedAsync(taskName, { eventId, result });
@@ -291,8 +289,5 @@ if (ExpoTaskManager) {
  * On the web, it always returns `false`.
  */
 export async function isAvailableAsync(): Promise<boolean> {
-  if (Platform.OS === 'android') {
-    return !isRunningInExpoGo() && ExpoTaskManager.isAvailableAsync();
-  }
   return ExpoTaskManager.isAvailableAsync();
 }

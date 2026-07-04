@@ -1,15 +1,16 @@
-import { requireNativeViewManager } from 'expo-modules-core';
+import { requireNativeView } from 'expo';
 import React from 'react';
-import { NativeSyntheticEvent, StyleSheet, Platform, processColor } from 'react-native';
+import type { NativeSyntheticEvent } from 'react-native';
+import { StyleSheet, Platform, processColor } from 'react-native';
 
-import {
+import type {
   ImageErrorEventData,
   ImageLoadEventData,
   ImageNativeProps,
   ImageProgressEventData,
 } from './Image.types';
 
-const NativeExpoImage = requireNativeViewManager('ExpoImage');
+const NativeExpoImage = requireNativeView('ExpoImage');
 
 function withDeprecatedNativeEvent<NativeEvent>(
   event: NativeSyntheticEvent<NativeEvent>
@@ -26,6 +27,13 @@ function withDeprecatedNativeEvent<NativeEvent>(
 }
 
 class ExpoImage extends React.PureComponent<ImageNativeProps> {
+  // NOTE(@kitten): native methods
+  startAnimating!: () => Promise<unknown> | unknown;
+  stopAnimating!: () => Promise<unknown> | unknown;
+  lockResourceAsync!: () => Promise<void>;
+  unlockResourceAsync!: () => Promise<void>;
+  reloadAsync!: () => Promise<void>;
+
   onLoadStart = () => {
     this.props.onLoadStart?.();
   };

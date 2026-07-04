@@ -11,7 +11,7 @@ import {
 import { PlatformName } from '~/types/common';
 import { MONOSPACE, RawH3 } from '~/ui/components/Text';
 
-type APIBoxProps = PropsWithChildren<{
+export type APIBoxProps = PropsWithChildren<{
   header?: string;
   platforms?: PlatformName[];
   className?: string;
@@ -33,7 +33,7 @@ export const APIBox = ({
         STYLES_APIBOX_WRAPPER,
         headerNestingLevel > 3 && STYLES_APIBOX_NESTED,
         className,
-        '!pb-4 last:[&>*]:!mb-1'
+        'pb-4! [&>*:last-child]:mb-1!'
       )}>
       {header && (
         <HeadingElement tags={platforms}>

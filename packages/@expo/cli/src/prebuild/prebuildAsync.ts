@@ -1,20 +1,27 @@
-import { ExpoConfig } from '@expo/config';
-import { ModPlatform } from '@expo/config-plugins';
+import type { ExpoConfig } from '@expo/config';
+import { getConfig } from '@expo/config';
+import type { ModPlatform } from '@expo/config-plugins';
+import { updateXcodeProject } from '@expo/inline-modules';
 import chalk from 'chalk';
 
-import { clearNativeFolder, promptToClearMalformedNativeProjectsAsync } from './clearNativeFolder';
-import { configureProjectAsync } from './configureProjectAsync';
-import { ensureConfigAsync } from './ensureConfigAsync';
-import { assertPlatforms, ensureValidPlatforms, resolveTemplateOption } from './resolveOptions';
-import { updateFromTemplateAsync } from './updateFromTemplate';
 import { installAsync } from '../install/installAsync';
 import { Log } from '../log';
 import { env } from '../utils/env';
-import { setNodeEnv } from '../utils/nodeEnv';
+import { setNodeEnv, loadEnvFiles } from '../utils/nodeEnv';
 import { clearNodeModulesAsync } from '../utils/nodeModules';
 import { logNewSection } from '../utils/ora';
 import { profile } from '../utils/profile';
 import { confirmAsync } from '../utils/prompts';
+import {
+  clearNativeFolder,
+  getExistingNativePlatformsAsync,
+  promptToClearMalformedNativeProjectsAsync,
+  maybeBailOnNativeModuleAsync,
+} from './clearNativeFolder';
+import { configureProjectAsync } from './configureProjectAsync';
+import { ensureConfigAsync } from './ensureConfigAsync';
+import { assertPlatforms, ensureValidPlatforms, resolveTemplateOption } from './resolveOptions';
+import { updateFromTemplateAsync } from './updateFromTemplate';
 
 const debug = require('debug')('expo:prebuild') as typeof console.log;
 
@@ -63,16 +70,38 @@ export async function prebuildAsync(
   }
 ): Promise<PrebuildResults | null> {
   setNodeEnv('development');
-  require('@expo/env').load(projectRoot);
+  loadEnvFiles(projectRoot);
 
-  if (options.clean) {
-    const { maybeBailOnGitStatusAsync } = await import('../utils/git.js');
-    // Clean the project folders...
-    if (await maybeBailOnGitStatusAsync()) {
-      return null;
+  const { platforms } = getConfig(projectRoot).exp;
+  if (platforms?.length) {
+    // Filter out platforms that aren't in the app.json.
+    const finalPlatforms = options.platforms.filter((platform) => platforms.includes(platform));
+    if (finalPlatforms.length > 0) {
+      options.platforms = finalPlatforms;
+    } else {
+      const requestedPlatforms = options.platforms.join(', ');
+      Log.warn(
+        chalk`⚠️  Requested prebuild for "${requestedPlatforms}", but only "${platforms.join(', ')}" is present in app config ("expo.platforms" entry). Continuing with "${requestedPlatforms}".`
+      );
     }
-    // Clear the native folders before syncing
-    await clearNativeFolder(projectRoot, options.platforms);
+  }
+  if (options.clean) {
+    // Only run the destructive-path guards when there are native folders to delete, so a
+    // first-ever prebuild doesn't prompt on git status or native module detection.
+    const existingPlatforms = await getExistingNativePlatformsAsync(projectRoot, options.platforms);
+    if (existingPlatforms.length) {
+      const { maybeBailOnGitStatusAsync } = await import('../utils/git.js');
+      // Clean the project folders...
+      if (await maybeBailOnGitStatusAsync()) {
+        return null;
+      }
+      // Check if the target project is actually a native module, which we don't want to erase
+      if (await maybeBailOnNativeModuleAsync(projectRoot)) {
+        return null;
+      }
+      // Clear the native folders before syncing
+      await clearNativeFolder(projectRoot, options.platforms);
+    }
   } else {
     // Check if the existing project folders are malformed.
     await promptToClearMalformedNativeProjectsAsync(projectRoot, options.platforms);
@@ -159,6 +188,14 @@ export async function prebuildAsync(
     podsInstalled = await installCocoaPodsAsync(projectRoot);
   } else {
     debug('Skipped pod install');
+  }
+  const inlineModules = exp.experiments?.inlineModules ?? false;
+  if (inlineModules && options.platforms.includes('ios')) {
+    await updateXcodeProject(projectRoot, {
+      watchedDirectories: inlineModules.watchedDirectories ?? [],
+      xcodeProjectTargets: inlineModules.xcodeProjectTargets,
+      name: exp.name,
+    });
   }
 
   return {

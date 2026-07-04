@@ -4,11 +4,290 @@
 
 ### 🛠 Breaking changes
 
+- Extended `SourceSkips.ExpoConfigVersions` to also strip the platform-specific version overrides `ios.version` and `android.version` (which take precedence over the top-level `version`). Projects already setting this flag will see their fingerprint hash change after upgrading.
+
 ### 🎉 New features
 
 ### 🐛 Bug fixes
 
+- Fixed unstable fingerprint for iOS precompiled modules. ([#46466](https://github.com/expo/expo/pull/46466) by [@kudo](https://github.com/kudo))
+
 ### 💡 Others
+
+- Added more default `getConfig` exclusion packages. ([#47503](https://github.com/expo/expo/pull/47503) by [@kudo](https://github.com/kudo))
+
+## 0.19.3 — 2026-05-26
+
+### 🐛 Bug fixes
+
+- Fixed unstable fingerprint on Windows. ([#46196](https://github.com/expo/expo/pull/46196) by [@kudo](https://github.com/kudo))
+- Fixed unstable fingerprint from `expo-modules-jsi`. ([#46187](https://github.com/expo/expo/pull/46187), [#46201](https://github.com/expo/expo/pull/46201) by [@kudo](https://github.com/kudo))
+
+### 💡 Others
+
+- Updated E2E test to use SDK 56 templates. ([#46194](https://github.com/expo/expo/pull/46194) by [@kudo](https://github.com/kudo))
+
+## 0.19.2 — 2026-05-23
+
+_This version does not introduce any user-facing changes._
+
+## 0.19.1 — 2026-05-21
+
+### 🐛 Bug fixes
+
+- Prevent ENOENT on virtual Node module paths in `ExpoConfigLoader` and check whether module paths correspond to files on disk ([#46092](https://github.com/expo/expo/pull/46092) by [@kitten](https://github.com/kitten))
+
+## 0.19.0 — 2026-05-20
+
+### 🐛 Bug fixes
+
+- Pass original env to Expo / Community CLI sub-commands ([#45834](https://github.com/expo/expo/pull/45834) by [@kitten](https://github.com/kitten))
+
+### 💡 Others
+
+- Bump to `@expo/spawn-async@^1.8.0` ([#45999](https://github.com/expo/expo/pull/45999) by [@kitten](https://github.com/kitten))
+
+## 0.18.3 — 2026-05-19
+
+_This version does not introduce any user-facing changes._
+
+## 0.18.2 — 2026-05-15
+
+_This version does not introduce any user-facing changes._
+
+## 0.18.1 — 2026-05-13
+
+_This version does not introduce any user-facing changes._
+
+## 0.18.0 — 2026-05-13
+
+_This version does not introduce any user-facing changes._
+
+## 0.17.4 — 2026-05-08
+
+_This version does not introduce any user-facing changes._
+
+## 0.17.3 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 0.17.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 0.17.1 — 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 0.17.0 — 2026-05-05
+
+### 🐛 Bug fixes
+
+- Use `expo-splash-screen` plugin config type and remove legacy `splash` properties from fingerprint sources. ([#44598](https://github.com/expo/expo/pull/44598) by [@zoontek](https://github.com/zoontek))
+
+## 0.16.7 - 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 0.16.6 - 2026-03-11
+
+### 🎉 New features
+
+- Include expo-font plugin font files in fingerprint hash calculation ([#43575](https://github.com/expo/expo/pull/43575) by [@vonovak](https://github.com/vonovak))
+
+## 0.16.5 — 2026-02-25
+
+### 💡 Others
+
+- Bump to `minimatch@^10.2.2` ([#43325](https://github.com/expo/expo/pull/43325) by [@kitten](https://github.com/kitten))
+
+## 0.16.4 — 2026-02-20
+
+### 🐛 Bug fixes
+
+- Fix resolution to `expo -> @expo/cli -> @expo/env` being unstable ([#42764](https://github.com/expo/expo/pull/42764) by [@kitten](https://github.com/kitten))
+
+## 0.16.3 — 2026-02-03
+
+### 💡 Others
+
+- Drop `p-limit` dependency ([#42487](https://github.com/expo/expo/pull/42487) by [@kitten](https://github.com/kitten))
+
+## 0.16.2 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 0.16.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 0.16.0 — 2026-01-21
+
+### 🐛 Bug fixes
+
+- Fixed unstable fingerprint from `expo-sqlite` and `expo-updates`. ([#40524](https://github.com/expo/expo/pull/40524) by [@kudo](https://github.com/kudo))
+
+## 0.15.4 - 2025-12-04
+
+### 💡 Others
+
+- Update to `glob@^13.0.0` ([#41079](https://github.com/expo/expo/pull/41079) by [@kitten](https://github.com/kitten))
+
+## 0.15.3 - 2025-11-03
+
+_This version does not introduce any user-facing changes._
+
+## 0.15.2 - 2025-10-20
+
+### 🐛 Bug fixes
+
+- Fixed the **package.json** file appears in fingerprint when loading from **app.config.js**. ([#40320](https://github.com/expo/expo/pull/40320) by [@kudo](https://github.com/kudo))
+- Fixed errors when `ios.icon` is an object in **app.json**. ([#40403](https://github.com/expo/expo/pull/40403) by [@kudo](https://github.com/kudo))
+- Ensure AAR file paths in expo fingerprint are relative for SDK 53 and later. ([#40319](https://github.com/expo/expo/pull/40319) by [@jonemilnik](https://github.com/jonemilnik))
+- Fixed unstable fingerprint from `shouldUsePublicationScriptPath`. ([#40412](https://github.com/expo/expo/pull/40412) by [@kudo](https://github.com/kudo))
+- Fixed unstable fingerprint for Google services files using EAS environment secrets. ([#40540](https://github.com/expo/expo/pull/40540) by [@kudo](https://github.com/kudo))
+
+## 0.15.1 — 2025-09-16
+
+### 🐛 Bug fixes
+
+- Fixed `expoConfigExternalFile` does not return normalized relative paths. ([#39708](https://github.com/expo/expo/pull/39708) by [@kudo](https://github.com/kudo))
+
+## 0.15.0 — 2025-09-10
+
+### 💡 Others
+
+- Remove dependency on `find-up` ([#39470](https://github.com/expo/expo/pull/39470) by [@kitten](https://github.com/kitten))
+
+## 0.14.6 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 0.14.5 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 0.14.4 — 2025-08-27
+
+_This version does not introduce any user-facing changes._
+
+## 0.14.3 — 2025-08-25
+
+_This version does not introduce any user-facing changes._
+
+## 0.14.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 0.14.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 0.14.0 — 2025-08-13
+
+### 💡 Others
+
+- Removed `--transitive-linking-dependencies` since `react-native-edge-to-edge` built-in dependency will be replaced. This reverts [#37209](https://github.com/expo/expo/pull/37209). ([#38637](https://github.com/expo/expo/pull/38637) by [@kitten](https://github.com/kitten))
+
+## 0.13.4 - 2025-07-03
+
+_This version does not introduce any user-facing changes._
+
+## 0.13.3 - 2025-07-01
+
+_This version does not introduce any user-facing changes._
+
+## 0.13.2 - 2025-07-01
+
+### 🐛 Bug fixes
+
+- Added support for ignoring the patches directory ([#37702](https://github.com/expo/expo/pull/37702) by [@huextrat](https://github.com/huextrat))
+- Fixed unstable fingerprint from packages with native binaries like `sharp`. ([#37733](https://github.com/expo/expo/pull/37733) by [@kudo](https://github.com/kudo))
+- Fixed unstable fingerprint from `sharp@~0.32.0`. ([#37758](https://github.com/expo/expo/pull/37758) by [@kudo](https://github.com/kudo))
+
+## 0.13.1 - 2025-06-18
+
+### 🐛 Bug fixes
+
+- Move `glob` from `devDependencies` to `dependencies` as its used outside test code. ([#37332](https://github.com/expo/expo/pull/37332) by [@byCedric](https://github.com/byCedric))
+
+## 0.13.0 - 2025-06-08
+
+### 🎉 New features
+
+- Ignored native directories for CNG projects. ([#37205](https://github.com/expo/expo/pull/37205) by [@kudo](https://github.com/kudo))
+
+### 🐛 Bug fixes
+
+- Update to `getenv@2.0.0` to support upper case boolean environment variables ([#36688](https://github.com/expo/expo/pull/36688) by [@stephenlacy](https://github.com/stephenlacy))
+- Added `--transitive-linking-dependencies` for `react-native-edge-to-edge` autolinking. ([#37209](https://github.com/expo/expo/pull/37209) by [@kudo](https://github.com/kudo))
+
+### 💡 Others
+
+- Remove "Please" from warnings and errors ([#36862](https://github.com/expo/expo/pull/36862) by [@brentvatne](https://github.com/brentvatne))
+- Added `useCNGForPlatforms` to indicate project workflow. ([#37204](https://github.com/expo/expo/pull/37204) by [@kudo](https://github.com/kudo))
+- Refactored Expo config loading logic into **ExpoConfig.ts**. ([#37208](https://github.com/expo/expo/pull/37208) by [@kudo](https://github.com/kudo))
+
+## 0.12.4 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 0.12.3 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 0.12.2 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 0.12.1 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 0.12.0 — 2025-04-04
+
+### 💡 Others
+
+- docs(fingerprint): correct typo in fingerprint cli ([#33887](https://github.com/expo/expo/pull/33887) by [@leopic](https://github.com/leopic))
+- Finish adding args to fingerprint CLI. ([#34045](https://github.com/expo/expo/pull/34045) by [@wschurman](https://github.com/wschurman))
+- Add docs for @expo/fingerprint ([#34450](https://github.com/expo/expo/pull/34450) by [@wschurman](https://github.com/wschurman))
+- Upgrade to `minimatch@9` ([#35313](https://github.com/expo/expo/pull/35313) by [@kitten](https://github.com/kitten))
+
+## 0.11.11 - 2025-02-19
+
+_This version does not introduce any user-facing changes._
+
+## 0.11.10 - 2025-02-14
+
+_This version does not introduce any user-facing changes._
+
+## 0.11.9 - 2025-02-10
+
+### 💡 Others
+
+- Added more default ignored paths for default template. ([#34695](https://github.com/expo/expo/pull/34695) by [@kudo](https://github.com/kudo))
+- Added `SourceSkips.ExpoConfigExtraSection`. ([#34697](https://github.com/expo/expo/pull/34697) by [@kudo](https://github.com/kudo))
+
+## 0.11.8 - 2025-01-31
+
+### 🎉 New features
+
+- Add `SourceSkips.GitIgnore` to allow `.gitignore` changes to be excluded from the fingerpint ([#34220](https://github.com/expo/expo/pull/34220) by [@ball-hayden](https://github.com/ball-hayden))
+
+### 🐛 Bug fixes
+
+- Run the React imports patcher for any platform if iOS sources are detected ([#34760](https://github.com/expo/expo/pull/34760) by [@capezzbr](https://github.com/capezzbr))
+- Fixed unstable fingerprint from `expoConfig` contents with absolute paths. ([#33926](https://github.com/expo/expo/pull/33926) by [@kudo](https://github.com/kudo))
+- Fix typo in help output and debug. ([#34766](https://github.com/expo/expo/pull/34766) by [@alanjhughes](https://github.com/alanjhughes))
+- Fixed `fingerprint.config.js` options be overwritten by CLI. ([#34935](https://github.com/expo/expo/pull/34935) by [@kudo](https://github.com/kudo))
+
+### 💡 Others
+
+- Added `.env` support for `ExpoConfigLoader`. ([#33967](https://github.com/expo/expo/pull/33967) by [@kudo](https://github.com/kudo))
+
+## 0.11.7 - 2025-01-10
+
+_This version does not introduce any user-facing changes._
 
 ## 0.11.6 - 2024-12-24
 

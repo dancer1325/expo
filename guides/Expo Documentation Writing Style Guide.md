@@ -108,6 +108,12 @@ In most cases, to refer to multiple platforms (Android, iOS, and Web) in one sen
 
 When referencing Expo Go, the supported text should avoid implying: "running an app", "developing an app", or "previewing an app". One alternative to avoid these constraints is: "testing your project".
 
+### Referencing app.json/app.config.json/app.config.js/app.config.ts
+
+When referencing the multiple variants of app config file, such as app.json, app.config.json, app.config.js, or app.config.ts, use "**app config**" or "**app config** file" and link to its [documentation page](https://docs.expo.dev/workflow/configuration/). This helps the reader understand that these files are interchangeable and can be used in the same context.
+
+If there is a need to reference a specific file format, use the appropriate file name.
+
 ## Punctuation
 
 ### Use double quotes in prose
@@ -173,12 +179,24 @@ We, sometimes, have buttons that lead to an Expo Snack. Use title case for these
 - Correct: Try this example on Snack
 - Incorrect: Try This Example On Snack
 
-### Filenames as bold text
+### File names, directory names, file extensions as bold text
 
-Filenames are used as bold text in the markdown files.
+File names, directory names and file extensions are used as bold text in the markdown files.
 
-- Correct: Your app's configuration is located in **app.json/app.config.js**
-- Incorrect: Your app's configuration is loaded in `app.json/app.config.js`
+Example:
+
+- Correct: Your app's configuration is located in **app.json/app.config.js**.
+- Incorrect: Your app's configuration is loaded in `app.json/app.config.js`.
+
+Example:
+
+- Correct: If you commit your **android** or **ios** directories, it won't work.
+- Incorrect: If you commit your `android` or `ios` directories, it won't work.
+
+Example:
+
+- Correct: This command should produce **.tar.gz** archive.
+- Incorrect: This command should produce .tar.gz archive.
 
 ### Capitalization
 
@@ -200,6 +218,10 @@ Use [internal links](https://github.com/expo/expo/blob/main/docs/README.md#inter
 
 - When referencing Expo CLI in a standalone apps document, instead of going through the steps of installing the Expo CLI from scratch, mention that Expo CLI is required and use internal linking to Expo CLI installation steps mentioned in the "Getting Started" section.
 
+#### Linking to Expo FYI pages
+
+When linking to the [Expo FYI pages](https://github.com/expo/fyi), use shorthand links, such as https://expo.fyi/bundle-identifier instead of the full URL (https://github.com/expo/fyi/blob/main/bundle-identifier.md).
+
 ### Accessibility
 
 An accessible document is created to be as easily readable by a sighted reader as a low vision or non-sighted reader. One of the key points to keep in mind when writing documentation and using images and videos is to add an "alt" text to them.
@@ -216,10 +238,6 @@ Only apply inline code formatting using back-ticks (``) on programming words and
 
 - Correct: Make sure you write `async` before the `function` keyword to set up an asynchronous function.
 - Incorrect: Click the `File` menu, then click `Save As` to export the file as a specific file type.
-
-### Use `&mdash;`
-
-In some scenarios, when you split two sentences and use `-` or `--`, instead use `&mdash;`. Markdown renders that em dash nicely instead of a hyphen (`-`).
 
 ### Referencing Keyboard shortcuts
 
@@ -239,12 +257,25 @@ A few points to remember:
 
 Do not use emojis in the documentation.
 
-### When to use npm or Yarn
+### Referencing package managers in install commands
 
-To avoid inconsistency when referencing to install global packages with a package manager like npm or Yarn, use npm.
+For install commands shown to readers, use the `<Terminal cmd={{ npm, yarn, pnpm, bun }}>` component so all supported package managers appear as selectable tabs:
 
-- Correct: npm install expo-cli
-- Incorrect: yarn install expo-cli
+```mdx
+<Terminal
+  cmd={{
+    npm: ["$ npx create-expo-app@latest"],
+    yarn: ["$ yarn create expo-app"],
+    pnpm: ["$ pnpm create expo-app"],
+    bun: ["$ bun create expo"],
+  }}
+/>
+```
+
+When a single command must be shown inline (for example, in a paragraph or a one-off shell example), default to npx to keep examples consistent:
+
+- Correct: `npx expo install <package>`
+- Avoid: `yarn add <package>`
 
 ### For collapsible components
 
@@ -258,9 +289,18 @@ To avoid using the term "managed workflow", use "using Expo" to represent the cu
 
 When offering guidance for projects that require manually editing native code/directories, put those instructions in a dropdown saying "manual setup", or "usage in bare React Native projects", or "usage in existing React Native projects".
 
-### Numbered Lists
+### Numbered lists
 
 Any numbered list should start with `1` instead of `0`. This avoids inconsistency across all areas in the documentation.
+
+### SDK version range callouts
+
+In Expo and Expo SDK documentation, use _later_ and/or _earlier_ to describe a range of version numbers.
+
+- Correct: **info** Available in **SDK 54 and later**.
+- Correct: **info** Available in **SDK 54 and earlier**.
+- Incorrect: **info** Available in **SDK 54 and above**.
+- Incorrect: **info** Available in **SDK 54 and below**.
 
 ## Tools to use when using visualization or interactivity to communicate
 
@@ -309,29 +349,26 @@ Writing API documentation accurately and precisely helps developers use our APIs
 
 - Properly inline docs into the code using [TSDoc](https://tsdoc.org/)
 - Use supported TSDoc and [TypeDoc](https://typedoc.org/guides/doccomments/) annotations:
-  - `@return` / `@returns`
-  - `@param`
-    - Used for adding a description to the method arguments, syntax:
-      - `@param [param_name] [description]`
-  - `@default`
-    - Currently, does not support Markdown formatting, all the content will be placed directly in the `InlineCode` block, so there is no need to wrap the value with ``` manually.
-  - `@platform`
-    - Available platforms: `android` , `ios` , `web` and `expo` (Expo Go).
-    - You can also specify the minimum platform version, range, or add any other comment to the label, for example, `@platform ios 11+`.
-    - Currently, specifying multiple platforms (or lists) per one tag is not possible. However, you can include multiple `@platform` tags in the doc block.
-  - `@example`
-    - Adds the "Example" header and puts content at the bottom of the description block.
-  - `@see`
-    - Wraps the message in a note/quote block and adds "See:" at the beginning of the message.
-    - See section is placed after the main comment content.
-  - `@deprecated`
-    - Wraps the message in note/quote block and adds "Deprecated" at the beginning of the message automatically. However, a message is not required.
-    - The deprecation note will always be placed at the top of the generated doc comment, no matter where you put it in the doc block content.
-  - `@internal` / `@private` / `@hidden`
-    - Any of those annotations will hide the code and comments from the autogenerated API docs output.
-  - `@header`
-    - Allows grouping methods by the custom headers, which should be used with `headersMapping` prop for the `APISection` component to control the actual header titles
-      and their order (see `expo-notifications` source and doc page for an example usage).
+
+| Tag                                  | Usage                                                                                                                                                                                                                                                                                                                        |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@return` / `@returns`               | Describes the return value.                                                                                                                                                                                                                                                                                                  |
+| `@param`                             | Adds a description to method arguments. Syntax: `@param [param_name] [description]`.                                                                                                                                                                                                                                         |
+| `@throws`                            | Adds an error a function or method may throw. Syntax: `@throws [description]`. Use one tag per error condition.                                                                                                                                                                                                              |
+| `@default`                           | Does not support Markdown formatting. All content is placed directly in the `InlineCode` block, so there is no need to wrap the value with ``` manually.                                                                                                                                                                     |
+| `@platform`                          | Available platforms: `android`, `ios`, `web`, `expo` (Expo Go).<br>You can specify a minimum version or range, for example, `@platform ios 11+`.<br>Currently, specifying multiple platforms (or lists) per one tag is not possible. Use multiple `@platform` tags to list more than one platform.                           |
+| `@example`                           | Adds the "Example" header and puts content at the bottom of the description block.                                                                                                                                                                                                                                           |
+| `@see`                               | Wraps the message in a note/quote block and adds "See:" at the beginning of the message.<br>The See section is placed after the main comment content.                                                                                                                                                                        |
+| `@deprecated`                        | Wraps the message in a note/quote block and adds "Deprecated" at the beginning of the message automatically. A message is optional.<br>The deprecation note is always placed at the top of the generated doc comment, no matter where you put it in the doc block content.                                                   |
+| `@experimental`                      | Adds an "Experimental" label to the property when used.                                                                                                                                                                                                                                                                      |
+| `@internal` / `@private` / `@hidden` | Any of those annotations will hide the code and comments from the autogenerated API docs output.                                                                                                                                                                                                                             |
+| `@hideType`                          | Hides the generated **Type** callout for constants in the API docs when the type should not be displayed.                                                                                                                                                                                                                    |
+| `@header`                            | Allows grouping methods by custom headers, used with the `headersMapping` prop for the `APISection` component to control header titles and their order (see `expo-notifications` source and doc page for an example usage).                                                                                                  |
+| `@docsInline`                        | Marks a shared base type (interface or type alias) so its members get inlined into each platform-specific implementation in the generated API data, instead of rendering as a separate reference. See [`docsInline.ts`](https://github.com/expo/expo/blob/main/tools/src/generate-docs-api-data/docsInline.ts) for behavior. |
+| `@alias`                             | Adds a property as an alternate name for another property. Syntax: `@alias [target_property_name]`.                                                                                                                                                                                                                          |
+| `@docsMissing`                       | Audit-only marker for members that lack documentation. Stripped from the rendered output and is used as for reference only.                                                                                                                                                                                                  |
+| `@needsAudit`                        | Audit-only marker for members whose documentation needs review. Stripped from the rendered output and is used as for reference only.                                                                                                                                                                                         |
+
 - When linking other SDK packages in a comment, use `./` instead of `../` at the beginning of the URL
   - For more information, check out [detect broken internal links in generated doc comments](https://github.com/expo/expo/pull/16771) PR on GitHub.
 - To add a subscript or superscript in the comment content, use the following custom syntax:
@@ -339,6 +376,8 @@ Writing API documentation accurately and precisely helps developers use our APIs
   21^st^ Century <!-- sup -->
   H~2~O <!-- sub -->
   ```
+
+> **Warning:** The `@link` inline tag is not supported in docs. Use standard Markdown links instead for internal and external links.
 
 ## Accuracy
 

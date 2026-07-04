@@ -1,18 +1,21 @@
+import type { ExpoConfig } from '@expo/config-types';
+
+import { createBuildGradlePropsConfigPlugin } from './BuildProperties';
+import type { AndroidManifest } from './Manifest';
 import {
   addMetaDataItemToMainApplication,
-  AndroidManifest,
   findMetaDataItem,
   getMainApplicationOrThrow,
   removeMetaDataItemFromMainApplication,
 } from './Manifest';
-import { buildResourceItem, ResourceXML } from './Resources';
-import * as Resources from './Resources';
+import { buildResourceItem, type ResourceXML } from './Resources';
 import { removeStringItem, setStringItem } from './Strings';
-import { ConfigPlugin, ExportedConfigWithProps } from '../Plugin.types';
+import type { ConfigPlugin, ExportedConfigWithProps } from '../Plugin.types';
 import { createStringsXmlPlugin, withAndroidManifest } from '../plugins/android-plugins';
 import { withPlugins } from '../plugins/withPlugins';
+import type { ExpoConfigUpdates } from '../utils/Updates';
 import {
-  ExpoConfigUpdates,
+  getDisableAntiBrickingMeasures,
   getExpoUpdatesPackageVersion,
   getRuntimeVersionNullableAsync,
   getUpdatesCheckOnLaunch,
@@ -22,6 +25,7 @@ import {
   getUpdatesEnabled,
   getUpdatesTimeout,
   getUpdateUrl,
+  getUpdatesBsdiffPatchSupportEnabled,
   getUpdatesUseEmbeddedUpdate,
 } from '../utils/Updates';
 import { addWarningAndroid } from '../utils/warnings';
@@ -36,14 +40,33 @@ export enum Config {
   UPDATES_HAS_EMBEDDED_UPDATE = 'expo.modules.updates.HAS_EMBEDDED_UPDATE',
   CODE_SIGNING_CERTIFICATE = 'expo.modules.updates.CODE_SIGNING_CERTIFICATE',
   CODE_SIGNING_METADATA = 'expo.modules.updates.CODE_SIGNING_METADATA',
+  DISABLE_ANTI_BRICKING_MEASURES = 'expo.modules.updates.DISABLE_ANTI_BRICKING_MEASURES',
+  BSDIFF_PATCH_SUPPORT = 'expo.modules.updates.ENABLE_BSDIFF_PATCH_SUPPORT',
 }
 
 // when making changes to this config plugin, ensure the same changes are also made in eas-cli and build-tools
 // Also ensure the docs are up-to-date: https://docs.expo.dev/bare/installing-updates/
 
 export const withUpdates: ConfigPlugin = (config) => {
-  return withPlugins(config, [withUpdatesManifest, withRuntimeVersionResource]);
+  return withPlugins(config, [
+    withUpdatesManifest,
+    withRuntimeVersionResource,
+    withUpdatesNativeDebugGradleProps,
+  ]);
 };
+
+/**
+ * A config-plugin to update `android/gradle.properties` from the `updates.useNativeDebug` in expo config
+ */
+const withUpdatesNativeDebugGradleProps = createBuildGradlePropsConfigPlugin<ExpoConfig>(
+  [
+    {
+      propName: 'EX_UPDATES_NATIVE_DEBUG',
+      propValueGetter: (config) => (config?.updates?.useNativeDebug === true ? 'true' : undefined),
+    },
+  ],
+  'withUpdatesNativeDebugGradleProps'
+);
 
 const withUpdatesManifest: ConfigPlugin = (config) => {
   return withAndroidManifest(config, async (config) => {
@@ -65,7 +88,7 @@ const withRuntimeVersionResource = createStringsXmlPlugin(
 );
 
 export async function applyRuntimeVersionFromConfigAsync(
-  config: ExportedConfigWithProps<Resources.ResourceXML>,
+  config: ExportedConfigWithProps<ResourceXML>,
   stringsJSON: ResourceXML
 ): Promise<ResourceXML> {
   const projectRoot = config.modRequest.projectRoot;
@@ -163,6 +186,23 @@ export async function setUpdatesConfigAsync(
     );
   }
 
+  const disableAntiBrickingMeasures = getDisableAntiBrickingMeasures(config);
+  if (disableAntiBrickingMeasures) {
+    addMetaDataItemToMainApplication(
+      mainApplication,
+      Config.DISABLE_ANTI_BRICKING_MEASURES,
+      'true'
+    );
+  } else {
+    removeMetaDataItemFromMainApplication(mainApplication, Config.DISABLE_ANTI_BRICKING_MEASURES);
+  }
+
+  addMetaDataItemToMainApplication(
+    mainApplication,
+    Config.BSDIFF_PATCH_SUPPORT,
+    getUpdatesBsdiffPatchSupportEnabled(config) ? 'true' : 'false'
+  );
+
   return await setVersionsConfigAsync(projectRoot, config, androidManifest);
 }
 
@@ -176,7 +216,7 @@ export async function setVersionsConfigAsync(
   const runtimeVersion = await getRuntimeVersionNullableAsync(projectRoot, config, 'android');
   if (!runtimeVersion && findMetaDataItem(mainApplication, Config.RUNTIME_VERSION) > -1) {
     throw new Error(
-      'A runtime version is set in your AndroidManifest.xml, but is missing from your app.json/app.config.js. Please either set runtimeVersion in your app.json/app.config.js or remove expo.modules.updates.EXPO_RUNTIME_VERSION from your AndroidManifest.xml.'
+      'A runtime version is set in your AndroidManifest.xml, but is missing from your Expo app config (app.json/app.config.js). Either set runtimeVersion in your Expo app config or remove expo.modules.updates.EXPO_RUNTIME_VERSION from your AndroidManifest.xml.'
     );
   }
   if (runtimeVersion) {

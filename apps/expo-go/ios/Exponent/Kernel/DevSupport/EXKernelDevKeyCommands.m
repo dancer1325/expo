@@ -1,10 +1,10 @@
 // Copyright 2015-present 650 Industries. All rights reserved.
 
-#import "EXEnvironment.h"
 #import "EXKernelDevKeyCommands.h"
 #import "EXKernel.h"
 #import "EXKernelAppRegistry.h"
 #import "EXReactAppManager.h"
+#import "Expo_Go-Swift.h"
 
 #import <React/RCTDefines.h>
 #import <React/RCTUtils.h>
@@ -89,7 +89,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 {
   BOOL interactionEnabled = !UIApplication.sharedApplication.isIgnoringInteractionEvents;
   BOOL hasFirstResponder = NO;
-  [EXKernelDevKeyCommands handleKeyboardEvent:event];
   
   if (interactionEnabled) {
     UIResponder *firstResponder = nil;
@@ -224,52 +223,45 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
                              action:^(__unused UIKeyCommand *_) {
                                [weakSelf _handleMenuCommand];
                              }];
+  [self registerKeyCommandWithInput:@"d"
+                      modifierFlags:UIKeyModifierControl
+                             action:^(__unused UIKeyCommand *_) {
+                               [weakSelf _handleMenuCommand];
+                             }];
+  [self registerKeyCommandWithInput:@"d"
+                      modifierFlags:0
+                             action:^(__unused UIKeyCommand *_) {
+                               [weakSelf _handleMenuCommand];
+                             }];
   [self registerKeyCommandWithInput:@"r"
-                      modifierFlags:UIKeyModifierCommand
+                      modifierFlags:0
                              action:^(__unused UIKeyCommand *_) {
                                [weakSelf _handleRefreshCommand];
-                             }];
-  [self registerKeyCommandWithInput:@"n"
-                      modifierFlags:UIKeyModifierCommand
-                             action:^(__unused UIKeyCommand *_) {
-                               [weakSelf _handleDisableDebuggingCommand];
                              }];
   [self registerKeyCommandWithInput:@"i"
                       modifierFlags:UIKeyModifierCommand
                              action:^(__unused UIKeyCommand *_) {
                                [weakSelf _handleToggleInspectorCommand];
                              }];
+  [self registerKeyCommandWithInput:@"p"
+                      modifierFlags:UIKeyModifierCommand
+                             action:^(__unused UIKeyCommand *_) {
+                               [weakSelf _handleTogglePerformanceMonitorCommand];
+                             }];
   [self registerKeyCommandWithInput:@"k"
                       modifierFlags:UIKeyModifierCommand | UIKeyModifierControl
                              action:^(__unused UIKeyCommand *_) {
                                [weakSelf _handleKernelMenuCommand];
                              }];
-
 }
 
 - (void)_handleMenuCommand
 {
-  [[EXKernel sharedInstance] switchTasks];
+  [[DevMenuManager shared] toggleMenu];
 }
 
 - (void)_handleRefreshCommand
 {
-  // This reloads only JS
-  //  [[EXKernel sharedInstance].visibleApp.appManager reloadBridge];
-
-  // This reloads manifest and JS
-  [[EXKernel sharedInstance] reloadVisibleApp];
-}
-
-- (void)_handleDisableDebuggingCommand
-{
-  [[EXKernel sharedInstance].visibleApp.appManager disableRemoteDebugging];
-}
-
-- (void)_handleToggleRemoteDebuggingCommand
-{
-  [[EXKernel sharedInstance].visibleApp.appManager toggleRemoteDebugging];
-  // This reloads manifest and JS
   [[EXKernel sharedInstance] reloadVisibleApp];
 }
 
@@ -285,9 +277,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 - (void)_handleKernelMenuCommand
 {
-  if ([EXKernel sharedInstance].visibleApp == [EXKernel sharedInstance].appRegistry.homeAppRecord) {
-    [[EXKernel sharedInstance].appRegistry.homeAppRecord.appManager showDevMenu];
-  }
 }
 
 #pragma mark - managing list of commands

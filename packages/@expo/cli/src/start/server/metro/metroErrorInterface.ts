@@ -5,19 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 import { getMetroServerRoot } from '@expo/config/paths';
+import { parseWebBuildErrors } from '@expo/log-box-utils';
 import chalk from 'chalk';
+import { stripVTControlCharacters } from 'node:util';
 import path from 'path';
 import resolveFrom from 'resolve-from';
-import { parse, StackFrame } from 'stacktrace-parser';
+import type { StackFrame } from 'stacktrace-parser';
+import { parse } from 'stacktrace-parser';
 import terminalLink from 'terminal-link';
 
+import { Log } from '../../../log';
+import { stripAnsi } from '../../../utils/ansi';
+import { env } from '../../../utils/env';
+import { CommandError, SilentError } from '../../../utils/errors';
+import { createMetroEndpointAsync } from '../getStaticRenderFunctions';
+import type { LogBoxLogData } from './log-box/LogBoxLog';
 import { LogBoxLog } from './log-box/LogBoxLog';
 import type { CodeFrame, StackFrame as MetroStackFrame } from './log-box/LogBoxSymbolication';
 import { getStackFormattedLocation } from './log-box/formatProjectFilePath';
-import { Log } from '../../../log';
-import { stripAnsi } from '../../../utils/ansi';
-import { CommandError, SilentError } from '../../../utils/errors';
-import { createMetroEndpointAsync } from '../getStaticRenderFunctions';
+
+const isDebug = require('debug').enabled('expo:start:server:metro');
 
 function fill(width: number): string {
   return Array(width).join(' ');
@@ -59,13 +66,47 @@ export async function logMetroErrorWithStack(
     return;
   }
 
-  if (codeFrame) {
-    const maxWarningLineLength = Math.max(200, process.stdout.columns);
+  Log.log(
+    getStackAsFormattedLog(projectRoot, { stack, codeFrame, error, showCollapsedFrames: true })
+      .stack
+  );
+}
+
+export function getStackAsFormattedLog(
+  projectRoot: string,
+  {
+    stack,
+    codeFrame,
+    error,
+    showCollapsedFrames = env.EXPO_DEBUG,
+  }: {
+    stack: MetroStackFrame[];
+    codeFrame?: CodeFrame;
+    error?: Error;
+    showCollapsedFrames?: boolean;
+  }
+): {
+  isFallback: boolean;
+  stack: string;
+} {
+  const logs: string[] = [];
+  const containsCodeFrame = likelyContainsCodeFrame(error?.message);
+
+  if (containsCodeFrame) {
+    // Some transformation errors will have a code frame embedded in the error message
+    // from Babel and we should not duplicate it as message is already printed before this call.
+  } else if (codeFrame) {
+    const maxWarningLineLength = Math.max(800, process.stdout.columns);
 
     const lineText = codeFrame.content;
-    const isPreviewTooLong = codeFrame.content
-      .split('\n')
-      .some((line) => line.length > maxWarningLineLength);
+    const lines = codeFrame.content.split('\n');
+
+    // ---- index.tsx ------------------------------------------------------
+    //  32 |         This is example code which will be under the title.
+    const title = path.basename(codeFrame.fileName);
+    logs.push(chalk.bold`Code: ${title}`);
+
+    const isPreviewTooLong = lines.some((line) => line.length > maxWarningLineLength);
     const column = codeFrame.location?.column;
     // When the preview is too long, we skip reading the file and attempting to apply
     // code coloring, this is because it can get very slow.
@@ -103,56 +144,87 @@ export async function logMetroErrorWithStack(
         // If the column property could be found, then use that to fix the cursor location which is often broken in regex.
         cursorLine = (column == null ? '' : fill(column) + chalk.reset('^')).slice(minBounds);
 
-        Log.log(
-          [formattedPath, '', previewLine, cursorLine, chalk.dim('(error truncated)')].join('\n')
-        );
+        logs.push(formattedPath, '', previewLine, cursorLine, chalk.dim('(error truncated)'));
       }
     } else {
-      Log.log(codeFrame.content);
+      logs.push(codeFrame.content);
     }
   }
 
+  let isFallback = false;
   if (stack?.length) {
     const stackProps = stack.map((frame) => {
       return {
         title: frame.methodName,
         subtitle: getStackFormattedLocation(projectRoot, frame),
-        collapse: frame.collapse,
+        collapse: frame.collapse || isInternalBytecode(frame),
       };
     });
 
     const stackLines: string[] = [];
+    const backupStackLines: string[] = [];
 
     stackProps.forEach((frame) => {
+      const shouldShow = !frame.collapse || showCollapsedFrames;
+
       const position = terminalLink.isSupported
         ? terminalLink(frame.subtitle, frame.subtitle)
         : frame.subtitle;
       let lineItem = chalk.gray(`  ${frame.title} (${position})`);
+
       if (frame.collapse) {
         lineItem = chalk.dim(lineItem);
       }
       // Never show the internal module system.
-      if (!frame.subtitle.match(/\/metro-require\/require\.js/)) {
-        stackLines.push(lineItem);
+      const isMetroRuntime =
+        /\/metro-runtime\/src\/polyfills\/require\.js/.test(frame.subtitle) ||
+        /\/metro-require\/require\.js/.test(frame.subtitle);
+      if (!isMetroRuntime) {
+        if (shouldShow) {
+          stackLines.push(lineItem);
+        }
+        backupStackLines.push(lineItem);
       }
     });
 
-    Log.log();
-    Log.log(chalk.bold`Call Stack`);
-    if (!stackLines.length) {
-      Log.log(chalk.gray('  No stack trace available.'));
+    logs.push(chalk.bold`Call Stack`);
+
+    if (!backupStackLines.length) {
+      logs.push(chalk.gray('  No stack trace available.'));
     } else {
-      Log.log(stackLines.join('\n'));
+      isFallback = stackLines.length === 0;
+      // If there are not stack lines then it means the error likely happened in the node modules, in this case we should fallback to showing all the
+      // the stacks to give the user whatever help we can.
+      const displayStack = stackLines.length ? stackLines : backupStackLines;
+      logs.push(displayStack.join('\n'));
     }
-  } else {
-    Log.log(chalk.gray(`  ${error.stack}`));
+  } else if (error && error.stack) {
+    logs.push(chalk.gray(`  ${error.stack}`));
   }
+
+  return {
+    isFallback,
+    stack: logs.join('\n'),
+  };
 }
 
-export async function logMetroError(projectRoot: string, { error }: { error: Error }) {
-  if (error instanceof SilentError) {
+export const IS_METRO_BUNDLE_ERROR_SYMBOL = Symbol('_isMetroBundleError');
+const HAS_LOGGED_SYMBOL = Symbol('_hasLoggedInCLI');
+
+export async function logMetroError(
+  projectRoot: string,
+  {
+    error,
+  }: {
+    error: Error & {
+      [HAS_LOGGED_SYMBOL]?: boolean;
+    };
+  }
+) {
+  if (error instanceof SilentError || error[HAS_LOGGED_SYMBOL]) {
     return;
   }
+  error[HAS_LOGGED_SYMBOL] = true;
 
   const stack = parseErrorStack(projectRoot, error.stack);
 
@@ -177,55 +249,14 @@ export async function logMetroError(projectRoot: string, { error }: { error: Err
   });
 }
 
-function isTransformError(
-  error: any
-): error is { type: 'TransformError'; filename: string; lineNumber: number; column: number } {
-  return error.type === 'TransformError';
-}
-
 /** @returns the html required to render the static metro error as an SPA. */
-function logFromError({ error, projectRoot }: { error: Error; projectRoot: string }) {
-  // Remap direct Metro Node.js errors to a format that will appear more client-friendly in the logbox UI.
-  let stack: MetroStackFrame[] | undefined;
-  if (isTransformError(error) && error.filename) {
-    // Syntax errors in static rendering.
-    stack = [
-      {
-        file: path.join(projectRoot, error.filename),
-        methodName: '<unknown>',
-        arguments: [],
-        // TODO: Import stack
-        lineNumber: error.lineNumber,
-        column: error.column,
-      },
-    ];
-  } else if ('originModulePath' in error && typeof error.originModulePath === 'string') {
-    // TODO: Use import stack here when the error is resolution based.
-    stack = [
-      {
-        file: error.originModulePath,
-        methodName: '<unknown>',
-        arguments: [],
-        // TODO: Import stack
-        lineNumber: 0,
-        column: 0,
-      },
-    ];
-  } else {
-    stack = parseErrorStack(projectRoot, error.stack);
-  }
-
-  return new LogBoxLog({
-    level: 'static',
-    message: {
-      content: error.message,
-      substitutions: [],
-    },
-    isComponentError: false,
-    stack,
-    category: 'static',
-    componentStack: [],
+function logFromError({ error, projectRoot }: { error: Error; projectRoot: string }): LogBoxLog {
+  const data = parseWebBuildErrors({
+    error,
+    projectRoot,
+    parseErrorStack,
   });
+  return new LogBoxLog(data as LogBoxLogData);
 }
 
 /** @returns the html required to render the static metro error as an SPA. */
@@ -276,10 +307,11 @@ export async function getErrorOverlayHtmlAsync({
     isDisabled: false,
     logs: [log],
   };
-  const html = `<html><head><style>#root,body,html{height:100%}body{overflow:hidden}#root{display:flex}</style></head><body><div id="root"></div><script id="_expo-static-error" type="application/json">${JSON.stringify(
-    logBoxContext
-  )}</script></body></html>`;
+  // Escape `<` so error contents like `</script>` cannot break out of the embedded JSON block.
+  const serializedLogBox = JSON.stringify(logBoxContext).replace(/</g, '\\u003c');
+  const html = `<html><head><style>#root,body,html{height:100%;background-color:black}body{overflow:hidden}#root{display:flex}</style></head><body><div id="root"></div><script id="_expo-static-error" type="application/json">${serializedLogBox}</script></body></html>`;
 
+  // TODO: We could reuse the pre-built DOM Log Box from @expo/log-box
   const errorOverlayEntry = await createMetroEndpointAsync(
     projectRoot,
     // Keep the URL relative
@@ -298,7 +330,8 @@ export async function getErrorOverlayHtmlAsync({
     }
   );
 
-  const htmlWithJs = html.replace('</body>', `<script src=${errorOverlayEntry}></script></body>`);
+  const escapedSrc = errorOverlayEntry.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+  const htmlWithJs = html.replace('</body>', `<script src="${escapedSrc}"></script></body>`);
   return htmlWithJs;
 }
 
@@ -343,4 +376,64 @@ function canParse(url: string): boolean {
   } catch {
     return false;
   }
+}
+
+export function dropStackIfContainsCodeFrame(err: unknown) {
+  if (!(err instanceof Error)) return;
+
+  if (likelyContainsCodeFrame(err.message)) {
+    // If the error message contains a code frame, we should drop the stack to avoid cluttering the output.
+    delete err.stack;
+  }
+}
+
+/**
+ * Tests given string on presence of ` [num] |` at the start of any line.
+ * Returns `false` for undefined or empty strings.
+ */
+export function likelyContainsCodeFrame(message: string | undefined): boolean {
+  if (!message) return false;
+
+  const clean = stripVTControlCharacters(message);
+  if (!clean) return false;
+
+  return /^\s*\d+\s+\|/m.test(clean);
+}
+
+/**
+ * Walks thru the error cause chain and attaches the import stack to the root error message.
+ * Removes the error stack for import and syntax errors.
+ */
+export const attachImportStackToRootMessage = (
+  err: unknown,
+  importStack = nearestImportStack(err)
+) => {
+  // Space out build failures.
+  if (err instanceof Error && importStack) {
+    err.message += '\n\n' + importStack;
+    if (!isDebug) {
+      // When not debugging remove the stack to avoid cluttering the output and confusing users,
+      // the import stack is the guide to fixing the error.
+      delete err.stack;
+    }
+  }
+};
+
+/**
+ * Walks thru the error cause chain and returns the nearest import stack.
+ * If the import stack is not found, it returns `undefined`.
+ */
+export const nearestImportStack = (err: unknown, root: unknown = err): string | undefined => {
+  if (!(err instanceof Error) || !(root instanceof Error)) return undefined;
+
+  if ('_expoImportStack' in err && typeof err._expoImportStack === 'string') {
+    // Space out build failures.
+    return err._expoImportStack;
+  } else {
+    return nearestImportStack(err.cause, root);
+  }
+};
+
+function isInternalBytecode(frame: StackFrame): boolean {
+  return frame.file?.includes('InternalBytecode.js') ?? false;
 }

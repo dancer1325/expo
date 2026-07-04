@@ -1,152 +1,127 @@
 // Copyright 2015-present 650 Industries. All rights reserved.
 package host.exp.exponent.experience
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
-import android.os.Debug
-import com.facebook.react.runtime.ReactSurfaceView
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
+import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
-import de.greenrobot.event.EventBus
-import expo.modules.application.ApplicationModule
-import expo.modules.asset.AssetModule
-import expo.modules.blur.BlurModule
-import expo.modules.camera.CameraViewModule
-import expo.modules.clipboard.ClipboardModule
-import expo.modules.constants.ConstantsModule
-import expo.modules.constants.ConstantsPackage
-import expo.modules.core.interfaces.Package
-import expo.modules.device.DeviceModule
-import expo.modules.easclient.EASClientModule
-import expo.modules.facedetector.FaceDetectorPackage
-import expo.modules.filesystem.FileSystemModule
-import expo.modules.filesystem.FileSystemPackage
-import expo.modules.font.FontLoaderModule
-import expo.modules.haptics.HapticsModule
-import expo.modules.keepawake.KeepAwakeModule
-import expo.modules.keepawake.KeepAwakePackage
-import expo.modules.kotlin.ModulesProvider
-import expo.modules.kotlin.modules.Module
-import expo.modules.lineargradient.LinearGradientModule
-import expo.modules.notifications.NotificationsPackage
-import host.exp.exponent.experience.splashscreen.legacy.SplashScreenImageResizeMode
-import host.exp.exponent.experience.splashscreen.legacy.SplashScreenModule
-import host.exp.exponent.experience.splashscreen.legacy.SplashScreenPackage
-import host.exp.exponent.experience.splashscreen.legacy.singletons.SplashScreen
-import expo.modules.storereview.StoreReviewModule
-import expo.modules.taskManager.TaskManagerPackage
-import expo.modules.trackingtransparency.TrackingTransparencyModule
-import expo.modules.webbrowser.WebBrowserModule
-import host.exp.exponent.Constants
 import host.exp.exponent.di.NativeModuleDepsProvider
-import host.exp.exponent.kernel.ExperienceKey
-import host.exp.exponent.kernel.Kernel.KernelStartedRunningEvent
-import host.exp.exponent.utils.ExperienceActivityUtils
+import host.exp.exponent.home.HomeActivityEvent
+import host.exp.exponent.home.HomeAppViewModel
+import host.exp.exponent.home.HomeAppViewModelFactory
+import host.exp.exponent.home.RootNavigation
+import host.exp.exponent.home.auth.AuthActivity
+import host.exp.exponent.home.auth.AuthResult
+import host.exp.exponent.kernel.ExpoViewKernel
+import host.exp.exponent.kernel.Kernel
+import host.exp.exponent.services.ThemeSetting
 import host.exp.exponent.utils.ExperienceRTLManager
-import org.json.JSONException
+import host.exp.exponent.utils.currentDeviceIsAPhone
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-open class HomeActivity : BaseExperienceActivity() {
+open class HomeActivity : AppCompatActivity() {
+  @Inject
+  protected lateinit var kernel: Kernel
+
+  val homeActivityEvents = MutableSharedFlow<HomeActivityEvent>()
+
+  val authLauncher = registerForActivityResult(AuthActivity.Contract()) { result ->
+    when (result) {
+      is AuthResult.Success -> {
+        viewModel.onNewAuthSession(result.sessionSecret)
+      }
+
+      is AuthResult.Canceled -> {}
+    }
+  }
+
+  val viewModel: HomeAppViewModel by viewModels {
+    HomeAppViewModelFactory(
+      kernel.exponentHistoryService,
+      ExpoViewKernel.instance,
+      homeActivityEvents,
+      authLauncher
+    )
+  }
 
   //region Activity Lifecycle
   override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
     NativeModuleDepsProvider.instance.inject(HomeActivity::class.java, this)
 
-    manifest = exponentManifest.getKernelManifestAndAssetRequestHeaders().manifest
-    experienceKey = try {
-      ExperienceKey.fromManifest(manifest!!)
-    } catch (e: JSONException) {
-      ExperienceKey("")
+    enableEdgeToEdge()
+
+    if (currentDeviceIsAPhone(this)) {
+      // Like on iOS, we lock the orientation only for phones
+      @SuppressLint("SourceLockedOrientationActivity")
+      requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
-    // @sjchmiela, @lukmccall: We are consciously not overriding UI mode in Home, because it has no effect.
-    // `ExpoAppearanceModule` with which `ExperienceActivityUtils#overrideUiMode` is compatible
-    // is disabled in Home as of end of 2020, to fix some issues with dev menu, see:
-    // https://github.com/expo/expo/blob/eb9bd274472e646a730fd535a4bcf360039cbd49/android/expoview/src/main/java/versioned/host/exp/exponent/ExponentPackage.java#L200-L207
-    // ExperienceActivityUtils.overrideUiMode(mExponentManifest.getKernelManifest(), this);
-    ExperienceActivityUtils.configureStatusBar(exponentManifest.getKernelManifestAndAssetRequestHeaders().manifest, this)
+    super.onCreate(savedInstanceState)
 
-    EventBus.getDefault().registerSticky(this)
-    kernel.startJSKernel(this)
+    updateStatusBarForTheme(viewModel.selectedTheme.value)
 
     ExperienceRTLManager.setRTLPreferences(this, allowRTL = false, forceRTL = false)
 
-    SplashScreen.show(this, SplashScreenImageResizeMode.NATIVE, ReactSurfaceView::class.java, true)
+    val contentView = ComposeView(this).apply {
+      setContent {
+        RootNavigation(viewModel)
+      }
+    }
+    setContentView(contentView)
+
+    // Observe theme changes and update status bar accordingly
+    lifecycleScope.launch {
+      viewModel.selectedTheme.collect { themeSetting ->
+        updateStatusBarForTheme(themeSetting)
+      }
+    }
   }
 
-  override fun shouldCreateLoadingView(): Boolean {
-    // Home app shouldn't show LoadingView as it indicates state when the app's manifest is being
-    // downloaded and Splash info is not yet available and this is not the case for Home app
-    // (Splash info is known from the start).
-    return false
+  override fun onNewIntent(intent: Intent) {
+    super.onNewIntent(intent)
+    val data = intent.data
+    if (data != null && data.host == "after-delete" && data.scheme == "expauth") {
+      lifecycleScope.launch {
+        homeActivityEvents.emit(HomeActivityEvent.AccountDeleted)
+      }
+    }
   }
 
   override fun onResume() {
     SoLoader.init(this, OpenSourceMergedSoMapping)
     super.onResume()
+    updateStatusBarForTheme(viewModel.selectedTheme.value)
   }
   //endregion Activity Lifecycle
-  /**
-   * This method has been split out from onDestroy lifecycle method to [ReactNativeActivity.destroyReactHost]
-   * and overridden here as we want to prevent destroying react instance manager when HomeActivity gets destroyed.
-   * It needs to continue to live since it is needed for DevMenu to work as expected (it relies on ExponentKernelModule from that react context).
-   */
-  override fun destroyReactHost(reason: String) {}
 
-  fun onEventMainThread(event: KernelStartedRunningEvent?) {
-    reactHost = kernel.reactHost
-    reactNativeHost = kernel.reactNativeHost
-    reactSurface = kernel.surface
-
-    reactHost?.onHostResume(this, this)
-    reactSurface?.view?.let {
-      setReactRootView(it)
-    }
-    finishLoading()
-
-    if (Constants.DEBUG_COLD_START_METHOD_TRACING) {
-      Debug.stopMethodTracing()
-    }
+  override fun onConfigurationChanged(newConfig: Configuration) {
+    super.onConfigurationChanged(newConfig)
+    enableEdgeToEdge()
+    updateStatusBarForTheme(viewModel.selectedTheme.value)
   }
 
-  override fun onError(intent: Intent) {
-    intent.putExtra(ErrorActivity.IS_HOME_KEY, true)
-    kernel.setHasError()
-  }
+  private fun updateStatusBarForTheme(themeSetting: ThemeSetting) {
+    val isDarkTheme = when (themeSetting) {
+      ThemeSetting.Automatic ->
+        (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
-  companion object : ModulesProvider {
-    fun homeExpoPackages(): List<Package> {
-      return listOf(
-        ConstantsPackage(),
-        FileSystemPackage(),
-        KeepAwakePackage(),
-        FaceDetectorPackage(),
-        NotificationsPackage(), // home doesn't use notifications, but we want the singleton modules created
-        TaskManagerPackage(), // load expo-task-manager to restore tasks once the client is opened
-        SplashScreenPackage()
-      )
+      ThemeSetting.Dark -> true
+      ThemeSetting.Light -> false
     }
 
-    override fun getModulesList(): List<Class<out Module>> {
-      return listOf(
-        AssetModule::class.java,
-        BlurModule::class.java,
-        CameraViewModule::class.java,
-        ClipboardModule::class.java,
-        ConstantsModule::class.java,
-        DeviceModule::class.java,
-        EASClientModule::class.java,
-        FileSystemModule::class.java,
-        FontLoaderModule::class.java,
-        HapticsModule::class.java,
-        KeepAwakeModule::class.java,
-        LinearGradientModule::class.java,
-        SplashScreenModule::class.java,
-        TrackingTransparencyModule::class.java,
-        StoreReviewModule::class.java,
-        WebBrowserModule::class.java,
-        ApplicationModule::class.java
-      )
+    WindowCompat.getInsetsController(window, window.decorView).apply {
+      isAppearanceLightStatusBars = !isDarkTheme
     }
   }
 }

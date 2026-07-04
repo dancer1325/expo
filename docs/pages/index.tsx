@@ -1,13 +1,15 @@
 import DocumentationPage from '~/components/DocumentationPage';
+import { AppJSBanner } from '~/ui/components/AppJSBanner';
 import { DevicesImageMasks } from '~/ui/components/Home/resources';
 import {
   QuickStart,
+  CommandLineTools,
   DiscoverMore,
   ExploreAPIs,
   Talks,
   JoinTheCommunity,
 } from '~/ui/components/Home/sections';
-import { StateOfRNBanner } from '~/ui/components/StateOfRNBanner';
+import { ExploreExamples } from '~/ui/components/Home/sections/ExploreExamples';
 
 function Home() {
   return (
@@ -18,10 +20,12 @@ function Home() {
       <div className="h-0">
         <DevicesImageMasks />
       </div>
-      <StateOfRNBanner />
+      <AppJSBanner />
       <QuickStart />
+      <CommandLineTools />
       <DiscoverMore />
       <ExploreAPIs />
+      <ExploreExamples />
       <Talks />
       <JoinTheCommunity />
     </DocumentationPage>

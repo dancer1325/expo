@@ -1,6 +1,6 @@
 {
   "name": "expo-module-template",
-  "version": "10.15.11",
+  "version": "56.0.11",
   "description": "ExpoModuleTemplate standalone module",
   "scripts": {},
   "keywords": [
@@ -21,7 +21,7 @@
   "homepage": "https://docs.expo.dev/modules",
   "dependencies": {},
   "devDependencies": {
-    "typescript": "^5.1.3"
+    "typescript": "^6.0.3"
   },
   "peerDependencies": {}
 }

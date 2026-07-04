@@ -1,6 +1,9 @@
 // Copyright 2023-present 650 Industries (Expo). All rights reserved.
-import { SymbolicatorConfigT } from 'metro-config';
-import { URL } from 'url';
+import type { SymbolicatorConfigT } from '@expo/metro/metro-config';
+import path from 'node:path';
+import { URL } from 'node:url';
+
+import { toPosixPath } from './utils/filePath';
 
 type CustomizeFrameFunc = SymbolicatorConfigT['customizeFrame'];
 
@@ -33,7 +36,7 @@ export const INTERNAL_CALLSITES_REGEX = new RegExp(
     // Babel helpers that implement language features
     'node_modules/@babel/runtime/.+\\.js$',
     // Hide Hermes internal bytecode
-    '/InternalBytecode/InternalBytecode\\.js$',
+    '/(?:InternalBytecode/)?InternalBytecode\\.js$',
     // Block native code invocations
     `\\[native code\\]`,
     // Hide react-dom (web)
@@ -43,6 +46,7 @@ export const INTERNAL_CALLSITES_REGEX = new RegExp(
     // Block expo's metro-runtime
     '@expo/metro-runtime/.+\\.ts',
     '@expo/server/.+\\.ts',
+    'expo-server/.+\\.ts',
     // Block upstream metro-runtime
     '/metro-runtime/.+\\.js$',
     // Expo's metro-runtime require patch:
@@ -67,6 +71,12 @@ export const INTERNAL_CALLSITES_REGEX = new RegExp(
 );
 
 function isUrl(value: string): boolean {
+  // Windows absolute paths (e.g. `C:\path\to\file.js`) are parsed as a URL with a
+  // single-letter (drive) protocol by `new URL`. Treat those as file paths, not URLs,
+  // otherwise every Windows frame is incorrectly collapsed and stripped of its location.
+  if (path.isAbsolute(value)) {
+    return false;
+  }
   try {
     // eslint-disable-next-line no-new
     new URL(value);
@@ -93,7 +103,9 @@ export function getDefaultCustomizeFrame(): CustomizeFrameFunc {
         collapse: true,
       };
     }
-    let collapse = Boolean(frame.file && INTERNAL_CALLSITES_REGEX.test(frame.file));
+    // INTERNAL_CALLSITES_REGEX uses POSIX separators (`/`). On Windows `frame.file`
+    // uses `\`, so it must be normalized to POSIX or no library frames would collapse.
+    let collapse = Boolean(frame.file && INTERNAL_CALLSITES_REGEX.test(toPosixPath(frame.file)));
 
     if (!collapse) {
       // This represents the first frame of the stacktrace.
@@ -101,8 +113,36 @@ export function getDefaultCustomizeFrame(): CustomizeFrameFunc {
       // The URL will also be unactionable in the app and therefore not very useful to the developer.
       if (
         frame.column === 3 &&
-        frame.methodName === 'global code' &&
+        frame.methodName &&
+        ['global', 'global code'].includes(frame.methodName) &&
         frame.file?.match(/^https?:\/\//g)
+      ) {
+        collapse = true;
+      } else if (
+        (frame.file === 'unknown' || frame.file === '<anonymous>') &&
+        (frame.column == null || frame.column === -1)
+      ) {
+        // If we definitively don't have a file, as indicated by the invalid column value,
+        // this frame won't be able to desymbolicate properly
+        collapse = true;
+      } else if (frame.file === '<native>') {
+        collapse = true;
+      } else if (
+        // Some internal component stacks often don't have a file name.
+        frame.file === '<anonymous>' &&
+        frame.methodName &&
+        [
+          // React
+          'Suspense',
+          // React Native
+          'RCTView',
+          'RCTScrollView',
+          'RCTScrollContentView',
+          // React Native Screens
+          'RNSScreen',
+          'RNSScreenContentWrapper',
+          'RNSScreenNavigationContainer',
+        ].includes(frame.methodName)
       ) {
         collapse = true;
       }

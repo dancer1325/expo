@@ -1,11 +1,12 @@
-import React, { Text } from 'react-native';
+import { act, screen } from '@testing-library/react-native';
+import { Text } from 'react-native';
 
-import { Slot, router, useGlobalSearchParams } from '../exports';
+import { Slot, router, useGlobalSearchParams, usePathname } from '../exports';
 import { Drawer } from '../layouts/Drawer';
 import { Stack } from '../layouts/Stack';
 import { Tabs } from '../layouts/Tabs';
 import { Redirect } from '../link/Link';
-import { act, renderRouter, screen } from '../testing-library';
+import { renderRouter } from '../testing-library';
 
 it('404', () => {
   renderRouter(
@@ -20,7 +21,7 @@ it('404', () => {
   expect(screen.getByText('Unmatched Route')).toBeOnTheScreen();
   expect(screen).toHavePathname('/404');
   expect(screen).toHaveSegments(['+not-found']);
-  expect(screen).toHaveSearchParams({ 'not-found': ['404'] });
+  expect(screen).toHaveSearchParams({});
 });
 
 it('can render a route', async () => {
@@ -252,12 +253,12 @@ it.skip('can navigate across the drawer navigator', () => {
   renderRouter({
     _layout: () => <Stack />,
     index: () => <Text testID="index" />,
-    '(group)/_layout': () => <Drawer useLegacyImplementation={false} />,
+    '(group)/_layout': () => <Drawer />,
     '(group)/one': () => <Text testID="one" />,
     '(group)/two': () => <Text testID="two" />,
     '(group_two)/three': () => <Text testID="three" />,
-    '(group_two)/_layout': () => <Drawer useLegacyImplementation={false} />,
-    '(group_two)/nested/folder/_layout': () => <Drawer useLegacyImplementation={false} />,
+    '(group_two)/_layout': () => <Drawer />,
+    '(group_two)/nested/folder/_layout': () => <Drawer />,
     '(group_two)/nested/folder/four': () => <Text testID="four" />,
   });
 
@@ -288,4 +289,61 @@ it.skip('can navigate across the drawer navigator', () => {
   act(() => router.push('/one'));
   expect(screen).toHavePathname('/one');
   expect(screen.getByTestId('one')).toBeOnTheScreen();
+});
+
+it('layout is never called with generated +not-found', () => {
+  const layoutCalled = jest.fn();
+  renderRouter({
+    _layout: function Layout() {
+      layoutCalled();
+
+      return <Stack />;
+    },
+    '/second': () => <Text>Second</Text>,
+  });
+
+  expect(layoutCalled).not.toHaveBeenCalled();
+});
+
+it('can redirect during the initial render', () => {
+  renderRouter({
+    // This needs to be added, for the layout to be rendered
+    // Otherwise would fall back to the root 404
+    '+not-found': () => <Text>Unmatched Route</Text>,
+    _layout: function Layout() {
+      const pathName = usePathname();
+
+      if (pathName === '/') {
+        return <Redirect href="/test" />;
+      }
+
+      return <Stack />;
+    },
+    '/test/_layout': function TestLayout() {
+      return <Stack />;
+    },
+    '/test/index': () => <Text testID="test">test</Text>,
+  });
+
+  expect(screen).toHavePathname('/test');
+  expect(screen.getByTestId('test')).toBeOnTheScreen();
+});
+
+it('will pick a static route over the dynamic route in the same group', () => {
+  const A = jest.fn(() => <Text>Index</Text>);
+  const B = jest.fn(() => <Text>Dynamic</Text>);
+
+  renderRouter({
+    _layout: () => <Stack />,
+    'messages/[id]': A,
+
+    // Starting route is inside a group
+    '(group)/index': () => null,
+    '(group)/[type]/[id]': B,
+  });
+
+  act(() => router.push('/messages/1'));
+
+  expect(A).toHaveBeenCalled();
+  expect(B).not.toHaveBeenCalled();
 });

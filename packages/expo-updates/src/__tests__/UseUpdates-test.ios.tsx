@@ -1,6 +1,4 @@
 import { act, render, screen } from '@testing-library/react-native';
-import '@testing-library/jest-native/extend-expect';
-import React from 'react';
 
 import UseUpdatesTestApp from './UseUpdatesTestApp';
 import type { Manifest, UpdatesNativeStateMachineContext } from '../Updates.types';
@@ -31,91 +29,114 @@ describe('useUpdates()', () => {
     const mockError = { name: 'UpdatesError', code: 'ERR_TEST', message: 'test message' };
     const isCheckingEvent: UpdatesNativeStateChangeTestEvent = {
       context: {
+        isStartupProcedureRunning: false,
         isUpdateAvailable: false,
         isUpdatePending: false,
         isRestarting: false,
+        restartCount: 0,
         isChecking: true,
         isDownloading: false,
         lastCheckForUpdateTimeString: mockDate.toISOString(),
         sequenceNumber: 0,
+        downloadProgress: 0,
       },
     };
     const updateAvailableEvent: UpdatesNativeStateChangeTestEvent = {
       context: {
+        isStartupProcedureRunning: false,
         isUpdateAvailable: true,
         isUpdatePending: false,
         isRestarting: false,
+        restartCount: 0,
         isChecking: false,
         isDownloading: false,
         latestManifest: mockManifest,
         lastCheckForUpdateTimeString: mockDate.toISOString(),
         sequenceNumber: 1,
+        downloadProgress: 0,
       },
     };
     const updateUnavailableEvent: UpdatesNativeStateChangeTestEvent = {
       context: {
+        isStartupProcedureRunning: false,
         isUpdateAvailable: false,
         isUpdatePending: false,
         isRestarting: false,
+        restartCount: 0,
         isChecking: false,
         isDownloading: false,
         lastCheckForUpdateTimeString: mockDate.toISOString(),
         sequenceNumber: 1,
+        downloadProgress: 0,
       },
     };
     const checkErrorEvent: UpdatesNativeStateChangeTestEvent = {
       context: {
+        isStartupProcedureRunning: false,
         isUpdateAvailable: false,
         isUpdatePending: false,
         isRestarting: false,
+        restartCount: 0,
         isChecking: false,
         isDownloading: false,
         checkError: mockError,
         lastCheckForUpdateTimeString: mockDate.toISOString(),
         sequenceNumber: 1,
+        downloadProgress: 0,
       },
     };
     const isDownloadingEvent: UpdatesNativeStateChangeTestEvent = {
       context: {
+        isStartupProcedureRunning: false,
         isUpdateAvailable: false,
         isUpdatePending: false,
         isRestarting: false,
+        restartCount: 0,
         isChecking: false,
         isDownloading: true,
         lastCheckForUpdateTimeString: mockDate.toISOString(),
         sequenceNumber: 0,
+        downloadProgress: 0,
       },
     };
     const updateDownloadedEvent: UpdatesNativeStateChangeTestEvent = {
       context: {
+        isStartupProcedureRunning: false,
         isUpdateAvailable: true,
         isUpdatePending: true,
         isRestarting: false,
+        restartCount: 0,
         isChecking: false,
         isDownloading: false,
         latestManifest: mockManifest,
         downloadedManifest: mockManifest,
         lastCheckForUpdateTimeString: mockDate.toISOString(),
         sequenceNumber: 1,
+        downloadProgress: 0,
       },
     };
     const downloadErrorEvent: UpdatesNativeStateChangeTestEvent = {
       context: {
+        isStartupProcedureRunning: false,
         isUpdateAvailable: false,
         isUpdatePending: false,
         isRestarting: false,
+        restartCount: 0,
         isChecking: false,
         isDownloading: false,
         downloadError: mockError,
         lastCheckForUpdateTimeString: mockDate.toISOString(),
         sequenceNumber: 1,
+        downloadProgress: 0,
       },
     };
     const updateAvailableWithRollbackEvent: UpdatesNativeStateChangeTestEvent = {
       context: {
+        isStartupProcedureRunning: false,
         isUpdateAvailable: true,
         isUpdatePending: false,
         isRestarting: false,
+        restartCount: 0,
         isChecking: false,
         isDownloading: false,
         rollback: {
@@ -123,6 +144,7 @@ describe('useUpdates()', () => {
         },
         lastCheckForUpdateTimeString: mockDate.toISOString(),
         sequenceNumber: 1,
+        downloadProgress: 0,
       },
     };
 

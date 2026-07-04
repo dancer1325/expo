@@ -1,8 +1,9 @@
-import { ExpoConfig, modifyConfigAsync } from '@expo/config';
+import type { ExpoConfig } from '@expo/config';
+import { modifyConfigAsync } from '@expo/config';
 import chalk from 'chalk';
 
-import { SilentError } from './errors';
 import * as Log from '../log';
+import { SilentError } from './errors';
 
 /** Wraps `[@expo/config] modifyConfigAsync()` and adds additional logging. */
 export async function attemptModification(
@@ -30,7 +31,7 @@ export function warnAboutConfigAndThrow(type: string, message: string, edits: Pa
 }
 
 function notifyAboutManualConfigEdits(edits: Partial<ExpoConfig>) {
-  Log.log(chalk.cyan(`Please add the following to your Expo config`));
+  Log.log(chalk.cyan(`Add the following to your Expo config`));
   Log.log();
   Log.log(JSON.stringify(edits, null, 2));
   Log.log();

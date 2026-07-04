@@ -73,10 +73,12 @@ enum UpdatesDatabaseHashType: Int {
 @objc(EXUpdatesDatabase)
 @objcMembers
 public final class UpdatesDatabase: NSObject {
-  private static let ManifestFiltersKey = "manifestFilters"
-  private static let ServerDefinedHeadersKey = "serverDefinedHeaders"
-  private static let StaticBuildDataKey = "staticBuildData"
-  private static let ExtraParmasKey = "extraParams"
+  internal enum JSONDataKey: String {
+    case ManifestFiltersKey = "manifestFilters"
+    case ServerDefinedHeadersKey = "serverDefinedHeaders"
+    case StaticBuildDataKey = "staticBuildData"
+    case ExtraParmasKey = "extraParams"
+  }
 
   public let databaseQueue: DispatchQueue
   private var db: OpaquePointer?
@@ -89,9 +91,9 @@ public final class UpdatesDatabase: NSObject {
     closeDatabase()
   }
 
-  public func openDatabase(inDirectory directory: URL) throws {
+  public func openDatabase(inDirectory directory: URL, logger: UpdatesLogger) throws {
     dispatchPrecondition(condition: .onQueue(databaseQueue))
-    db = try UpdatesDatabaseInitialization.initializeDatabaseWithLatestSchema(inDirectory: directory)
+    db = try UpdatesDatabaseInitialization.initializeDatabaseWithLatestSchema(inDirectory: directory, logger: logger)
   }
 
   public func closeDatabase() {
@@ -108,10 +110,10 @@ public final class UpdatesDatabase: NSObject {
     return try execute(sql: sql, withArgs: args)
   }
 
-  public func addUpdate(_ update: Update) throws {
+  public func addUpdate(_ update: Update, config: UpdatesConfig) throws {
     let sql = """
-      INSERT INTO "updates" ("id", "scope_key", "commit_time", "runtime_version", "manifest", "status" , "keep", "last_accessed", "successful_launch_count", "failed_launch_count")
-      VALUES (?1, ?2, ?3, ?4, ?5, ?6, 1, ?7, ?8, ?9);
+      INSERT INTO "updates" ("id", "scope_key", "commit_time", "runtime_version", "manifest", "status" , "keep", "last_accessed", "successful_launch_count", "failed_launch_count", "url", "headers")
+      VALUES (?1, ?2, ?3, ?4, ?5, ?6, 1, ?7, ?8, ?9, ?10, ?11);
     """
     _ = try execute(
       sql: sql,
@@ -124,7 +126,9 @@ public final class UpdatesDatabase: NSObject {
         update.status.rawValue,
         update.lastAccessed,
         update.successfulLaunchCount,
-        update.failedLaunchCount
+        update.failedLaunchCount,
+        config.updateUrl.absoluteString,
+        Self.encodeRequestHeaders(config.requestHeaders)
       ]
     )
   }
@@ -276,7 +280,11 @@ public final class UpdatesDatabase: NSObject {
   }
 
   public func markUpdateFinished(_ update: Update) throws {
-    if update.status != UpdateStatus.StatusDevelopment {
+    // With copying off, embedded updates have no asset rows, so they must stay StatusEmbedded to keep
+    // launching from the bundle. Promoting to StatusReady would route launch through the database
+    // asset path, which has no rows for them.
+    let keepEmbedded = update.status == UpdateStatus.StatusEmbedded && !UpdatesUtils.shouldCopyEmbeddedAssets()
+    if update.status != UpdateStatus.StatusDevelopment && !keepEmbedded {
       update.status = UpdateStatus.StatusReady
     }
 
@@ -482,11 +490,11 @@ public final class UpdatesDatabase: NSObject {
     return asset(withRow: rows.first!)
   }
 
-  private func jsonData(withKey key: String, scopeKey: String) throws -> [String: Any]? {
+  private func jsonData(withKey key: JSONDataKey, scopeKey: String) throws -> [String: Any]? {
     let sql = """
       SELECT * FROM json_data WHERE "key" = ?1 AND "scope_key" = ?2
     """
-    let rows = try execute(sql: sql, withArgs: [key, scopeKey])
+    let rows = try execute(sql: sql, withArgs: [key.rawValue, scopeKey])
     guard let firstRow = rows.first,
       let value = firstRow["value"] as? String else {
       return nil
@@ -495,7 +503,7 @@ public final class UpdatesDatabase: NSObject {
     return try JSONSerialization.jsonObject(with: value.data(using: .utf8)!) as? [String: Any]
   }
 
-  private func setJsonData(_ data: [String: Any], withKey key: String, scopeKey: String, isInTransaction: Bool) throws {
+  private func setJsonData(_ data: [String: Any], withKey key: JSONDataKey, scopeKey: String, isInTransaction: Bool) throws {
     if !isInTransaction {
       sqlite3_exec(db, "BEGIN;", nil, nil, nil)
     }
@@ -504,7 +512,7 @@ public final class UpdatesDatabase: NSObject {
       DELETE FROM json_data WHERE "key" = ?1 AND "scope_key" = ?2;
     """
     do {
-      _ = try execute(sql: deleteSql, withArgs: [key, scopeKey])
+      _ = try execute(sql: deleteSql, withArgs: [key.rawValue, scopeKey])
     } catch {
       if !isInTransaction {
         sqlite3_exec(db, "ROLLBACK;", nil, nil, nil)
@@ -516,7 +524,7 @@ public final class UpdatesDatabase: NSObject {
       INSERT INTO json_data ("key", "value", "last_updated", "scope_key") VALUES (?1, ?2, ?3, ?4);
     """
     do {
-      _ = try execute(sql: insertSql, withArgs: [key, data, Date().timeIntervalSince1970 * 1000, scopeKey])
+      _ = try execute(sql: insertSql, withArgs: [key.rawValue, data, Date().timeIntervalSince1970 * 1000, scopeKey])
     } catch {
       if !isInTransaction {
         sqlite3_exec(db, "ROLLBACK;", nil, nil, nil)
@@ -529,32 +537,47 @@ public final class UpdatesDatabase: NSObject {
     }
   }
 
+  internal func deleteJsonDataForAllScopeKeys(withKeys keys: [JSONDataKey]) throws {
+    sqlite3_exec(db, "BEGIN;", nil, nil, nil)
+    let deleteSql = """
+      DELETE FROM json_data WHERE "keys" IN (?1);
+    """
+    let keysArg = keys.map { $0.rawValue }.joined(separator: ",")
+    do {
+      _ = try execute(sql: deleteSql, withArgs: [keysArg])
+    } catch {
+      sqlite3_exec(db, "ROLLBACK;", nil, nil, nil)
+      throw UpdatesDatabaseError.setJsonDataError(cause: error)
+    }
+    sqlite3_exec(db, "COMMIT;", nil, nil, nil)
+  }
+
   public func serverDefinedHeaders(withScopeKey scopeKey: String) throws -> [String: Any]? {
-    return try jsonData(withKey: UpdatesDatabase.ServerDefinedHeadersKey, scopeKey: scopeKey)
+    return try jsonData(withKey: JSONDataKey.ServerDefinedHeadersKey, scopeKey: scopeKey)
   }
 
   public func manifestFilters(withScopeKey scopeKey: String) throws -> [String: Any]? {
-    return try jsonData(withKey: UpdatesDatabase.ManifestFiltersKey, scopeKey: scopeKey)
+    return try jsonData(withKey: JSONDataKey.ManifestFiltersKey, scopeKey: scopeKey)
   }
 
   public func staticBuildData(withScopeKey scopeKey: String) throws -> [String: Any]? {
-    return try jsonData(withKey: UpdatesDatabase.StaticBuildDataKey, scopeKey: scopeKey)
+    return try jsonData(withKey: JSONDataKey.StaticBuildDataKey, scopeKey: scopeKey)
   }
 
   public func extraParams(withScopeKey scopeKey: String) throws -> [String: String]? {
-    return try jsonData(withKey: UpdatesDatabase.ExtraParmasKey, scopeKey: scopeKey) as? [String: String]
+    return try jsonData(withKey: JSONDataKey.ExtraParmasKey, scopeKey: scopeKey) as? [String: String]
   }
 
   public func setServerDefinedHeaders(_ serverDefinedHeaders: [String: Any], withScopeKey scopeKey: String) throws {
-    return try setJsonData(serverDefinedHeaders, withKey: UpdatesDatabase.ServerDefinedHeadersKey, scopeKey: scopeKey, isInTransaction: false)
+    return try setJsonData(serverDefinedHeaders, withKey: JSONDataKey.ServerDefinedHeadersKey, scopeKey: scopeKey, isInTransaction: false)
   }
 
   public func setManifestFilters(_ manifestFilters: [String: Any], withScopeKey scopeKey: String) throws {
-    return try setJsonData(manifestFilters, withKey: UpdatesDatabase.ManifestFiltersKey, scopeKey: scopeKey, isInTransaction: false)
+    return try setJsonData(manifestFilters, withKey: JSONDataKey.ManifestFiltersKey, scopeKey: scopeKey, isInTransaction: false)
   }
 
   public func setStaticBuildData(_ staticBuildData: [String: Any], withScopeKey scopeKey: String) throws {
-    return try setJsonData(staticBuildData, withKey: UpdatesDatabase.StaticBuildDataKey, scopeKey: scopeKey, isInTransaction: false)
+    return try setJsonData(staticBuildData, withKey: JSONDataKey.StaticBuildDataKey, scopeKey: scopeKey, isInTransaction: false)
   }
 
   public func setExtraParam(key: String, value: String?, withScopeKey scopeKey: String) throws {
@@ -574,7 +597,7 @@ public final class UpdatesDatabase: NSObject {
         try StringItem(value: value)
       }))
 
-      _ = try setJsonData(extraParamsToWrite, withKey: UpdatesDatabase.ExtraParmasKey, scopeKey: scopeKey, isInTransaction: true)
+      _ = try setJsonData(extraParamsToWrite, withKey: JSONDataKey.ExtraParmasKey, scopeKey: scopeKey, isInTransaction: true)
     } catch {
       sqlite3_exec(db, "ROLLBACK;", nil, nil, nil)
       throw error
@@ -588,7 +611,7 @@ public final class UpdatesDatabase: NSObject {
 
     if let serverDefinedHeaders = responseHeaderData.serverDefinedHeaders {
       do {
-        _ = try setJsonData(serverDefinedHeaders, withKey: UpdatesDatabase.ServerDefinedHeadersKey, scopeKey: scopeKey, isInTransaction: true)
+        _ = try setJsonData(serverDefinedHeaders, withKey: JSONDataKey.ServerDefinedHeadersKey, scopeKey: scopeKey, isInTransaction: true)
       } catch {
         sqlite3_exec(db, "ROLLBACK;", nil, nil, nil)
         throw UpdatesDatabaseError.setJsonDataError(cause: error)
@@ -597,7 +620,7 @@ public final class UpdatesDatabase: NSObject {
 
     if let manifestFilters = responseHeaderData.manifestFilters {
       do {
-        _ = try setJsonData(manifestFilters, withKey: UpdatesDatabase.ManifestFiltersKey, scopeKey: scopeKey, isInTransaction: true)
+        _ = try setJsonData(manifestFilters, withKey: JSONDataKey.ManifestFiltersKey, scopeKey: scopeKey, isInTransaction: true)
       } catch {
         sqlite3_exec(db, "ROLLBACK;", nil, nil, nil)
         throw UpdatesDatabaseError.setJsonDataError(cause: error)
@@ -614,6 +637,8 @@ public final class UpdatesDatabase: NSObject {
     let status: NSNumber = row.requiredValue(forKey: "status")
     let successfulLaunchCount: NSNumber = row.requiredValue(forKey: "successful_launch_count")
     let failedLaunchCount: NSNumber = row.requiredValue(forKey: "failed_launch_count")
+    let url = row.optionalValue(forKey: "url").flatMap(URL.init(string:))
+    let requestHeaders: [String: String]? = Self.decodeRequestHeaders(row.optionalValue(forKey: "headers"))
 
     let update = Update(
       manifest: ManifestFactory.manifest(forManifestJSON: manifest),
@@ -626,7 +651,9 @@ public final class UpdatesDatabase: NSObject {
       keep: keep.intValue != 0,
       status: UpdateStatus.init(rawValue: status.intValue)!,
       isDevelopmentMode: false,
-      assetsFromManifest: nil
+      assetsFromManifest: nil,
+      url: url,
+      requestHeaders: requestHeaders
     )
     update.lastAccessed = UpdatesDatabaseUtils.date(fromUnixTimeMilliseconds: row.requiredValue(forKey: "last_accessed"))
     update.successfulLaunchCount = successfulLaunchCount.intValue
@@ -680,6 +707,22 @@ public final class UpdatesDatabase: NSObject {
     }
 
     return asset
+  }
+
+  internal static func encodeRequestHeaders(_ requestHeader: [String: String]) -> String? {
+    let encoder = JSONEncoder()
+    guard let data = try? encoder.encode(requestHeader) else {
+      return nil
+    }
+    return String(data: data, encoding: .utf8)
+  }
+
+  internal static func decodeRequestHeaders(_ jsonString: String?) -> [String: String]? {
+    guard let data = jsonString?.data(using: .utf8) else {
+      return nil
+    }
+    let decoder = JSONDecoder()
+    return try? decoder.decode([String: String].self, from: data)
   }
 }
 

@@ -1,11 +1,13 @@
-import { ExpoConfig } from '@expo/config';
+import type { ExpoConfig } from '@expo/config';
 import chalk from 'chalk';
+import type { MiddlewareMatcher } from 'expo-server';
 import { sync as globSync } from 'glob';
 import path from 'path';
 import resolveFrom from 'resolve-from';
 
 import { Log } from '../../../log';
-import { directoryExistsSync } from '../../../utils/dir';
+import { directoryExistsSync, isPathInside } from '../../../utils/dir';
+import { CommandError } from '../../../utils/errors';
 import { toPosixPath } from '../../../utils/filePath';
 import { learnMore } from '../../../utils/link';
 
@@ -45,7 +47,18 @@ export function getRouterDirectoryModuleIdWithManifest(
   projectRoot: string,
   exp: ExpoConfig
 ): string {
-  return toPosixPath(exp.extra?.router?.root ?? getRouterDirectory(projectRoot));
+  const configured = exp.extra?.router?.root;
+  if (configured == null) {
+    return toPosixPath(getRouterDirectory(projectRoot));
+  }
+  const absolute = path.isAbsolute(configured) ? configured : path.resolve(projectRoot, configured);
+  if (!isPathInside(absolute, projectRoot)) {
+    throw new CommandError(
+      'INVALID_ROUTER_ROOT',
+      `The expo-router \`root\` (${configured}) resolves outside the project root. Set it to a path inside the project, or remove it to use the default.`
+    );
+  }
+  return toPosixPath(configured);
 }
 
 let hasWarnedAboutSrcDir = false;
@@ -78,6 +91,32 @@ export function getApiRoutesForDirectory(cwd: string) {
   });
 }
 
+/**
+ * Gets the +middleware file for a given directory. In
+ * @param cwd
+ */
+export function getMiddlewareForDirectory(cwd: string): string | null {
+  const files = globSync('+middleware.@(ts|tsx|js|jsx)', {
+    cwd,
+    absolute: true,
+    dot: true,
+  });
+
+  if (files.length === 0) return null;
+
+  if (files.length > 1) {
+    // In development, throw an error if there are multiple root-level middleware files
+    if (process.env.NODE_ENV !== 'production') {
+      const relativePaths = files.map((f) => './' + path.relative(cwd, f)).sort();
+      throw new Error(
+        `Only one middleware file is allowed. Keep one of the conflicting files: ${relativePaths.map((p) => `"${p}"`).join(' or ')}`
+      );
+    }
+  }
+
+  return files[0]!;
+}
+
 // Used to emulate a context module, but way faster. TODO: May need to adjust the extensions to stay in sync with Metro.
 export function getRoutePaths(cwd: string) {
   return globSync('**/*.@(ts|tsx|js|jsx)', {
@@ -91,9 +130,14 @@ function normalizePaths(p: string) {
 }
 
 let hasWarnedAboutApiRouteOutput = false;
+let hasWarnedAboutMiddlewareOutput = false;
 
 export function hasWarnedAboutApiRoutes() {
   return hasWarnedAboutApiRouteOutput;
+}
+
+export function hasWarnedAboutMiddleware() {
+  return hasWarnedAboutMiddlewareOutput;
 }
 
 export function warnInvalidWebOutput() {
@@ -106,4 +150,57 @@ export function warnInvalidWebOutput() {
   }
 
   hasWarnedAboutApiRouteOutput = true;
+}
+
+export function warnInvalidMiddlewareOutput() {
+  if (!hasWarnedAboutMiddlewareOutput) {
+    Log.warn(
+      chalk.yellow`Using middleware requires the {bold web.output} to be set to {bold "server"} in the project {bold app.json}. ${learnMore(
+        'https://docs.expo.dev/router/reference/api-routes/'
+      )}`
+    );
+  }
+
+  hasWarnedAboutMiddlewareOutput = true;
+}
+
+export function warnInvalidMiddlewareMatcherSettings(matcher: MiddlewareMatcher) {
+  const validMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'];
+
+  // Ensure methods are valid HTTP methods
+  if (matcher.methods) {
+    if (!Array.isArray(matcher.methods)) {
+      Log.error(
+        chalk.red`Middleware matcher methods must be an array of valid HTTP methods. Supported methods are: ${validMethods.join(', ')}`
+      );
+    } else {
+      for (const method of matcher.methods) {
+        if (!validMethods.includes(method)) {
+          Log.error(
+            chalk.red`Invalid middleware HTTP method: ${method}. Supported methods are: ${validMethods.join(', ')}`
+          );
+        }
+      }
+    }
+  }
+
+  // Ensure patterns are either a string or RegExp
+  if (matcher.patterns) {
+    const patterns = Array.isArray(matcher.patterns) ? matcher.patterns : [matcher.patterns];
+    for (const pattern of patterns) {
+      if (typeof pattern !== 'string' && !(pattern instanceof RegExp)) {
+        Log.error(
+          chalk.red`Middleware matcher patterns must be strings or regular expressions. Received: ${String(
+            pattern
+          )}`
+        );
+      }
+
+      if (typeof pattern === 'string' && !pattern.startsWith('/')) {
+        Log.error(
+          chalk.red`String patterns in middleware matcher must start with '/'. Received: ${pattern}`
+        );
+      }
+    }
+  }
 }

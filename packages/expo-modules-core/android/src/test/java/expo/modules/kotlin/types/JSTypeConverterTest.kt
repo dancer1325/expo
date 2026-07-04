@@ -18,7 +18,7 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [30])
 class JSTypeConverterTest {
-  private object TestContainerProvider : JSTypeConverter.ContainerProvider {
+  private object TestContainerProvider : JSTypeConverterProvider.ContainerProvider {
     override fun createMap(): WritableMap = JavaOnlyMap()
     override fun createArray(): WritableArray = JavaOnlyArray()
   }
@@ -27,20 +27,28 @@ class JSTypeConverterTest {
   fun `should convert Bundle`() {
     val bundle = Bundle().apply {
       putInt("int", 123)
+      putLong("long", 789L)
       putString("string", "expo is awesome")
       putStringArray("stringArray", arrayOf("s1", "s2"))
+      putLongArray("longArray", longArrayOf(1, 2))
     }
 
-    val converted = JSTypeConverter.legacyConvertToJSValue(bundle, TestContainerProvider)
+    val converted = JSTypeConverterProvider.legacyConvertToJSValue(bundle, TestContainerProvider)
 
     Truth.assertThat(converted).isInstanceOf(WritableMap::class.java)
     val map = converted as WritableMap
 
     Truth.assertThat(map.getInt("int")).isEqualTo(123)
+    Truth.assertThat(map.getLong("long")).isEqualTo(789L)
     Truth.assertThat(map.getString("string")).isEqualTo("expo is awesome")
-    val innerArray = map.getArray("stringArray")
-    Truth.assertThat(innerArray?.getString(0)).isEqualTo("s1")
-    Truth.assertThat(innerArray?.getString(1)).isEqualTo("s2")
+    val stringArray = map.getArray("stringArray")
+    Truth.assertThat(stringArray?.size()).isEqualTo(2)
+    Truth.assertThat(stringArray?.getString(0)).isEqualTo("s1")
+    Truth.assertThat(stringArray?.getString(1)).isEqualTo("s2")
+    val longArray = map.getArray("longArray")
+    Truth.assertThat(longArray?.size()).isEqualTo(2)
+    Truth.assertThat(longArray?.getLong(0)).isEqualTo(1L)
+    Truth.assertThat(longArray?.getLong(1)).isEqualTo(2L)
   }
 
   @Test
@@ -52,7 +60,7 @@ class JSTypeConverterTest {
     val collections = listOf(list, set, linkedList)
 
     for (collection in collections) {
-      val converted = JSTypeConverter.legacyConvertToJSValue(collection, TestContainerProvider)
+      val converted = JSTypeConverterProvider.legacyConvertToJSValue(collection, TestContainerProvider)
       Truth.assertThat(converted).isInstanceOf(WritableArray::class.java)
       val array = converted as WritableArray
       Truth.assertThat(array.getInt(0)).isEqualTo(1)
@@ -65,7 +73,7 @@ class JSTypeConverterTest {
   fun `should convert Array`() {
     val array = arrayOf("s1", "s2", "s3")
 
-    val converted = JSTypeConverter.legacyConvertToJSValue(array, TestContainerProvider)
+    val converted = JSTypeConverterProvider.legacyConvertToJSValue(array, TestContainerProvider)
 
     Truth.assertThat(converted).isInstanceOf(WritableArray::class.java)
     val convertedArray = converted as WritableArray
@@ -78,7 +86,7 @@ class JSTypeConverterTest {
   fun `should convert IntArray`() {
     val array = IntArray(3) { it }
 
-    val converted = JSTypeConverter.legacyConvertToJSValue(array, TestContainerProvider)
+    val converted = JSTypeConverterProvider.legacyConvertToJSValue(array, TestContainerProvider)
 
     Truth.assertThat(converted).isInstanceOf(WritableArray::class.java)
     val convertedArray = converted as WritableArray
@@ -91,7 +99,7 @@ class JSTypeConverterTest {
   fun `should convert DoubleArray`() {
     val array = DoubleArray(3) { it.toDouble() }
 
-    val converted = JSTypeConverter.legacyConvertToJSValue(array, TestContainerProvider)
+    val converted = JSTypeConverterProvider.legacyConvertToJSValue(array, TestContainerProvider)
 
     Truth.assertThat(converted).isInstanceOf(WritableArray::class.java)
     val convertedArray = converted as WritableArray
@@ -104,20 +112,21 @@ class JSTypeConverterTest {
   fun `should convert Map`() {
     val map = mapOf(
       "k1" to "v1",
-      "k2" to "v2"
+      "k2" to 1L
     )
 
-    val converted = JSTypeConverter.legacyConvertToJSValue(map, TestContainerProvider)
+    val converted = JSTypeConverterProvider.legacyConvertToJSValue(map, TestContainerProvider)
 
     Truth.assertThat(converted).isInstanceOf(WritableMap::class.java)
     val convertedMap = converted as WritableMap
     Truth.assertThat(convertedMap.getString("k1")).isEqualTo("v1")
-    Truth.assertThat(convertedMap.getString("k2")).isEqualTo("v2")
+    Truth.assertThat(convertedMap.getLong("k2")).isEqualTo(1L)
   }
 
   @Test
   fun `should convert Record`() {
     @Suppress("unused")
+    @OptimizedRecord
     class MyRecord : Record {
       @Field
       val int: Int = 2
@@ -128,7 +137,7 @@ class JSTypeConverterTest {
 
     val record = MyRecord()
 
-    val converted = JSTypeConverter.legacyConvertToJSValue(record, TestContainerProvider)
+    val converted = JSTypeConverterProvider.legacyConvertToJSValue(record, TestContainerProvider)
 
     Truth.assertThat(converted).isInstanceOf(WritableMap::class.java)
     val convertedRecord = converted as WritableMap
@@ -139,6 +148,7 @@ class JSTypeConverterTest {
   @Test
   fun `should convert complex structures`() {
     @Suppress("unused")
+    @OptimizedRecord
     class MyRecord : Record {
       inner class InnerRecord : Record {
         @Field
@@ -166,7 +176,7 @@ class JSTypeConverterTest {
 
     val record = MyRecord()
 
-    val converted = JSTypeConverter.legacyConvertToJSValue(record, TestContainerProvider)
+    val converted = JSTypeConverterProvider.legacyConvertToJSValue(record, TestContainerProvider)
     Truth.assertThat(converted).isInstanceOf(WritableMap::class.java)
     val convertedRecord = converted as WritableMap
 

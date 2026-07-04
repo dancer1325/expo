@@ -11,25 +11,39 @@ class VideoManager {
   static var shared = VideoManager()
 
   private static var managerQueue = DispatchQueue(label: "com.expo.video.manager.managerQueue")
+  private var mediaServicesResetObserver: NSObjectProtocol?
   private var videoViews = NSHashTable<VideoView>.weakObjects()
-  private var videoPlayers = NSHashTable<VideoPlayer>.weakObjects()
+  private let videoPlayers = SynchronizedHashTable<VideoPlayer>(weakObjects: true)
 
-  func register(videoPlayer: VideoPlayer) {
-    Self.managerQueue.async { [weak self, weak videoPlayer] in
-      guard let self = self, let videoPlayer = videoPlayer else {
-        return
-      }
-      self.videoPlayers.add(videoPlayer)
+  var hasRegisteredPlayers: Bool {
+    return !videoPlayers.allObjects.isEmpty
+  }
+
+  private init() {
+    // When the system resets media services all audio/video objects become invalid. We have to
+    // re-establish the audio session and rebuild every player's item, otherwise they stay in a
+    // failed state and `AVPlayerViewController` keeps showing its broken-playback placeholder.
+    mediaServicesResetObserver = NotificationCenter.default.addObserver(
+      forName: AVAudioSession.mediaServicesWereResetNotification,
+      object: nil,
+      queue: nil
+    ) { [weak self] _ in
+      self?.onMediaServicesWereReset()
     }
   }
 
-  func unregister(videoPlayer: VideoPlayer) {
-    Self.managerQueue.async { [weak self, weak videoPlayer] in
-      guard let self = self, let videoPlayer = videoPlayer else {
-        return
-      }
-      self.videoPlayers.remove(videoPlayer)
+  deinit {
+    if let mediaServicesResetObserver {
+      NotificationCenter.default.removeObserver(mediaServicesResetObserver)
     }
+  }
+
+  func register(videoPlayer: VideoPlayer) {
+    videoPlayers.add(videoPlayer)
+  }
+
+  func unregister(videoPlayer: VideoPlayer) {
+    videoPlayers.remove(videoPlayer)
   }
 
   func register(videoView: VideoView) {
@@ -41,8 +55,29 @@ class VideoManager {
   }
 
   func onAppForegrounded() {
-    for videoPlayer in videoPlayers.allObjects {
-      videoPlayer.setTracksEnabled(true)
+    // While the app is backgrounded iOS can release the decode pipeline, leaving items in a
+    // `.failed` state once we come back.
+    reloadPlayers { $0.reloadIfFailed() }
+  }
+
+  private func onMediaServicesWereReset() {
+    setAppropriateAudioSessionOrWarn()
+    reloadPlayers { $0.reloadCurrentSource() }
+  }
+
+  private func reloadPlayers(_ reload: @escaping (VideoPlayer) -> Void) {
+    Self.managerQueue.async { [weak self] in
+      guard let self else {
+        return
+      }
+
+      let players = self.videoPlayers.allObjects
+
+      DispatchQueue.main.async {
+        for player in players {
+          reload(player)
+        }
+      }
     }
   }
 
@@ -52,9 +87,10 @@ class VideoManager {
         continue
       }
       if player.staysActiveInBackground == true {
-        player.setTracksEnabled(videoView.isInPictureInPicture)
-      } else if !videoView.isInPictureInPicture {
-        player.pointer.pause()
+        player.ref.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+      } else if !videoView.playerViewController.isInPictureInPicture {
+        player.ref.audiovisualBackgroundPlaybackPolicy = .pauses
+        player.ref.pause()
       }
     }
   }
@@ -101,11 +137,11 @@ class VideoManager {
       audioSessionCategoryOptions.remove(.duckOthers)
     }
 
-    if audioSession.categoryOptions != audioSessionCategoryOptions {
+    if audioSession.categoryOptions != audioSessionCategoryOptions || audioSession.category != .playback || audioSession.mode != .moviePlayback {
       do {
         try audioSession.setCategory(.playback, mode: .moviePlayback, options: audioSessionCategoryOptions)
       } catch {
-        log.warn("Failed to set audio session category. This might cause issues with audio playback and Picture in Picture. \(error.localizedDescription)")
+        log.warn("[expo-video] Failed to set audio session category. This might cause issues with audio playback and Picture in Picture. \(error.localizedDescription)")
       }
     }
 
@@ -114,12 +150,9 @@ class VideoManager {
       do {
         try audioSession.setActive(true)
       } catch {
-        log.warn("Failed to activate the audio session. This might cause issues with audio playback. \(error.localizedDescription)")
+        log.warn("[expo-video] Failed to activate the audio session. This might cause issues with audio playback. \(error.localizedDescription)")
       }
     }
-
-    // The now playing notification requires correct audio session category, notify the manager of about the change.
-    NowPlayingManager.shared.refreshNowPlaying()
   }
 
   private func findAudioMixingMode() -> AudioMixingMode? {
@@ -128,6 +161,9 @@ class VideoManager {
     })
     var audioMixingMode: AudioMixingMode = .mixWithOthers
 
+    if playingPlayers.isEmpty {
+      return nil
+    }
     for videoPlayer in playingPlayers where (audioMixingMode.priority()) < videoPlayer.audioMixingMode.priority() {
       audioMixingMode = videoPlayer.audioMixingMode
     }

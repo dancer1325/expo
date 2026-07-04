@@ -1,8 +1,10 @@
-import React, { Text } from 'react-native';
+import { act, screen } from '@testing-library/react-native';
+import { Text } from 'react-native';
 
 import { router } from '../exports';
 import { store } from '../global-state/router-store';
-import { act, renderRouter, screen } from '../testing-library';
+import { renderRouter } from '../testing-library';
+import { parseUrlUsingCustomBase } from '../utils/url';
 
 it('can push a hash url', () => {
   renderRouter({
@@ -20,49 +22,64 @@ it('can push a hash url', () => {
   act(() => router.push('/test#b'));
   act(() => router.push('/test#c'));
 
-  expect(store.rootStateSnapshot()).toStrictEqual({
-    index: 4,
+  expect(store.state).toStrictEqual({
+    index: 0,
     key: expect.any(String),
     preloadedRoutes: [],
-    routeNames: ['index', 'test', '_sitemap', '+not-found'],
+    routeNames: ['__root', '+not-found', '_sitemap'],
     routes: [
       {
         key: expect.any(String),
-        name: 'index',
+        name: '__root',
         params: undefined,
-        path: '/',
-      },
-      {
-        key: expect.any(String),
-        name: 'test',
-        params: {
-          '#': 'a',
+        state: {
+          index: 4,
+          key: expect.any(String),
+          preloadedRoutes: [],
+          routeNames: ['index', 'test'],
+          routes: [
+            {
+              key: expect.any(String),
+              name: 'index',
+              params: undefined,
+              path: '/',
+            },
+            {
+              key: expect.any(String),
+              name: 'test',
+              params: {
+                '#': 'a',
+              },
+              path: undefined,
+            },
+            {
+              key: expect.any(String),
+              name: 'test',
+              params: {
+                '#': 'b',
+              },
+              path: undefined,
+            },
+            {
+              key: expect.any(String),
+              name: 'test',
+              params: {
+                '#': 'b',
+              },
+              path: undefined,
+            },
+            {
+              key: expect.any(String),
+              name: 'test',
+              params: {
+                '#': 'c',
+              },
+              path: undefined,
+            },
+          ],
+          stale: false,
+          type: 'stack',
         },
-        path: undefined,
-      },
-      {
-        key: expect.any(String),
-        name: 'test',
-        params: {
-          '#': 'b',
-        },
-        path: undefined,
-      },
-      {
-        key: expect.any(String),
-        name: 'test',
-        params: {
-          '#': 'b',
-        },
-        path: undefined,
-      },
-      {
-        key: expect.any(String),
-        name: 'test',
-        params: {
-          '#': 'c',
-        },
-        path: undefined,
       },
     ],
     stale: false,
@@ -100,35 +117,143 @@ it('works alongside with search params', () => {
   expect(screen).toHaveSearchParams({ a: '3' });
 });
 
+it.each(['/test#myhash', parseUrlUsingCustomBase('/test#myhash')])(
+  'initialUrl=%p with hash resolves correctly',
+  (url) => {
+    renderRouter(
+      {
+        index: () => <Text testID="index" />,
+        test: () => <Text testID="test" />,
+      },
+      { initialUrl: url }
+    );
+
+    expect(screen.getByTestId('test')).toBeOnTheScreen();
+    expect(screen).toHavePathname('/test');
+    expect(screen).toHaveSearchParams({ '#': 'myhash' });
+  }
+);
+
+it.each(['/test?a=1#myhash', parseUrlUsingCustomBase('/test?a=1#myhash')])(
+  'initialUrl=%p with search params and hash maintains RFC order',
+  (url) => {
+    renderRouter(
+      {
+        index: () => <Text testID="index" />,
+        test: () => <Text testID="test" />,
+      },
+      { initialUrl: url }
+    );
+
+    expect(screen.getByTestId('test')).toBeOnTheScreen();
+    expect(screen).toHavePathname('/test');
+    expect(screen).toHavePathnameWithParams('/test?a=1#myhash');
+    expect(screen).toHaveSearchParams({ a: '1', '#': 'myhash' });
+  }
+);
+
+it.each(['/#section', parseUrlUsingCustomBase('/#section')])(
+  'initialUrl=%p with hash on index route',
+  (url) => {
+    renderRouter(
+      {
+        index: () => <Text testID="index" />,
+      },
+      { initialUrl: url }
+    );
+
+    expect(screen.getByTestId('index')).toBeOnTheScreen();
+    expect(screen).toHavePathname('/');
+    expect(screen).toHaveSearchParams({ '#': 'section' });
+  }
+);
+
+it.each(['/test?a=1', parseUrlUsingCustomBase('/test?a=1')])(
+  'initialUrl=%p with search params but no hash works unchanged',
+  (url) => {
+    renderRouter(
+      {
+        index: () => <Text testID="index" />,
+        test: () => <Text testID="test" />,
+      },
+      { initialUrl: url }
+    );
+
+    expect(screen.getByTestId('test')).toBeOnTheScreen();
+    expect(screen).toHavePathname('/test');
+    expect(screen).toHavePathnameWithParams('/test?a=1');
+    expect(screen).toHaveSearchParams({ a: '1' });
+  }
+);
+
+it.each(['/test#myhash?a=1', parseUrlUsingCustomBase('/test#myhash?a=1')])(
+  'when url is malformed initialUrl=%p the hash and query param are treated as search param',
+  (url) => {
+    renderRouter(
+      {
+        index: () => <Text testID="index" />,
+        test: () => <Text testID="test" />,
+      },
+      { initialUrl: url }
+    );
+
+    expect(screen.getByTestId('test')).toBeOnTheScreen();
+    expect(screen).toHavePathname('/test');
+    expect(screen).toHavePathnameWithParams('/test#myhash?a=1');
+    expect(screen).toHaveSearchParams({ '#': 'myhash?a=1' });
+  }
+);
+
 it('navigating to the same route with a hash will only rerender the screen', () => {
   renderRouter({
     index: () => <Text testID="index" />,
   });
 
-  expect(store.rootStateSnapshot()).toStrictEqual({
+  expect(store.state).toStrictEqual({
     routes: [
       {
-        name: 'index',
-        path: '/',
+        name: '__root',
+        state: {
+          routes: [
+            {
+              name: 'index',
+              path: '/',
+            },
+          ],
+        },
       },
     ],
-    stale: true,
   });
 
   act(() => router.navigate('/?#hash1'));
 
-  expect(store.rootStateSnapshot()).toStrictEqual({
+  expect(store.state).toStrictEqual({
     index: 0,
     key: expect.any(String),
     preloadedRoutes: [],
-    routeNames: ['index', '_sitemap', '+not-found'],
+    routeNames: ['__root', '+not-found', '_sitemap'],
     routes: [
       {
-        name: 'index',
         key: expect.any(String),
-        path: '/',
-        params: {
-          '#': 'hash1',
+        name: '__root',
+        params: undefined,
+        state: {
+          index: 0,
+          key: expect.any(String),
+          preloadedRoutes: [],
+          routeNames: ['index'],
+          routes: [
+            {
+              key: expect.any(String),
+              name: 'index',
+              params: {
+                '#': 'hash1',
+              },
+              path: '/',
+            },
+          ],
+          stale: false,
+          type: 'stack',
         },
       },
     ],

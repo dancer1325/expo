@@ -1,11 +1,9 @@
-#!/usr/bin/env yarn --silent ts-node --transpile-only
+#!/usr/bin/env pnpm --silent ts-node --transpile-only
 
-import nullthrows from 'nullthrows';
 import path from 'path';
 
-import { initAsync, setupManualTestAppAsync, EXPO_ACCOUNT_NAME } from './project';
+import { initAsync, repoRoot, setupManualTestAppAsync, EXPO_ACCOUNT_NAME } from './project';
 
-const repoRoot = nullthrows(process.env.EXPO_REPO_ROOT, 'EXPO_REPO_ROOT is not defined');
 const workingDir = path.resolve(repoRoot, '..');
 
 /**
@@ -23,7 +21,7 @@ function transformAppJson(appJson: any, projectName: string, runtimeVersion: str
       updates: {
         ...appJson.expo.updates,
         requestHeaders: {
-          'expo-channel-name': 'main',
+          'expo-channel-name': 'default',
         },
         assetPatternsToBeBundled: ['assetsInUpdates/*'],
       },
@@ -40,11 +38,11 @@ function transformAppJson(appJson: any, projectName: string, runtimeVersion: str
 }
 
 (async function () {
-  if (!process.env.EXPO_REPO_ROOT) {
+  if (!repoRoot) {
     throw new Error('Missing one or more environment variables; see instructions in e2e/README.md');
   }
   const projectRoot = process.env.TEST_PROJECT_ROOT || path.join(workingDir, 'updates-e2e');
-  const localCliBin = path.join(repoRoot, 'packages/@expo/cli/build/bin/cli');
+  const localCliBin = path.join(repoRoot, 'packages/@expo/cli/bin/cli.js');
   const runtimeVersion = '1.0.0';
   await initAsync(projectRoot, {
     repoRoot,

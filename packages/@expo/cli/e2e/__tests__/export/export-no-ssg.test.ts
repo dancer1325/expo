@@ -23,7 +23,6 @@ describe('export-no-ssg', () => {
           EXPO_USE_STATIC: 'server',
           E2E_ROUTER_SRC: 'server',
           E2E_ROUTER_ASYNC: 'development',
-          EXPO_USE_FAST_RESOLVER: 'true',
         },
       }
     );
@@ -70,5 +69,13 @@ describe('export-no-ssg', () => {
     expect((json.apiRoutes as any[]).length).toBeGreaterThan(0);
     expect(json.htmlRoutes).toEqual([]);
     expect(json.notFoundRoutes).toEqual([]);
+  });
+
+  // Ensure the `/server/_expo/routes.json` contains the right file paths and named regexes.
+  // This test is created to avoid and detect regressions on Windows
+  it('has expected routes manifest entries', async () => {
+    expect(
+      await JsonFile.readAsync(path.join(outputDir, 'server/_expo/routes.json'))
+    ).toMatchSnapshot();
   });
 });

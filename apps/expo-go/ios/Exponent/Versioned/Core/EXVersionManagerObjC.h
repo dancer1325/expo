@@ -4,8 +4,8 @@
 #import <React/RCTLog.h>
 #import <React/RCTBridge.h>
 
-
 @class EXManifestsManifest;
+@class EXAppContext;
 
 @interface EXVersionManagerObjC : NSObject
 
@@ -20,13 +20,8 @@
 - (void)invalidate;
 
 - (void)showDevMenuForHost:(id)host;
-- (void)disableRemoteDebuggingForHost:(id)host;
-- (void)toggleRemoteDebuggingForHost:(id)host;
 - (void)togglePerformanceMonitorForHost:(id)host;
 - (void)toggleElementInspectorForHost:(id)host;
-- (uint32_t)addWebSocketNotificationHandler:(void (^)(NSDictionary<NSString *, id> *))handler
-                         queue:(dispatch_queue_t)queue
-                     forMethod:(NSString *)method;
 
 - (NSDictionary<NSString *, NSString *> *)devMenuItemsForHost:(id)host;
 - (void)selectDevMenuItemWithKey:(NSString *)key host:(id)host bundleURL:(NSURL *)bundleURL;
@@ -41,5 +36,10 @@
 - (id<RCTTurboModule>)getModuleInstanceFromClass:(Class)moduleClass;
 
 - (Class)getModuleClassFromName:(const char *)name;
+
+/**
+ * Creates a new app context configured for Expo Go.
+ */
+- (nonnull EXAppContext *)createExpoGoAppContext;
 
 @end

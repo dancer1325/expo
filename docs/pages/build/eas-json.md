@@ -57,6 +57,8 @@ Build profiles can be extended to other build profile properties using the `exte
 
 For example, in the `preview` profile you might have `"extends": "production"`. This will make the `preview` profile inherit the configuration of the `production` profile.
 
+You can keep chaining profile extensions up to the depth of 5 as long as you avoid making circular dependencies.
+
 ## Common use cases
 
 Developers using Expo tools usually end up having three different types of builds: **development**, **preview**, and **production**.
@@ -237,7 +239,7 @@ If you are building an app with Expo, EAS Build will pick the appropriate image 
 
 > You can specify [common properties](/eas/json/##common-properties-for-native-platforms) both in the platform-specific configuration object or at the profile's root. The platform-specific options take precedence over globally-defined ones.
 
-<Collapsible summary="A managed project with several profiles">
+<Collapsible summary="A Continuous Native Generation (CNG) project with several profiles">
 
 ```json eas.json
 {
@@ -297,7 +299,7 @@ If you are building an app with Expo, EAS Build will pick the appropriate image 
 
 </Collapsible>
 
-<Collapsible summary="A bare project with several profiles">
+<Collapsible summary="An existing React Native project with several profiles">
 
 ```json eas.json
 {
@@ -379,7 +381,7 @@ You can configure environment variables on your build profiles using the `"env"`
 }
 ```
 
-The [Environment variables and secrets](/build-reference/variables) reference explains this topic in greater detail, and the [Use EAS Update](/build/updates) guide provides considerations when using this feature alongside `expo-updates`.
+The [Environment variables and secrets](/eas/environment-variables) reference explains this topic in greater detail, and the [Use EAS Update](/build/updates) guide provides considerations when using this feature alongside `expo-updates`.
 
 ## More
 

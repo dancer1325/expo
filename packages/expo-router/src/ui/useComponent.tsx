@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { useRef, forwardRef, useEffect } from 'react';
 
 /**

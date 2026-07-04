@@ -1,7 +1,8 @@
-import { ReactNode, PureComponent, createRef } from 'react';
+import type { ReactNode } from 'react';
+import { PureComponent, createRef } from 'react';
 
 import NativeVideoModule from './NativeVideoModule';
-import NativeVideoView from './NativeVideoView';
+import NativeVideoView, { NativeTextureVideoView } from './NativeVideoView';
 import type { VideoPlayer } from './VideoPlayer.types';
 import type { VideoViewProps } from './VideoView.types';
 
@@ -20,6 +21,9 @@ export function isPictureInPictureSupported(): boolean {
 }
 
 export class VideoView extends PureComponent<VideoViewProps> {
+  /**
+   * A reference to the underlying native view. On web it is a reference to the HTMLVideoElement.
+   */
   nativeRef = createRef<any>();
 
   /**
@@ -31,6 +35,27 @@ export class VideoView extends PureComponent<VideoViewProps> {
 
   /**
    * Exits fullscreen mode.
+   *
+   * > **Note:** On Android the JS runtime is paused when the `VideoView` is in fullscreen mode. Because of this `exitFullscreen` will only work when called from a native listener - see the example below.
+   *
+   * @example
+   * ```tsx
+   *   const ref = useRef<VideoView>()
+   *   const player = useVideoPlayer(source)
+   *
+   *   // This will work on all platforms
+   *   useEventListener(player, 'playToEnd', () => {
+   *     ref.current?.exitFullscreen();
+   *   });
+   *
+   *   // This will not work on Android
+   *   const enterAndExit = useCallback(() => {
+   *     setTimeout(() => {
+   *       ref.current?.exitFullscreen()
+   *     }, 5000)
+   *     ref.current?.enterFullscreen()
+   *   },[])
+   * ```
    */
   async exitFullscreen(): Promise<void> {
     return await this.nativeRef.current?.exitFullscreen();
@@ -62,8 +87,11 @@ export class VideoView extends PureComponent<VideoViewProps> {
 
   render(): ReactNode {
     const { player, ...props } = this.props;
-    const playerId = getPlayerId(player);
+    const playerId = player ? getPlayerId(player) : null;
 
+    if (NativeTextureVideoView && this.props.surfaceType === 'textureView') {
+      return <NativeTextureVideoView {...props} player={playerId} ref={this.nativeRef} />;
+    }
     return <NativeVideoView {...props} player={playerId} ref={this.nativeRef} />;
   }
 }

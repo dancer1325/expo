@@ -4,6 +4,7 @@
 import * as React from 'react';
 
 import { useOptionalNavigation } from './link/useLoadedNavigation';
+import { useNavigation } from './useNavigation';
 
 /**
  * Memoized callback containing the effect, should optionally return a cleanup function.
@@ -12,9 +13,12 @@ export type EffectCallback = () => undefined | void | (() => void);
 
 /**
  * Hook to run an effect whenever a route is **focused**. Similar to
- * [`React.useEffect`](https://react.dev/reference/react/useEffect).
+ * [`React.useEffect`](https://react.dev/reference/react/useEffect), but the effect re-runs
+ * each time the screen comes into focus, and the optional cleanup function runs when the
+ * screen loses focus — not on unmount. This makes it the right primitive for refetching
+ * data, restarting subscriptions, or resetting transient screen state every time a user
+ * returns to the route.
  *
- * This can be used to perform side-effects such as fetching data or subscribing to events.
  * The passed callback should be wrapped in [`React.useCallback`](https://react.dev/reference/react/useCallback)
  * to avoid running the effect too often.
  *
@@ -28,13 +32,13 @@ export type EffectCallback = () => undefined | void | (() => void);
  *     // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
  *     useCallback(() => {
  *       // Invoked whenever the route is focused.
- *       console.log('Hello, I'm focused!');
+ *       console.log("Hello, I'm focused!");
  *
  *       // Return function is invoked whenever the route gets out of focus.
  *       return () => {
  *         console.log('This route is now unfocused.');
  *       };
- *     }, []);
+ *     }, []),
  *    );
  *
  *  return </>;
@@ -45,7 +49,8 @@ export type EffectCallback = () => undefined | void | (() => void);
  * @param do_not_pass_a_second_prop
  */
 export function useFocusEffect(effect: EffectCallback, do_not_pass_a_second_prop?: never) {
-  const navigation = useOptionalNavigation();
+  const optionalNavigation = useOptionalNavigation();
+  const navigation = useNavigation();
 
   if (do_not_pass_a_second_prop !== undefined) {
     const message =
@@ -56,13 +61,13 @@ export function useFocusEffect(effect: EffectCallback, do_not_pass_a_second_prop
       '    // Your code here\n' +
       '  }, [depA, depB])\n' +
       ');\n\n' +
-      'See usage guide: https://reactnavigation.org/docs/use-focus-effect';
+      'See usage guide: https://docs.expo.dev/versions/latest/sdk/router/#usefocuseffecteffect-do_not_pass_a_second_prop';
 
     console.error(message);
   }
 
   React.useEffect(() => {
-    if (!navigation) {
+    if (!navigation || !optionalNavigation) {
       return;
     }
 
@@ -98,7 +103,7 @@ export function useFocusEffect(effect: EffectCallback, do_not_pass_a_second_prop
             '    fetchData();\n' +
             '  }, [someId])\n' +
             ');\n\n' +
-            'See usage guide: https://reactnavigation.org/docs/use-focus-effect';
+            'See usage guide: https://docs.expo.dev/versions/latest/sdk/router/#usefocuseffecteffect-do_not_pass_a_second_prop';
         } else {
           message += ` You returned '${JSON.stringify(destroy)}'.`;
         }
@@ -145,5 +150,5 @@ export function useFocusEffect(effect: EffectCallback, do_not_pass_a_second_prop
       unsubscribeFocus();
       unsubscribeBlur();
     };
-  }, [effect, navigation]);
+  }, [effect, navigation, optionalNavigation]);
 }

@@ -14,16 +14,13 @@ public class EXDevLauncherUrl: NSObject {
   @objc
   public init(_ url: URL) {
     self.queryParams = EXDevLauncherURLHelper.getQueryParamsForUrl(url)
-    self.url = url
 
-    if EXDevLauncherURLHelper.isDevLauncherURL(url) {
-      if let urlParam = self.queryParams["url"] {
-        if let urlFromParam = URL.init(string: urlParam) {
-          self.url = EXDevLauncherURLHelper.replaceEXPScheme(urlFromParam, to: "http")
-        }
-      }
+    if EXDevLauncherURLHelper.isDevLauncherURL(url),
+      let urlParam = queryParams["url"],
+      let urlFromParam = URL(string: urlParam) {
+      self.url = EXDevLauncherURLHelper.replaceEXPScheme(urlFromParam, to: "http")
     } else {
-      self.url = EXDevLauncherURLHelper.replaceEXPScheme(self.url, to: "http")
+      self.url = EXDevLauncherURLHelper.replaceEXPScheme(url, to: "http")
     }
 
     super.init()
@@ -39,48 +36,75 @@ public class EXDevLauncherURLHelper: NSObject {
 
   @objc
   public static func hasUrlQueryParam(_ url: URL) -> Bool {
-    var hasUrlQueryParam = false
-
-    let components = URLComponents.init(url: url, resolvingAgainstBaseURL: false)
-
-    if (components?.queryItems?.contains(where: {
-      $0.name == "url" && $0.value != nil
-    })) ?? false {
-      hasUrlQueryParam = true
+    guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+    let queryItems = components.queryItems else {
+      return false
     }
 
-    return hasUrlQueryParam
+    return queryItems.contains { $0.name == "url" && $0.value != nil }
   }
 
   @objc
   public static func disableOnboardingPopupIfNeeded(_ url: URL) {
-    let components = URLComponents.init(url: url, resolvingAgainstBaseURL: false)
+    guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+    let queryItems = components.queryItems else {
+      return
+    }
 
-    if (components?.queryItems?.contains(where: {
+    let shouldDisable = queryItems.contains {
       $0.name == "disableOnboarding" && ($0.value ?? "") == "1"
-    })) ?? false {
+    }
+
+    if shouldDisable {
       DevMenuPreferences.isOnboardingFinished = true
     }
   }
 
   @objc
   public static func replaceEXPScheme(_ url: URL, to scheme: String) -> URL {
-    var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
-    if components?.scheme == "exp" {
-      components?.scheme = scheme
+    guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+    components.scheme == "exp" else {
+      return url
     }
-    return components?.url ?? url
+
+    components.scheme = scheme
+    return components.url ?? url
+  }
+
+  // Expo CLI's manifest endpoint only accepts `ios`/`android`/`web`, so on
+  // platforms like `macos` we ask it for `ios` and rewrite the `platform`
+  // query param on the bundle URL it returns to match the actual runtime.
+  @objc
+  public static func bundleURL(_ bundleURL: URL, withResolvedPlatform platform: String) -> URL {
+    guard !bundleURL.isFileURL,
+          var components = URLComponents(url: bundleURL, resolvingAgainstBaseURL: false),
+          var queryItems = components.queryItems else {
+      return bundleURL
+    }
+    var didReplace = false
+    for i in queryItems.indices where queryItems[i].name == "platform" {
+      queryItems[i] = URLQueryItem(name: "platform", value: platform)
+      didReplace = true
+    }
+    guard didReplace else {
+      return bundleURL
+    }
+    components.queryItems = queryItems
+    return components.url ?? bundleURL
   }
 
   @objc
   public static func getQueryParamsForUrl(_ url: URL) -> [String: String] {
-    let components = URLComponents.init(url: url, resolvingAgainstBaseURL: false)
-    var dict: [String: String] = [:]
-
-    for parameter in components?.queryItems ?? [] {
-      dict[parameter.name] = parameter.value?.removingPercentEncoding ?? ""
+    guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+    let queryItems = components.queryItems else {
+      return [:]
     }
 
-    return dict
+    var params: [String: String] = [:]
+    for item in queryItems {
+      params[item.name] = item.value?.removingPercentEncoding ?? ""
+    }
+
+    return params
   }
 }

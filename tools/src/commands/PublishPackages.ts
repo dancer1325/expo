@@ -49,6 +49,21 @@ export default (program: Command) => {
       false
     )
     .option('--no-deps', 'Whether not to include dependencies of the requested packages', false)
+    .option(
+      '--templates-only',
+      'Restrict publishing to template packages under templates/. Dependencies will not be auto-included.',
+      false
+    )
+    .option(
+      '--include-expo-module-scripts',
+      'Include expo-module-scripts in publishing (excluded by default).',
+      false
+    )
+    .option(
+      '--cascade-all',
+      'Include dependents of shared tooling packages (babel-preset-expo, jest-expo, etc.) that are normally excluded from cascading.',
+      false
+    )
 
     /* exclusive options */
     .option(
@@ -72,7 +87,27 @@ export default (program: Command) => {
       false
     )
     .option('-C, --canary', 'Whether to publish all packages as canary versions.', false)
-
+    .option(
+      '-A, --skip-android-artifacts',
+      'Whether to build and publish Android artifacts to the local NPM registry.',
+      false
+    )
+    .option('--skip-ios-prebuilds', 'Skips bundling iOS xcframeworks.', false)
+    .option(
+      '--skip-turbo-checks',
+      'Skips the Turbo check batch (build/typecheck/depscheck/test/lint) on the selected packages.',
+      false
+    )
+    .option(
+      '--auto-select-unpublished',
+      'When retrying after a failed publish, auto-select all packages whose current version is not published yet and allow deselecting in a multi-select prompt.',
+      false
+    )
+    .option(
+      '--prompt-otp',
+      'Prompt for an npm OTP code before publishing. Re-prompts automatically when the code expires.',
+      false
+    )
     /* debug options */
     .option(
       '-S, --skip-repo-checks',
@@ -119,6 +154,16 @@ ${chalk.gray('>')} ${chalk.italic.cyan('et publish expo-gl expo-auth-session')}`
 async function main(packageNames: string[], options: CommandOptions): Promise<void> {
   // Commander doesn't put arguments to options object, let's add it for convenience. In fact, this is an option.
   options.packageNames = packageNames;
+  // Enforce no-deps when templates-only is specified to avoid pulling in non-template dependencies.
+  if (options.templatesOnly) {
+    options.deps = false;
+    // Bare-minimum requires publishing the expo package as well, which is incompatible with templates-only
+    if (options.packageNames.includes('expo-template-bare-minimum')) {
+      throw new Error(
+        'The expo-template-bare-minimum cannot be published with --templates-only. Publish it together with the expo package (omit --templates-only), or remove it from the selection.'
+      );
+    }
+  }
 
   const tasks = tasksForOptions(options);
   const taskRunner = new TaskRunner<TaskArgs, PublishBackupData>({
@@ -218,6 +263,17 @@ function tasksForOptions(options: CommandOptions): Task<TaskArgs>[] {
     return [assignTagForSdkRelease];
   }
   if (options.canary) {
+    if (!process.env.CI) {
+      logger.info(
+        `🛠️ You can also use the CI action instead: https://github.com/expo/expo/actions/workflows/publish-canaries.yml`
+      );
+    }
+    if (options.packageNames.length > 0) {
+      logger.error(
+        '⚠️  Do not pass package names with the --canary flag - canary tags do not support semver ranges, so this would likely cause duplicate expo package versions.'
+      );
+      throw Error('Passing package names with the --canary flag is not allowed.');
+    }
     return [publishCanaryPipeline];
   }
   return [publishPackagesPipeline];

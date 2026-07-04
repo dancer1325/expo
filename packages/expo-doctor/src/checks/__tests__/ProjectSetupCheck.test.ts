@@ -1,11 +1,12 @@
-import glob from 'fast-glob';
+import type { GlobOptions } from 'glob';
+import { glob } from 'glob';
 import { vol } from 'memfs';
 
 import { isFileIgnoredAsync } from '../../utils/files';
 import { ProjectSetupCheck } from '../ProjectSetupCheck';
 
 jest.mock('fs');
-jest.mock('fast-glob');
+jest.mock('glob');
 jest.mock('../../utils/files');
 
 const projectRoot = '/tmp/project';
@@ -51,7 +52,7 @@ describe('runAsync', () => {
     });
 
     const mockGlob = glob as jest.MockedFunction<typeof glob>;
-    mockGlob.mockImplementation((pattern: string | string[], options: glob.Options = {}) => {
+    mockGlob.mockImplementation((pattern: string | string[], options: GlobOptions = {}) => {
       if (
         typeof pattern === 'string' &&
         pattern === 'modules/**/ios/*.podspec' &&
@@ -85,7 +86,7 @@ describe('runAsync', () => {
     });
 
     const mockGlob = glob as jest.MockedFunction<typeof glob>;
-    mockGlob.mockImplementation((pattern: string | string[], options: glob.Options = {}) => {
+    mockGlob.mockImplementation((pattern: string | string[], options: GlobOptions = {}) => {
       if (
         typeof pattern === 'string' &&
         pattern === 'modules/**/android/build.gradle' &&
@@ -119,7 +120,7 @@ describe('runAsync', () => {
     });
 
     const mockGlob = glob as jest.MockedFunction<typeof glob>;
-    mockGlob.mockImplementation((pattern: string | string[], options: glob.Options = {}) => {
+    mockGlob.mockImplementation((pattern: string | string[], options: GlobOptions = {}) => {
       if (
         typeof pattern === 'string' &&
         pattern === 'modules/**/ios/*.podspec' &&
@@ -153,7 +154,7 @@ describe('runAsync', () => {
     });
 
     const mockGlob = glob as jest.MockedFunction<typeof glob>;
-    mockGlob.mockImplementation((pattern: string | string[], options: glob.Options = {}) => {
+    mockGlob.mockImplementation((pattern: string | string[], options: GlobOptions = {}) => {
       if (
         typeof pattern === 'string' &&
         pattern === 'modules/**/android/build.gradle' &&
@@ -178,44 +179,5 @@ describe('runAsync', () => {
       expect.objectContaining({ cwd: projectRoot, absolute: true })
     );
     expect(isFileIgnoredAsync).toHaveBeenCalledWith(androidPath, expect.anything());
-  });
-
-  // multiple lock files
-  it('returns result with isSuccessful = true if just one lock file', async () => {
-    vol.fromJSON({
-      [projectRoot + '/yarn.lock']: 'test',
-    });
-    const check = new ProjectSetupCheck();
-    const result = await check.runAsync({
-      pkg: { name: 'name', version: '1.0.0' },
-      ...additionalProjectProps,
-    });
-    expect(result.isSuccessful).toBeTruthy();
-  });
-
-  it('returns result with isSuccessful = false if more than one lockfile (yarn + npm)', async () => {
-    vol.fromJSON({
-      [projectRoot + '/yarn.lock']: 'test',
-      [projectRoot + '/package-lock.json']: 'test',
-    });
-    const check = new ProjectSetupCheck();
-    const result = await check.runAsync({
-      pkg: { name: 'name', version: '1.0.0' },
-      ...additionalProjectProps,
-    });
-    expect(result.isSuccessful).toBeFalsy();
-  });
-
-  it('returns result with isSuccessful = false if more than one lockfile (yarn + pnpm)', async () => {
-    vol.fromJSON({
-      [projectRoot + '/yarn.lock']: 'test',
-      [projectRoot + '/pnpm-lock.yaml']: 'test',
-    });
-    const check = new ProjectSetupCheck();
-    const result = await check.runAsync({
-      pkg: { name: 'name', version: '1.0.0' },
-      ...additionalProjectProps,
-    });
-    expect(result.isSuccessful).toBeFalsy();
   });
 });

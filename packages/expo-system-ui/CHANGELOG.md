@@ -10,6 +10,214 @@
 
 ### 💡 Others
 
+## 56.0.5 — 2026-05-21
+
+### 🐛 Bug fixes
+
+- Fix an ES module import error in the typed config plugin. ([#46089](https://github.com/expo/expo/pull/46089) by [@zoontek](https://github.com/zoontek))
+
+## 56.0.4 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.3 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.1 — 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+### 🛠 Breaking changes
+
+- Bumped minimum iOS/tvOS version to 16.4, macOS to 13.4. ([#43296](https://github.com/expo/expo/pull/43296) by [@tsapeta](https://github.com/tsapeta))
+
+### 🎉 New features
+
+- Expose a typed config plugin function ([#44098](https://github.com/expo/expo/pull/44098) by [@zoontek](https://github.com/zoontek))
+
+## 55.0.17 - 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.16 - 2026-04-21
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.15 - 2026-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.14 - 2026-04-07
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.13 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.12 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.11 - 2026-03-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.10 - 2026-03-17
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.9 — 2026-02-25
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.8 — 2026-02-20
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.7 — 2026-02-20
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.6 — 2026-02-16
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.5 — 2026-02-08
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.4 — 2026-02-03
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.3 — 2026-01-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### ⚠️ Notices
+
+- Added support for React Native 0.82.x. ([#39678](https://github.com/expo/expo/pull/39678) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- Added support for React Native 0.83.x. ([#41564](https://github.com/expo/expo/pull/41564) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+## 6.0.9 - 2025-12-05
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.8 - 2025-10-21
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.7 — 2025-09-10
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.6 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.5 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.4 — 2025-08-27
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.3 — 2025-08-25
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 6.0.0 — 2025-08-13
+
+### ⚠️ Notices
+
+- Added support for React Native 0.80.x. ([#37400](https://github.com/expo/expo/pull/37400) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+## 5.0.10 - 2025-07-02
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.9 - 2025-06-18
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.8 - 2025-06-04
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.7 — 2025-05-01
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.6 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.5 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.4 — 2025-04-21
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.3 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.2 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.1 — 2025-04-08
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.0 — 2025-04-04
+
+### 🛠 Breaking changes
+
+- upgrade RN to 0.78 ([#35050](https://github.com/expo/expo/pull/35050) by [@vonovak](https://github.com/vonovak))
+
+### 💡 Others
+
+- [Android] Started using expo modules gradle plugin. ([#34176](https://github.com/expo/expo/pull/34176) by [@lukmccall](https://github.com/lukmccall))
+- [apple] Migrate remaining `expo-module.config.json` to unified platform syntax. ([#34445](https://github.com/expo/expo/pull/34445) by [@reichhartd](https://github.com/reichhartd))
+
+## 4.0.9 - 2025-03-31
+
+_This version does not introduce any user-facing changes._
+
+## 4.0.8 - 2025-02-06
+
+_This version does not introduce any user-facing changes._
+
 ## 4.0.6 - 2024-12-10
 
 _This version does not introduce any user-facing changes._

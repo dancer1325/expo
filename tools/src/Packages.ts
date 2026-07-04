@@ -5,10 +5,12 @@ import path from 'path';
 import { Podspec, readPodspecAsync } from './CocoaPods';
 import * as Directories from './Directories';
 import * as Npm from './Npm';
+import { SPMConfig } from './prebuilds/SPMConfig.types';
 
 const ANDROID_DIR = Directories.getExpoGoAndroidDir();
 const IOS_DIR = Directories.getExpoGoIosDir();
 const PACKAGES_DIR = Directories.getPackagesDir();
+const TEMPLATES_DIR = Directories.getTemplatesDir();
 
 /**
  * Cached list of packages or `null` if they haven't been loaded yet. See `getListOfPackagesAsync`.
@@ -60,7 +62,7 @@ export type PackageDependency = {
 /**
  * Union with possible platform names.
  */
-type Platform = 'ios' | 'android' | 'web';
+type Platform = 'ios' | 'android' | 'web' | 'apple';
 
 /**
  * Type representing `expo-modules.config.json` structure.
@@ -73,10 +75,39 @@ export type ExpoModuleConfig = {
     podName?: string;
     podspecPath?: string;
   };
+  apple?: {
+    subdirectory?: string;
+    podName?: string;
+    podspecPath?: string | string[];
+  };
   android?: {
     subdirectory?: string;
+    name?: string;
+    publication?: any;
+    projects?: {
+      name?: string;
+      publication?: any;
+    }[];
   };
 };
+
+const SPMConfigFileName = 'spm.config.json';
+const PACKAGE_JSON_GLOB = '**/package.json';
+const PACKAGE_GLOB_IGNORE = [
+  '**/example/**',
+  '**/node_modules/**',
+  '**/static/**',
+  '**/__tests__/**',
+  '**/__mocks__/**',
+  '**/__fixtures__/**',
+  '**/e2e/**',
+];
+const TEMPLATE_GLOB_IGNORE = [
+  '**/node_modules/**',
+  '**/__tests__/**',
+  '**/__mocks__/**',
+  '**/__fixtures__/**',
+];
 
 /**
  * Represents a package in the monorepo.
@@ -84,13 +115,25 @@ export type ExpoModuleConfig = {
 export class Package {
   path: string;
   packageJson: PackageJson;
-  expoModuleConfig: ExpoModuleConfig;
+  expoModuleConfig?: ExpoModuleConfig;
   packageView?: Npm.PackageViewType | null;
 
   constructor(rootPath: string, packageJson?: PackageJson) {
     this.path = rootPath;
     this.packageJson = packageJson || require(path.join(rootPath, 'package.json'));
-    this.expoModuleConfig = readExpoModuleConfigJson(rootPath);
+    this.expoModuleConfig = readExpoModuleConfigJson(this.expoModulesConfigPath);
+  }
+
+  /**
+   * Path where build artifacts are stored, centralized under packages/precompile/.build/.
+   * Layout: packages/precompile/.build/<pkgName>/{generated,output,codegen}
+   */
+  get buildPath(): string {
+    return path.join(
+      Directories.getPrecompileDir(),
+      '.build',
+      this.packageJson.name ?? path.basename(this.path)
+    );
   }
 
   get hasPlugin(): boolean {
@@ -103,10 +146,6 @@ export class Package {
 
   get hasUtils(): boolean {
     return fs.pathExistsSync(path.join(this.path, 'utils'));
-  }
-
-  get hasReactServerComponents(): boolean {
-    return 'test:rsc' in this.packageJson.scripts;
   }
 
   get packageName(): string {
@@ -130,12 +169,41 @@ export class Package {
       return this.expoModuleConfig.ios.podspecPath;
     }
 
-    // Obtain podspecName by looking for podspecs in both package's root directory and ios subdirectory.
-    const [podspecPath] = glob.sync(`{*,${this.iosSubdirectory}/*}.podspec`, {
-      cwd: this.path,
-    });
+    const applePodspecPath = this.expoModuleConfig?.apple?.podspecPath;
+    if (applePodspecPath) {
+      return Array.isArray(applePodspecPath) ? applePodspecPath[0] : applePodspecPath;
+    }
+
+    // Look for podspecs in the package root and both iOS-style subdirectories.
+    const [podspecPath] = glob.sync(
+      `{*,${this.iosSubdirectory}/*,${this.appleSubdirectory}/*}.podspec`,
+      {
+        cwd: this.path,
+      }
+    );
 
     return podspecPath || null;
+  }
+
+  /**
+   * All podspec paths declared by the package (a package may ship several, e.g.
+   * expo-modules-core ships ExpoModulesCore + ExpoModulesWorklets). Unlike `podspecPath`,
+   * which returns only the first, this returns every entry so callers (e.g. native unit
+   * test discovery) can scan test specs across all of them.
+   */
+  get podspecPaths(): string[] {
+    const iosPodspecPath = this.expoModuleConfig?.ios?.podspecPath;
+    if (iosPodspecPath) {
+      return [iosPodspecPath];
+    }
+
+    const applePodspecPath = this.expoModuleConfig?.apple?.podspecPath;
+    if (applePodspecPath) {
+      return Array.isArray(applePodspecPath) ? applePodspecPath : [applePodspecPath];
+    }
+
+    const fallback = this.podspecPath;
+    return fallback ? [fallback] : [];
   }
 
   get podspecName(): string | null {
@@ -158,6 +226,10 @@ export class Package {
 
   get iosSubdirectory(): string {
     return this.expoModuleConfig?.ios?.subdirectory ?? 'ios';
+  }
+
+  get appleSubdirectory(): string {
+    return this.expoModuleConfig?.apple?.subdirectory ?? 'apple';
   }
 
   get androidSubdirectory(): string {
@@ -192,8 +264,16 @@ export class Package {
     return path.join(this.path, 'CHANGELOG.md');
   }
 
+  get expoModulesConfigPath(): string {
+    return path.join(this.path, 'expo-module.config.json');
+  }
+
   isExpoModule() {
     return !!this.expoModuleConfig;
+  }
+
+  isTemplate() {
+    return !!this.path.startsWith(TEMPLATES_DIR);
   }
 
   containsPodspecFile() {
@@ -206,7 +286,12 @@ export class Package {
   isSupportedOnPlatform(platform: 'ios' | 'android'): boolean {
     if (this.expoModuleConfig && !fs.existsSync(path.join(this.path, 'react-native.config.js'))) {
       // check platform support from expo autolinking but not rn-cli linking which is not platform aware
-      return this.expoModuleConfig.platforms?.includes(platform) ?? false;
+      const platforms = this.expoModuleConfig.platforms ?? [];
+      if (platform === 'ios') {
+        return platforms.includes(platform) || platforms.includes('apple');
+      } else {
+        return platforms.includes(platform);
+      }
     } else if (platform === 'android') {
       return fs.existsSync(path.join(this.path, this.androidSubdirectory, 'build.gradle'));
     } else if (platform === 'ios') {
@@ -297,6 +382,26 @@ export class Package {
   }
 
   /**
+   * Checks whether the package has a Swift PM configuration file
+   */
+  hasSwiftPMConfiguration(): boolean {
+    const swiftPMPackagePath = path.join(this.path, SPMConfigFileName);
+    return fs.pathExistsSync(swiftPMPackagePath);
+  }
+
+  /**
+   * @returns The swift PM configuration object.
+   * @throws Error if the configuration file doesn't exist or can't be parsed.
+   */
+  getSwiftPMConfiguration(): SPMConfig {
+    const swiftPMPackagePath = path.join(this.path, SPMConfigFileName);
+    if (!fs.pathExistsSync(swiftPMPackagePath)) {
+      throw new Error(`No SwiftPM configuration found for package: ${this.packageName}`);
+    }
+    return require(swiftPMPackagePath);
+  }
+
+  /**
    * Checks whether package has its own changelog file.
    */
   async hasChangelogAsync(): Promise<boolean> {
@@ -349,6 +454,7 @@ export class Package {
 
 /**
  * Resolves to a Package instance if the package with given name exists in the repository.
+ * Falls back to scanning the cached package list when the directory name doesn't match.
  */
 export function getPackageByName(packageName: string): Package | null {
   const packageJsonPath = pathToLocalPackageJson(packageName);
@@ -356,7 +462,8 @@ export function getPackageByName(packageName: string): Package | null {
     const packageJson = require(packageJsonPath);
     return new Package(path.dirname(packageJsonPath), packageJson);
   } catch {
-    return null;
+    cachedPackages ??= getListOfPackagesSync();
+    return cachedPackages.find((pkg) => pkg.packageName === packageName) ?? null;
   }
 }
 
@@ -365,41 +472,68 @@ export function getPackageByName(packageName: string): Package | null {
  */
 export async function getListOfPackagesAsync(): Promise<Package[]> {
   if (!cachedPackages) {
-    const paths = await glob('**/package.json', {
+    const paths = await glob(PACKAGE_JSON_GLOB, {
       cwd: PACKAGES_DIR,
-      ignore: [
-        '**/example/**',
-        '**/node_modules/**',
-        '**/static/**',
-        '**/__tests__/**',
-        '**/__mocks__/**',
-        '**/__fixtures__/**',
-      ],
+      ignore: PACKAGE_GLOB_IGNORE,
     });
-    cachedPackages = paths
-      .map((packageJsonPath) => {
-        const fullPackageJsonPath = path.join(PACKAGES_DIR, packageJsonPath);
-        const packagePath = path.dirname(fullPackageJsonPath);
-        const packageJson = require(fullPackageJsonPath);
-
-        return new Package(packagePath, packageJson);
-      })
-      .filter((pkg) => !!pkg.packageName);
+    const templatesPaths = await glob(PACKAGE_JSON_GLOB, {
+      cwd: TEMPLATES_DIR,
+      ignore: TEMPLATE_GLOB_IGNORE,
+    });
+    cachedPackages = createPackagesFromPaths(PACKAGES_DIR, paths).concat(
+      createPackagesFromPaths(TEMPLATES_DIR, templatesPaths)
+    );
   }
   return cachedPackages;
 }
 
-function readExpoModuleConfigJson(dir: string) {
-  const expoModuleConfigJsonPath = path.join(dir, 'expo-module.config.json');
-  const expoModuleConfigJsonExists = fs.existsSync(expoModuleConfigJsonPath);
-  const unimoduleJsonPath = path.join(dir, 'unimodule.json');
+function getListOfPackagesSync(): Package[] {
+  const paths = glob.sync(PACKAGE_JSON_GLOB, {
+    cwd: PACKAGES_DIR,
+    ignore: PACKAGE_GLOB_IGNORE,
+  });
+  const templatesPaths = glob.sync(PACKAGE_JSON_GLOB, {
+    cwd: TEMPLATES_DIR,
+    ignore: TEMPLATE_GLOB_IGNORE,
+  });
+  return createPackagesFromPaths(PACKAGES_DIR, paths).concat(
+    createPackagesFromPaths(TEMPLATES_DIR, templatesPaths)
+  );
+}
+
+function createPackagesFromPaths(rootDir: string, packageJsonPaths: string[]): Package[] {
+  return packageJsonPaths
+    .map((packageJsonPath) => {
+      const fullPackageJsonPath = path.join(rootDir, packageJsonPath);
+      const packagePath = path.dirname(fullPackageJsonPath);
+      const packageJson = require(fullPackageJsonPath);
+
+      return new Package(packagePath, packageJson);
+    })
+    .filter((pkg) => !!pkg.packageName);
+}
+
+function readExpoModuleConfigJson(expoModuleConfigJsonPath: string) {
   try {
-    return require(expoModuleConfigJsonExists ? expoModuleConfigJsonPath : unimoduleJsonPath);
+    return require(expoModuleConfigJsonPath);
   } catch {
     return null;
   }
 }
 
 function pathToLocalPackageJson(packageName: string): string {
+  if (packageName.startsWith('@')) {
+    try {
+      const resolved = require.resolve(`${packageName}/package.json`, { paths: [PACKAGES_DIR] });
+      // require.resolve walks up node_modules/. Reject realpaths outside PACKAGES_DIR
+      // so third-party scoped installs (e.g. @babel/core) fall through to the cache lookup.
+      const rel = path.relative(PACKAGES_DIR, fs.realpathSync(resolved));
+      if (!rel.startsWith('..') && !path.isAbsolute(rel)) {
+        return resolved;
+      }
+    } catch {
+      // Fall through — caller's cachedPackages fallback still applies.
+    }
+  }
   return path.join(PACKAGES_DIR, packageName, 'package.json');
 }

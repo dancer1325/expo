@@ -33,6 +33,53 @@ type Props = PropsWithChildren<{
   SnippetHeaderComponent?: typeof SnippetHeader | typeof PermalinkedSnippetHeader;
 }>;
 
+const normalizeDiff = (text: string) => {
+  if (!text) {
+    return '';
+  }
+
+  let inHunk = false;
+
+  return text
+    .split('\n')
+    .map(line => {
+      if (line.startsWith('diff ')) {
+        inHunk = false;
+        return line;
+      }
+
+      if (line.startsWith('@@')) {
+        inHunk = true;
+        return line;
+      }
+
+      if (
+        line.startsWith('index ') ||
+        line.startsWith('--- ') ||
+        line.startsWith('+++ ') ||
+        line.startsWith('\\ No newline')
+      ) {
+        return line;
+      }
+
+      if (inHunk && !/^[ +-]/.test(line)) {
+        return ` ${line}`;
+      }
+
+      return line;
+    })
+    .join('\n');
+};
+
+const safeParseDiff = (text: string) => {
+  try {
+    return parseDiff(text);
+  } catch (error) {
+    console.warn('Failed to parse diff', error);
+    return null;
+  }
+};
+
 export const DiffBlock = ({
   source,
   raw,
@@ -42,13 +89,17 @@ export const DiffBlock = ({
   collapseDeletedFiles = false,
   SnippetHeaderComponent = SnippetHeader,
 }: Props) => {
-  const [diff, setDiff] = useState<RenderLine[] | null>(raw ? parseDiff(raw) : null);
+  const initialRaw = typeof raw === 'string' && raw.trim().length > 0 ? normalizeDiff(raw) : null;
+  const [diff, setDiff] = useState<RenderLine[] | null>(
+    initialRaw ? safeParseDiff(initialRaw) : null
+  );
   useEffect(() => {
     if (source) {
       const fetchDiffAsync = async () => {
         const response = await fetch(source);
         const result = await response.text();
-        setDiff(parseDiff(result));
+        const normalized = normalizeDiff(result);
+        setDiff(safeParseDiff(normalized));
       };
 
       void fetchDiffAsync();
@@ -69,11 +120,11 @@ export const DiffBlock = ({
   }: RenderLine) => {
     // older SDK template-bare-minimum files (e.g, 46) generate a diff with no hunks and no paths
     // one example of this was a change to gradle-wrapper.jar
-    if (!hunks.length) {
+    if (hunks.length === 0) {
       return null;
     }
     return (
-      <Snippet key={oldRevision + '-' + newRevision}>
+      <Snippet key={oldRevision + '-' + newRevision} data-md="diff">
         <SnippetHeaderComponent
           title={`${filenameModifier(type === 'delete' ? oldPath : newPath)}`}
           Icon={Copy07Icon}
@@ -82,7 +133,12 @@ export const DiffBlock = ({
           float={collapseDeletedFiles && type === 'delete'}>
           {newPath && filenameToLinkUrl && type !== 'delete' ? (
             <SnippetAction
-              rightSlot={<ArrowUpRightIcon className="icon-sm shrink-0 text-icon-secondary" />}
+              rightSlot={
+                <ArrowUpRightIcon
+                  aria-hidden="true"
+                  className="icon-sm shrink-0 text-icon-secondary"
+                />
+              }
               onClick={() => {
                 window.open(filenameToLinkUrl(newPath), '_blank');
               }}>

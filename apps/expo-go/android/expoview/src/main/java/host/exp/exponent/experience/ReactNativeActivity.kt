@@ -11,34 +11,31 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
-import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import com.facebook.infer.annotation.Assertions
+import androidx.core.view.contains
 import com.facebook.react.ReactHost
-import com.facebook.react.ReactNativeHost
 import com.facebook.react.bridge.ReactContext.RCTDeviceEventEmitter
 import com.facebook.react.devsupport.DefaultDevLoadingViewImplementation
 import com.facebook.react.devsupport.DevInternalSettings
+import com.facebook.react.devsupport.DevSupportManagerBase
 import com.facebook.react.devsupport.DoubleTapReloadRecognizer
 import com.facebook.react.devsupport.interfaces.DevSupportManager
 import com.facebook.react.interfaces.fabric.ReactSurface
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler
 import com.facebook.react.modules.core.PermissionAwareActivity
 import com.facebook.react.modules.core.PermissionListener
-import com.facebook.react.modules.core.RCTNativeAppEventEmitter
 import com.facebook.react.runtime.ReactSurfaceImpl
 import de.greenrobot.event.EventBus
-import expo.modules.ReactNativeHostWrapper
 import expo.modules.core.interfaces.Package
 import expo.modules.manifests.core.Manifest
 import host.exp.exponent.ExponentManifest
 import host.exp.exponent.analytics.EXL
 import host.exp.exponent.di.NativeModuleDepsProvider
+import host.exp.exponent.exceptions.ManifestException
 import host.exp.exponent.experience.BaseExperienceActivity.ExperienceContentLoaded
 import host.exp.exponent.experience.splashscreen.LoadingView
 import host.exp.exponent.factories.ReactHostFactory
@@ -58,12 +55,12 @@ import host.exp.exponent.utils.ScopedPermissionsRequester
 import host.exp.expoview.Exponent
 import host.exp.expoview.Exponent.InstanceManagerBuilderProperties
 import host.exp.expoview.Exponent.StartReactInstanceDelegate
-import host.exp.expoview.R
 import org.json.JSONException
 import org.json.JSONObject
 import versioned.host.exp.exponent.ExpoNetworkInterceptor
 import versioned.host.exp.exponent.ExponentDevBundleDownloadListener
 import versioned.host.exp.exponent.ExponentPackage
+import java.io.File
 import java.util.LinkedList
 import java.util.Queue
 import javax.inject.Inject
@@ -85,7 +82,6 @@ abstract class ReactNativeActivity :
   // Will be called after waitForDrawOverOtherAppPermission
   protected open fun startReactInstance() {}
 
-  var reactNativeHost: ReactNativeHost? = null
   var reactHost: ReactHost? = null
   var reactSurface: ReactSurface? = null
 
@@ -136,15 +132,13 @@ abstract class ReactNativeActivity :
     setContentView(containerView)
 
     reactContainerView = FrameLayout(this)
+    reactContainerView.layoutParams = ViewGroup.LayoutParams(
+      ViewGroup.LayoutParams.MATCH_PARENT,
+      ViewGroup.LayoutParams.MATCH_PARENT
+    )
     containerView.addView(reactContainerView)
 
     if (shouldCreateLoadingView()) {
-      containerView.setBackgroundColor(
-        ContextCompat.getColor(
-          this,
-          R.color.splashscreen_background
-        )
-      )
       loadingView = LoadingView(this)
       loadingView!!.show()
       containerView.addView(loadingView)
@@ -165,7 +159,9 @@ abstract class ReactNativeActivity :
   }
 
   fun addReactViewToContentContainer(reactView: View) {
-    reactContainerView.addView(reactView)
+    if (!reactContainerView.contains(reactView)) {
+      reactContainerView.addView(reactView)
+    }
   }
 
   fun hasReactView(reactView: View): Boolean {
@@ -244,23 +240,6 @@ abstract class ReactNativeActivity :
     }
   }
   // endregion
-
-  override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-    devSupportManager?.let { devSupportManager ->
-      if (!isCrashed && devSupportManager.devSupportEnabled) {
-        val didDoubleTapR = currentFocus?.let {
-          Assertions.assertNotNull(doubleTapReloadRecognizer)
-            .didDoubleTapR(keyCode, it)
-        }
-        if (didDoubleTapR == true) {
-          devSupportManager.reloadExpoApp()
-          return true
-        }
-      }
-    }
-
-    return super.onKeyUp(keyCode, event)
-  }
 
   override fun onBackPressed() {
     if (!isCrashed) {
@@ -383,8 +362,23 @@ abstract class ReactNativeActivity :
       instanceManagerBuilderProperties
     )
 
-    val devBundleDownloadListener = ExponentDevBundleDownloadListener(progressListener)
-    val hostWrapper = ReactNativeHostWrapper(application, nativeHost)
+    var devSupportManager: DevSupportManager? = null
+    val capturedManifestUrl = manifestUrl
+    val devBundleDownloadListener = ExponentDevBundleDownloadListener(
+      progressListener,
+      downloadedBundleFileProvider = {
+        (devSupportManager as? DevSupportManagerBase)?.downloadedJSBundleFile?.let(::File)
+      },
+      onHermesDetected = {
+        if (capturedManifestUrl != null) {
+          val errorJson = JSONObject().apply {
+            put("errorCode", "EXPERIENCE_HERMES_BUNDLE_NOT_SUPPORTED")
+            put("message", "Hermes bytecode bundle is not supported by Expo Go")
+          }
+          KernelProvider.instance.handleError(ManifestException(null, capturedManifestUrl, errorJson))
+        }
+      }
+    )
 
     if (delegate.isDebugModeEnabled) {
       val debuggerHost = manifest!!.getDebuggerHost()
@@ -394,8 +388,15 @@ abstract class ReactNativeActivity :
       waitForReactAndFinishLoading()
     }
 
-    val reactHost = ReactHostFactory.createFromReactNativeHost(this, hostWrapper, devBundleDownloadListener)
-    reactNativeHost = nativeHost
+    val reactHost = ReactHostFactory.getDefaultReactHost(
+      context = application,
+      packageList = nativeHost.packages,
+      jsMainModulePath = nativeHost.jsMainModuleName,
+      jsBundleFilePath = nativeHost.jsBundleFile,
+      useDevSupport = nativeHost.useDeveloperSupport,
+      devBundleDownloadListener = devBundleDownloadListener
+    )
+    devSupportManager = reactHost.devSupportManager
 
     val bundle = Bundle()
     val exponentProps = JSONObject()
@@ -444,17 +445,8 @@ abstract class ReactNativeActivity :
       return reactHost
     }
 
-    val devSettings = reactHost.devSupportManager.devSettings as? DevInternalSettings
-    if (devSettings != null) {
-      devSettings.setExponentActivityId(activityId)
-      if (devSettings.isRemoteJSDebugEnabled) {
-        if (manifest?.jsEngine == "hermes") {
-          // Disable remote debugging when running on Hermes
-          devSettings.isRemoteJSDebugEnabled = false
-        }
-        waitForReactAndFinishLoading()
-      }
-    }
+    val devSettings = reactHost.devSupportManager?.devSettings as? DevInternalSettings
+    devSettings?.setExponentActivityId(activityId)
 
     val appKey = manifest!!.getAppKey()
     val surface = ReactSurfaceImpl.createWithView(
@@ -470,7 +462,7 @@ abstract class ReactNativeActivity :
     val buildProps = (manifest!!.getPluginProperties("expo-build-properties")?.get("android") as? Map<*, *>)
       ?.mapKeys { it.key.toString() }
     val enableNetworkInspector = buildProps?.get("networkInspector") as? Boolean ?: true
-    if (enableNetworkInspector && reactHost.devSupportManager.devSupportEnabled) {
+    if (enableNetworkInspector && reactHost.devSupportManager?.devSupportEnabled == true) {
       networkInterceptor = ExpoNetworkInterceptor(Uri.parse(manifest!!.getBundleURL()))
     }
     return reactHost
@@ -523,19 +515,6 @@ abstract class ReactNativeActivity :
           existingEmitter.emit(eventName, eventPayload)
         }
       }
-    } catch (e: Throwable) {
-      EXL.e(TAG, e)
-    }
-  }
-
-  /**
-   * Emits events to `RCTNativeAppEventEmitter`
-   */
-  fun emitRCTNativeAppEvent(eventName: String, eventArgs: Map<String, String>?) {
-    try {
-      val emitter =
-        reactHost?.currentReactContext?.getJSModule(RCTNativeAppEventEmitter::class.java)
-      emitter?.emit(eventName, eventArgs)
     } catch (e: Throwable) {
       EXL.e(TAG, e)
     }

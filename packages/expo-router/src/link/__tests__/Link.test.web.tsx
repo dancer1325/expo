@@ -1,6 +1,5 @@
 /** @jest-environment jsdom */
 import { render } from '@testing-library/react';
-import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Link } from '../Link';
@@ -37,7 +36,7 @@ it('renders a Link with a slot', () => {
   expect(asFragment().getRootNode()).toMatchInlineSnapshot(`
     <DocumentFragment>
       <a
-        class="css-view-175oi2r"
+        class="css-view-g5y9jx"
         data-testid="pressable"
         href="/foo"
         role="link"
@@ -52,6 +51,20 @@ it('renders a Link with a slot', () => {
       </a>
     </DocumentFragment>
   `);
+});
+
+it('renders a Link with a slot and array style', () => {
+  expect(() =>
+    render(
+      <Link asChild href="/foo">
+        <View testID="pressable" style={[{ padding: 10 }, { margin: 5 }]}>
+          <Text testID="inner-text">Button</Text>
+        </View>
+      </Link>
+    )
+  ).toThrow(
+    '[expo-router]: You are passing an array of styles to a child of <Slot>. Consider flattening the styles with StyleSheet.flatten before passing them to the child component.'
+  );
 });
 
 it('supports target blank', () => {
@@ -187,5 +200,44 @@ describe('base url relative links', () => {
     );
     const node = getByTestId('link');
     expect(node.getAttribute('href')).toBe('https://www.example.com/foo');
+  });
+});
+
+describe('Link with preview', () => {
+  it('renders a Link with preview as normal link', () => {
+    const { getByTestId } = render(
+      <Link href="/foo" testID="link">
+        <Link.Trigger>
+          <Text>Foo</Text>
+        </Link.Trigger>
+        <Link.Preview />
+        <Link.Menu>
+          <Link.MenuAction title="Bar" onPress={() => {}}>
+            Bar
+          </Link.MenuAction>
+        </Link.Menu>
+      </Link>
+    );
+
+    expect(getByTestId('link')).toMatchSnapshot();
+  });
+  it('correctly renders link with Preview and asChild', () => {
+    const { getByTestId } = render(
+      <View testID="link-wrapper">
+        <Link href="/foo" asChild>
+          <Link.Trigger>
+            <Text testID="inner-text">Foo</Text>
+          </Link.Trigger>
+          <Link.Preview />
+          <Link.Menu>
+            <Link.MenuAction title="Bar" onPress={() => {}}>
+              Bar
+            </Link.MenuAction>
+          </Link.Menu>
+        </Link>
+      </View>
+    );
+    const linkWrapper = getByTestId('link-wrapper');
+    expect(linkWrapper).toMatchSnapshot();
   });
 });

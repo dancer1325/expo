@@ -9,24 +9,23 @@ import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.ArgumentCastException
 import expo.modules.kotlin.exception.InvalidArgsNumberException
 import expo.modules.kotlin.types.AnyType
-import expo.modules.kotlin.types.toAnyType
+import expo.modules.kotlin.types.toArgsArray
 import io.mockk.mockk
 import org.junit.Test
-import kotlin.reflect.typeOf
 
 class AnyFunctionTest {
-  class MockedAnyFunction(
+  class MockedAnyFunctionComponent(
     desiredArgsTypes: Array<AnyType>
-  ) : AsyncFunction("my-method", desiredArgsTypes) {
+  ) : AsyncFunctionComponent("my-method", desiredArgsTypes) {
     override fun callUserImplementation(args: Array<Any?>, promise: Promise, appContext: AppContext) {
-      convertArgs(args)
+      convertArgs(args, appContext, forceConversion = true)
       throw NullPointerException()
     }
   }
 
   @Test
   fun `call should throw if pass more arguments then expected`() {
-    val method = MockedAnyFunction(arrayOf({ typeOf<Int>() }.toAnyType<Int>()))
+    val method = MockedAnyFunctionComponent(toArgsArray<Int>())
     val promise = PromiseMock()
 
     assertThrows<InvalidArgsNumberException>("Received 2 arguments, but 1 was expected") {
@@ -42,7 +41,7 @@ class AnyFunctionTest {
 
   @Test
   fun `call should throw if pass less arguments then expected`() {
-    val method = MockedAnyFunction(arrayOf({ typeOf<Int>() }.toAnyType<Int>(), { typeOf<Int>() }.toAnyType<Int>()))
+    val method = MockedAnyFunctionComponent(toArgsArray<Int, Int>())
     val promise = PromiseMock()
 
     assertThrows<InvalidArgsNumberException>("Received 1 arguments, but 2 was expected") {
@@ -58,12 +57,12 @@ class AnyFunctionTest {
 
   @Test
   fun `call should throw if cannot convert args`() {
-    val method = MockedAnyFunction(arrayOf({ typeOf<Int>() }.toAnyType<Int>()))
+    val method = MockedAnyFunctionComponent(toArgsArray<Int>())
     val promise = PromiseMock()
 
     assertThrows<ArgumentCastException>(
       """
-      The 1st argument cannot be cast to type kotlin.Int (received class java.lang.String)
+      The 1st argument cannot be cast to type int (received class java.lang.String)
       → Caused by: java.lang.ClassCastException: class java.lang.String cannot be cast to class java.lang.Integer (java.lang.String and java.lang.Integer are in module java.base of loader 'bootstrap')
       """.trimIndent()
     ) {
@@ -79,7 +78,7 @@ class AnyFunctionTest {
 
   @Test
   fun `sync exception shouldn't be converter into promise rejection`() {
-    val method = MockedAnyFunction(emptyArray())
+    val method = MockedAnyFunctionComponent(emptyArray())
     val promise = PromiseMock()
 
     assertThrows<NullPointerException> {

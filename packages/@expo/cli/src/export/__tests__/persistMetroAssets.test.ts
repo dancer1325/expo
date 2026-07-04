@@ -5,8 +5,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+import type { AssetData } from '@expo/metro/metro';
 import { vol } from 'memfs';
-import type { AssetData } from 'metro';
 
 import { filterPlatformAssetScales, persistMetroAssetsAsync } from '../persistMetroAssets';
 
@@ -81,6 +81,7 @@ describe(persistMetroAssetsAsync, () => {
         '/input/a.png',
         '/input/a@2x.png',
         '/input/a@3x.png',
+        '/output', // output assets directory should always be created
       ]);
     });
 

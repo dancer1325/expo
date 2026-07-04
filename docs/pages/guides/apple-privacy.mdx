@@ -17,7 +17,7 @@ A privacy manifest is a file named **PrivacyInfo.xcprivacy** that is included in
 
 These APIs currently include accessing UserDefaults, file timestamp, system boot time, disk space, and active keyboard. Apple considers it an open list that can be expanded in the future.
 
-## Configuration in app.json/app.config.js
+## Configuration in app config
 
 You can include an iOS privacy manifest by using the `privacyManifests` field under `expo.ios` in your app config.
 
@@ -41,11 +41,11 @@ You can include an iOS privacy manifest by using the `privacyManifests` field un
 }
 ```
 
-> Available with SDK 50 and above. Make sure you have updated your Expo SDK libraries to the latest versions for your SDK version using `npx expo install --fix`. For SDK versions below 50, use the [`expo-privacy-manifest-polyfill-plugin`](https://www.npmjs.com/package/expo-privacy-manifest-polyfill-plugin).
+Make sure you have updated your Expo SDK libraries to the latest versions for your SDK version using `npx expo install --fix`.
 
 <ConfigReactNative>
 
-You can include an iOS privacy manifest in a bare Expo app by creating a **PrivacyInfo.xcprivacy** file using Xcode and adding it to your iOS app target.
+You can include an iOS privacy manifest in an [existing React Native project](/bare/overview/) by creating a **PrivacyInfo.xcprivacy** file using Xcode and adding it to your iOS app target.
 Follow [Apple's Privacy manifest files](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files) guide to create a **PrivacyInfo.xcprivacy** file.
 
 </ConfigReactNative>

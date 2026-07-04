@@ -2,9 +2,10 @@ import { vol } from 'memfs';
 import nock from 'nock';
 import prompts from 'prompts';
 
+import type { GithubContent } from '../Examples';
 import {
   ensureExampleExists,
-  GithubContent,
+  fetchMetadataAsync,
   promptExamplesAsync,
   sanitizeScriptsAsync,
 } from '../Examples';
@@ -47,10 +48,43 @@ describe(ensureExampleExists, () => {
   });
 });
 
+describe(fetchMetadataAsync, () => {
+  const mockMetadata = {
+    aliases: {
+      test: {
+        destination: 'test-1',
+      },
+    },
+    deprecated: {
+      test: {
+        outdatedExampleHref: 'test-2',
+      },
+    },
+  };
+
+  it('returns the metadata', async () => {
+    const scope = nock('https://raw.githubusercontent.com/')
+      .get('/expo/examples/master/meta.json')
+      .reply(200, mockMetadata);
+    const metadata = await fetchMetadataAsync();
+    expect(metadata).toBeDefined();
+    expect(metadata).toEqual(mockMetadata);
+    scope.done();
+  });
+
+  it('throws when the metadata is not found', async () => {
+    const scope = nock('https://raw.githubusercontent.com/')
+      .get('/expo/examples/master/meta.json')
+      .reply(404);
+    await expect(() => fetchMetadataAsync()).rejects.toThrow(/unexpected GitHub API response/i);
+    scope.done();
+  });
+});
+
 describe(promptExamplesAsync, () => {
   it('throws when in CI mode', async () => {
     const spy = jest.spyOn(env, 'CI', 'get').mockReturnValue(true);
-    await expect(() => promptExamplesAsync()).rejects.toThrowError(/cannot prompt/i);
+    await expect(() => promptExamplesAsync()).rejects.toThrow(/cannot prompt/i);
     spy.mockRestore();
   });
 

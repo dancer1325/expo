@@ -1,8 +1,8 @@
-import { validatePathConfig as RNValidatePathConfig, type Route } from '@react-navigation/native';
 import * as queryString from 'query-string';
 
+import { matchDynamicName, matchGroupName } from '../matchers';
+import { validatePathConfig as RNValidatePathConfig, type Route } from '../react-navigation/native';
 import type { Options, State, StringifyConfig } from './getPathFromState';
-import { matchDeepDynamicRouteName, matchDynamicName, matchGroupName } from '../matchers';
 
 export type ExpoOptions = {
   preserveDynamicRoutes?: boolean;
@@ -103,7 +103,6 @@ export function getPathWithConventionsCollapsed({
 }) {
   const segments = pattern.split('/');
 
-  // console.log({ segments, params });
   return segments
     .map((p, i) => {
       const name = getParamName(p);
@@ -177,10 +176,7 @@ export function isDynamicPart(p: string) {
 
 function segmentMatchesConvention(segment: string): boolean {
   return (
-    segment === 'index' ||
-    matchDynamicName(segment) != null ||
-    matchGroupName(segment) != null ||
-    matchDeepDynamicRouteName(segment) != null
+    segment === 'index' || matchGroupName(segment) != null || matchDynamicName(segment) != null
   );
 }
 

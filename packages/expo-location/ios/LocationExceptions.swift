@@ -39,6 +39,12 @@ extension Exceptions {
     }
   }
 
+  internal final class HeadingUnavailableException: Exception {
+    override var reason: String {
+      "Heading updates not available"
+    }
+  }
+
   internal final class GeofencingUnavailable: Exception {
     override var reason: String {
       "Geofencing is not available"
@@ -60,6 +66,21 @@ extension Exceptions {
   internal final class DeniedBackgroundLocationPermission: Exception {
     override var reason: String {
       "Background location permission is required to do this operation"
+    }
+  }
+
+  internal final class MotionActivityUnavailable: Exception {
+    override var reason: String {
+      "Motion activity is not available on this device. " +
+        "CMMotionActivityManager requires a physical device with a motion coprocessor (iPhone 5s or later). " +
+        "It is not supported on the iOS Simulator."
+    }
+  }
+
+  internal final class MotionActivityUnauthorized: Exception {
+    override var reason: String {
+      "Motion activity access has been denied. Add NSMotionUsageDescription to Info.plist, " +
+        "then direct the user to Settings > Privacy > Motion and Fitness to re-enable access"
     }
   }
 }

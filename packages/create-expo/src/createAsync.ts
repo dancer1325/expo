@@ -3,20 +3,24 @@ import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
 
+import type { ExamplesMetadata } from './Examples';
 import {
   downloadAndExtractExampleAsync,
   ensureExampleExists,
+  fetchMetadataAsync,
   promptExamplesAsync,
 } from './Examples';
 import * as Template from './Template';
+import { configureWorkspacesAsync } from './configureWorkspaces';
+import { generateAgentFiles } from './generateAgentFiles';
 import { promptTemplateAsync } from './legacyTemplates';
 import { Log } from './log';
+import { applySdkVersionToTemplateAsync } from './promptSdkVersion';
+import type { PackageManagerName } from './resolvePackageManager';
 import {
   configurePackageManager,
   installDependenciesAsync,
-  PackageManagerName,
   resolvePackageManager,
-  formatSelfCommand,
 } from './resolvePackageManager';
 import { assertFolderEmpty, assertValidName, resolveProjectRootAsync } from './resolveProjectRoot';
 import {
@@ -34,6 +38,7 @@ export type Options = {
   template?: string | true;
   example?: string | true;
   yes: boolean;
+  agentsMd: boolean;
 };
 
 const debug = require('debug')('expo:init:create') as typeof console.log;
@@ -56,6 +61,11 @@ async function resolveProjectRootArgAsync(
 async function setupDependenciesAsync(projectRoot: string, props: Pick<Options, 'install'>) {
   const shouldInstall = props.install;
   const packageManager = resolvePackageManager();
+
+  // For monorepo templates: normalize workspace-package dependency specs to
+  // the chosen package manager's convention, and write a `pnpm-workspace.yaml`
+  // when pnpm is the resolved manager. No-op for single-app templates.
+  await configureWorkspacesAsync(projectRoot, packageManager);
 
   // Configure package manager, which is unrelated to installing or not
   await configureNodeDependenciesAsync(projectRoot, packageManager);
@@ -96,18 +106,19 @@ async function createTemplateAsync(inputPath: string, props: Options): Promise<v
     resolvedTemplate = await promptTemplateAsync();
   } else {
     resolvedTemplate = props.template ?? null;
-    console.log(
-      chalk`Creating an Expo project using the {cyan ${resolvedTemplate ?? 'default'}} template.\n`
-    );
-    if (!resolvedTemplate) {
-      console.log(chalk`{gray To choose from all available templates pass in the --template arg:}`);
-      console.log(chalk`  {gray $} ${formatSelfCommand()} {cyan --template}\n`);
-      console.log(chalk`{gray To choose from all available examples pass in the --example arg:}`);
-      console.log(chalk`  {gray $} ${formatSelfCommand()} {cyan --example}\n`);
-    }
   }
 
   const projectRoot = await resolveProjectRootArgAsync(inputPath, props);
+
+  resolvedTemplate = await applySdkVersionToTemplateAsync(
+    resolvedTemplate ?? 'expo-template-default',
+    {
+      yes: props.yes,
+      showAlternatives: !props.template,
+      projectName: path.basename(projectRoot),
+    }
+  );
+
   await fs.promises.mkdir(projectRoot, { recursive: true });
 
   // Setup telemetry attempt after a reasonable point.
@@ -121,7 +132,11 @@ async function createTemplateAsync(inputPath: string, props: Options): Promise<v
   });
 
   await withSectionLog(
-    () => Template.extractAndPrepareTemplateAppAsync(projectRoot, { npmPackage: resolvedTemplate }),
+    async () => {
+      await Template.extractAndPrepareTemplateAppAsync(projectRoot, {
+        npmPackage: resolvedTemplate,
+      });
+    },
     {
       pending: chalk.bold('Locating project files.'),
       success: 'Downloaded and extracted project files.',
@@ -131,6 +146,10 @@ async function createTemplateAsync(inputPath: string, props: Options): Promise<v
   );
 
   await setupDependenciesAsync(projectRoot, props);
+
+  if (props.agentsMd) {
+    await generateAgentFiles(projectRoot);
+  }
 
   // for now, we will just init a git repo if they have git installed and the
   // project is not inside an existing git tree, and do it silently. we should
@@ -152,12 +171,50 @@ async function createExampleAsync(inputPath: string, props: Options): Promise<vo
     resolvedExample = await promptExamplesAsync();
   } else if (props.example) {
     resolvedExample = props.example;
-    console.log(chalk`Creating an Expo project using the {cyan ${resolvedExample}} example.\n`);
   }
 
+  // Handle remapping aliases and throwing for deprecated examples. If we are
+  // unable to fetch metadata, for any reason, just proceed without it. This protects
+  // against a broken metadata endpoint from bringing down the entire command.
+  let metadata: ExamplesMetadata | null = null;
+  try {
+    metadata = await fetchMetadataAsync();
+
+    if (!metadata || !metadata.aliases || !metadata.deprecated) {
+      throw new Error('No metadata found.');
+    }
+  } catch (error: any) {
+    debug(`Error fetching metadata: %O`, error);
+    Log.error(`Error fetching metadata, proceeding without alias or deprecation data.`);
+  }
+
+  if (metadata && metadata.aliases[resolvedExample]) {
+    const alias = metadata.aliases[resolvedExample];
+    const destination = typeof alias === 'string' ? alias : alias?.destination;
+
+    if (destination != null) {
+      console.log(
+        chalk`{gray The {cyan ${resolvedExample}} example has been renamed to {cyan ${destination}}.}`
+      );
+
+      resolvedExample = destination;
+    }
+
+    // Optional message to show when an example is aliased, in case additional context is required
+    if (typeof alias === 'object' && alias.message) {
+      console.log(chalk`{gray ${alias.message}}`);
+    }
+  } else if (metadata && metadata.deprecated[resolvedExample]) {
+    throw new Error(getDeprecatedExampleErrorMessage(resolvedExample, metadata));
+  }
+
+  // Ensure the example exists after performing remapping and deprecation checks.
   await ensureExampleExists(resolvedExample);
 
   const projectRoot = await resolveProjectRootArgAsync(inputPath, props);
+  console.log(
+    chalk`Creating {cyan ${path.basename(projectRoot)}} using the {cyan ${resolvedExample}} example.\n`
+  );
   await fs.promises.mkdir(projectRoot, { recursive: true });
 
   // Setup telemetry attempt after a reasonable point.
@@ -170,14 +227,23 @@ async function createExampleAsync(inputPath: string, props: Options): Promise<vo
     properties: { phase: AnalyticsEventPhases.ATTEMPT, example: resolvedExample },
   });
 
-  await withSectionLog(() => downloadAndExtractExampleAsync(projectRoot, resolvedExample), {
-    pending: chalk.bold('Locating example files...'),
-    success: 'Downloaded and extracted example files.',
-    error: (error) =>
-      `Something went wrong in downloading and extracting the example files: ${error.message}`,
-  });
+  await withSectionLog(
+    async () => {
+      await downloadAndExtractExampleAsync(projectRoot, resolvedExample);
+    },
+    {
+      pending: chalk.bold('Locating example files...'),
+      success: 'Downloaded and extracted example files.',
+      error: (error) =>
+        `Something went wrong in downloading and extracting the example files: ${error.message}`,
+    }
+  );
 
   await setupDependenciesAsync(projectRoot, props);
+
+  if (props.agentsMd) {
+    await generateAgentFiles(projectRoot);
+  }
 
   // for now, we will just init a git repo if they have git installed and the
   // project is not inside an existing git tree, and do it silently. we should
@@ -254,4 +320,19 @@ export function logNodeInstallWarning(
     console.log(`  npx pod-install`);
   }
   console.log();
+}
+
+function getDeprecatedExampleErrorMessage(example: string, metadata: ExamplesMetadata) {
+  const { message, outdatedExampleHref } = metadata.deprecated[example] ?? {};
+  let output = `${example} is no longer available.`;
+
+  if (message) {
+    output += ` ${message}`;
+  }
+
+  if (outdatedExampleHref) {
+    output += `\n\nYou can also refer to the outdated example code in examples git repository history, if it is useful: ${outdatedExampleHref}`;
+  }
+
+  return output;
 }

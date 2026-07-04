@@ -17,7 +17,7 @@ class CalendarDialogDelegate: NSObject, EKEventEditViewDelegate, EKEventViewDele
     case .saved:
       let evt = controller.event
       let id = evt?.calendarItemIdentifier
-      promise.resolve(DialogEditResponse(action: .saved, id: id))
+      promise.resolve(DialogEditResponse(action: .saved, id: id?.isEmpty == false ? id : nil))
     default: promise.resolve(DialogEditResponse())
     }
     controller.dismiss(animated: true, completion: onComplete)
@@ -27,6 +27,7 @@ class CalendarDialogDelegate: NSObject, EKEventEditViewDelegate, EKEventViewDele
     switch action {
     case .responded: promise.resolve(DialogViewResponse(action: .responded))
     case .deleted: promise.resolve(DialogViewResponse(action: .deleted))
+    // swiftlint:disable:next no_fallthrough_only
     case .done: fallthrough
     default: promise.resolve(DialogViewResponse())
     }

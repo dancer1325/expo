@@ -1,8 +1,9 @@
-import { useReleasingSharedObject } from 'expo-modules-core';
-import { SharedRef } from 'expo-modules-core/types';
+import { useReleasingSharedObject } from 'expo';
+import type { SharedRef } from 'expo-modules-core/types';
 
-import { Action, ImageResult, SaveFormat, SaveOptions } from './ImageManipulator.types';
-import { ImageManipulatorContext } from './ImageManipulatorContext';
+import type { Action, ImageResult, SaveOptions } from './ImageManipulator.types';
+import { SaveFormat } from './ImageManipulator.types';
+import type { ImageManipulatorContext } from './ImageManipulatorContext';
 import ExpoImageManipulator from './NativeImageManipulatorModule';
 import { validateArguments } from './validators';
 
@@ -18,7 +19,7 @@ import { validateArguments } from './validators';
  * @param saveOptions A map defining how modified image should be saved.
  * @return Promise which fulfils with [`ImageResult`](#imageresult) object.
  * @deprecated It has been replaced by the new, contextual and object-oriented API.
- * Use [`ImageManipulator.manipulate`](#manipulateuri) or [`useImageManipulator`](#useimagemanipulatoruri) instead.
+ * Use [`ImageManipulator.manipulate`](#manipulatesource) or [`useImageManipulator`](#useimagemanipulatorsource) instead.
  */
 export async function manipulateAsync(
   uri: string,

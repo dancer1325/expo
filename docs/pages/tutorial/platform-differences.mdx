@@ -1,6 +1,7 @@
 ---
 title: Handle platform differences
 description: In this tutorial, learn how to handle platform differences between native and web when creating a universal app.
+hasVideoLink: true
 ---
 
 import { Collapsible } from '~/ui/components/Collapsible';
@@ -18,6 +19,7 @@ In this chapter, we'll learn how to handle capturing screenshots for web browser
 <VideoBoxLink
   videoId="mEKQvF4irBM"
   title="Watch: Handling platform differences in your universal Expo app"
+  description="Handle platform differences between Android, iOS, and web by implementing platform-specific screenshot capture with dom-to-image."
 />
 
 ---
@@ -30,9 +32,18 @@ To capture a screenshot on the web and save it as an image, we'll use a third-pa
 
 Stop the development server and run the following command to install the library:
 
-<Terminal cmd={['$ npm install dom-to-image']} />
+<Terminal
+  cmd={{
+    npm: ['$ npm install dom-to-image'],
+    yarn: ['$ yarn add dom-to-image'],
+    pnpm: ['$ pnpm add dom-to-image'],
+    bun: ['$ bun add dom-to-image'],
+  }}
+/>
 
-After installing it, make sure to restart the development server and press <kbd>w</kbd> in the terminal.
+> **Note:** The `dom-to-image` library is used here for illustrative purposes. For production apps, you may want to explore other solutions or APIs that better suit your specific use case.
+
+After installing it, make sure to restart the development server and press <kbd>W</kbd> in the terminal.
 
 </Step>
 
@@ -48,14 +59,13 @@ Using `Platform` module from React Native, we can implement platform-specific be
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx
-import { View, StyleSheet, /* @tutinfo */Platform/* @end */ } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useState, useRef } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as MediaLibrary from 'expo-media-library';
-import { type ImageSource } from "expo-image";
+import { useEffect, useRef, useState } from 'react';
+import { ImageSourcePropType, View, StyleSheet, /* @tutinfo */Platform/* @end */ } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { captureRef } from 'react-native-view-shot';
-/* @tutinfo Import <CODE>domtoimage</CODE> library. */import domtoimage from 'dom-to-image';/* @end */
+/* @tutinfo Import `domtoimage` library. */import domtoimage from 'dom-to-image';/* @end */
 
 import Button from '@/components/Button';
 import ImageViewer from '@/components/ImageViewer';
@@ -71,13 +81,15 @@ export default function Index() {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined);
   const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [pickedEmoji, setPickedEmoji] = useState<ImageSource | undefined>(undefined);
-  const [status, requestPermission] = MediaLibrary.usePermissions();
+  const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | undefined>(undefined);
+  const [permissionResponse, requestPermission] = ImagePicker.useMediaLibraryPermissions();
   const imageRef = useRef<View>(null);
 
-  if (status === null) {
-    requestPermission();
-  }
+  useEffect(() => {
+    if (!permissionResponse?.granted) {
+      requestPermission();
+    }
+  }, []);
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({

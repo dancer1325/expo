@@ -3,18 +3,9 @@ import ExpoModulesCore
 
 struct RecordingUtils {
   static func getAvailableInputs() -> [[String: Any]] {
-    var inputs = [[String: Any]]()
-    if let availableInputs = AVAudioSession.sharedInstance().availableInputs {
-      for desc in availableInputs {
-        inputs.append([
-          "name": desc.portName,
-          "type": desc.portType,
-          "uid": desc.uid
-        ])
-      }
-    }
-
-    return inputs
+    AVAudioSession.sharedInstance().availableInputs?.map { desc in
+      ["name": desc.portName, "type": desc.portType, "uid": desc.uid]
+    } ?? []
   }
 
   static func getCurrentInput() throws -> [String: Any] {
@@ -30,38 +21,32 @@ struct RecordingUtils {
   }
 
   static func setInput(_ input: String) throws {
-    var prefferedInput: AVAudioSessionPortDescription?
+    var preferredInput: AVAudioSessionPortDescription?
     if let currentInputs = AVAudioSession.sharedInstance().availableInputs {
       for desc in currentInputs where desc.uid == input {
-        prefferedInput = desc
+        preferredInput = desc
       }
     }
 
-    guard let prefferedInput else {
+    guard let preferredInput else {
       throw PreferredInputFoundException(input)
     }
 
-    try AVAudioSession.sharedInstance().setPreferredInput(prefferedInput)
+    try AVAudioSession.sharedInstance().setPreferredInput(preferredInput)
   }
 
   static func getActiveInput() throws -> AVAudioSessionPortDescription? {
-    let currentRoute = AVAudioSession.sharedInstance().currentRoute
-    let inputs = currentRoute.inputs
-
-    if !inputs.isEmpty {
-      return inputs.first
+    if let input = AVAudioSession.sharedInstance().currentRoute.inputs.first {
+      return input
     }
 
     if let preferredInput = AVAudioSession.sharedInstance().preferredInput {
       return preferredInput
     }
 
-    if let availableInputs = AVAudioSession.sharedInstance().availableInputs {
-      if !availableInputs.isEmpty {
-        let defaultInput = availableInputs.first
-        try AVAudioSession.sharedInstance().setPreferredInput(defaultInput)
-        return defaultInput
-      }
+    if let defaultInput = AVAudioSession.sharedInstance().availableInputs?.first {
+      try AVAudioSession.sharedInstance().setPreferredInput(defaultInput)
+      return defaultInput
     }
 
     return nil
@@ -70,46 +55,56 @@ struct RecordingUtils {
 
 struct AudioUtils {
   #if os(iOS)
-  static func createRecorder(directory: URL?, with options: RecordingOptions) -> AVAudioRecorder {
-    if let directory {
-      let fileUrl = createRecordingUrl(from: directory, with: options)
-      do {
-        return try AVAudioRecorder(url: fileUrl, settings: AudioUtils.createRecordingOptions(options))
-      } catch {
-        return AVAudioRecorder()
-      }
+  static func createRecorder(directory: URL, with options: RecordingOptions) throws -> AVAudioRecorder {
+    let fileUrl = createRecordingUrl(from: directory, with: options)
+    do {
+      let recorder = try AVAudioRecorder(url: fileUrl, settings: AudioUtils.createRecordingOptions(options))
+      recorder.isMeteringEnabled = options.isMeteringEnabled
+      return recorder
+    } catch {
+      throw AudioRecordingException("Failed to create recorder: \(error.localizedDescription)")
     }
-    return AVAudioRecorder()
   }
   #endif
 
   static func createAVPlayer(from source: AudioSource?) -> AVPlayer {
-    if let source, let url = source.uri {
-      let asset = AVURLAsset(url: url, options: source.headers)
-      let item = AVPlayerItem(asset: asset)
-      return AVPlayer(playerItem: item)
+    if let item = createAVPlayerItem(from: source) {
+      return AVQueuePlayer(items: [item])
     }
-    return AVPlayer()
+    return AVQueuePlayer()
   }
 
   static func createAVPlayerItem(from source: AudioSource?) -> AVPlayerItem? {
     guard let source, let url = source.uri else {
       return nil
     }
-    let asset = AVURLAsset(url: url, options: source.headers)
-    return AVPlayerItem(asset: asset)
+    let finalUrl = if url.isBase64Audio {
+      handleBase64Asset(base64String: url.absoluteString) ?? url
+    } else {
+      url
+    }
+
+    var options: [String: Any]?
+    if let headers = source.headers {
+      options = ["AVURLAssetHTTPHeaderFieldsKey": headers]
+    }
+
+    let asset = AVURLAsset(url: finalUrl, options: options)
+    return AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: [.tracks, .duration])
   }
 
   static func createRecordingOptions(_ options: RecordingOptions) -> [String: Any] {
-    let strategy = options.bitRateStrategy?.toAVBitRateStrategy() ?? AVAudioBitRateStrategy_Variable
+    let strategy = options.bitRateStrategy?.toAVBitRateStrategy()
 
     var settings = [String: Any]()
 
-    if strategy == AVAudioBitRateStrategy_Variable {
-      settings[AVEncoderAudioQualityForVBRKey] = strategy
-    } else {
-      settings[AVEncoderAudioQualityKey] = strategy
+    if let strategy {
+      settings[AVEncoderBitRateStrategyKey] = strategy
     }
+
+    let usesVBRQualityKey = strategy == AVAudioBitRateStrategy_Variable || strategy == AVAudioBitRateStrategy_VariableConstrained
+    let qualityKey = usesVBRQualityKey ? AVEncoderAudioQualityForVBRKey : AVEncoderAudioQualityKey
+    settings[qualityKey] = options.audioQuality
     settings[AVSampleRateKey] = options.sampleRate
     settings[AVNumberOfChannelsKey] = options.numberOfChannels
     settings[AVEncoderBitRateKey] = options.bitRate
@@ -131,6 +126,38 @@ struct AudioUtils {
     }
 
     return settings
+  }
+
+  private static func handleBase64Asset(base64String: String) -> URL? {
+    let components = base64String.components(separatedBy: ",")
+    guard components.count == 2 else {
+      return nil
+    }
+    let mimeType = components[0].components(separatedBy: ";")[0].components(separatedBy: ":")[1]
+    let base64Data = components[1]
+
+    guard let data = Data(base64Encoded: base64Data, options: .ignoreUnknownCharacters) else {
+      return nil
+    }
+
+    let fileExtension = getFileExtension(for: mimeType)
+    let tempDirectory = FileManager.default.temporaryDirectory
+    let fileName = UUID().uuidString + "." + fileExtension
+    let fileURL = tempDirectory.appendingPathComponent(fileName)
+
+    do {
+      try data.write(to: fileURL)
+      return fileURL
+    } catch {
+      return nil
+    }
+  }
+
+  static func getFileExtension(for mimeType: String) -> String {
+    if let utType = UTType(mimeType: mimeType) {
+      return utType.preferredFilenameExtension ?? "dat"
+    }
+    return "dat"
   }
 
   private static func createRecordingUrl(from dir: URL, with options: RecordingOptions) -> URL {
@@ -158,5 +185,26 @@ struct AudioUtils {
     if !mode.playsInSilentMode && mode.shouldPlayInBackground {
       throw InvalidAudioModeException("playsInSilentMode == false and staysActiveInBackground == true cannot be set on iOS.")
     }
+  }
+}
+
+private extension URL {
+  var isBase64Audio: Bool {
+    return absoluteString.hasPrefix("data:audio/")
+  }
+}
+
+extension AVPlayer {
+  func isBuffering(isPlaying: Bool) -> Bool {
+    if isPlaying {
+      return false
+    }
+    if timeControlStatus == .waitingToPlayAtSpecifiedRate {
+      return true
+    }
+    if let currentItem {
+      return !currentItem.isPlaybackLikelyToKeepUp && currentItem.isPlaybackBufferEmpty
+    }
+    return true
   }
 }

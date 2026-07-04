@@ -1,11 +1,12 @@
 import crypto from 'node:crypto';
 
-import { FetchClient } from './clients/FetchClient';
-import { RudderDetachedClient } from './clients/RudderDetachedClient';
-import { TelemetryClient, TelemetryClientStrategy, TelemetryRecord } from './types';
-import { createContext } from './utils/context';
 import { getAnonymousId } from '../../api/user/UserSettings';
 import { env } from '../env';
+import { FetchClient } from './clients/FetchClient';
+import { FetchDetachedClient } from './clients/FetchDetachedClient';
+import type { TelemetryClient, TelemetryClientStrategy, TelemetryRecord } from './types';
+import { getAgentTelemetryContext } from './utils/agent';
+import { createContext } from './utils/context';
 
 const debug = require('debug')('expo:telemetry') as typeof console.log;
 
@@ -32,7 +33,7 @@ type TelemetryActor = Required<Pick<TelemetryOptions, 'anonymousId' | 'sessionId
 
 export class Telemetry {
   private context = createContext();
-  private client: TelemetryClient = new RudderDetachedClient();
+  private client: TelemetryClient = new FetchDetachedClient();
   private actor: TelemetryActor;
 
   /** A list of all events, recorded before the telemetry was fully initialized */
@@ -90,6 +91,8 @@ export class Telemetry {
   }
 
   private recordInternal(records: TelemetryRecord[]) {
+    const agent = getAgentTelemetryContext();
+
     return this.client.record(
       records.map((record) => ({
         ...record,
@@ -101,6 +104,7 @@ export class Telemetry {
         context: {
           ...this.context,
           sessionId: this.actor.sessionId,
+          ...(agent ? { agent } : {}),
           client: { mode: this.client.strategy },
         },
       }))
@@ -135,13 +139,11 @@ export class Telemetry {
 
 function createClientFromStrategy(strategy: TelemetryOptions['strategy']) {
   // When debugging, use the actual Rudderstack client, but lazy load it
-  if (env.EXPO_NO_TELEMETRY_DETACH || strategy === 'debug') {
-    const { RudderClient } =
-      require('./clients/RudderClient') as typeof import('./clients/RudderClient');
-    return new RudderClient();
+  if (env.EXPO_NO_TELEMETRY_DETACH || strategy === 'debug' || strategy === 'instant') {
+    return new FetchClient();
   }
 
-  return strategy === 'instant' ? new FetchClient() : new RudderDetachedClient();
+  return new FetchDetachedClient();
 }
 
 /** Generate a unique message ID using a random hash and UUID */

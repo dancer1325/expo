@@ -1,9 +1,10 @@
-import { InitialState } from '@react-navigation/native';
 import escape from 'escape-string-regexp';
-import * as queryString from 'query-string';
+import type * as queryString from 'query-string';
 
-import type { InitialRouteConfig, Options, ParsedRoute, RouteConfig } from './getStateFromPath';
 import { matchGroupName, stripGroupSegmentsFromPath } from '../matchers';
+import type { InitialState } from '../react-navigation/native';
+import { parseUrlUsingCustomBase } from '../utils/url';
+import type { InitialRouteConfig, Options, ParsedRoute, RouteConfig } from './getStateFromPath';
 
 export type ExpoOptions = {
   previousSegments?: string[];
@@ -17,6 +18,7 @@ export type ExpoRouteConfig = {
   hasChildren: boolean;
   expandedRouteNames: string[];
   parts: string[];
+  staticPartCount: number;
 };
 
 /**
@@ -42,33 +44,36 @@ export function safelyDecodeURIComponent(str: string) {
   }
 }
 
+interface UrlWithReactNavigationConcessions {
+  path: string;
+  nonstandardPathname: string;
+  hash: string;
+  pathWithoutGroups: string;
+}
+
 export function getUrlWithReactNavigationConcessions(
   path: string,
   baseUrl: string | undefined = process.env.EXPO_BASE_URL
-) {
-  let parsed: URL;
-  try {
-    parsed = new URL(path, 'https://phony.example');
-  } catch {
-    // Do nothing with invalid URLs.
-    return {
-      path,
-      cleanUrl: '',
-      nonstandardPathname: '',
-      url: new URL('https://phony.example'),
-    };
-  }
-
-  const pathname = parsed.pathname;
-  const withoutBaseUrl = stripBaseUrl(pathname, baseUrl);
+): UrlWithReactNavigationConcessions {
   const pathWithoutGroups = stripGroupSegmentsFromPath(stripBaseUrl(path, baseUrl));
 
-  // Make sure there is a trailing slash
+  let pathname = '';
+  let hash = '';
+  try {
+    const parsed = parseUrlUsingCustomBase(path);
+    pathname = parsed.pathname;
+    hash = parsed.hash;
+  } catch {
+    // Do nothing with invalid URLs.
+  }
+
+  const withoutBaseUrl = stripBaseUrl(pathname, baseUrl);
   return {
-    // The slashes are at the end, not the beginning
     path,
+    // Make sure there is a trailing slash
+    // The slashes are at the end, not the beginning
     nonstandardPathname: withoutBaseUrl.replace(/^\/+/g, '').replace(/\/+$/g, '') + '/',
-    url: parsed,
+    hash,
     pathWithoutGroups,
   };
 }
@@ -82,14 +87,22 @@ export function createConfig(
   const parts: string[] = [];
   let isDynamic = false;
   const isIndex = screen === 'index' || screen.endsWith('/index');
+  let staticPartCount = 0;
 
   for (const part of pattern.split('/')) {
     if (part) {
       // If any part is dynamic, then the route is dynamic
-      isDynamic ||= part.startsWith(':') || part.startsWith('*') || part.includes('*not-found');
+      const isDynamicPart =
+        part.startsWith(':') || part.startsWith('*') || part.includes('*not-found');
+
+      isDynamic ||= isDynamicPart;
 
       if (!matchGroupName(part)) {
         parts.push(part);
+
+        if (!isDynamicPart) {
+          staticPartCount++;
+        }
       }
     }
   }
@@ -99,6 +112,7 @@ export function createConfig(
 
   if (isIndex) {
     parts.push('index');
+    staticPartCount++;
   }
 
   return {
@@ -106,8 +120,10 @@ export function createConfig(
     isIndex,
     hasChildren,
     parts,
+    staticPartCount,
     userReadableName: [...routeNames.slice(0, -1), config.path || screen].join('/'),
-    expandedRouteNames: routeNames.flatMap((name) => {
+    // Don't include the __root route name
+    expandedRouteNames: routeNames.slice(1).flatMap((name) => {
       return name.split('/');
     }),
   };
@@ -144,7 +160,7 @@ export function getParamValue(p: string, value: string) {
 
 function formatRegexPattern(it: string): string {
   // Allow spaces in file path names.
-  it = it.replace(' ', '%20');
+  it = it.replace(/ /g, '%20');
 
   if (it.startsWith(':')) {
     // TODO: Remove unused match group
@@ -190,8 +206,9 @@ export function handleUrlParams(route: ParsedRoute, params?: queryString.ParsedQ
 
 export function spreadParamsAcrossAllStates(state: InitialState, params?: Record<string, any>) {
   while (state) {
-    const route = state.routes[0];
-    (route as any).params = Object.assign({}, route.params, params);
+    // TODO(@kitten): Investigate why this is read-only or whether this function cal is used / is this dead code?
+    const route: any = state.routes[0]!;
+    route.params = Object.assign({}, route.params, params);
   }
 }
 
@@ -303,6 +320,13 @@ export function getRouteConfigSorter(previousSegments: string[] = []) {
     }
 
     /*
+     * If the routes have any static segments, the one the most static segments should be higher
+     */
+    if (a.staticPartCount !== b.staticPartCount) {
+      return b.staticPartCount - a.staticPartCount;
+    }
+
+    /*
      * If both are static/dynamic or a layout file, then we check group similarity
      */
     const similarToPreviousA = previousSegments.filter((value, index) => {
@@ -325,6 +349,8 @@ export function getRouteConfigSorter(previousSegments: string[] = []) {
      * If there is not difference in similarity, then each non-group segment is compared against each other
      */
     for (let i = 0; i < Math.max(a.parts.length, b.parts.length); i++) {
+      const aParts = a.parts[i]!;
+      const bParts = b.parts[i]!;
       // if b is longer, b get higher priority
       if (a.parts[i] == null) {
         return 1;
@@ -334,12 +360,12 @@ export function getRouteConfigSorter(previousSegments: string[] = []) {
         return -1;
       }
 
-      const aWildCard = a.parts[i].startsWith('*');
-      const bWildCard = b.parts[i].startsWith('*');
+      const aWildCard = aParts.startsWith('*');
+      const bWildCard = bParts.startsWith('*');
       // if both are wildcard we compare next component
       if (aWildCard && bWildCard) {
-        const aNotFound = a.parts[i].match(/^[*]not-found$/);
-        const bNotFound = b.parts[i].match(/^[*]not-found$/);
+        const aNotFound = aParts.match(/^[*]not-found$/);
+        const bNotFound = bParts.match(/^[*]not-found$/);
 
         if (aNotFound && bNotFound) {
           continue;
@@ -359,12 +385,12 @@ export function getRouteConfigSorter(previousSegments: string[] = []) {
         return -1;
       }
 
-      const aSlug = a.parts[i].startsWith(':');
-      const bSlug = b.parts[i].startsWith(':');
+      const aSlug = aParts.startsWith(':');
+      const bSlug = bParts.startsWith(':');
       // if both are wildcard we compare next component
       if (aSlug && bSlug) {
-        const aNotFound = a.parts[i].match(/^[*]not-found$/);
-        const bNotFound = b.parts[i].match(/^[*]not-found$/);
+        const aNotFound = aParts.match(/^[*]not-found$/);
+        const bNotFound = bParts.match(/^[*]not-found$/);
 
         if (aNotFound && bNotFound) {
           continue;
@@ -417,7 +443,7 @@ export function parseQueryParams(
   parseConfig?: Record<string, (value: string) => any>,
   hash?: string
 ) {
-  const searchParams = new URL(path, 'https://phony.example').searchParams;
+  const searchParams = parseUrlUsingCustomBase(path).searchParams;
   const params: Record<string, string | string[]> = Object.create(null);
 
   if (hash) {
@@ -433,7 +459,7 @@ export function parseQueryParams(
       }
     } else {
       const values = parseConfig?.hasOwnProperty(name)
-        ? searchParams.getAll(name).map((value) => parseConfig[name](value))
+        ? searchParams.getAll(name).map((value) => parseConfig[name]!(value))
         : searchParams.getAll(name);
 
       // searchParams.getAll returns an array.
@@ -445,31 +471,31 @@ export function parseQueryParams(
   return Object.keys(params).length ? params : undefined;
 }
 
-/*** ????????? */
+export function cleanPath(path: string) {
+  path = path
+    // let remaining = path
+    // END FORK
+    .replace(/\/+/g, '/') // Replace multiple slash (//) with single ones
+    .replace(/^\//, '') // Remove extra leading slash
+    .replace(/\?.*$/, ''); // Remove query params which we will handle later
 
-// export function mutateRouteParams(
-//   route: ParsedRoute,
-//   params: object,
-//   { allowUrlParamNormalization = false } = {}
-// ) {
-//   route.params = Object.assign(Object.create(null), route.params) as Record<string, any>;
-//   for (const [name, value] of Object.entries(params)) {
-//     if (route.params?.[name]) {
-//       if (allowUrlParamNormalization) {
-//         route.params[name] = value;
-//       } else {
-//         if (process.env.NODE_ENV !== 'production') {
-//           console.warn(
-//             `Route '/${route.name}' with param '${name}' was specified both in the path and as a param, removing from path`
-//           );
-//         }
-//       }
-//     } else {
-//       route.params[name] = value;
-//     }
-//   }
+  // Make sure there is a trailing slash
+  return path.endsWith('/') ? path : `${path}/`;
+}
 
-//   if (Object.keys(route.params).length === 0) {
-//     delete route.params;
-//   }
-// }
+export function routePatternToRegex(pattern: string) {
+  return new RegExp(
+    `^(${pattern
+      .split('/')
+      .map((it) => {
+        if (it.startsWith('(') && it.endsWith(')')) {
+          return `${it}?`;
+        } else if (it.startsWith(':')) {
+          return `(([^/]+\\/)${it.endsWith('?') ? '?' : ''})`;
+        }
+
+        return `${it === '*' ? '.*' : escape(it)}\\/`;
+      })
+      .join('')})`
+  );
+}

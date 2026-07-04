@@ -1,8 +1,9 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  kotlin("jvm") version "1.9.24"
+  kotlin("jvm") version "2.1.20"
   id("java-gradle-plugin")
 }
 
@@ -11,10 +12,31 @@ repositories {
   mavenCentral()
 }
 
+val gradleProperties = project
+  .rootProject
+  .gradle
+  .parent
+  ?.extensions
+  ?.extraProperties
+
+val expoAutolinkingSettingsPlugin = if (gradleProperties?.has("expoAutolinkingSettingsPlugin") == true) {
+  gradleProperties.get("expoAutolinkingSettingsPlugin") as? Boolean
+} else {
+  false
+}
+
+val isExpoAutolinkingSettingsPluginAvailable = expoAutolinkingSettingsPlugin == true
+
 dependencies {
   implementation(gradleApi())
   compileOnly("com.android.tools.build:gradle:8.5.0")
   implementation("com.facebook.react:react-native-gradle-plugin")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+  implementation("io.github.expo.pika:pika-gradle:1.0.0")
+
+  if (isExpoAutolinkingSettingsPluginAvailable) {
+    implementation("expo.modules:expo-autolinking-plugin-shared")
+  }
 
   testImplementation("junit:junit:4.13.2")
   testImplementation("com.google.truth:truth:1.1.2")
@@ -23,11 +45,20 @@ dependencies {
 java {
   sourceCompatibility = JavaVersion.VERSION_11
   targetCompatibility = JavaVersion.VERSION_11
+
+  sourceSets {
+    val path = if (isExpoAutolinkingSettingsPluginAvailable) {
+      "withAutolinkingPlugin"
+    } else {
+      "withoutAutolinkingPlugin"
+    }
+    getByName("main").java.srcDirs("src/${path}/kotlin")
+  }
 }
 
 tasks.withType<KotlinCompile> {
-  kotlinOptions {
-    jvmTarget = JavaVersion.VERSION_11.toString()
+  compilerOptions {
+    jvmTarget.set(JvmTarget.JVM_11)
   }
 }
 

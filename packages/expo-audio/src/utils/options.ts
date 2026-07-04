@@ -1,9 +1,33 @@
-import { Platform } from 'expo-modules-core';
+import { Platform } from 'expo';
 
-import { RecordingOptions } from '../Audio.types';
+import type {
+  RecordingOptions,
+  RecordingOptionsAndroid,
+  RecordingOptionsIos,
+  RecordingOptionsWeb,
+} from '../Audio.types';
 
-export function createRecordingOptions(options: RecordingOptions) {
-  let commonOptions = {
+type CommonRecordingOptions = {
+  extension: string;
+  sampleRate: number;
+  numberOfChannels: number;
+  bitRate: number;
+  isMeteringEnabled: boolean;
+};
+
+type NativeRecordingOptions = {
+  directory?: RecordingOptions['directory'];
+};
+
+export function createRecordingOptions(
+  options: RecordingOptions
+): CommonRecordingOptions &
+  (
+    | (NativeRecordingOptions & RecordingOptionsIos)
+    | (NativeRecordingOptions & RecordingOptionsAndroid)
+    | RecordingOptionsWeb
+  ) {
+  const commonOptions: CommonRecordingOptions = {
     extension: options.extension,
     sampleRate: options.sampleRate,
     numberOfChannels: options.numberOfChannels,
@@ -12,15 +36,21 @@ export function createRecordingOptions(options: RecordingOptions) {
   };
 
   if (Platform.OS === 'ios') {
-    commonOptions = {
+    return {
       ...commonOptions,
+      directory: options.directory,
       ...options.ios,
     };
   } else if (Platform.OS === 'android') {
-    commonOptions = {
+    return {
       ...commonOptions,
+      directory: options.directory,
       ...options.android,
     };
+  } else {
+    return {
+      ...commonOptions,
+      ...options.web,
+    };
   }
-  return commonOptions;
 }

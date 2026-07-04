@@ -30,6 +30,7 @@ jest.mock('../../../utils/env', () => ({
   env: {
     CI: false,
   },
+  envIsHeadless: () => false,
 }));
 
 jest.mock('../../startBundler', () => ({
@@ -74,20 +75,32 @@ describe(resolveOptionsAsync, () => {
   it(`asserts that the function only runs on darwin machines`, async () => {
     mockPlatform('win32');
     await expect(runIosAsync('/', {})).rejects.toThrow(/EXIT_CALLED/);
-    expect(Log.exit).toBeCalledWith(expect.stringMatching(/eas build -p ios/));
+    expect(Log.exit).toHaveBeenCalledWith(expect.stringMatching(/eas build -p ios/));
   });
 
   it(`runs ios on simulator`, async () => {
     mockPlatform('darwin');
-    vol.fromJSON(rnFixture, '/');
+    vol.fromJSON(
+      {
+        ...rnFixture,
+        '/package.json': JSON.stringify({}),
+        'node_modules/expo/package.json': JSON.stringify({
+          version: '53.0.0',
+        }),
+      },
+      '/'
+    );
 
     await runIosAsync('/', {});
 
-    expect(buildAsync).toBeCalledWith({
+    expect(buildAsync).toHaveBeenCalledWith({
       buildCache: true,
+      buildCacheProvider: undefined,
       configuration: 'Debug',
       device: { name: 'mock', udid: '123' },
+      eagerBundleOptions: undefined,
       isSimulator: true,
+      osType: 'iOS',
       port: 8081,
       projectRoot: '/',
       scheme: 'ReactNativeProject',
@@ -96,7 +109,7 @@ describe(resolveOptionsAsync, () => {
       xcodeProject: { isWorkspace: false, name: '/ios/ReactNativeProject.xcodeproj' },
     });
 
-    expect(launchAppAsync).toBeCalledWith(
+    expect(launchAppAsync).toHaveBeenCalledWith(
       '/mock_binary',
       expect.anything(),
       {
@@ -107,7 +120,7 @@ describe(resolveOptionsAsync, () => {
       undefined
     );
 
-    expect(logProjectLogsLocation).toBeCalled();
+    expect(logProjectLogsLocation).toHaveBeenCalled();
   });
 
   it(`runs ios on device`, async () => {
@@ -118,15 +131,26 @@ describe(resolveOptionsAsync, () => {
       deviceType: 'device',
       udid: '00008101-001964A22629003A',
       connectionType: 'USB',
+      osType: 'iOS',
     });
     jest.mocked(isSimulatorDevice).mockReturnValueOnce(false);
     mockPlatform('darwin');
-    vol.fromJSON(rnFixture, '/');
+    vol.fromJSON(
+      {
+        ...rnFixture,
+        '/package.json': JSON.stringify({}),
+        'node_modules/expo/package.json': JSON.stringify({
+          version: '53.0.0',
+        }),
+      },
+      '/'
+    );
 
     await runIosAsync('/', { device: '00008101-001964A22629003A' });
 
-    expect(buildAsync).toBeCalledWith({
+    expect(buildAsync).toHaveBeenCalledWith({
       buildCache: true,
+      buildCacheProvider: undefined,
       configuration: 'Debug',
       device: {
         deviceType: 'device',
@@ -135,8 +159,11 @@ describe(resolveOptionsAsync, () => {
         osVersion: '15.4.1',
         udid: '00008101-001964A22629003A',
         connectionType: 'USB',
+        osType: 'iOS',
       },
+      eagerBundleOptions: undefined,
       isSimulator: false,
+      osType: 'iOS',
       port: 8081,
       projectRoot: '/',
       scheme: 'ReactNativeProject',
@@ -145,7 +172,7 @@ describe(resolveOptionsAsync, () => {
       xcodeProject: { isWorkspace: false, name: '/ios/ReactNativeProject.xcodeproj' },
     });
 
-    expect(launchAppAsync).toBeCalledWith(
+    expect(launchAppAsync).toHaveBeenCalledWith(
       '/mock_binary',
       expect.anything(),
       {
@@ -156,6 +183,7 @@ describe(resolveOptionsAsync, () => {
           osVersion: '15.4.1',
           udid: '00008101-001964A22629003A',
           connectionType: 'USB',
+          osType: 'iOS',
         },
         isSimulator: false,
         shouldStartBundler: true,
@@ -163,6 +191,6 @@ describe(resolveOptionsAsync, () => {
       undefined
     );
 
-    expect(logProjectLogsLocation).toBeCalled();
+    expect(logProjectLogsLocation).toHaveBeenCalled();
   });
 });

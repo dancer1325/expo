@@ -1,6 +1,6 @@
-import { createRequestHandler } from '@expo/server/build/vendor/http';
 import chalk from 'chalk';
 import connect from 'connect';
+import { createRequestHandler } from 'expo-server/adapter/http';
 import http from 'http';
 import path from 'path';
 import send from 'send';
@@ -8,7 +8,8 @@ import send from 'send';
 import * as Log from '../log';
 import { directoryExistsAsync, fileExistsAsync } from '../utils/dir';
 import { CommandError } from '../utils/errors';
-import { setNodeEnv } from '../utils/nodeEnv';
+import { findUpProjectRootOrAssert } from '../utils/findUp';
+import { setNodeEnv, loadEnvFiles } from '../utils/nodeEnv';
 import { resolvePortAsync } from '../utils/port';
 
 type Options = {
@@ -19,9 +20,11 @@ type Options = {
 const debug = require('debug')('expo:serve') as typeof console.log;
 
 // Start a basic http server
-export async function serveAsync(projectRoot: string, options: Options) {
+export async function serveAsync(inputDir: string, options: Options) {
+  const projectRoot = findUpProjectRootOrAssert(inputDir);
+
   setNodeEnv('production');
-  require('@expo/env').load(projectRoot);
+  loadEnvFiles(projectRoot);
 
   const port = await resolvePortAsync(projectRoot, {
     defaultPort: options.port,
@@ -33,7 +36,7 @@ export async function serveAsync(projectRoot: string, options: Options) {
   }
   options.port = port;
 
-  const serverDist = options.isDefaultDirectory ? path.join(projectRoot, 'dist') : projectRoot;
+  const serverDist = options.isDefaultDirectory ? path.join(inputDir, 'dist') : inputDir;
   //  TODO: `.expo/server/ios`, `.expo/server/android`, etc.
 
   if (!(await directoryExistsAsync(serverDist))) {
@@ -63,6 +66,7 @@ async function startStaticServerAsync(dist: string, options: Options) {
     send(req, filePath, {
       root: dist,
       index: 'index.html',
+      extensions: ['html'],
     })
       .on('error', (err: any) => {
         if (err.status === 404) {

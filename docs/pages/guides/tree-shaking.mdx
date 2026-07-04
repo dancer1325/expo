@@ -5,6 +5,7 @@ description: Learn about how Expo CLI optimizes production JavaScript bundles.
 platforms: ['android', 'ios', 'web', 'tvos']
 ---
 
+import { Collapsible } from '~/ui/components/Collapsible';
 import { Terminal } from '~/ui/components/Snippet';
 import { Step } from '~/ui/components/Step';
 import { Tab, Tabs } from '~/ui/components/Tabs';
@@ -39,7 +40,7 @@ console.log('Hello on iOS');
 
 This optimization is production only and runs on a per-file basis. If you re-export `Platform.OS` from a different module, it will not be removed from the production bundle.
 
-Starting in SDK 51, `process.env.EXPO_OS` can be used to detect the platform that the JavaScript was bundled for (cannot change at runtime). This value does not support platform shaking imports due to how Metro minifies code after dependency resolution.
+The `process.env.EXPO_OS` can be used to detect the platform that the JavaScript was bundled for (cannot change at runtime). This value does not support platform shaking imports due to how Metro minifies code after dependency resolution.
 
 ## Remove development-only code
 
@@ -91,7 +92,7 @@ To improve speed, Expo CLI only performs code elimination in production builds. 
 
 ## Custom code removal
 
-With Expo SDK 50, `EXPO_PUBLIC_` environment variables are inlined before the minification process. This means they can be used to remove code from the production bundle. For example:
+`EXPO_PUBLIC_` environment variables are inlined before the minification process. This means they can be used to remove code from the production bundle. For example:
 
 <Step label="1">
 
@@ -134,13 +135,12 @@ The above code snippet is then minified, which removes the unused conditional:
 
 ## Removing server code
 
-> SDK 51 and greater
-
 It's common to use `typeof window === 'undefined'` to conditionally enable or disable code for server and client environments.
 
-`babel-preset-expo` automatically transforms `typeof window === 'undefined'` to `true` when bundling for server environments and `false` when bundling for websites. The check remains unchanged when bundling for native client environments to support apps that polyfill `window`. This transform runs in both development and production but only removes conditional requires in production.
+`babel-preset-expo` will transform `typeof window === 'undefined'` to `true` when bundling for server environments. By default, this check remains unchanged when bundling for web client environments. This transform runs in both development and production but only removes conditional requires in production.
 
-You can configure `babel-preset-expo` to skip the transform by passing `{ preserveTypeofWindow: false }`.
+You can configure `babel-preset-expo` to enable this transform by passing `{ minifyTypeofWindow: true }`.
+By default, this transform remains disabled even for web environments since web workers won't have a `window` global.
 
 <Step label="1">
 
@@ -162,15 +162,7 @@ if (true) {
 }
 ```
 
-Bundling client code for web browsers will change `typeof window` to `false`:
-
-```js Post babel-preset-expo
-if (false) {
-  console.log('Hello on the server!');
-}
-```
-
-Bundling client code for native apps will leave `typeof window` in place:
+Bundling client code for web or native apps will not replace `typeof window` unless `minifyTypeOfWindow: true` is set:
 
 ```js Post babel-preset-expo
 if (typeof window === 'undefined') {
@@ -182,13 +174,16 @@ if (typeof window === 'undefined') {
 
 <Step label="3">
 
-The above code snippet is then minified, which removes the unused conditional:
+For server environments, the above code snippet is then minified which removes the unused conditional:
 
 ```js Post minifier (server)
 console.log('Hello on the server!');
 ```
 
-```js Post minifier (client websites)
+```js Post minifier (client)
+if (typeof window === 'undefined') {
+  console.log('Hello on the server!');
+}
 // Empty file
 ```
 
@@ -232,7 +227,7 @@ const { View, Image } = require('react-native-web');
 
 ## Remove unused imports and exports
 
-> Experimentally available in SDK 52 and above.
+> [Experimentally](/more/release-statuses/#experimental) available in SDK 52 and later.
 
 You can experimentally enable support for automatically removing unused imports and exports across modules. This is useful for speeding up native OTA downloads and optimizing web performance where JavaScript must be parsed and executed using a standard JavaScript engine.
 
@@ -282,11 +277,15 @@ This system scales up to automatically optimize all `import` and `export` syntax
 
 ## Enabling tree shaking
 
-> Experimentally available in SDK 52 and above.
+> [Experimentally](/more/release-statuses/#experimental) available in SDK 52 and later.
 
 <Step label="1">
 
-Enable `experimentalImportSupport` and ensure your app builds and runs as expected. You may experience issues with require cycles or mixing CommonJS and ESM imports.
+Ensure `experimentalImportSupport` and ensure your app builds and runs as expected.
+
+> **info** **Note**: Enabled by default in SDK 54 and later.
+
+<Collapsible summary="How to enable import support in older SDK versions?">
 
 ```js metro.config.js
 const { getDefaultConfig } = require('expo/metro-config');
@@ -302,7 +301,9 @@ config.transformer.getTransformOptions = async () => ({
 module.exports = config;
 ```
 
-Experimental import support uses Metro's version of the `@babel/plugin-transform-modules-commonjs` plugin. This drastically reduces the number of resolutions and simplifies your output bundle. This feature can be used with `inlineRequires` to further optimize your bundle experimentally.
+Experimental import support uses a custom version of the `@babel/plugin-transform-modules-commonjs` plugin. This drastically reduces the number of resolutions and simplifies your output bundle. This feature can be used with `inlineRequires` to further optimize your bundle experimentally.
+
+</Collapsible>
 
 </Step>
 
@@ -334,7 +335,14 @@ This will only be used in production mode.
 
 Bundle your app in production mode to see the effects of tree shaking.
 
-<Terminal cmd={['$ npx expo export']} />
+<Terminal
+  cmd={{
+    npm: ['$ npx expo export'],
+    yarn: ['$ yarn expo export'],
+    pnpm: ['$ pnpm expo export'],
+    bun: ['$ bun expo export'],
+  }}
+/>
 
 </Step>
 
@@ -342,7 +350,7 @@ This feature is very experimental because it changes the fundamental structure o
 
 ## Barrel files
 
-> Experimentally available in SDK 52 and above.
+> [Experimentally](/more/release-statuses/#experimental) available in SDK 52 and later.
 
 With Expo tree shaking, star exports will automatically be expanded and shaken based on usage. For example, consider the following code snippet:
 
@@ -364,7 +372,7 @@ You can use this strategy with libraries like `lucide-react` to remove all icons
 
 ## Recursive optimizations
 
-> Experimentally available in SDK 52 and above.
+> [Experimentally](/more/release-statuses/#experimental) available in SDK 52 and later.
 
 Expo optimizes a module by recursing through the graph exhaustively to find unused imports. Consider the following code snippet:
 
@@ -394,7 +402,7 @@ You can mark if your module has side-effects in the **package.json**:
 
 Side-effects will prevent the removal of unused modules and disable module inlining to ensure JS code runs in the expected order. Side-effects will be removed if they're empty or contain only comments and directives (`"use strict"`, `"use client"`, and so on).
 
-When Expo tree shaking is enabled, you can safely enable `inlineRequires` in your `metro.config.js` for production bundles. This will lazily load modules when they're evaluated, leading to faster startup time. Avoid using this feature without Expo tree shaking as it will move modules around in ways that can change the execution order of side-effects.
+When Expo tree shaking is enabled, you can safely enable `inlineRequires` in your **metro.config.js** for production bundles. This will lazily load modules when they're evaluated, leading to faster startup time. Avoid using this feature without Expo tree shaking as it will move modules around in ways that can change the execution order of side-effects.
 
 ```js metro.config.js
 const { getDefaultConfig } = require('expo/metro-config');

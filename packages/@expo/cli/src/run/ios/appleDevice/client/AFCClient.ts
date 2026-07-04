@@ -7,19 +7,17 @@
  */
 import Debug from 'debug';
 import * as fs from 'fs';
-import { Socket } from 'net';
+import type { Socket } from 'net';
 import * as path from 'path';
-import { promisify } from 'util';
 
 import { ServiceClient } from './ServiceClient';
 import { CommandError } from '../../../../utils/errors';
+import type { AFCError, AFCResponse } from '../protocol/AFCProtocol';
 import {
   AFC_FILE_OPEN_FLAGS,
   AFC_OPS,
   AFC_STATUS,
-  AFCError,
   AFCProtocolClient,
-  AFCResponse,
 } from '../protocol/AFCProtocol';
 
 const debug = Debug('expo:apple-device:client:afc');
@@ -108,18 +106,17 @@ export class AFCClient extends ServiceClient<AFCProtocolClient> {
   protected async uploadFile(srcPath: string, destPath: string): Promise<void> {
     debug(`uploadFile: ${srcPath}, ${destPath}`);
 
-    // read local file and get fd of destination
-    const [srcFile, destFile] = await Promise.all([
-      await promisify(fs.readFile)(srcPath),
-      await this.openFile(destPath),
-    ]);
+    const destFile = await this.openFile(destPath);
 
     try {
-      await this.writeFile(destFile, srcFile);
+      // fs.readFile cannot handle files >= 2 GiB due to Node.js Buffer limitations.
+      // Stream the file in chunks to support large files (e.g. ML models).
+      const stream = fs.createReadStream(srcPath, { highWaterMark: 8 * 1024 * 1024 });
+      for await (const chunk of stream) {
+        await this.writeFile(destFile, chunk);
+      }
+    } finally {
       await this.closeFile(destFile);
-    } catch (err) {
-      await this.closeFile(destFile);
-      throw err;
     }
   }
 
@@ -143,16 +140,14 @@ export class AFCClient extends ServiceClient<AFCProtocolClient> {
     // so we delay any requests that would push us over until more open up
     let numOpenFiles = 0;
     const pendingFileUploads: (() => void)[] = [];
-    const _this = this;
-    return uploadDir(srcPath);
 
-    async function uploadDir(dirPath: string): Promise<void> {
+    const uploadDir = async (dirPath: string): Promise<void> => {
       const promises: Promise<void>[] = [];
       for (const file of fs.readdirSync(dirPath)) {
         const filePath = path.join(dirPath, file);
         const remotePath = path.join(destPath, path.relative(srcPath, filePath));
         if (fs.lstatSync(filePath).isDirectory()) {
-          promises.push(_this.makeDirectory(remotePath).then(() => uploadDir(filePath)));
+          promises.push(this.makeDirectory(remotePath).then(() => uploadDir(filePath)));
         } else {
           // Create promise to add to promises array
           // this way it can be resolved once a pending upload has finished
@@ -167,8 +162,7 @@ export class AFCClient extends ServiceClient<AFCProtocolClient> {
           // wrap upload in a function in case we need to save it for later
           const uploadFile = (tries = 0) => {
             numOpenFiles++;
-            _this
-              .uploadFile(filePath, remotePath)
+            this.uploadFile(filePath, remotePath)
               .then(() => {
                 resolve();
                 numOpenFiles--;
@@ -201,7 +195,9 @@ export class AFCClient extends ServiceClient<AFCProtocolClient> {
         }
       }
       await Promise.all(promises);
-    }
+    };
+
+    return uploadDir(srcPath);
   }
 }
 

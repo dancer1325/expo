@@ -1,19 +1,18 @@
 import type { JSONValue } from '@expo/json-file';
 import path from 'path';
 
-import { wrapFetchWithCache } from './cache/wrapFetchWithCache';
-import type { FetchLike } from './client.types';
-import { wrapFetchWithBaseUrl } from './wrapFetchWithBaseUrl';
-import { wrapFetchWithOffline } from './wrapFetchWithOffline';
-import { wrapFetchWithProgress } from './wrapFetchWithProgress';
-import { wrapFetchWithProxy } from './wrapFetchWithProxy';
-import { wrapFetchWithUserAgent } from './wrapFetchWithUserAgent';
 import { env } from '../../utils/env';
 import { CommandError } from '../../utils/errors';
 import { fetch } from '../../utils/fetch';
 import { getExpoApiBaseUrl } from '../endpoint';
 import { disableNetwork } from '../settings';
 import { getAccessToken, getExpoHomeDirectory, getSession } from '../user/UserSettings';
+import { wrapFetchWithCache } from './cache/wrapFetchWithCache';
+import type { FetchLike } from './client.types';
+import { wrapFetchWithBaseUrl } from './wrapFetchWithBaseUrl';
+import { wrapFetchWithOffline } from './wrapFetchWithOffline';
+import { wrapFetchWithProgress } from './wrapFetchWithProgress';
+import { wrapFetchWithUserAgent } from './wrapFetchWithUserAgent';
 
 export class ApiV2Error extends Error {
   readonly name = 'ApiV2Error';
@@ -22,6 +21,7 @@ export class ApiV2Error extends Error {
   readonly expoApiV2ErrorDetails?: JSONValue;
   readonly expoApiV2ErrorServerStack?: string;
   readonly expoApiV2ErrorMetadata?: object;
+  readonly expoApiV2RequestId?: string;
 
   constructor(response: {
     message: string;
@@ -29,6 +29,7 @@ export class ApiV2Error extends Error {
     stack?: string;
     details?: JSONValue;
     metadata?: object;
+    requestId: string;
   }) {
     super(response.message);
     this.code = response.code;
@@ -36,6 +37,11 @@ export class ApiV2Error extends Error {
     this.expoApiV2ErrorDetails = response.details;
     this.expoApiV2ErrorServerStack = response.stack;
     this.expoApiV2ErrorMetadata = response.metadata;
+    this.expoApiV2RequestId = response.requestId;
+  }
+
+  toString() {
+    return `${super.toString()}${env.EXPO_DEBUG && this.expoApiV2RequestId ? ` (Request Id: ${this.expoApiV2RequestId})` : ''}`;
   }
 }
 
@@ -68,8 +74,17 @@ export function getResponseDataOrThrow<T = any>(json: unknown): T {
 
 /**
  * @returns a `fetch` function that will inject user authentication information and handle errors from the Expo API.
+ *
+ * Credentials are only attached to requests targeting `expoApiBaseUrl`'s origin (including relative
+ * URLs, which the downstream base-URL wrapper resolves against the Expo API). Absolute URLs to any
+ * other host pass through without Expo credentials.
  */
-export function wrapFetchWithCredentials(fetchFunction: FetchLike): FetchLike {
+export function wrapFetchWithCredentials(
+  fetchFunction: FetchLike,
+  expoApiBaseUrl: string
+): FetchLike {
+  const expoApiOrigin = new URL(expoApiBaseUrl).origin;
+
   return async function fetchWithCredentials(url, options = {}) {
     if (Array.isArray(options.headers)) {
       throw new Error('request headers must be in object form');
@@ -77,13 +92,15 @@ export function wrapFetchWithCredentials(fetchFunction: FetchLike): FetchLike {
 
     const resolvedHeaders = options.headers ?? ({} as any);
 
-    const token = getAccessToken();
-    if (token) {
-      resolvedHeaders.authorization = `Bearer ${token}`;
-    } else {
-      const sessionSecret = getSession()?.sessionSecret;
-      if (sessionSecret) {
-        resolvedHeaders['expo-session'] = sessionSecret;
+    if (isExpoApiUrl(url, expoApiBaseUrl, expoApiOrigin)) {
+      const token = getAccessToken();
+      if (token) {
+        resolvedHeaders.authorization = `Bearer ${token}`;
+      } else {
+        const sessionSecret = getSession()?.sessionSecret;
+        if (sessionSecret) {
+          resolvedHeaders['expo-session'] = sessionSecret;
+        }
       }
     }
 
@@ -113,10 +130,7 @@ export function wrapFetchWithCredentials(fetchFunction: FetchLike): FetchLike {
       return response;
     } catch (error: any) {
       // When running `expo start`, but wifi or internet has issues
-      if (
-        isNetworkError(error) || // node-fetch error handling
-        ('cause' in error && isNetworkError(error.cause)) // undici error handling
-      ) {
+      if (isNetworkError(error) || ('cause' in error && isNetworkError(error.cause))) {
         disableNetwork();
 
         throw new CommandError(
@@ -130,10 +144,23 @@ export function wrapFetchWithCredentials(fetchFunction: FetchLike): FetchLike {
   };
 }
 
+function isExpoApiUrl(url: unknown, expoApiBaseUrl: string, expoApiOrigin: string): boolean {
+  if (typeof url !== 'string') {
+    return false;
+  }
+  try {
+    // Relative URLs resolve against the Expo API base, so they always match the Expo origin.
+    return new URL(url, expoApiBaseUrl).origin === expoApiOrigin;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Determine if the provided error is related to a network issue.
  * When this returns true, offline mode should be enabled.
  *   - `ENOTFOUND` is thrown when the DNS lookup failed
+ *   - `EAI_AGAIN` is thrown when DNS lookup failed due to a server-side error
  *   - `UND_ERR_CONNECT_TIMEOUT` is thrown after DNS is resolved, but server can't be reached
  *
  * @see https://nodejs.org/api/errors.html
@@ -141,17 +168,21 @@ export function wrapFetchWithCredentials(fetchFunction: FetchLike): FetchLike {
  */
 function isNetworkError(error: Error & { code?: string }) {
   return (
-    'code' in error && error.code && ['ENOTFOUND', 'UND_ERR_CONNECT_TIMEOUT'].includes(error.code)
+    'code' in error &&
+    error.code &&
+    ['ENOTFOUND', 'EAI_AGAIN', 'UND_ERR_CONNECT_TIMEOUT'].includes(error.code)
   );
 }
 
 const fetchWithOffline = wrapFetchWithOffline(wrapFetchWithUserAgent(fetch));
 
-const fetchWithBaseUrl = wrapFetchWithBaseUrl(fetchWithOffline, getExpoApiBaseUrl() + '/v2/');
+const expoApiBaseUrl = getExpoApiBaseUrl() + '/v2/';
 
-const fetchWithProxy = wrapFetchWithProxy(fetchWithBaseUrl);
+const fetchWithBaseUrl = wrapFetchWithBaseUrl(fetchWithOffline, expoApiBaseUrl);
 
-const fetchWithCredentials = wrapFetchWithProgress(wrapFetchWithCredentials(fetchWithProxy));
+const fetchWithCredentials = wrapFetchWithProgress(
+  wrapFetchWithCredentials(fetchWithBaseUrl, expoApiBaseUrl)
+);
 
 /**
  * Create an instance of the fully qualified fetch command (auto authentication and api) but with caching in the '~/.expo' directory.
@@ -186,4 +217,6 @@ export function createCachedFetch({
 }
 
 /** Instance of fetch with automatic base URL pointing to the Expo API, user credential injection, and API error handling. Caching not included.  */
-export const fetchAsync = wrapFetchWithProgress(wrapFetchWithCredentials(fetchWithProxy));
+export const fetchAsync = wrapFetchWithProgress(
+  wrapFetchWithCredentials(fetchWithBaseUrl, expoApiBaseUrl)
+);

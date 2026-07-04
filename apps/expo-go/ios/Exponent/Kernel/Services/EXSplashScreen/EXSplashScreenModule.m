@@ -2,6 +2,7 @@
 
 #import "EXSplashScreenModule.h"
 #import "EXSplashScreenService.h"
+#import "EXKernel.h"
 #import <React/RCTRootView.h>
 #import <React/RCTSurfaceHostingView.h>
 #import <ExpoModulesCore/EXAppLifecycleService.h>
@@ -121,6 +122,11 @@ EX_EXPORT_METHOD_AS(preventAutoHideAsync,
     return [utilService currentViewController];
   }
 
+  UIViewController *visibleAppViewController = [EXKernel sharedInstance].visibleApp.viewController;
+  if (visibleAppViewController) {
+    return visibleAppViewController;
+  }
+
   UIViewController *controller = [self viewControllerContainingRCTRootView];
   if (!controller) {
     // no RCTRootView was found, so just fall back to the key window's root view controller
@@ -179,7 +185,7 @@ EX_EXPORT_METHOD_AS(preventAutoHideAsync,
 
 - (BOOL)isReactRootView:(UIView*)view
 {
-  return [view isKindOfClass:RCTRootView.class] || [view isKindOfClass:RCTSurfaceHostingView.class];
+  return [view isKindOfClass:RCTSurfaceHostingView.class];
 }
 
 @end

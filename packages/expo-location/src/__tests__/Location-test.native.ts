@@ -1,4 +1,4 @@
-import { Platform } from 'expo-modules-core';
+import { Platform } from 'expo';
 import { mockProperty, unmockAllProperties } from 'jest-expo';
 
 import ExpoLocation from '../ExpoLocation';
@@ -99,11 +99,11 @@ describe('navigator.geolocation polyfill', () => {
 
   describe('getCurrentPosition', () => {
     it(`delegates to getCurrentPositionAsync`, async () => {
-      let pass;
+      let pass: (_arg?: any) => void;
       const barrier = new Promise((resolve) => {
         pass = resolve;
       });
-      navigator.geolocation.getCurrentPosition(pass, pass, {});
+      navigator.geolocation.getCurrentPosition(pass!, pass!, {});
       await barrier;
       expect(ExpoLocation.getCurrentPositionAsync).toHaveBeenCalled();
     });
@@ -111,7 +111,7 @@ describe('navigator.geolocation polyfill', () => {
 
   describe('watchPosition', () => {
     it(`watches for updates and stops when clearWatch is called`, async () => {
-      let resolveBarrier;
+      let resolveBarrier: (_args?: any) => void;
       const watchBarrier = new Promise((resolve) => {
         resolveBarrier = resolve;
       });
@@ -119,7 +119,7 @@ describe('navigator.geolocation polyfill', () => {
         ExpoLocation,
         'watchPositionImplAsync',
         jest.fn(async () => {
-          resolveBarrier();
+          resolveBarrier!();
         })
       );
       const callback = jest.fn();
@@ -138,8 +138,8 @@ describe('navigator.geolocation polyfill', () => {
   });
 });
 
-function emitNativeLocationUpdate(location) {
-  Location.EventEmitter.emit('Expo.locationChanged', {
+function emitNativeLocationUpdate(location: any) {
+  ExpoLocation.emit('Expo.locationChanged', {
     watchId: Location._getCurrentWatchId(),
     location,
   });

@@ -6,14 +6,440 @@
 
 ### 🎉 New features
 
-- [iOS] Added an option to `generateThumbnailsAsync` to set the maximum size of generated thumbnails. ([#33599](https://github.com/expo/expo/pull/33599) by [@tsapeta](https://github.com/tsapeta))
+- [Android] Added the `controllerAutoShow` prop to `VideoView` to control whether the native controls auto-show on play. ([#46665](https://github.com/expo/expo/pull/46665) by [@stevesouth](https://github.com/stevesouth))
 
 ### 🐛 Bug fixes
+
+- [iOS] Set the default `audioMixingMode` to `auto`, [as documented](https://docs.expo.dev/versions/latest/sdk/video/#audiomixingmode); was `doNotMix`. ([#47363](https://github.com/expo/expo/issues/47363) by [@andymatuschak](https://github.com/andymatuschak))
+- [iOS] Re-enable the shared remote command center commands so lock screen controls keep working after expo-audio playback. ([#46753](https://github.com/expo/expo/pull/46753) by [@zoontek](https://github.com/zoontek))
+- Deduplicate `availableVideoTracks` for HLS sources with multiple audio renditions. ([#46691](https://github.com/expo/expo/pull/46691) by [@zoontek](https://github.com/zoontek))
+- Recover failed players to fix broken playback placeholder ([#46681](https://github.com/expo/expo/pull/46681) by [@zoontek](https://github.com/zoontek))
+- When caching take into account Authorization / auth-related request headers. ([#45995](https://github.com/expo/expo/pull/45995) by [@behenate](https://github.com/behenate))
+- [iOS] Fixed a thread-safety crash caused by mutating the internal player registries while they were being iterated on another thread (e.g. during audio session and now playing updates). ([#46930](https://github.com/expo/expo/pull/46930) by [@jiunshinn](https://github.com/jiunshinn))
+
+### 💡 Others
+
+- [Android] Removed outdated ExoPlayer changelog references and aligned Android media dependencies with AndroidX Media3 (`1.9.1`). ([#45368](https://github.com/expo/expo/pull/45368) by [@saisreelasyaappali](https://github.com/saisreelasyaappali))
+- Replace `TimeoutID` typing on `_timeUpdateLoop` ([#46730](https://github.com/expo/expo/pull/46730) by [@kitten](https://github.com/kitten))
+
+## 56.1.2 — 2026-05-21
+
+### 🐛 Bug fixes
+
+- Fix an ES module import error in the typed config plugin. ([#46089](https://github.com/expo/expo/pull/46089) by [@zoontek](https://github.com/zoontek))
+
+## 56.1.1 — 2026-05-15
+
+### 💡 Others
+
+- Migrated to the single-payload `SharedObject.emit` API. ([#45596](https://github.com/expo/expo/pull/45596) by [@tsapeta](https://github.com/tsapeta))
+
+## 56.1.0 — 2026-05-06
+
+### 🎉 New features
+
+- [Android] Implement `exitFullscreen` to fix `MethodUnsupportedException`. ([#41836](https://github.com/expo/expo/pull/41836) by [@mensonones](https://github.com/mensonones))
+
+### 🐛 Bug fixes
+
+- Fix `PictureInPictureHelperFragment` crashes on restoration after process death. ([#45426](https://github.com/expo/expo/pull/45426) by [@behenate](https://github.com/behenate) and [@dive](https://github.com/dive))
+
+## 56.0.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.1 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+### 🛠 Breaking changes
+
+- Bumped minimum iOS/tvOS version to 16.4, macOS to 13.4. ([#43296](https://github.com/expo/expo/pull/43296) by [@tsapeta](https://github.com/tsapeta))
+
+### 🎉 New features
+
+- Expose a typed config plugin function ([#44098](https://github.com/expo/expo/pull/44098) by [@zoontek](https://github.com/zoontek))
+- [iOS] Add `keepFullscreenOnPiPStop` property. ([#44811](https://github.com/expo/expo/pull/44811) by [@behenate](https://github.com/behenate))
+- [iOS] Add support for overriding Asset loading behavior with `VideoAssetTransportProvider`. ([#44935](https://github.com/expo/expo/pull/44935) by [@behenate](https://github.com/behenate))
+
+### 🐛 Bug fixes
+
+- [Android] Prevent crash in `FullscreenPlayerActivity` when `VideoView` is unmounted before `finish()` completes. ([#45199](https://github.com/expo/expo/pull/45199) by [@DORI2001](https://github.com/DORI2001))
+- [Android] Hide the surface until the first frame after replacing the video source so the previous stream does not remain visible when switching to a different resolution. ([#44385](https://github.com/expo/expo/issues/44385)) ([#44467](https://github.com/expo/expo/pull/44467) by [@vj2303](https://github.com/vj2303))
+
+### 💡 Others
+
+- [Android] Bump media3 version to 1.9.0. ([#44823](https://github.com/expo/expo/pull/44823) by [@lukmccall](https://github.com/lukmccall))
+
+## 55.0.16 - 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.15 - 2026-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.14 - 2026-04-07
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.13 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.12 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.11 - 2026-03-17
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.10 - 2026-02-26
+
+### 🐛 Bug fixes
+
+- [iOS] Fix crash when loading PHAsset url fails ([#43373](https://github.com/expo/expo/pull/43373) by [@fractalbeauty](https://github.com/fractalbeauty))
+- [iOS] Fix crashes when `VideoTrack` properties are non-finite. ([#44108](https://github.com/expo/expo/pull/44108) by [@behenate](https://github.com/behenate))
+- [Android] Fix PiP exiting immediately after auto-entering from fullscreen. ([#44157](https://github.com/expo/expo/pull/44157) by [@behenate](https://github.com/behenate))
+- [Android] Fix broken layout after returning from PiP when auto-enter if off. ([#44163](https://github.com/expo/expo/pull/44163) by [@behenate](https://github.com/behenate))
+
+## 55.0.9 — 2026-02-25
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.8 — 2026-02-20
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.7 — 2026-02-20
+
+### 🎉 New features
+
+- [Android][iOS] Add `url` field to HLS video tracks. ([#41681](https://github.com/expo/expo/pull/41681) by [@behenate](https://github.com/behenate))
+- [Android][iOS] Add `name`, `isDefault` and `autoSelect` fields to `AudioTrack` and `SubtitleTrack`. ([#43250](https://github.com/expo/expo/pull/43250) by [@behenate](https://github.com/behenate))
+
+### 💡 Others
+
+- Update HLS video track fetching for iOS 26+. ([#41681](https://github.com/expo/expo/pull/41681) by [@behenate](https://github.com/behenate))
+
+## 55.0.6 — 2026-02-16
+
+### 🛠 Breaking changes
+
+- [Android] The next and previous buttons are now hidden by default in the native `VideoView` controls. ([#42875](https://github.com/expo/expo/pull/42875) by [@behenate](https://github.com/behenate))
+
+### 🎉 New features
+
+- [Android] Add `buttonConfiguration` prop to `VideoView`. ([#42875](https://github.com/expo/expo/pull/42875) by [@behenate](https://github.com/behenate))
+- [Android] Add `PlayerBuilderOptions` parameter to `useVideoPlayer` hook to configure seek backward/forward increments. ([#43043](https://github.com/expo/expo/pull/43043) by [@behenate](https://github.com/behenate))
+
+### 🐛 Bug fixes
+
+- [Android] Fix only one player getting released when reloading with multiple players present. ([#42780](https://github.com/expo/expo/pull/42780) by [@behenate](https://github.com/behenate))
+- [iOS] Fix data getting corrupted when caching is enabled. ([#42621](https://github.com/expo/expo/pull/42621) by [@behenate](https://github.com/behenate))
+
+## 55.0.5 — 2026-02-08
+
+### 🐛 Bug fixes
+
+- [iOS] Prevents blocking main thread when loading asset tracks for non-HSL tracks ([#42037](https://github.com/expo/expo/pull/42037) by [@santitopo](https://github.com/santitopo))
+- [Android] Fix crash due to `SimpleCache` directory lock conflicts. ([#42723](https://github.com/expo/expo/pull/42723) by [@santitopo](https://github.com/santitopo))
+- [Android] Avoid crash when FullscreenPlayerActivity init fails. ([#42943](https://github.com/expo/expo/pull/42943) by [@amyu](https://github.com/amyu))
+
+## 55.0.4 — 2026-02-03
+
+### 🐛 Bug fixes
+
+- [Android] Fix uninitialized `firstFrameEventGenerator` exception in VideoView when setting the `player` prop. ([#42615](https://github.com/expo/expo/pull/42615) by [@behenate](https://github.com/behenate))
+
+## 55.0.3 — 2026-01-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 🛠 Breaking changes
+
+- Remove the `allowsFullscreen` prop. ([#41606](https://github.com/expo/expo/pull/41606) by [@behenate](https://github.com/behenate))
+
+### 🎉 New features
+
+- [Android][iOS] Add `seek tolerance` and `scrubbingModeOptions` properties to the player. ([#40203](https://github.com/expo/expo/pull/40203) by [@behenate](https://github.com/behenate))
+- Allow assigning `null` value to the `player` prop of the `VideoView` ([#40860](https://github.com/expo/expo/pull/40860) by [@behenate](https://github.com/behenate))
+- [Android][iOS] Add `averageBitrate` and `peakBitrate` for video tracks. ([#41532](https://github.com/expo/expo/pull/41532) by [@behenate](https://github.com/behenate))
+- [Android][iOS] Add `url` field to HLS video tracks. ([#41681](https://github.com/expo/expo/pull/41681) by [@behenate](https://github.com/behenate))
+- [Android][iOS] Add `videoRange` field to `VideoTrack` ([#41738](https://github.com/expo/expo/pull/41738) by [@behenate](https://github.com/behenate))
+
+### 🐛 Bug fixes
+
+- [Android] Emit `onFirstFrameRender` when player is moved to a new `VideoView` and renders a frame. ([#40854](https://github.com/expo/expo/pull/40854) by [@behenate](https://github.com/behenate))
+- [Android] Fix media controls (e.g. bluetooth) not working when `ExpoVideoPlaybackService` is not registered. ([#40728](https://github.com/expo/expo/pull/40728) by [@behenate](https://github.com/behenate))
+- [Web] Fix crash on older versions of Safari. ([#41101](https://github.com/expo/expo/pull/41101) by [@CamWass](https://github.com/CamWass))
+- [Web] Fix video pausing when entering fullscreen in electron apps. ([#40989](https://github.com/expo/expo/pull/40989) by [@behenate](https://github.com/behenate))
+- [Android] Fix crashes when exiting PiP with one than more `VideoView` present on the screen. ([#41090](https://github.com/expo/expo/pull/41090) by [@behenate](https://github.com/behenate))
+- [Android] Fix rare crashes related to VideoPlayer listeners. ([#41608](https://github.com/expo/expo/pull/41608) by [@behenate](https://github.com/behenate))
+- Fix `fullscreenOptions.enable` and `allowsFullscreen` props issues. ([#41600](https://github.com/expo/expo/pull/41600) by [@behenate](https://github.com/behenate))
+- [Android] Fix player duration property refreshing too late. ([#41609](https://github.com/expo/expo/pull/41609) by [@behenate](https://github.com/behenate))
+
+### 💡 Others
+
+- [Android] Remove @UnstableReactNativeAPI annotations. ([#39921](https://github.com/expo/expo/pull/39921) by [@jakex7](https://github.com/jakex7))
+- [iOS] Load track information for events in asynchronous context. ([#40355](https://github.com/expo/expo/pull/40355) by [@behenate](https://github.com/behenate))
+- Add extract the object `VideoSource` type into separate `VideoSourceObject` type. ([#41514](https://github.com/expo/expo/pull/41514) by [@behenate](https://github.com/behenate))
+- [Android] Set property values on calling thread. ([#41533](https://github.com/expo/expo/pull/41533) by [@behenate](https://github.com/behenate))
+- Mark the video track `bitrate` field as deprecated. ([#41532](https://github.com/expo/expo/pull/41532) by [@behenate](https://github.com/behenate))
+- Update HLS video track fetching for iOS 26+. ([#41681](https://github.com/expo/expo/pull/41681) by [@behenate](https://github.com/behenate))
+
+## 3.0.15 - 2025-12-05
+
+_This version does not introduce any user-facing changes._
+
+## 3.0.14 - 2025-11-05
+
+_This version does not introduce any user-facing changes._
+
+## 3.0.13 - 2025-11-03
+
+_This version does not introduce any user-facing changes._
+
+## 3.0.12 - 2025-10-28
+
+### 🐛 Bug fixes
+
+- Fix `FOREGROUND_SERVICE_MEDIA_PLAYBACK` being always present in the manifest. ([#40074](https://github.com/expo/expo/pull/40074) by [@behenate](https://github.com/behenate))
+- [iOS] Fix crashes when rapidly replacing HLS sources. ([#40265](https://github.com/expo/expo/pull/40265) by [@behenate](https://github.com/behenate))
+- [Android] Fix the `player` prop of the `VideoView` not working when a player is re-assigned after being replaced by a different player earlier. ([#40709](https://github.com/expo/expo/pull/40709) by [@behenate](https://github.com/behenate))
+- [Android] Fix surface view not showing when changing the `player` prop. ([#40817](https://github.com/expo/expo/pull/40817) by [@behenate](https://github.com/behenate))
+
+## 3.0.11 — 2025-09-10
+
+### 🎉 New features
+
+- [iOS] Add support for playing PHAsset uris. ([#39371](https://github.com/expo/expo/pull/39371) by [@behenate](https://github.com/behenate))
+
+### 💡 Others
+
+- [Web] Allow access to the underlying HTMLVideoElement via the `nativeRef` property. ([#39448](https://github.com/expo/expo/pull/39448) by [@behenate](https://github.com/behenate))
+
+## 3.0.10 — 2025-09-04
+
+### 🐛 Bug fixes
+
+- [Web] Fix fullscreen enter/exit methods and listeners not working in Safari on iOS. ([#39320](https://github.com/expo/expo/pull/39320) by [@behenate](https://github.com/behenate))
+
+## 3.0.9 — 2025-09-03
+
+### 🛠 Breaking changes
+
+- [Android] In order to show the now playing notification, the `supportsBackgroundPlayground` property of the config plugin has to be `true`. ([#38980](https://github.com/expo/expo/pull/38980) by [@kerwanp](https://github.com/kerwanp))
+
+### 🐛 Bug fixes
+
+- [Android] Fix video player stopping playback a few minutes after locking the device. ([#38980](https://github.com/expo/expo/pull/38980) by [@kerwanp](https://github.com/kerwanp))
+
+## 3.0.8 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 3.0.7 — 2025-08-28
+
+_This version does not introduce any user-facing changes._
+
+## 3.0.6 — 2025-08-27
+
+### 💡 Others
+
+- [Android] Bump media3 version to 1.8.0. ([#39184](https://github.com/expo/expo/pull/39184) by [@behenate](https://github.com/behenate))
+
+## 3.0.5 — 2025-08-25
+
+### 🛠 Breaking changes
+
+- [Android] Always keep the native controls always enabled in fullscreen mode to mimic iOS. ([#39015](https://github.com/expo/expo/pull/39015) by [@behenate](https://github.com/behenate))
+
+## 3.0.4 — 2025-08-21
+
+### 🎉 New features
+
+- [Web] Add `useAudioNodePlayback` prop. ([#39039](https://github.com/expo/expo/pull/39039) by [@behenate](https://github.com/behenate))
+
+### 🐛 Bug fixes
+
+- [iOS] Fix `sourceLoad` event not being emitted. ([#39023](https://github.com/expo/expo/pull/39023) by [@behenate](https://github.com/behenate))
+- [Web] Fix audio not playing due to conflicting CORS and AudioNode settings. ([#39039](https://github.com/expo/expo/pull/39039) by [@behenate](https://github.com/behenate))
+- [iOS] Background mode playback fix. ([#33706](https://github.com/expo/expo/pull/33706) by [@hromovp](https://github.com/hromovp))
+
+## 3.0.3 — 2025-08-21
+
+### 🎉 New features
+
+- [Android][iOS] Add `keepScreenOnWhilePlaying` property to the player. ([#37137](https://github.com/expo/expo/pull/37137) by [@behenate](https://github.com/behenate))
+
+### 💡 Others
+
+- [Android] Keep the screen on while playback is running by default. ([#37137](https://github.com/expo/expo/pull/37137) by [@behenate](https://github.com/behenate))
+
+## 3.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 3.0.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 3.0.0 — 2025-08-13
+
+### 🛠 Breaking changes
+
+- [web] Update default crossOrigin value to "anonymous" to prevent common CORS issues ([#38341](https://github.com/expo/expo/pull/38341) by [@hirbod](https://github.com/hirbod))
+
+### 🎉 New features
+
+- [iOS] Add complete support for AirPlay streaming. Add a device selection button and `VideoPlayer.isExternalPlaybackActive` property and appropriate listeners. ([#37207](https://github.com/expo/expo/pull/37207) by [@behenate](https://github.com/behenate))
+- Add fullscreen orientation and auto-exit functionality. ([#36910](https://github.com/expo/expo/pull/36910) by [@behenate](https://github.com/behenate))
+- [Android] React to system wide subtitle changes in real time, does not require an app reload ([#38591](https://github.com/expo/expo/pull/38591) by [@hirbod](https://github.com/hirbod))
+
+### 🐛 Bug fixes
+
+- [Android] Fix duration property resetting to 0 on video repeat. ([#37984](https://github.com/expo/expo/pull/37984) by [@Wenszel](https://github.com/Wenszel))
+- [Android] Fix accessing player.loop causes app to crash. ([#37928](https://github.com/expo/expo/pull/37928) by [@Wenszel](https://github.com/Wenszel))
+- [iOS] Setting `player.currentTime` doesn't seek to the correct time on some videos. ([#37672](https://github.com/expo/expo/pull/37300) by [@petrkonecny2](https://github.com/petrkonecny2))
+- [iOS] Fix tvOS compilation errors. ([#38085](https://github.com/expo/expo/pull/38085) by [@douglowder](https://github.com/douglowder))
+- [Android] Fix: Respect accessibility settings for HLS subtitle sizing and system settings, added listener ([#38591](https://github.com/expo/expo/pull/38591) by [@hirbod](https://github.com/hirbod))
+- [iOS] Fix inconsistent behavior of "replay" on iOS by calling "play()" after seeking to position 0. ([#38590](https://github.com/expo/expo/pull/38590)) by [@saviocmc](https://github.com/saviocmc)
+- [web] Revert crossOrigin property for video to `undefined` ([#38818](https://github.com/expo/expo/pull/38818) by [@hirbod](https://github.com/hirbod)
+
+### 💡 Others
+
+- Export types using the `export type` syntax. ([#37396](https://github.com/expo/expo/pull/37396) by [@behenate](https://github.com/behenate))
+
+## 2.2.2 - 2025-06-18
+
+### 🐛 Bug fixes
+
+- [Android] Fix aspect ratio of the Picture in Picture window when auto-entering for sources with ratio different from 16:9. ([#37225](https://github.com/expo/expo/pull/37225) by [@behenate](https://github.com/behenate))
+
+## 2.2.1 - 2025-06-10
+
+_This version does not introduce any user-facing changes._
+
+## 2.2.0 - 2025-06-04
+
+### 🎉 New features
+
+- [Android][iOS] Added support for Audio Track feature. You can now set the audio track using `player.audioTrack` and list available audio tracks using `player.availableAudioTracks`. ([#36207](https://github.com/expo/expo/pull/36207) by [@HADeveloper](https://github.com/HADeveloper))
+
+### 🐛 Bug fixes
+
+- [Android] Fix `onFirstFrameRender` not being emitted for sources with `pixelWidthHeightRatio` different than 1. ([#37009](https://github.com/expo/expo/pull/37009) by [@behenate](https://github.com/behenate))
+- [Android] Fix `useExoShutter` prop not being exposed to the JS side. ([#37012](https://github.com/expo/expo/pull/37012) by [@behenate](https://github.com/behenate))
+- [Android] Add missing `onFirstFrameRender` event to the `VideoView` definition. ([#37014](https://github.com/expo/expo/pull/37014) by [@behenate](https://github.com/behenate))
+- [iOS] Fix player not entering 'error' state when loading fails on iOS. ([#37177](https://github.com/expo/expo/pull/37177) by [@behenate](https://github.com/behenate))
+- [iOS] Fix player reporting status `readyToPlay` while a source is being loaded asynchronously. ([#37180](https://github.com/expo/expo/pull/37180) by [@behenate](https://github.com/behenate))
+- [iOS] Fix player going into `loading` status for a single frame when unpausing with a full buffer. ([#37181](https://github.com/expo/expo/pull/37181) by [@behenate](https://github.com/behenate))
+- [iOS] Fix player getting stuck in `loading` state for null sources. ([#37183](https://github.com/expo/expo/pull/37183) by [@behenate](https://github.com/behenate))
+- [iOS] Fix player not setting default audio track for some HLS streams. ([#37395](https://github.com/expo/expo/pull/37395) by [@vitorclelis96](https://github.com/vitorclelis96))
+
+## 2.1.9 — 2025-05-08
+
+### 🛠 Breaking changes
+
+- [web] Add crossOrigin prop, change default value to no CORS. ([#36713](https://github.com/expo/expo/pull/36713) by [@aleqsio](https://github.com/aleqsio))
+
+## 2.1.8 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 2.1.7 — 2025-04-28
+
+### 🎉 New features
+
+- Introduce `replaceAsync` method, which doesn't load the asset on the main thread. ([#36308](https://github.com/expo/expo/pull/36308) by [@behenate](https://github.com/behenate))
+
+### 🐛 Bug fixes
+
+- [iOS] Fix main thread being locked while the VideoPlayer is replacing or being created with a source. ([#36308](https://github.com/expo/expo/pull/36308) by [@behenate](https://github.com/behenate))
+
+## 2.1.6 — 2025-04-25
+
+### 🎉 New features
+
+- [Android] Add an option to choose the surface type. ([#36212](https://github.com/expo/expo/pull/36212) by [@behenate](https://github.com/behenate))
+
+## 2.1.5 — 2025-04-23
+
+### 🎉 New features
+
+- [web] Add playsInline prop ([#36335](https://github.com/expo/expo/pull/36335) by [@jakex7](https://github.com/jakex7))
+
+## 2.1.4 — 2025-04-22
+
+### 🎉 New features
+
+- Add `contentType` field to `VideoSource`. ([#36234](https://github.com/expo/expo/pull/36234) by [@behenate](https://github.com/behenate))
+
+## 2.1.3 — 2025-04-21
+
+_This version does not introduce any user-facing changes._
+
+## 2.1.2 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 2.1.1 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 2.1.0 — 2025-04-04
+
+### 🎉 New features
+
+- [Android][iOS] Added an option to `generateThumbnailsAsync` to set the maximum size of generated thumbnails. ([#33599](https://github.com/expo/expo/pull/33599) by [@tsapeta](https://github.com/tsapeta)), ([#33712](https://github.com/expo/expo/pull/33712) by [@behenate](https://github.com/behenate))
+- [Android][iOS] Add support for listing available video tracks and currently played video track. ([#33458](https://github.com/expo/expo/pull/33458) by [@behenate](https://github.com/behenate))
+- [Android][iOS] Add `sourceLoad` event. ([#33458](https://github.com/expo/expo/pull/33458) by [@behenate](https://github.com/behenate))
+- [Android][iOS] Add caching functionality. ([#31781](https://github.com/expo/expo/pull/31781) by [@behenate](https://github.com/behenate))
+- Add `onFirstFrameRender` event to the `VideoView`. ([#35346](https://github.com/expo/expo/pull/35346) by [@behenate](https://github.com/behenate))
+- Add `useExoShutter` property to the `VideoView`. ([#35366](https://github.com/expo/expo/pull/35366) by [@behenate](https://github.com/behenate))
+
+### 🐛 Bug fixes
+
+- [Android] Fix ConcurrentModificationException app crashes ([#35356](https://github.com/expo/expo/pull/35356) by [@voslartomas](https://github.com/voslartomas))
+- [Web] Fix `playbackRate` not being applied in the setup function.([#34182](https://github.com/expo/expo/pull/34182) by [@behenate](https://github.com/behenate))
+- Fix safe area insets not updating for native controls on iOS. ([#32864](https://github.com/expo/expo/pull/32864) by [@behenate](https://github.com/behenate))
+- [iOS] Fix the Now Playing notification disappearing after the video is paused. ([#35273](https://github.com/expo/expo/pull/35273) by [@behenate](https://github.com/behenate))
+- [iOS] Fix a race condition in setting the targets for the Now Playing controls causing the controls to sometimes not work. ([#35274](https://github.com/expo/expo/pull/35274) by [@behenate](https://github.com/behenate))
+- [iOS] Fix disabling the Now Playing controls for multiple players at the same time causing the notification to break. ([#35275](https://github.com/expo/expo/pull/35275) by [@behenate](https://github.com/behenate))
+- [Android] Fix touch events not being emitted for `VideoView`. ([#35479](https://github.com/expo/expo/pull/35479) by [@behenate](https://github.com/behenate))
 
 ### 💡 Others
 
 - Fixed `generateThumbnailsAsync` not being available on Android in the types. ([#33491](https://github.com/expo/expo/pull/33491) by [@hirbod](https://github.com/hirbod))
 - Run VideoManager.setAppropriateAudioSessionOrWarn on a different queue for a lower load on the main thread. ([#33127](https://github.com/expo/expo/pull/33127) by [@behenate](https://github.com/behenate))
+- [Android] Started using expo modules gradle plugin. ([#34176](https://github.com/expo/expo/pull/34176) by [@lukmccall](https://github.com/lukmccall))
+- [apple] Migrate remaining `expo-module.config.json` to unified platform syntax. ([#34445](https://github.com/expo/expo/pull/34445) by [@reichhartd](https://github.com/reichhartd))
+- [iOS] SharedRef: migrate from `pointer` to `ref` ([#30359](https://github.com/expo/expo/pull/30359) by [@behenate](https://github.com/behenate))
+- [iOS] Fix warnings which will become errors in Swift 6. ([#35288](https://github.com/expo/expo/pull/35288) by [@behenate](https://github.com/behenate)), ([#35428](https://github.com/expo/expo/pull/35428) by [@behenate](https://github.com/behenate))
+
+## 2.0.5 - 2025-01-10
+
+_This version does not introduce any user-facing changes._
+
+## 2.0.4 - 2025-01-08
+
+### 🐛 Bug fixes
+
+- [iOS] Fix `AVPlayer` not deallocating when the player is unmounted. ([#33922](https://github.com/expo/expo/pull/33922) by [@behenate](https://github.com/behenate))
 
 ## 2.0.3 - 2024-12-19
 

@@ -12,22 +12,24 @@ afterAll(() => {
 });
 
 describe(stripBaseUrl, () => {
-  [
+  (
     [
-      // Input
-      '/',
-      // Base Path
-      '',
-      // Result
-      '/',
-    ],
-    ['/one/two', '/one', '/two'],
-    ['/one/two', '/one/two', ''],
-    ['/one/two/', '/one/two', '/'],
-    ['///one/', '/one', '/'],
-    ['one/', '/one', 'one/'],
-    ['/a/b', '/one', '/a/b'],
-  ].forEach(([path, baseUrl, result]) => {
+      [
+        // Input
+        '/',
+        // Base Path
+        '',
+        // Result
+        '/',
+      ],
+      ['/one/two', '/one', '/two'],
+      ['/one/two', '/one/two', ''],
+      ['/one/two/', '/one/two', '/'],
+      ['///one/', '/one', '/'],
+      ['one/', '/one', 'one/'],
+      ['/a/b', '/one', '/a/b'],
+    ] as const
+  ).forEach(([path, baseUrl, result]) => {
     it(`strips baseUrl "${path}"`, () => {
       expect(stripBaseUrl(path, baseUrl)).toBe(result);
     });
@@ -46,7 +48,19 @@ describe('baseUrl', () => {
     const config = getMockConfig(['_layout.tsx', 'bar.tsx', 'index.tsx']);
 
     expect(getStateFromPath<object>(path, config)).toEqual({
-      routes: [{ name: 'bar', path: '/bar' }],
+      routes: [
+        {
+          name: '__root',
+          state: {
+            routes: [
+              {
+                name: 'bar',
+                path: '/bar',
+              },
+            ],
+          },
+        },
+      ],
     });
 
     expect(getPathFromState(getStateFromPath<object>(path, config)!, config)).toBe(
@@ -60,7 +74,19 @@ describe('baseUrl', () => {
     const config = getMockConfig(['_layout.tsx', 'bar.tsx', 'index.tsx']);
 
     expect(getStateFromPath<object>(path, config)).toEqual({
-      routes: [{ name: 'bar', path: '/bar' }],
+      routes: [
+        {
+          name: '__root',
+          state: {
+            routes: [
+              {
+                name: 'bar',
+                path: '/bar',
+              },
+            ],
+          },
+        },
+      ],
     });
     expect(getPathFromState(getStateFromPath<object>(path, config)!, config)).toBe('/expo/bar');
   });
@@ -77,11 +103,13 @@ describe(getUrlWithReactNavigationConcessions, () => {
     });
   });
 
-  [
-    ['', '/'],
-    ['https://acme.com/hello/world?foo=bar#123', 'hello/world/'],
-    ['https://acme.com/hello/world/?foo=bar#123', 'hello/world/'],
-  ].forEach(([url, expected]) => {
+  (
+    [
+      ['', '/'],
+      ['https://acme.com/hello/world?foo=bar#123', 'hello/world/'],
+      ['https://acme.com/hello/world/?foo=bar#123', 'hello/world/'],
+    ] as const
+  ).forEach(([url, expected]) => {
     it(`returns the pathname for ${url}`, () => {
       expect(getUrlWithReactNavigationConcessions(url).nonstandardPathname).toBe(expected);
     });
@@ -93,7 +121,7 @@ describe(getUrlWithReactNavigationConcessions, () => {
     ['https://acme.com/gh-pages/hello/world/?foo=bar#123', 'hello/world/'],
   ].forEach(([url, expected]) => {
     it(`returns the pathname for ${url}`, () => {
-      expect(getUrlWithReactNavigationConcessions(url, 'gh-pages').nonstandardPathname).toBe(
+      expect(getUrlWithReactNavigationConcessions(url!, 'gh-pages').nonstandardPathname).toBe(
         expected
       );
     });
@@ -125,12 +153,22 @@ describe('hash', () => {
     expect(getStateFromPath('/hello#123', getMockConfig(['[hello]']))).toEqual({
       routes: [
         {
-          name: '[hello]',
+          name: '__root',
           params: {
             hello: 'hello',
-            '#': '123',
           },
-          path: '/hello#123',
+          state: {
+            routes: [
+              {
+                name: '[hello]',
+                params: {
+                  '#': '123',
+                  hello: 'hello',
+                },
+                path: '/hello#123',
+              },
+            ],
+          },
         },
       ],
     });
@@ -140,10 +178,17 @@ describe('hash', () => {
     expect(getStateFromPath('/?#123', getMockConfig(['index']))).toEqual({
       routes: [
         {
-          name: 'index',
-          path: '/?#123',
-          params: {
-            '#': '123',
+          name: '__root',
+          state: {
+            routes: [
+              {
+                name: 'index',
+                params: {
+                  '#': '123',
+                },
+                path: '/?#123',
+              },
+            ],
           },
         },
       ],
@@ -172,11 +217,21 @@ it(`supports spaces`, () => {
   expect(getStateFromPath('/hello%20world', getMockConfig(['[hello world]']))).toEqual({
     routes: [
       {
-        name: '[hello world]',
+        name: '__root',
         params: {
           'hello world': 'hello world',
         },
-        path: '/hello%20world',
+        state: {
+          routes: [
+            {
+              name: '[hello world]',
+              params: {
+                'hello world': 'hello world',
+              },
+              path: '/hello%20world',
+            },
+          ],
+        },
       },
     ],
   });
@@ -209,19 +264,35 @@ it(`matches against dynamic groups`, () => {
   ).toEqual({
     routes: [
       {
-        name: '(app)',
-        params: { user: '(explore)' },
+        name: '__root',
+        params: {
+          user: '(explore)',
+        },
         state: {
           routes: [
             {
-              name: '([user])',
-              params: { user: '(explore)' },
+              name: '(app)',
+              params: {
+                user: '(explore)',
+              },
               state: {
                 routes: [
                   {
-                    name: '[user]/index',
-                    params: { user: '(explore)' },
-                    path: '',
+                    name: '([user])',
+                    params: {
+                      user: '(explore)',
+                    },
+                    state: {
+                      routes: [
+                        {
+                          name: '[user]/index',
+                          params: {
+                            user: '(explore)',
+                          },
+                          path: '',
+                        },
+                      ],
+                    },
                   },
                 ],
               },
@@ -249,27 +320,47 @@ it(`adds dynamic route params from all levels of the path`, () => {
   ).toEqual({
     routes: [
       {
-        name: '[foo]',
-        params: { baz: 'baz', foo: 'foo' },
+        name: '__root',
+        params: {
+          baz: 'baz',
+          foo: 'foo',
+        },
         state: {
           routes: [
             {
-              name: 'bar',
-              params: { baz: 'baz', foo: 'foo' },
+              name: '[foo]',
+              params: {
+                baz: 'baz',
+                foo: 'foo',
+              },
               state: {
                 routes: [
                   {
-                    name: '[baz]',
-                    params: { baz: 'baz', foo: 'foo' },
+                    name: 'bar',
+                    params: {
+                      baz: 'baz',
+                      foo: 'foo',
+                    },
                     state: {
                       routes: [
                         {
-                          name: 'other',
+                          name: '[baz]',
                           params: {
                             baz: 'baz',
                             foo: 'foo',
                           },
-                          path: '/foo/bar/baz/other',
+                          state: {
+                            routes: [
+                              {
+                                name: 'other',
+                                params: {
+                                  baz: 'baz',
+                                  foo: 'foo',
+                                },
+                                path: '/foo/bar/baz/other',
+                              },
+                            ],
+                          },
                         },
                       ],
                     },
@@ -288,11 +379,21 @@ it(`handles not-found routes`, () => {
   expect(getStateFromPath('/missing-page', getMockConfig(['+not-found', 'index']))).toEqual({
     routes: [
       {
-        name: '+not-found',
+        name: '__root',
         params: {
           'not-found': ['missing-page'],
         },
-        path: '/missing-page',
+        state: {
+          routes: [
+            {
+              name: '+not-found',
+              params: {
+                'not-found': ['missing-page'],
+              },
+              path: '/missing-page',
+            },
+          ],
+        },
       },
     ],
   });
@@ -304,13 +405,20 @@ it(`handles query params`, () => {
   ).toEqual({
     routes: [
       {
-        name: 'index',
-        params: {
-          test: 'true',
-          hello: 'world',
-          array: ['1', '2'],
+        name: '__root',
+        state: {
+          routes: [
+            {
+              name: 'index',
+              params: {
+                array: ['1', '2'],
+                hello: 'world',
+                test: 'true',
+              },
+              path: '/?test=true&hello=world&array=1&array=2',
+            },
+          ],
         },
-        path: '/?test=true&hello=world&array=1&array=2',
       },
     ],
   });
@@ -322,13 +430,37 @@ it(`handles query params`, () => {
   ).toEqual({
     routes: [
       {
-        name: 'index',
-        params: {
-          test: 'true',
-          hello: 'world',
-          array: ['1', '2'],
+        name: '__root',
+        state: {
+          routes: [
+            {
+              name: 'index',
+              params: {
+                array: ['1', '2'],
+                hello: 'world',
+                test: 'true',
+              },
+              path: '/?test=true&hello=world&array=1&array=2',
+            },
+          ],
         },
-        path: '/?test=true&hello=world&array=1&array=2',
+      },
+    ],
+  });
+});
+
+it(`matches routes with multiple spaces in path`, () => {
+  expect(
+    getStateFromPath('/hello%20beautiful%20world', {
+      screens: {
+        'hello beautiful world': 'hello beautiful world',
+      },
+    } as any)
+  ).toEqual({
+    routes: [
+      {
+        name: 'hello beautiful world',
+        path: '/hello%20beautiful%20world',
       },
     ],
   });
@@ -340,8 +472,15 @@ it(`prioritizes hoisted index routes over dynamic groups`, () => {
   ).toEqual({
     routes: [
       {
-        name: '(one)/index',
-        path: '',
+        name: '__root',
+        state: {
+          routes: [
+            {
+              name: '(one)/index',
+              path: '',
+            },
+          ],
+        },
       },
     ],
   });

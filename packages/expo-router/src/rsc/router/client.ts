@@ -14,7 +14,7 @@ import { Slot as ReactSlot } from '@radix-ui/react-slot';
 import {
   startTransition,
   useCallback,
-  useContext,
+  use,
   useEffect,
   useRef,
   useTransition,
@@ -36,15 +36,15 @@ import type {
 } from 'react';
 import { Text } from 'react-native';
 
-import { PARAM_KEY_SKIP, getComponentIds, getInputString } from './common.js';
-import type { RouteProps } from './common.js';
-import { prefetchRSC, Root, Slot, useRefetch } from './host.js';
 import type { NavigationOptions } from '../../global-state/routing.js';
-import type { Router as ClassicExpoRouterType } from '../../imperative-api';
+import type { ImperativeRouter as ClassicExpoRouterType } from '../../imperative-api';
 import type { LinkProps as ClassicLinkProps, LinkComponent } from '../../link/Link.js';
 import { resolveHref } from '../../link/href';
 import { useInteropClassName, useHrefAttrs } from '../../link/useLinkHooks';
 import type { Href } from '../../types.js';
+import { PARAM_KEY_SKIP, getComponentIds, getInputString } from './common.js';
+import type { RouteProps } from './common.js';
+import { prefetchRSC, Root, Slot, useRefetch } from './host.js';
 
 const normalizeRoutePath = (path: string) => {
   for (const suffix of ['/', '/index.html']) {
@@ -104,7 +104,7 @@ const RouterContext = createContext<{
 const InnerRouter = ({ routerData }: { routerData: RouterData }) => {
   const refetch = useRefetch();
 
-  const initialRouteRef = useRef<RouteProps>();
+  const initialRouteRef = useRef<RouteProps>(null);
   if (!initialRouteRef.current) {
     initialRouteRef.current = parseRoute(new URL(getHref()));
   }
@@ -132,7 +132,13 @@ const InnerRouter = ({ routerData }: { routerData: RouterData }) => {
     });
   }, []);
 
-  const componentIds = getComponentIds(route.path);
+  // TODO: Mint IDs from the active RouteNode's `contextKey` (via expo-router's
+  // RouterStore) so they're group-aware and canonical. Today they're URL-derived
+  // and omit `(group)` segments — the server's iterating resolver bridges this via
+  // optional-group regex matching, but the asymmetry should go away if/when the
+  // canonical-ID convention needs to include groups (e.g. signed skip tokens).
+  const { layouts, page } = getComponentIds(route.path);
+  const componentIds = [...layouts, page];
 
   //  const refetchRoute = () => {
   //   const loc = parseRoute(new URL(getHref()));
@@ -156,7 +162,8 @@ const InnerRouter = ({ routerData }: { routerData: RouterData }) => {
       startTransition(() => {
         setRoute(route);
       });
-      const componentIds = getComponentIds(route.path);
+      const { layouts, page } = getComponentIds(route.path);
+      const componentIds = [...layouts, page];
       if (
         checkCache &&
         componentIds.every((id) => {
@@ -189,7 +196,8 @@ const InnerRouter = ({ routerData }: { routerData: RouterData }) => {
 
   const prefetchRoute: PrefetchRoute = useCallback(
     (route) => {
-      const componentIds = getComponentIds(route.path);
+      const { layouts, page } = getComponentIds(route.path);
+      const componentIds = [...layouts, page];
       const shouldSkip = routerData[0];
       const skip = getSkipList(shouldSkip, componentIds, route, cachedRef.current);
       if (componentIds.every((id) => skip.includes(id))) {
@@ -288,7 +296,7 @@ export function useRouter_UNSTABLE(): ClassicExpoRouterType &
     forward: () => void;
     prefetch: (href: Href) => void;
   } {
-  const router = useContext(RouterContext);
+  const router = use(RouterContext);
   if (!router) {
     throw new Error('Missing Router');
   }
@@ -530,7 +538,7 @@ function ExpoRouterLink(
     return resolveHref(href);
   }, [href]);
 
-  const router = useContext(RouterContext);
+  const router = use(RouterContext);
   const changeRoute = router
     ? router.changeRoute
     : () => {

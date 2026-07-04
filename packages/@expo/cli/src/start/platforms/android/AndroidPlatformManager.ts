@@ -1,13 +1,14 @@
 import { AndroidAppIdResolver } from './AndroidAppIdResolver';
 import { AndroidDeviceManager } from './AndroidDeviceManager';
-import { Device } from './adb';
+import type { Device } from './adb';
 import { startAdbReverseAsync } from './adbReverse';
 import { CommandError } from '../../../utils/errors';
 import { memoize } from '../../../utils/fn';
 import { learnMore } from '../../../utils/link';
 import { hasDirectDevClientDependency } from '../../detectDevClient';
-import { AppIdResolver } from '../AppIdResolver';
-import { BaseOpenInCustomProps, BaseResolveDeviceProps, PlatformManager } from '../PlatformManager';
+import type { AppIdResolver } from '../AppIdResolver';
+import type { BaseOpenInCustomProps, BaseResolveDeviceProps } from '../PlatformManager';
+import { PlatformManager } from '../PlatformManager';
 
 const debug = require('debug')(
   'expo:start:platforms:platformManager:android'
@@ -59,7 +60,7 @@ export class AndroidPlatformManager extends PlatformManager<Device, AndroidOpenI
     options:
       | { runtime: 'expo' | 'web' }
       | { runtime: 'custom'; props?: Partial<AndroidOpenInCustomProps> },
-    resolveSettings?: Partial<BaseResolveDeviceProps<Device>>
+    resolveSettings?: BaseResolveDeviceProps<Device>
   ): Promise<{ url: string }> {
     await startAdbReverseAsync([this.port]);
 
@@ -107,7 +108,7 @@ export class AndroidPlatformManager extends PlatformManager<Device, AndroidOpenI
     if (!(await deviceManager.isAppInstalledAndIfSoReturnContainerPathForIOSAsync(customAppId))) {
       throw new CommandError(
         `No development build (${customAppId}) for this project is installed. ` +
-          `Please make and install a development build on the device first.\n${learnMore(
+          `Install a development build on the target device and try again.\n${learnMore(
             'https://docs.expo.dev/development/build/'
           )}`
       );

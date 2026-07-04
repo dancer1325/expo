@@ -8,13 +8,20 @@
     "ios": "expo start --ios"
   },
   "dependencies": {
-    "expo": "~52.0.0",
-    "expo-router": "^4.0.0",
-    "react": "18.3.1",
-    "react-native": "0.76.3"
+    "@react-navigation/bottom-tabs": "^7.15.5",
+    "@react-navigation/native": "^7.1.33",
+    "expo": "workspace:*",
+    "expo-dev-client": "workspace:*",
+    "expo-linking": "workspace:*",
+    "expo-router": "workspace:*",
+    "expo-splash-screen": "workspace:*",
+    "react": "19.2.3",
+    "react-native": "0.86.0",
+    "react-native-safe-area-context": "5.7.0",
+    "react-native-screens": "4.26.0-nightly-20260625-9b9b39fa5"
   },
   "devDependencies": {
-    "babel-preset-expo": "~12.0.0"
+    "babel-preset-expo": "workspace:*"
   },
   "private": true
 }

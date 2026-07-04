@@ -7,7 +7,7 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import expo.modules.interfaces.barcodescanner.BarCodeScannerResult
+import expo.modules.camera.utils.BarCodeScannerResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -56,19 +56,7 @@ class MLKitBarCodeScanner {
   }
 
   private fun areNewAndOldBarCodeTypesEqual(newBarCodeTypes: List<Int>): Boolean {
-    barCodeTypes?.run {
-      // create distinct-values sets
-      val prevTypesSet = toHashSet()
-      val nextTypesSet = newBarCodeTypes.toHashSet()
-
-      // sets sizes are equal -> possible content equality
-      if (prevTypesSet.size == nextTypesSet.size) {
-        prevTypesSet.removeAll(nextTypesSet)
-        // every element from new set was in previous one -> sets are equal
-        return prevTypesSet.isEmpty()
-      }
-    }
-    return false
+    return barCodeTypes?.toSet() == newBarCodeTypes.toSet()
   }
 
   companion object {

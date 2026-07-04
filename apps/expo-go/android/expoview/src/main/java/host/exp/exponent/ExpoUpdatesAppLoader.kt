@@ -4,6 +4,7 @@ package host.exp.exponent
 import android.content.Context
 import android.util.Log
 import expo.modules.core.utilities.EmulatorUtilities
+import expo.modules.easclient.EASClientID
 import expo.modules.updates.UpdatesConfiguration
 import expo.modules.updates.UpdatesUtils
 import expo.modules.updates.db.DatabaseHolder
@@ -29,11 +30,15 @@ import host.exp.exponent.kernel.ExpoViewKernel
 import host.exp.exponent.kernel.Kernel
 import host.exp.exponent.kernel.KernelConfig
 import host.exp.exponent.storage.ExponentSharedPreferences
+import host.exp.exponent.utils.HermesBundleUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
-import java.util.*
+import java.net.URI
 import javax.inject.Inject
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -41,6 +46,7 @@ import kotlin.time.toDuration
 private const val UPDATE_AVAILABLE_EVENT = "updateAvailable"
 private const val UPDATE_NO_UPDATE_AVAILABLE_EVENT = "noUpdateAvailable"
 private const val UPDATE_ERROR_EVENT = "error"
+private val EAS_UPDATE_HOSTS = setOf("u.expo.dev", "staging-u.expo.dev")
 
 /**
  * Entry point to expo-updates in Expo Go. Fulfills many of the
@@ -56,7 +62,8 @@ private const val UPDATE_ERROR_EVENT = "error"
 class ExpoUpdatesAppLoader @JvmOverloads constructor(
   private val manifestUrl: String,
   private val callback: AppLoaderCallback,
-  private val useCacheOnly: Boolean = false
+  private val useCacheOnly: Boolean = false,
+  private val loaderScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
   @Inject
   lateinit var exponentSharedPreferences: ExponentSharedPreferences
@@ -150,7 +157,7 @@ class ExpoUpdatesAppLoader @JvmOverloads constructor(
     }
     val selectionPolicy = SelectionPolicy(
       ExpoGoLauncherSelectionPolicyFilterAware(sdkVersionsList),
-      LoaderSelectionPolicyFilterAware(),
+      LoaderSelectionPolicyFilterAware(configuration),
       ReaperSelectionPolicyDevelopmentClient()
     )
     val directory: File = try {
@@ -159,12 +166,20 @@ class ExpoUpdatesAppLoader @JvmOverloads constructor(
       callback.onError(e)
       return
     }
-    val logger = UpdatesLogger(context)
-    val fileDownloader = FileDownloader(context, configuration, logger)
-    startLoaderTask(configuration, fileDownloader, directory, selectionPolicy, context, logger)
+    val logger = UpdatesLogger(context.filesDir)
+    val fileDownloader = FileDownloader(
+      context.filesDir,
+      EASClientID(context).uuid.toString(),
+      configuration,
+      logger,
+      databaseHolder.database
+    )
+    loaderScope.launch {
+      startLoaderTask(configuration, fileDownloader, directory, selectionPolicy, context, logger)
+    }
   }
 
-  private fun startLoaderTask(
+  private suspend fun startLoaderTask(
     configuration: UpdatesConfiguration,
     fileDownloader: FileDownloader,
     directory: File,
@@ -251,7 +266,18 @@ class ExpoUpdatesAppLoader @JvmOverloads constructor(
 
             // ReactAndroid will load the bundle on its own in development mode
             if (!manifest.isDevelopmentMode()) {
-              callback.onBundleCompleted(launcher.launchAssetFile!!)
+              val launchAssetFile = launcher.launchAssetFile!!
+              val isEasUpdate = runCatching { URI(manifestUrl).host }
+                .getOrNull()
+                ?.let(EAS_UPDATE_HOSTS::contains) == true
+              if (!isEasUpdate && HermesBundleUtils.isHermesBundle(File(launchAssetFile))) {
+                val errorJson = JSONObject().apply {
+                  put("errorCode", "EXPERIENCE_HERMES_BUNDLE_NOT_SUPPORTED")
+                  put("message", "Hermes bytecode bundle is not supported by Expo Go")
+                }
+                throw ManifestException(null, manifestUrl, errorJson)
+              }
+              callback.onBundleCompleted(launchAssetFile)
             }
           } catch (e: Exception) {
             callback.onError(e)
@@ -292,7 +318,8 @@ class ExpoUpdatesAppLoader @JvmOverloads constructor(
             Log.e(TAG, "Failed to emit event to JS", e)
           }
         }
-      }
+      },
+      CoroutineScope(Dispatchers.IO)
     ).start()
   }
 

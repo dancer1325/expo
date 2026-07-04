@@ -50,8 +50,6 @@ We use our fork of React Native for building Expo Go, but it is not used otherwi
 
 - Go to `react-native-lab/react-native` submodule.
 - Coordinate with whoever did the React Native upgrade (if anyone) or Brent (@brentvatne) to create a new branch for new SDK in our `react-native` fork (`sdk-XX` typically, where `XX` is the major number of the SDK version).
-- Run `et update-react-native`. This expotools command copies `ReactAndroid` and `ReactCommon` folders from the submodule to the respective paths: `android/ReactAndroid` and `android/ReactCommon` and then executes `ReactAndroidCodeTransformer` that applies some Expo-specific code transformations.
-- Add your git changes from both `react-native-lab` and `android` folders and create a pull request to `main` branch.
 - Run `git tag -a 'sdk-XX.X.X' -m 'React Native X.Y.Z for Expo SDKXX'` (where `X.Y.Z` is the React Native version and `XX` is the major number of SDK version), to make a tag for the latest commit in your local repo.
 - Push the tag to the remote using `git push --tags`.
 
@@ -75,6 +73,7 @@ We use our fork of React Native for building Expo Go, but it is not used otherwi
 
 **How:**
 
+- Make sure Xcode 26.4.1 is installed in `/Applications` (it can coexist with newer Xcodes). `et publish-packages` automatically points the iOS prebuild step at it via `DEVELOPER_DIR` regardless of which Xcode is active, and fails fast with a clear error if 26.4.1 isn't found. This pin matters because the npm-bundled iOS xcframeworks embed the producing Swift compiler version in their `.swiftinterface` headers, and Swift refuses to consume an interface produced by a newer compiler — publishing on a newer Xcode would break every EAS Build worker and consumer on an older one.
 - Run `et publish-packages`. Talk to @tsapeta for more details/information.
 - Run `et sync-bundled-native-modules` to sync the `bundledNativeModules.json` file with www.
 
@@ -113,7 +112,8 @@ We use our fork of React Native for building Expo Go, but it is not used otherwi
 - Do this step immediately before cutting the release branch.
 - Run `et generate-docs-api-data` to regenerate `unversioned` API data files before cutting new documentation version.
 - Run `et generate-sdk-docs --sdk XX.X.X` to generate versioned docs for the new SDK.
-- Run `yarn run schema-sync XX` (`XX` being the major version number) in `docs` directory and then change the schema import in `pages/versions/<version>/config/app.mdx` from `unversioned` to the new versioned schema file.
+- Run `pnpm schema-sync XX` (`XX` being the major version number) in `docs` directory and then change the schema import in `pages/versions/<version>/config/app.mdx` from `unversioned` to the new versioned schema file.
+- Run `pnpm versions-schema-sync` in the `docs` directory to fetch the new version's `native-modules.json`, which the package-version header on each SDK page requires. This fetches from `exp.host`, so the new SDK's packages must already be published and synced to the versions endpoint (see [0.6. Publish `next` packages](#06-publish-next-packages)). If the packages are not live yet, the fetch returns nothing, so run this step once they are but you should create the `native-modules.json` file for the new SDK version before cutting the release branch.
 - Ensure that the `version` in package.json has NOT been updated to the new SDK version. SDK versions greater than the `version` in package.json will be hidden in production docs, and we do not want the new version to show up until the SDK has been released.
 - Commit and push changes to main.
 
@@ -165,6 +165,7 @@ Web is comparatively well-tested in CI, so a few manual smoke tests suffice for 
 
 **How:**
 
+- Make sure Xcode 26.4.1 is installed in `/Applications` (see [§0.6](#06-publish-next-packages) for why; `et publish-packages` will use it automatically).
 - From the main branch, run `et publish-packages` and publish all packages with changes.
 - From the main branch, run `et sync-bundled-native-modules` to sync the `bundledNativeModules.json` file with www.
 - If there are any packages for which a patch was cherry-picked to the release branch AND a new feature (requiring a minor version bump) was added on main in the meantime, you will need to publish a patch release of that package from the release branch which does not include the new feature.
@@ -219,11 +220,14 @@ Web is comparatively well-tested in CI, so a few manual smoke tests suffice for 
 
 **How:**
 
-- Run `et eas ios-simulator-client-build-and-publish` or `et eas android-apk-build-and-publish` to trigger building Expo Go for simulators, uploading the archive to S3 and updating URL in versions endpoint.
+- Run `et eas ios-simulator-build` to trigger building Expo Go for iOS simulators on EAS.
+- Run `GITHUB_TOKEN=${GITHUB_TOKEN} et eas ios-simulator-upload` to download the build artifact and upload it to [the expo-go-releases GitHub repo](https://github.com/expo/expo-go-releases/releases). The `GITHUB_TOKEN` environment variable should have contents read/write access to the repo.
+- Run `et eas android-apk-build` to trigger building Expo Go for Android APK on EAS.
+- Run `GITHUB_TOKEN=${GITHUB_TOKEN} et eas android-apk-upload` to download the build artifact and upload it to [the expo-go-releases GitHub repo](https://github.com/expo/expo-go-releases/releases). The `GITHUB_TOKEN` environment variable should have contents read/write access to the repo.
 - Once the job is finished, test if this simulator build work as expected. You can install and launch it using expotools command `et client-install -p {ios,android}`.
 - Ensure that you update the root `iosVersion`/`androidVersion` `iosUrl`/`androidUrl` properties, eg:
-  - `et update-versions-endpoint -k 'iosVersion' -v '2.19.3' --root`
-  - `et update-versions-endpoint -k 'iosUrl' -v 'https://dpq5q02fu5f55.cloudfront.net/Exponent-2.19.3.tar.gz' --root`
+  - `et update-versions-endpoint -k 'iosVersion' -v '55.0.9' --root`
+  - `et update-versions-endpoint -k 'iosUrl' -v 'https://github.com/expo/expo-go-releases/releases/download/Expo-Go-55.0.9/Expo-Go-55.0.9.tar.gz' --root`
 
 # Stage 3 - Sync with EAS Build
 

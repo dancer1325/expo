@@ -19,20 +19,20 @@ useEffect(() => {
   registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
   /* @info This listener is fired whenever a notification is received while the app is foregrounded. */
-  notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-    setNotification(notification);
+  const notificationListener = Notifications.addNotificationReceivedListener(notification => {
+    console.log(notification);
   });
   /* @end */
 
   /* @info This listener is fired whenever a user taps on or interacts with a notification (works when an app is foregrounded, backgrounded, or killed). */
-  responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+  const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
     console.log(response);
   });
   /* @end */
 
   return () => {
-    Notifications.removeNotificationSubscription(notificationListener.current);
-    Notifications.removeNotificationSubscription(responseListener.current);
+    notificationListener.remove();
+    responseListener.remove();
   };
 }, []);
 ```
@@ -223,16 +223,18 @@ For more information on these objects, see [`Notification`](/versions/latest/sdk
 
 To handle the behavior when notifications are received when your app is **foregrounded**, use [`Notifications.setNotificationHandler`](/versions/latest/sdk/notifications/#handling-incoming-notifications-when-the-app-is) with the `handleNotification()` callback to set the following options:
 
-- `shouldShowAlert`
 - `shouldPlaySound`
 - `shouldSetBadge`
+- `shouldShowBanner`
+- `shouldShowList`
 
 ```jsx
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldPlaySound: false,
     shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 ```

@@ -1,6 +1,12 @@
 //  Copyright © 2019 650 Industries. All rights reserved.
 
 import ExpoModulesCore
+import EXUpdatesInterface
+
+internal class DisabledUpdatesStateChangeSubscription: UpdatesStateChangeSubscription {
+  func remove() {}
+  func getContext() -> Any? { return nil }
+}
 
 /**
  * Updates controller for applications that either disable updates explicitly or have an error
@@ -9,9 +15,23 @@ import ExpoModulesCore
  * - Internal database initialization errors
  * - Configuration errors (missing required configuration)
  */
-public class DisabledAppController: InternalAppControllerInterface {
+public class DisabledAppController: InternalAppControllerInterface, UpdatesInterface {
+  public func subscribeToUpdatesStateChanges(_ listener: any UpdatesStateChangeListener) -> UpdatesStateChangeSubscription {
+    return DisabledUpdatesStateChangeSubscription()
+  }
+
+  public var requestHeaders: [String : String]?
+
+  public var launchedUpdateId: UUID?
+
+  public var embeddedUpdateId: UUID?
+
+  public var launchAssetPath: String?
+
+  public var reloadScreenManager: Reloadable?
+
   public let isActiveController = false
-  private var isStarted: Bool = false
+  public private(set) var isStarted: Bool = false
   private var startupStartTime: DispatchTime?
   private var startupEndTime: DispatchTime?
 
@@ -40,7 +60,11 @@ public class DisabledAppController: InternalAppControllerInterface {
   required init(error: UpdatesError?) {
     self.initializationError = error
     self.eventManager = QueueUpdatesEventManager(logger: self.logger)
-    self.stateMachine = UpdatesStateMachine(eventManager: self.eventManager, validUpdatesStateValues: [UpdatesStateValue.idle, UpdatesStateValue.restarting])
+    self.stateMachine = UpdatesStateMachine(
+      logger: self.logger,
+      eventManager: self.eventManager,
+      validUpdatesStateValues: [UpdatesStateValue.idle, UpdatesStateValue.restarting]
+    )
   }
 
   public func start() {
@@ -96,6 +120,14 @@ public class DisabledAppController: InternalAppControllerInterface {
     )
   }
 
+  // MARK: UpdatesInterface
+
+  public var runtimeVersion: String?
+
+  public var updateURL: URL?
+
+  public var isEnabled: Bool = false
+
   public func requestRelaunch(
     success successBlockArg: @escaping () -> Void,
     error errorBlockArg: @escaping (ExpoModulesCore.Exception) -> Void
@@ -136,5 +168,13 @@ public class DisabledAppController: InternalAppControllerInterface {
     error errorBlockArg: @escaping (ExpoModulesCore.Exception) -> Void
   ) {
     errorBlockArg(UpdatesDisabledException("Updates.setExtraParamAsync()"))
+  }
+
+  public func setUpdateURLAndRequestHeadersOverride(_ configOverride: UpdatesConfigOverride?) throws {
+    throw UpdatesDisabledException("Updates.setUpdateURLAndRequestHeadersOverride() is not supported when expo-updates is not enabled.")
+  }
+
+  public func setUpdateRequestHeadersOverride(_ requestHeaders: [String: String]?) throws {
+    throw UpdatesDisabledException("Updates.setUpdateRequestHeadersOverride() is not supported when expo-updates is not enabled.")
   }
 }

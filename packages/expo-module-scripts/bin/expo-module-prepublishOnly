@@ -1,9 +1,25 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
-set -eo pipefail
+process.env.EXPO_NONINTERACTIVE = 1;
 
-script_dir="$(dirname "$0")"
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { commandRunner, packageManagerRunAsync } from '../utils/commandUtils.js';
 
-export EXPO_NONINTERACTIVE=1
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-"$script_dir/npx" proofread
+async function runAsync() {
+  console.log('Preparing module for publishing');
+  await commandRunner(path.join(dirname, 'expo-module-clean'));
+  // Run the package's own `build` script so `expo-build` modules still emit output before publishing.
+  await packageManagerRunAsync(['build']);
+}
+
+(async () => {
+  try {
+    await runAsync();
+  } catch (error) {
+    console.error(error);
+    process.exit(error.status || error.code || 1);
+  }
+})();

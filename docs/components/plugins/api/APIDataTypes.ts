@@ -7,7 +7,9 @@ export type GeneratedData = EnumDefinitionData &
   TypeGeneralData &
   InterfaceDefinitionData &
   ConstantDefinitionData &
-  ClassDefinitionData;
+  ClassDefinitionData & {
+    _source?: 'plugin';
+  };
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export enum TypeDocKind {
@@ -156,7 +158,7 @@ export type InterfaceDefinitionData = {
 
 export type ClassDefinitionData = InterfaceDefinitionData & {
   type?: TypeDefinitionData;
-  isSensor: boolean;
+  allowOverwrites: boolean;
 };
 
 // Methods section
@@ -201,7 +203,7 @@ export type PropData = {
   name: string;
   kind?: TypeDocKind;
   comment?: CommentData;
-  type: TypeDefinitionData;
+  type?: TypeDefinitionData;
   flags?: TypePropertyDataFlags;
   defaultValue?: string;
   signatures?: MethodSignatureData[];
@@ -222,7 +224,8 @@ export type DefaultPropsDefinitionData = {
 export type TypeGeneralData = {
   name: string;
   comment: CommentData;
-  type: TypeDefinitionData;
+  type?: TypeDefinitionData;
+  children?: PropData[];
   typeParameter?: TypeGeneralData[];
   kind: TypeDocKind;
   variant?: string;
@@ -231,7 +234,7 @@ export type TypeGeneralData = {
 export type TypeDeclarationContentData = {
   name?: string;
   kind?: TypeDocKind;
-  indexSignature?: TypeSignaturesData;
+  indexSignatures?: TypeSignaturesData[];
   signatures?: TypeSignaturesData[];
   parameters?: MethodParamData[];
   children?: PropData[];

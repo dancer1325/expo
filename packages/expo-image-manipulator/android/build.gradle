@@ -1,23 +1,20 @@
-apply plugin: 'com.android.library'
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
 
 group = 'host.exp.exponent'
-version = '13.0.5'
-
-def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
-apply from: expoModulesCorePlugin
-applyKotlinExpoModulesCorePlugin()
-useCoreDependencies()
-useDefaultAndroidSdkVersions()
-useExpoPublishing()
+version = '56.0.15'
 
 android {
   namespace "expo.modules.imagemanipulator"
   defaultConfig {
     versionCode 23
-    versionName "13.0.5"
+    versionName "56.0.15"
   }
 }
 
 dependencies {
-  api "androidx.annotation:annotation:1.0.0"
+  testImplementation 'junit:junit:4.13.2'
+  testImplementation 'org.robolectric:robolectric:4.16'
 }

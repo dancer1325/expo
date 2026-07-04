@@ -1,8 +1,13 @@
-import { ExpoPlist } from './IosConfig.types';
-import { ConfigPlugin } from '../Plugin.types';
+import type { ExpoConfig } from '@expo/config-types';
+
+import { createBuildPodfilePropsConfigPlugin } from './BuildProperties';
+import type { ExpoPlist } from './IosConfig.types';
+import type { ConfigPlugin } from '../Plugin.types';
 import { withExpoPlist } from '../plugins/ios-plugins';
+import { withPlugins } from '../plugins/withPlugins';
+import type { ExpoConfigUpdates } from '../utils/Updates';
 import {
-  ExpoConfigUpdates,
+  getDisableAntiBrickingMeasures,
   getExpoUpdatesPackageVersion,
   getRuntimeVersionNullableAsync,
   getUpdatesCheckOnLaunch,
@@ -11,6 +16,7 @@ import {
   getUpdatesRequestHeaders,
   getUpdatesEnabled,
   getUpdatesTimeout,
+  getUpdatesBsdiffPatchSupportEnabled,
   getUpdatesUseEmbeddedUpdate,
   getUpdateUrl,
 } from '../utils/Updates';
@@ -26,12 +32,31 @@ export enum Config {
   UPDATES_HAS_EMBEDDED_UPDATE = 'EXUpdatesHasEmbeddedUpdate',
   CODE_SIGNING_CERTIFICATE = 'EXUpdatesCodeSigningCertificate',
   CODE_SIGNING_METADATA = 'EXUpdatesCodeSigningMetadata',
+  DISABLE_ANTI_BRICKING_MEASURES = 'EXUpdatesDisableAntiBrickingMeasures',
+  ENABLE_BSDIFF_PATCH_SUPPORT = 'EXUpdatesEnableBsdiffPatchSupport',
 }
 
 // when making changes to this config plugin, ensure the same changes are also made in eas-cli and build-tools
 // Also ensure the docs are up-to-date: https://docs.expo.dev/bare/installing-updates/
 
 export const withUpdates: ConfigPlugin = (config) => {
+  return withPlugins(config, [withUpdatesPlist, withUpdatesNativeDebugPodfileProps]);
+};
+
+/**
+ * A config-plugin to update `ios/Podfile.properties.json` from the `updates.useNativeDebug` in expo config
+ */
+export const withUpdatesNativeDebugPodfileProps = createBuildPodfilePropsConfigPlugin<ExpoConfig>(
+  [
+    {
+      propName: 'updatesNativeDebug',
+      propValueGetter: (config) => (config?.updates?.useNativeDebug === true ? 'true' : undefined),
+    },
+  ],
+  'withUpdatesNativeDebugPodfileProps'
+);
+
+const withUpdatesPlist: ConfigPlugin = (config) => {
   return withExpoPlist(config, async (config) => {
     const projectRoot = config.modRequest.projectRoot;
     const expoUpdatesPackageVersion = getExpoUpdatesPackageVersion(projectRoot);
@@ -108,6 +133,15 @@ export async function setUpdatesConfigAsync(
     delete newExpoPlist[Config.UPDATES_CONFIGURATION_REQUEST_HEADERS_KEY];
   }
 
+  const disableAntiBrickingMeasures = getDisableAntiBrickingMeasures(config);
+  if (disableAntiBrickingMeasures) {
+    newExpoPlist[Config.DISABLE_ANTI_BRICKING_MEASURES] = disableAntiBrickingMeasures;
+  } else {
+    delete newExpoPlist[Config.DISABLE_ANTI_BRICKING_MEASURES];
+  }
+
+  newExpoPlist[Config.ENABLE_BSDIFF_PATCH_SUPPORT] = getUpdatesBsdiffPatchSupportEnabled(config);
+
   return await setVersionsConfigAsync(projectRoot, config, newExpoPlist);
 }
 
@@ -121,7 +155,7 @@ export async function setVersionsConfigAsync(
   const runtimeVersion = await getRuntimeVersionNullableAsync(projectRoot, config, 'ios');
   if (!runtimeVersion && expoPlist[Config.RUNTIME_VERSION]) {
     throw new Error(
-      'A runtime version is set in your Expo.plist, but is missing from your app.json/app.config.js. Please either set runtimeVersion in your app.json/app.config.js or remove EXUpdatesRuntimeVersion from your Expo.plist.'
+      'A runtime version is set in your Expo.plist, but is missing from your Expo app config (app.json/app.config.js). Set runtimeVersion in your Expo app config or remove EXUpdatesRuntimeVersion from your Expo.plist.'
     );
   }
 

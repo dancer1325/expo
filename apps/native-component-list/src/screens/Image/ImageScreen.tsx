@@ -1,7 +1,7 @@
-import { Platform } from 'expo-modules-core';
+import { Platform } from 'expo';
 
 import { optionalRequire } from '../../navigation/routeBuilder';
-import ComponentListScreen, { ListElement } from '../ComponentListScreen';
+import ComponentListScreen, { componentScreensToListElements } from '../ComponentListScreen';
 
 export const ImageScreens = [
   {
@@ -21,11 +21,25 @@ export const ImageScreens = [
     },
   },
   {
+    name: 'Animation resuming',
+    route: 'image/animation-resuming',
+    getComponent() {
+      return optionalRequire(() => require('./ImageAnimationResuming'));
+    },
+  },
+  {
     name: 'List with thousands images',
     route: 'image/flashlist',
     options: {},
     getComponent() {
       return optionalRequire(() => require('./ImageFlashListScreen'));
+    },
+  },
+  {
+    name: 'Generate Placeholders',
+    route: 'image/generate-placeholders',
+    getComponent() {
+      return optionalRequire(() => require('./ImageGeneratePlaceholders'));
     },
   },
   {
@@ -113,6 +127,13 @@ export const ImageScreens = [
     },
   },
   {
+    name: 'SVG sizing (maxWidth/maxHeight)',
+    route: 'image/svg-sizing',
+    getComponent() {
+      return optionalRequire(() => require('./ImageSvgSizingScreen'));
+    },
+  },
+  {
     name: 'Hash Placeholders',
     route: 'image/hash-placeholders',
     getComponent() {
@@ -140,25 +161,59 @@ export const ImageScreens = [
       return optionalRequire(() => require('./ImageMediaLibraryScreen'));
     },
   },
+  {
+    name: 'Imperative API',
+    route: 'image/imperative-api',
+    getComponent() {
+      return optionalRequire(() => require('./ImageImperativeApiScreen'));
+    },
+  },
 ];
 
 if (Platform.OS === 'ios') {
+  ImageScreens.push(
+    {
+      name: 'SF Symbols',
+      route: 'image/sf-symbols',
+      getComponent() {
+        return optionalRequire(() => require('./ImageSFSymbolScreen'));
+      },
+    },
+    {
+      name: 'Live Text Interaction',
+      route: 'image/live-text-interaction',
+      getComponent() {
+        return optionalRequire(() => require('./ImageLiveTextInteractionScreen'));
+      },
+    },
+    {
+      name: 'High Dynamic Range',
+      route: 'image/hdr',
+      getComponent() {
+        return optionalRequire(() => require('./ImageHDRScreen'));
+      },
+    },
+    {
+      name: 'Cache eviction',
+      route: 'image/cache-eviction',
+      getComponent() {
+        return optionalRequire(() => require('./ImageCacheEvictionScreen'));
+      },
+    }
+  );
+}
+
+if (Platform.OS === 'web') {
   ImageScreens.push({
-    name: 'Live Text Interaction',
-    route: 'image/live-text-interaction',
+    name: 'Lazy loading images',
+    route: 'image/lazy-loading',
     getComponent() {
-      return optionalRequire(() => require('./ImageLiveTextInteractionScreen'));
+      return optionalRequire(() => require('./ImageLazyLoadingScreen'));
     },
   });
 }
 
 export default function ImageScreen() {
-  const apis: ListElement[] = ImageScreens.map((screen) => {
-    return {
-      name: screen.name,
-      isAvailable: true,
-      route: `/components/${screen.route}`,
-    };
-  });
+  const apis = componentScreensToListElements(ImageScreens);
   return <ComponentListScreen apis={apis} sort={false} />;
 }

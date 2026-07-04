@@ -1,13 +1,30 @@
 // Copyright 2023-present 650 Industries. All rights reserved.
 
 import ExpoModulesCore
+import AVKit
 
 public final class VideoModule: Module {
   public func definition() -> ModuleDefinition {
     Name("ExpoVideo")
 
+    OnCreate {
+      VideoAssetTransportRegistry.registerDefaultProviders()
+    }
+
     Function("isPictureInPictureSupported") { () -> Bool in
       return AVPictureInPictureController.isPictureInPictureSupported()
+    }
+
+    Function("getCurrentVideoCacheSize") {
+      VideoCacheManager.shared.getCacheDirectorySize()
+    }
+
+    AsyncFunction("setVideoCacheSizeAsync") { size in
+      try VideoCacheManager.shared.setMaxCacheSize(newSize: size)
+    }
+
+    AsyncFunction("clearVideoCacheAsync") {
+      return try await VideoCacheManager.shared.clearAllCache()
     }
 
     View(VideoView.self) {
@@ -15,7 +32,8 @@ public final class VideoModule: Module {
         "onPictureInPictureStart",
         "onPictureInPictureStop",
         "onFullscreenEnter",
-        "onFullscreenExit"
+        "onFullscreenExit",
+        "onFirstFrameRender"
       )
 
       Prop("player") { (view, player: VideoPlayer?) in
@@ -45,9 +63,12 @@ public final class VideoModule: Module {
         )
       }
 
-      Prop("allowsFullscreen") { (view, allowsFullscreen: Bool?) in
+      Prop("fullscreenOptions") {(view, options: FullscreenOptions?) in
         #if !os(tvOS)
-        view.playerViewController.setValue(allowsFullscreen ?? true, forKey: "allowsEnteringFullScreen")
+        view.playerViewController.fullscreenOrientation = options?.orientation.toUIInterfaceOrientationMask() ?? .all
+        view.playerViewController.autoExitOnRotate = options?.autoExitOnRotate ?? false
+        view.playerViewController.setValue(options?.enable ?? true, forKey: "allowsEnteringFullScreen")
+        view.playerViewController.keepFullscreenOnPiPStop = options?.keepFullscreenOnPiPStop ?? .never
         #endif
       }
 
@@ -107,12 +128,30 @@ public final class VideoModule: Module {
       }
     }
 
-    Class(VideoPlayer.self) {
-      Constructor { (source: VideoSource?) -> VideoPlayer in
-        let player = AVPlayer()
-        let videoPlayer = VideoPlayer(player)
+    View(VideoAirPlayButtonView.self) {
+      Events(
+        "onBeginPresentingRoutes",
+        "onEndPresentingRoutes"
+      )
 
-        try videoPlayer.replaceCurrentItem(with: source)
+      Prop("tint") { (view, tint: UIColor?) in
+        view.tint = tint
+      }
+
+      Prop("activeTint") { (view, activeTint: UIColor?) in
+        view.activeTintColor = activeTint
+      }
+
+      Prop("prioritizeVideoDevices") { (view, prioritizeVideoDevices: Bool?) in
+        view.prioritizeVideoDevices = prioritizeVideoDevices ?? true
+      }
+    }
+
+    Class(VideoPlayer.self) {
+      Constructor { (source: VideoSource?, useSynchronousReplace: Bool?, /* playerBuilderOptions - Android only */ _: [String: Any?]?) -> VideoPlayer in
+        let useSynchronousReplace = useSynchronousReplace ?? false
+        let player = AVPlayer()
+        let videoPlayer = try VideoPlayer(player, initialSource: source, useSynchronousReplace: useSynchronousReplace)
         player.pause()
         return videoPlayer
       }
@@ -129,10 +168,10 @@ public final class VideoModule: Module {
       }
 
       Property("allowsExternalPlayback") { player -> Bool in
-        return player.pointer.allowsExternalPlayback
+        return player.ref.allowsExternalPlayback
       }
       .set { (player, allowsExternalPlayback: Bool) in
-        player.pointer.allowsExternalPlayback = allowsExternalPlayback
+        player.ref.allowsExternalPlayback = allowsExternalPlayback
       }
 
       Property("staysActiveInBackground") { player -> Bool in
@@ -150,14 +189,11 @@ public final class VideoModule: Module {
       }
 
       Property("currentTime") { player -> Double in
-        let currentTime = player.pointer.currentTime().seconds
-        return currentTime.isNaN ? 0 : currentTime
+        return player.currentTime
       }
       .set { (player, time: Double) in
         // Only clamp the lower limit, AVPlayer automatically clamps the upper limit.
-        let clampedTime = max(0, time)
-        let timeToSeek = CMTimeMakeWithSeconds(clampedTime, preferredTimescale: .max)
-        player.pointer.seek(to: timeToSeek, toleranceBefore: .zero, toleranceAfter: .zero)
+        player.currentTime = time
       }
 
       Property("currentLiveTimestamp") { player -> Double? in
@@ -169,15 +205,15 @@ public final class VideoModule: Module {
       }
 
       Property("targetOffsetFromLive") { player -> Double in
-        return player.pointer.currentItem?.configuredTimeOffsetFromLive.seconds ?? 0
+        return player.ref.currentItem?.configuredTimeOffsetFromLive.seconds ?? 0
       }
       .set { (player, timeOffset: Double) in
         let timeOffset = CMTime(seconds: timeOffset, preferredTimescale: .max)
-        player.pointer.currentItem?.configuredTimeOffsetFromLive = timeOffset
+        player.ref.currentItem?.configuredTimeOffsetFromLive = timeOffset
       }
 
       Property("duration") { player -> Double in
-        let duration = player.pointer.currentItem?.duration.seconds ?? 0
+        let duration = player.ref.currentItem?.duration.seconds ?? 0
         return duration.isNaN ? 0 : duration
       }
 
@@ -189,7 +225,7 @@ public final class VideoModule: Module {
       }
 
       Property("isLive") { player -> Bool in
-        return player.pointer.currentItem?.duration.isIndefinite ?? false
+        return player.ref.currentItem?.duration.isIndefinite ?? false
       }
 
       Property("preservesPitch") { player -> Bool in
@@ -242,6 +278,14 @@ public final class VideoModule: Module {
         player.audioMixingMode = audioMixingMode
       }
 
+      Property("availableVideoTracks") { player -> [VideoTrack] in
+        return player.availableVideoTracks
+      }
+
+      Property("videoTrack") { player -> VideoTrack? in
+        return player.currentVideoTrack
+      }
+
       Property("availableSubtitleTracks") { player -> [SubtitleTrack] in
         return player.subtitles.availableSubtitleTracks
       }
@@ -253,38 +297,69 @@ public final class VideoModule: Module {
         player.subtitles.selectSubtitleTrack(subtitleTrack: subtitleTrack)
       }
 
+      Property("availableAudioTracks") { player -> [AudioTrack] in
+        return player.audioTracks.availableAudioTracks
+      }
+
+      Property("audioTrack") { player -> AudioTrack? in
+        return player.audioTracks.currentAudioTrack
+      }
+      .set { player, audioTrack in
+        player.audioTracks.selectAudioTrack(audioTrack: audioTrack)
+      }
+
+      Property("isExternalPlaybackActive") { player -> Bool in
+        return player.ref.isExternalPlaybackActive
+      }
+
+      Property("keepScreenOnWhilePlaying") { player -> Bool in
+        return player.ref.preventsDisplaySleepDuringVideoPlayback
+      }
+      .set { player, keepScreenOnWhilePlaying in
+        player.ref.preventsDisplaySleepDuringVideoPlayback = keepScreenOnWhilePlaying
+      }
+
+      Property("seekTolerance") { player -> SeekTolerance in
+        return player.seeker.seekTolerance
+      }
+      .set { player, seekTolerance in
+        player.seeker.seekTolerance = seekTolerance
+      }
+
+      Property("scrubbingModeOptions") { player -> ScrubbingModeOptions in
+        return player.seeker.scrubbingModeOptions
+      }
+      .set { player, options in
+        player.seeker.scrubbingModeOptions = options
+      }
+
       Function("play") { player in
-        player.pointer.play()
+        player.ref.play()
       }
 
       Function("pause") { player in
-        player.pointer.pause()
+        player.ref.pause()
       }
 
       Function("replace") { (player, source: Either<String, VideoSource>?) in
-        guard let source else {
-          try player.replaceCurrentItem(with: nil)
-          return
-        }
-        var videoSource: VideoSource?
-
-        if source.is(String.self), let url: String = source.get() {
-          videoSource = VideoSource(uri: URL(string: url))
-        } else if source.is(VideoSource.self) {
-          videoSource = source.get()
-        }
-
+        let videoSource = parseSource(source: source)
         try player.replaceCurrentItem(with: videoSource)
       }
 
-      Function("seekBy") { (player, seconds: Double) in
-        let newTime = player.pointer.currentTime() + CMTime(seconds: seconds, preferredTimescale: .max)
+      AsyncFunction("replaceAsync") { (player, source: Either<String, VideoSource>?) in
+        let videoSource = parseSource(source: source)
+        try await player.replaceCurrentItem(with: videoSource)
+      }
 
-        player.pointer.seek(to: newTime)
+      Function("seekBy") { (player, seconds: Double) in
+        let newTime = player.ref.currentTime() + CMTime(seconds: seconds, preferredTimescale: .max)
+
+        player.seeker.seek(to: newTime)
       }
 
       Function("replay") { player in
-        player.pointer.seek(to: CMTime.zero)
+        player.seeker.seek(to: CMTime.zero)
+        player.ref.play()
       }
 
       AsyncFunction("generateThumbnailsAsync") { (player: VideoPlayer, times: [CMTime]?, options: VideoThumbnailOptions?) -> [VideoThumbnail] in
@@ -317,5 +392,18 @@ public final class VideoModule: Module {
     OnAppEntersForeground {
       VideoManager.shared.onAppForegrounded()
     }
+  }
+
+  private func parseSource(source: Either<String, VideoSource>?) -> VideoSource? {
+    guard let source else {
+      return nil
+    }
+    if source.is(String.self), let url: String = source.get() {
+      return VideoSource(uri: URL(string: url))
+    }
+    if source.is(VideoSource.self) {
+      return source.get()
+    }
+    return nil
   }
 }

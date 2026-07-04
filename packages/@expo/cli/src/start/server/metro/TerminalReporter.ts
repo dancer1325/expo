@@ -1,18 +1,18 @@
+import type { Terminal } from '@expo/metro/metro-core';
+import type { WatcherStatus } from '@expo/metro/metro-file-map';
 // This file represents an abstraction on the metro TerminalReporter.
 // We use this abstraction to safely extend the TerminalReporter for our own custom logging.
+import UpstreamTerminalReporter from '@expo/metro/metro/lib/TerminalReporter';
 import chalk from 'chalk';
-import UpstreamTerminalReporter from 'metro/src/lib/TerminalReporter';
-import { Terminal } from 'metro-core';
-import type { WatcherStatus } from 'metro-file-map';
 import util from 'util';
 
-import {
+import { stripAnsi } from '../../../utils/ansi';
+import type {
   BundleDetails,
   BundleProgressUpdate,
   TerminalReportableEvent,
   TerminalReporterInterface,
 } from './TerminalReporter.types';
-import { stripAnsi } from '../../../utils/ansi';
 
 const debug = require('debug')('expo:metro:logger') as typeof console.log;
 
@@ -58,6 +58,29 @@ export class TerminalReporter extends XTerminalReporter implements TerminalRepor
 
   /** Keep track of bundle processes that should not be logged. */
   _hiddenBundleEvents: Set<string> = new Set();
+
+  /**
+   * Override Metro's update() to clear the status before _log() runs.
+   *
+   * Metro's Terminal.#update() is async and snapshots #nextStatusStr at the start.
+   * When _log() calls terminal.log(), Terminal starts #update() which captures
+   * whatever status is currently set — often a stale progress bar. This progress bar
+   * gets written as permanent output between log lines because the next #update()
+   * cycle (which would clear it) runs 33ms later.
+   *
+   * By clearing the status to empty before _log(), Terminal's #update() captures
+   * an empty status and doesn't write any progress bars alongside log lines.
+   * The correct status is then restored by terminal.status() at the end.
+   */
+  update(event: TerminalReportableEvent): void {
+    if (
+      event.type !== 'bundle_transform_progressed' &&
+      event.type !== ('bundle_transform_progressed_throttled' as string)
+    ) {
+      this.terminal.status('');
+    }
+    super.update(event);
+  }
 
   _log(event: TerminalReportableEvent): void {
     switch (event.type) {

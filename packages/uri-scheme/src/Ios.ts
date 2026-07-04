@@ -7,7 +7,9 @@ import fs from 'fs';
 import { globSync } from 'glob';
 import * as path from 'path';
 
-import { CommandError, Options } from './Options';
+import type { Options } from './Options';
+import { CommandError } from './Options';
+import { escapeUriParams } from './URIScheme';
 
 const ignoredPaths = ['**/@(Carthage|Pods|vendor|node_modules)/**'];
 
@@ -111,11 +113,11 @@ function getInfoPlistsInDirectory(projectRoot: string): string[] {
 export function getConfigPath(projectRoot: string): string {
   // TODO: Figure out how to avoid using the Tests info.plist
   const rnInfoPlistPaths = getInfoPlistsInDirectory(path.join(projectRoot, 'ios'));
-  if (rnInfoPlistPaths.length) {
+  if (rnInfoPlistPaths[0] != null) {
     return rnInfoPlistPaths[0];
   }
   const infoPlistPaths = getInfoPlistsInDirectory(projectRoot);
-  if (!infoPlistPaths.length) {
+  if (infoPlistPaths[0] == null) {
     throw new CommandError(`iOS: No Info.plist found for project at root: ${projectRoot}`);
   }
   return infoPlistPaths[0];
@@ -136,4 +138,20 @@ function formatConfig(plistObject: any): string {
 
 function writeConfig(path: string, plistObject: any) {
   fs.writeFileSync(path, formatConfig(plistObject));
+}
+
+/**
+ * `xcrun` expects special characters in the search parameters to be escaped.
+ * When you don't escape these special characters, the wrong screen might be opened without warnings.
+ *
+ * @example
+ * - `myapp://(tabs)/explore` -> `myapp://(tabs)/explore`
+ * - `myapp://(tabs)/explore?test=a|b|c` -> `myapp://(tabs)/explore?test=a%7Cb%7Cc`
+ */
+export function escapeUri(uri: string) {
+  if (!uri.includes('?')) return uri;
+
+  const [uriWithoutParams, uriParams = ''] = uri.split('?', 2);
+
+  return `${uriWithoutParams}?${escapeUriParams(uriParams)}`;
 }

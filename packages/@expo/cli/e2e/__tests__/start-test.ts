@@ -2,7 +2,12 @@
 import fs from 'fs';
 import path from 'path';
 
-import { projectRoot, getLoadedModulesAsync, setupTestProjectWithOptionsAsync } from './utils';
+import {
+  projectRoot,
+  getLoadedModulesAsync,
+  setupTestProjectWithOptionsAsync,
+  getRouterE2ERoot,
+} from './utils';
 import { createExpoStart, executeExpoAsync } from '../utils/expo';
 
 const originalForceColor = process.env.FORCE_COLOR;
@@ -62,7 +67,7 @@ it('runs `npx expo start --help`', async () => {
         --localhost                     Same as --host localhost
         
         --offline                       Skip network requests and use anonymous manifest signatures
-        --https                         Start the dev server with https protocol
+        --https                         Start the dev server with https protocol. Deprecated in favor of --tunnel
         --scheme <scheme>               Custom URI protocol to use when launching an app
         -p, --port <number>             Port to start the dev server on (does not apply to web or tunnel). Default: 8081
         
@@ -85,15 +90,16 @@ for (const args of [
   });
 }
 
-describe('server', () => {
-  const expo = createExpoStart({
-    env: {
-      EXPO_USE_FAST_RESOLVER: 'true',
-    },
-  });
+// Due to change in `expo` package the tests suit will fail on Windows, as npm pack fails to execute `expo` prepare on Windows.
+const describeSkipWin = process.platform === 'win32' ? describe.skip : describe;
+
+describeSkipWin('server', () => {
+  const expo = createExpoStart();
 
   beforeEach(async () => {
-    expo.options.cwd = await setupTestProjectWithOptionsAsync('basic-start', 'with-blank');
+    expo.options.cwd = await setupTestProjectWithOptionsAsync('basic-start', 'with-blank', {
+      linkExpoPackages: ['expo', 'babel-preset-expo'],
+    });
     await fs.promises.rm(path.join(projectRoot, '.expo'), { force: true, recursive: true });
     await expo.startAsync();
   });
@@ -116,22 +122,19 @@ describe('server', () => {
     // URLs
     expect(manifest.launchAsset.url).toBe(
       new URL(
-        '/node_modules/expo/AppEntry.bundle?platform=ios&dev=true&hot=false&transform.engine=hermes&transform.bytecode=1&transform.routerRoot=app&unstable_transformProfile=hermes-stable',
+        '/index.bundle?platform=ios&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.bytecode=1&transform.routerRoot=app&unstable_transformProfile=hermes-stable',
         expo.url
       ).href
     );
+
     expect(manifest.extra.expoGo?.debuggerHost).toBe(expo.url.host);
-    expect(manifest.extra.expoGo?.mainModuleName).toMatchPath('node_modules/expo/AppEntry');
     expect(manifest.extra.expoClient?.hostUri).toBe(expo.url.host);
 
     // Manifest
     expect(manifest.runtimeVersion).toBe('1.0');
-    expect(manifest.extra.expoClient?.sdkVersion).toBe('52.0.0');
+    expect(manifest.extra.expoClient?.sdkVersion).toMatch(/\d+\.0\.0/);
     expect(manifest.extra.expoClient?.slug).toBe('basic-start');
     expect(manifest.extra.expoClient?.name).toBe('basic-start');
-
-    // Custom
-    expect(manifest.extra.expoGo?.__flipperHack).toBe('React Native packager is running');
 
     const bundleResponse = await expo.fetchBundleAsync(manifest.launchAsset.url);
     const bundleContent = await bundleResponse.text();
@@ -147,7 +150,15 @@ describe('server', () => {
       version: 3,
       sources: expect.arrayContaining([
         '__prelude__',
-        expect.pathMatching(/metro-runtime\/src\/polyfills\/require\.js$/),
+        // NOTE(@kitten): We can slot in our own runtime here
+        expect.pathMatching(
+          new RegExp(
+            [
+              '/metro-runtime/src/polyfills/require.js',
+              '/@expo/cli/build/metro-require/require.js',
+            ].join('|')
+          )
+        ),
         expect.pathMatching(/@react-native\/js-polyfills\/console\.js$/),
         expect.pathMatching(/@react-native\/js-polyfills\/error-guard\.js$/),
         '\0polyfill:external-require',
@@ -160,14 +171,12 @@ describe('server', () => {
 });
 
 describe('start - dev clients', () => {
-  const expo = createExpoStart({
-    env: {
-      EXPO_USE_FAST_RESOLVER: 'true',
-    },
-  });
+  const expo = createExpoStart();
+
+  let projectRoot: string;
 
   beforeAll(async () => {
-    const projectRoot = await setupTestProjectWithOptionsAsync('start-dev-clients', 'with-blank');
+    projectRoot = await setupTestProjectWithOptionsAsync('start-dev-clients', 'with-blank');
     expo.options.cwd = projectRoot;
 
     // Add a `.env` file with `TEST_SCHEME`
@@ -188,10 +197,69 @@ describe('start - dev clients', () => {
   });
   afterAll(async () => {
     await expo.stopAsync();
+    // Remove app.config.js and .env files
+    await fs.promises.unlink(path.join(projectRoot, 'app.config.js'));
+    await fs.promises.unlink(path.join(projectRoot, '.env'));
   });
 
   it('runs `npx expo start` in dev client mode, using environment variable from .env', async () => {
     const response = await expo.fetchBundleAsync('/');
     expect(response.ok).toBeTruthy();
+  });
+});
+
+describeSkipWin('web-only (no react-native)', () => {
+  let webOnlyRoot: string;
+
+  beforeAll(async () => {
+    webOnlyRoot = await setupTestProjectWithOptionsAsync('web-only-start', 'with-web-only', {
+      linkExpoPackages: ['expo', 'babel-preset-expo'],
+    });
+  });
+
+  it('runs `npx expo config --json` without react-native', async () => {
+    const results = await executeExpoAsync(webOnlyRoot, ['config', '--json'], {
+      env: {
+        ...process.env,
+        NODE_PATH: '',
+      },
+    });
+    const exp = JSON.parse(results.stdout);
+    expect(exp.platforms).toStrictEqual(['web']);
+  });
+
+  it('runs `npx expo export --platform web` without react-native', async () => {
+    await executeExpoAsync(webOnlyRoot, ['export', '--platform', 'web'], {
+      env: {
+        NODE_ENV: 'production',
+        TEST_BABEL_PRESET_EXPO_MODULE_ID: require.resolve('babel-preset-expo'),
+      },
+    });
+
+    const outputDir = path.join(webOnlyRoot, 'dist');
+    expect(fs.existsSync(outputDir)).toBe(true);
+
+    const indexHtml = path.join(outputDir, 'index.html');
+    expect(fs.existsSync(indexHtml)).toBe(true);
+  });
+
+  describe('server', () => {
+    const expo = createExpoStart();
+
+    beforeEach(async () => {
+      expo.options.cwd = webOnlyRoot;
+      await expo.startAsync(['--web']);
+    });
+
+    afterAll(async () => {
+      await expo.stopAsync();
+    });
+
+    it('starts and serves web bundle without react-native', async () => {
+      const response = await expo.fetchBundleAsync('/index.bundle?platform=web&dev=true');
+      expect(response.ok).toBeTruthy();
+      const content = await response.text();
+      expect(content.length).toBeGreaterThan(100);
+    });
   });
 });

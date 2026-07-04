@@ -1,4 +1,5 @@
-import { PlatformOSType, Platform as ReactNativePlatform } from 'react-native';
+import type { PlatformOSType } from 'react-native';
+import { Platform as ReactNativePlatform } from 'react-native';
 
 import {
   isDOMAvailable,
@@ -6,6 +7,8 @@ import {
   canUseViewport,
   isAsyncDebugging,
 } from './environment/browser';
+
+declare const window: typeof globalThis | undefined;
 
 export type PlatformSelectOSType = PlatformOSType | 'native' | 'electron' | 'default';
 
@@ -25,7 +28,7 @@ const nativeSelect =
       function select<T>(specifics: { [platform in PlatformSelectOSType]?: T }): T | undefined {
         if (!process.env.EXPO_OS) return undefined;
         if (specifics.hasOwnProperty(process.env.EXPO_OS)) {
-          return specifics[process.env.EXPO_OS]!;
+          return specifics[process.env.EXPO_OS as PlatformSelectOSType]!;
         } else if (process.env.EXPO_OS !== 'web' && specifics.hasOwnProperty('native')) {
           return specifics.native!;
         } else if (specifics.hasOwnProperty('default')) {

@@ -3,21 +3,18 @@ import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
 import prompts from 'prompts';
-import { Readable, Stream } from 'stream';
-import tar from 'tar';
-import { promisify } from 'util';
 
 import {
   getTemplateFilesToRenameAsync,
   renameTemplateAppNameAsync,
   sanitizeTemplateAsync,
 } from './Template';
-import { createEntryResolver } from './createFileTransform';
+import { consumeMonorepoConfigAsync } from './createExpoConfig';
 import { env } from './utils/env';
 import { fetch } from './utils/fetch';
+import { extractNpmTarballAsync } from './utils/npm';
 
 const debug = require('debug')('expo:init:template') as typeof console.log;
-const pipeline = promisify(Stream.pipeline);
 
 /**
  * The partial GitHub content type, used to filter out examples.
@@ -29,6 +26,23 @@ export type GithubContent = {
   type: 'file' | 'dir';
 };
 
+export type ExamplesMetadata = {
+  aliases: {
+    [key: string]:
+      | string
+      | {
+          destination: string;
+          message?: string;
+        };
+  };
+  deprecated: {
+    [key: string]: {
+      outdatedExampleHref: string;
+      message?: string;
+    };
+  };
+};
+
 /** List all existing examples directory from https://github.com/expo/examples. */
 async function listExamplesAsync() {
   const response = await fetch('https://api.github.com/repos/expo/examples/contents');
@@ -38,6 +52,17 @@ async function listExamplesAsync() {
 
   const data = (await response.json()) as GithubContent[];
   return data.filter((item) => item.type === 'dir' && !item.name.startsWith('.'));
+}
+
+/** Fetch the metadata for the examples from https://github.com/expo/examples. This includes aliases and deprecated examples. */
+export async function fetchMetadataAsync() {
+  const response = await fetch(`https://raw.githubusercontent.com/expo/examples/master/meta.json`);
+
+  if (!response.ok) {
+    throw new Error(`Unexpected GitHub API response: ${response.status} - ${response.statusText}`);
+  }
+
+  return (await response.json()) as ExamplesMetadata;
 }
 
 /** Determine if an example exists, using only its name */
@@ -79,7 +104,7 @@ export async function promptExamplesAsync() {
 
   if (!answer) {
     console.log();
-    console.log(chalk`Please specify the example, example: {cyan --example with-router}`);
+    console.log(chalk`Specify the example name, for example: {cyan --example with-router}`);
     console.log();
     process.exit(1);
   }
@@ -87,8 +112,15 @@ export async function promptExamplesAsync() {
   return answer;
 }
 
-/** Download and move the selected example from https://github.com/expo/examples. */
-export async function downloadAndExtractExampleAsync(root: string, name: string) {
+/**
+ * Download and move the selected example from https://github.com/expo/examples.
+ *
+ * If the example ships a `.create-expo.json`, its `renamePatterns`
+ * field overrides the default rename config used by the HelloWorld
+ * find-and-replace pass. The config file is read once and deleted from disk
+ * immediately so it can never leak into the user's project.
+ */
+export async function downloadAndExtractExampleAsync(root: string, name: string): Promise<void> {
   const projectName = path.basename(root);
   const response = await fetch('https://codeload.github.com/expo/examples/tar.gz/master');
   if (!response.ok) {
@@ -103,20 +135,19 @@ export async function downloadAndExtractExampleAsync(root: string, name: string)
     throw new Error('Failed to fetch the examples code from https://github.com/expo/examples');
   }
 
-  await pipeline(
-    // @ts-expect-error see https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/65542
-    Readable.fromWeb(response.body),
-    tar.extract(
-      {
-        cwd: root,
-        onentry: createEntryResolver(projectName),
-        strip: 2,
-      },
-      [`examples-master/${name}`]
-    )
-  );
+  const prefix = `examples-master/${name}/`;
+  await extractNpmTarballAsync(response.body, root, {
+    expName: projectName,
+    strip: 2,
+    filter: (entryName) => entryName.startsWith(prefix),
+  });
 
-  const files = await getTemplateFilesToRenameAsync({ cwd: root });
+  const monorepoConfig = await consumeMonorepoConfigAsync(root);
+
+  const files = await getTemplateFilesToRenameAsync({
+    cwd: root,
+    renameConfig: monorepoConfig?.renamePatterns,
+  });
   await renameTemplateAppNameAsync({
     cwd: root,
     files,

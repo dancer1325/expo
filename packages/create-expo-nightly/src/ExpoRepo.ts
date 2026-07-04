@@ -1,12 +1,9 @@
-import fs from 'fs-extra';
-import { createRequire } from 'node:module';
+import fs from 'node:fs';
 import path from 'node:path';
 
+import { mergeJsonFilesAsync, readJsonFileAsync } from './JsonFile.js';
 import { REACT_NATIVE_TRANSITIVE_DEPENDENCIES } from './Packages.js';
 import { runAsync } from './Processes.js';
-
-const require = createRequire(import.meta.url);
-const { default: JsonFile } = require('@expo/json-file') as typeof import('@expo/json-file');
 
 /**
  * Clone the expo/expo repository and install dependencies.
@@ -17,7 +14,7 @@ export async function setupExpoRepoAsync(
   nightlyVersion: string
 ): Promise<string> {
   let expoRepoPath: string;
-  const useExistingRepo = useExpoRepoPath && (await fs.pathExists(useExpoRepoPath));
+  const useExistingRepo = useExpoRepoPath && fs.existsSync(useExpoRepoPath);
   if (!useExistingRepo) {
     expoRepoPath = path.join(projectRoot, 'expo');
     console.log(`Cloning expo repository to ${expoRepoPath}`);
@@ -34,10 +31,25 @@ export async function setupExpoRepoAsync(
     expoRepoPath = useExpoRepoPath;
   }
 
-  console.log(`Running \`yarn install\` in ${expoRepoPath}`);
+  console.log(`Running \`pnpm install\` in ${expoRepoPath}`);
   console.time('Installed dependencies in expo repository');
   await setupDependenciesAsync(expoRepoPath, nightlyVersion);
-  await runAsync('yarn', ['install'], { cwd: expoRepoPath });
+
+  // log-box on-demand bundle doesn't work well in out-of-tree setups
+  await fs.promises.rm(
+    path.join(expoRepoPath, 'packages', '@expo', 'log-box', '.bundle-on-demand'),
+    {
+      force: true,
+    }
+  );
+
+  try {
+    await runAsync('pnpm', ['install'], { cwd: expoRepoPath });
+  } catch (e) {
+    if (e instanceof Error) {
+      console.warn(`Failed to install dependencies in ${expoRepoPath}`, e.toString());
+    }
+  }
   console.timeEnd('Installed dependencies in expo repository');
 
   return expoRepoPath;
@@ -50,7 +62,7 @@ export async function packExpoBareTemplateTarballAsync(
   expoRepoPath: string,
   outputRoot: string
 ): Promise<string> {
-  await fs.ensureDir(outputRoot);
+  await fs.promises.mkdir(outputRoot, { recursive: true });
   const { stdout } = await runAsync('npm', ['pack', '--json', '--pack-destination', outputRoot], {
     cwd: path.join(expoRepoPath, 'templates', 'expo-template-bare-minimum'),
   });
@@ -61,11 +73,11 @@ export async function packExpoBareTemplateTarballAsync(
 
 async function setupDependenciesAsync(expoRepoPath: string, nightlyVersion: string) {
   const packageJsonPath = path.join(expoRepoPath, 'package.json');
-  const packageJson = await JsonFile.readAsync(packageJsonPath);
+  const packageJson = await readJsonFileAsync(packageJsonPath);
   const resolutions: Record<string, string> =
     (packageJson.resolutions as Record<string, string>) ?? {};
   for (const name of REACT_NATIVE_TRANSITIVE_DEPENDENCIES) {
     resolutions[name] = `${nightlyVersion}`;
   }
-  await JsonFile.mergeAsync(packageJsonPath, { resolutions });
+  await mergeJsonFilesAsync(packageJsonPath, { resolutions });
 }

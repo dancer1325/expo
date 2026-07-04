@@ -1,20 +1,17 @@
-#import "EXBuildConstants.h"
 #import "EXEnvironment.h"
-#import "EXErrorRecoveryManager.h"
 #import "EXKernel.h"
 #import "EXAbstractLoader.h"
 #import "EXKernelLinkingManager.h"
 #import "EXKernelServiceRegistry.h"
-#import "EXKernelUtil.h"
 #import "EXLog.h"
 #import "ExpoKit.h"
 #import "EXReactAppManager.h"
 #import "EXReactAppManager+Private.h"
 #import "EXVersionManagerObjC.h"
-#import "EXVersions.h"
 #import "EXAppViewController.h"
 #import <ExpoModulesCore/EXModuleRegistryProvider.h>
 #import <EXConstants/EXConstantsService.h>
+#import <ReactCommon/RCTHost.h>
 #import <ReactCommon/RCTTurboModuleManager.h>
 
 // When `use_frameworks!` is used, the generated Swift header is inside modules.
@@ -26,7 +23,14 @@
 #endif
 
 #import <React/RCTBridge.h>
+#import <React/RCTBridge+Private.h>
+#import <React/RCTDevSettings.h>
+#import <React/RCTPackagerConnection.h>
 #import <React/RCTRootView.h>
+
+#if __has_include(<ExpoModulesCore-Swift.h>)
+#import <ExpoModulesCore-Swift.h>
+#endif
 
 #import "Expo_Go-Swift.h"
 
@@ -73,7 +77,11 @@ NSString *const RCTInstanceDidLoadBundle = @"RCTInstanceDidLoadBundle";
 }
 
 - (id)reactHost {
-  return _reactAppInstance.rootViewFactory.reactHost;
+  return _expoAppInstance.reactNativeFactory.rootViewFactory.reactHost;
+}
+
+- (RCTModuleRegistry *)reactModuleRegistry {
+  return ((RCTHost *)self.reactHost).moduleRegistry;
 }
 
 - (void)setAppRecord:(EXKernelAppRecord *)appRecord
@@ -126,7 +134,7 @@ NSString *const RCTInstanceDidLoadBundle = @"RCTInstanceDidLoadBundle";
     [self _startObservingNotificationsForHost];
     
     if (!_isHeadless) {
-      _reactRootView = [self.reactAppInstance.rootViewFactory viewWithModuleName:[self applicationKeyForRootView] initialProperties:[self initialPropertiesForRootView]];
+      _reactRootView = [self.expoAppInstance.reactNativeFactory.rootViewFactory viewWithModuleName:[self applicationKeyForRootView] initialProperties:[self initialPropertiesForRootView]];
     }
 
     [self setupWebSocketControls];
@@ -141,9 +149,8 @@ NSString *const RCTInstanceDidLoadBundle = @"RCTInstanceDidLoadBundle";
     EXReactAppManager *strongSelf = weakSelf;
     [strongSelf loadSourceForHost:sourceURL onComplete:loadCallback];
   }];
-  
-  appInstance.rootViewFactory = [appInstance createRCTRootViewFactory];
-  _reactAppInstance = appInstance;
+
+  _expoAppInstance = appInstance;
 }
 
 - (NSDictionary *)extraParams
@@ -169,7 +176,6 @@ NSString *const RCTInstanceDidLoadBundle = @"RCTInstanceDidLoadBundle";
     @"testEnvironment": @([EXEnvironment sharedEnvironment].testEnvironment),
     @"services": [EXKernel sharedInstance].serviceRegistry.allServices,
     @"singletonModules": [EXModuleRegistryProvider singletonModules],
-    @"moduleRegistryDelegateClass": RCTNullIfNil([self moduleRegistryDelegateClass]),
     @"fileSystemDirectories": @{
         @"documentDirectory": [self scopedDocumentDirectory],
         @"cachesDirectory": [self scopedCachesDirectory]
@@ -197,8 +203,10 @@ NSString *const RCTInstanceDidLoadBundle = @"RCTInstanceDidLoadBundle";
     [_reactRootView removeFromSuperview];
     _reactRootView = nil;
   }
-  if (_reactAppInstance) {
-    _reactAppInstance = nil;
+  if (_expoAppInstance) {
+    [[[self _devSettings] packagerConnection] stop];
+
+    _expoAppInstance = nil;
     if (_delegate) {
       [_delegate reactAppManagerDidInvalidate:self];
       if (clearDelegate) {
@@ -327,6 +335,9 @@ NSString *const RCTInstanceDidLoadBundle = @"RCTInstanceDidLoadBundle";
     _hasHostEverLoaded = YES;
     [_versionManager hostFinishedLoading:self.reactHost];
 
+    // Notify the dev menu that the manifest has changed (all projects, dev and published)
+    [[DevMenuManager shared] notifyManifestChanged];
+
     // TODO: temporary solution for hiding LoadingProgressWindow
     if (_appRecord.viewController) {
       EX_WEAKIFY(self);
@@ -399,7 +410,7 @@ NSString *const RCTInstanceDidLoadBundle = @"RCTInstanceDidLoadBundle";
 {
   EXManifestsManifest *manifest = _appRecord.appLoader.manifest;
   if (manifest) {
-    return manifest.isUsingDeveloperTool;
+    return manifest.isUsingDeveloperTool || manifest.isDevelopmentMode;
   }
   return false;
 }
@@ -411,31 +422,15 @@ NSString *const RCTInstanceDidLoadBundle = @"RCTInstanceDidLoadBundle";
 
 - (void)showDevMenu
 {
-  if ([self enablesDeveloperTools]) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [self.versionManager showDevMenuForHost:self.reactHost];
-    });
-  }
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[DevMenuManager shared] toggleMenu];
+  });
 }
 
 - (void)reloadApp
 {
   if ([self enablesDeveloperTools]) {
     RCTTriggerReloadCommandListeners(@"Dev menu - reload");
-  }
-}
-
-- (void)disableRemoteDebugging
-{
-  if ([self enablesDeveloperTools]) {
-    [self.versionManager disableRemoteDebuggingForHost:self.reactHost];
-  }
-}
-
-- (void)toggleRemoteDebugging
-{
-  if ([self enablesDeveloperTools]) {
-    [self.versionManager toggleRemoteDebuggingForHost:self.reactHost];
   }
 }
 
@@ -453,74 +448,63 @@ NSString *const RCTInstanceDidLoadBundle = @"RCTInstanceDidLoadBundle";
   }
 }
 
-- (void)reconnectReactDevTools
-{
-  if ([self enablesDeveloperTools]) {
-    // Emit the `RCTDevMenuShown` for the app to reconnect react-devtools
-    // https://github.com/facebook/react-native/blob/22ba1e45c52edcc345552339c238c1f5ef6dfc65/Libraries/Core/setUpReactDevTools.js#L80
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [[[self.reactHost moduleRegistry] moduleForName:"EventDispatcher"] sendDeviceEventWithName:@"RCTDevMenuShown" body:nil];
-#pragma clang diagnostic pop
-  }
-}
-
 - (void)toggleDevMenu
 {
-  [[EXKernel sharedInstance] switchTasks];
+  [self showDevMenu];
 }
 
 - (void)setupWebSocketControls
 {
-  if ([self enablesDeveloperTools]) {
-    if ([_versionManager respondsToSelector:@selector(addWebSocketNotificationHandler:queue:forMethod:)]) {
-      __weak __typeof(self) weakSelf = self;
+  if (![self enablesDeveloperTools]) {
+    return;
+  }
 
-      // Attach listeners to the bundler's dev server web socket connection.
-      // This enables tools to automatically reload the client remotely (i.e. in expo-cli).
+  RCTDevSettings *devSettings = [self _devSettings];
+  if (!devSettings) {
+    return;
+  }
 
-      // Enable a lot of tools under the same command namespace
-      [_versionManager addWebSocketNotificationHandler:^(id params) {
-        if (params != [NSNull null] && (NSDictionary *)params) {
-          NSDictionary *_params = (NSDictionary *)params;
-          if (_params[@"name"] != nil && (NSString *)_params[@"name"]) {
-            NSString *name = _params[@"name"];
-            if ([name isEqualToString:@"reload"]) {
-              [[EXKernel sharedInstance] reloadVisibleApp];
-            } else if ([name isEqualToString:@"toggleDevMenu"]) {
-              [weakSelf toggleDevMenu];
-            } else if ([name isEqualToString:@"toggleRemoteDebugging"]) {
-              [weakSelf toggleRemoteDebugging];
-            } else if ([name isEqualToString:@"toggleElementInspector"]) {
-              [weakSelf toggleElementInspector];
-            } else if ([name isEqualToString:@"togglePerformanceMonitor"]) {
-              [weakSelf togglePerformanceMonitor];
-            } else if ([name isEqualToString:@"reconnectReactDevTools"]) {
-              [weakSelf reconnectReactDevTools];
-            }
-          }
+  __weak __typeof(self) weakSelf = self;
+
+  // Attach listeners to the bundler's dev server web socket connection.
+  // This enables tools to automatically reload the client remotely (i.e. in expo-cli).
+
+  // Enable a lot of tools under the same command namespace
+  [devSettings addNotificationHandler:^(id params) {
+    if (params != [NSNull null] && (NSDictionary *)params) {
+      NSDictionary *_params = (NSDictionary *)params;
+      if (_params[@"name"] != nil && (NSString *)_params[@"name"]) {
+        NSString *name = _params[@"name"];
+        if ([name isEqualToString:@"reload"]) {
+          [[EXKernel sharedInstance] reloadVisibleApp];
+        } else if ([name isEqualToString:@"toggleDevMenu"]) {
+          [weakSelf toggleDevMenu];
+        } else if ([name isEqualToString:@"toggleElementInspector"]) {
+          [weakSelf toggleElementInspector];
+        } else if ([name isEqualToString:@"togglePerformanceMonitor"]) {
+          [weakSelf togglePerformanceMonitor];
         }
       }
-                                                 queue:dispatch_get_main_queue()
-                                             forMethod:@"sendDevCommand"];
-
-      // These (reload and devMenu) are here to match RN dev tooling.
-
-      // Reload the app on "reload"
-      [_versionManager addWebSocketNotificationHandler:^(id params) {
-        [[EXKernel sharedInstance] reloadVisibleApp];
-      }
-                                                 queue:dispatch_get_main_queue()
-                                             forMethod:@"reload"];
-
-      // Open the dev menu on "devMenu"
-      [_versionManager addWebSocketNotificationHandler:^(id params) {
-        [weakSelf toggleDevMenu];
-      }
-                                                 queue:dispatch_get_main_queue()
-                                             forMethod:@"devMenu"];
     }
   }
+                                queue:dispatch_get_main_queue()
+                            forMethod:@"sendDevCommand"];
+
+  // These (reload and devMenu) are here to match RN dev tooling.
+
+  // Reload the app on "reload"
+  [devSettings addNotificationHandler:^(id params) {
+    [[EXKernel sharedInstance] reloadVisibleApp];
+  }
+                                queue:dispatch_get_main_queue()
+                            forMethod:@"reload"];
+
+  // Open the dev menu on "devMenu"
+  [devSettings addNotificationHandler:^(id params) {
+    [weakSelf toggleDevMenu];
+  }
+                                queue:dispatch_get_main_queue()
+                            forMethod:@"devMenu"];
 }
 
 - (NSDictionary<NSString *, NSString *> *)devMenuItems
@@ -535,17 +519,28 @@ NSString *const RCTInstanceDidLoadBundle = @"RCTInstanceDidLoadBundle";
   });
 }
 
+- (RCTDevSettings *)_devSettings
+{
+  return (RCTDevSettings *)[self.reactModuleRegistry moduleForName:"DevSettings" lazilyLoadIfNecessary:YES];
+}
+
+- (BOOL)isHotLoadingEnabled
+{
+  return [[self _devSettings] isHotLoadingEnabled];
+}
+
+- (BOOL)isHotLoadingAvailable
+{
+  return [[self _devSettings] isHotLoadingAvailable];
+}
+
+- (BOOL)isPerfMonitorAvailable
+{
+  id perfMonitor = [self.reactModuleRegistry moduleForName:"PerfMonitor"];
+  return perfMonitor != nil && [self enablesDeveloperTools];
+}
+
 #pragma mark - RN configuration
-
-- (NSDictionary *)launchOptionsForHost
-{
-  return @{};
-}
-
-- (Class)moduleRegistryDelegateClass
-{
-  return nil;
-}
 
 - (NSString *)applicationKeyForRootView
 {

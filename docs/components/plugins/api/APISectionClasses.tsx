@@ -1,6 +1,5 @@
 import { mergeClasses } from '@expo/styleguide';
 import { CornerDownRightIcon } from '@expo/styleguide-icons/outline/CornerDownRightIcon';
-import ReactMarkdown from 'react-markdown';
 
 import { APIBoxHeader } from '~/components/plugins/api/components/APIBoxHeader';
 import { APIBoxSectionHeader } from '~/components/plugins/api/components/APIBoxSectionHeader';
@@ -12,11 +11,10 @@ import { renderMethod } from './APISectionMethods';
 import { renderProp } from './APISectionProps';
 import {
   getTagData,
-  mdComponents,
   resolveTypeName,
-  getCommentContent,
   DEFAULT_BASE_NESTING_LEVEL,
   extractDefaultPropValue,
+  getAllTagData,
 } from './APISectionUtils';
 import { APICommentTextBlock } from './components/APICommentTextBlock';
 import { STYLES_APIBOX, STYLES_APIBOX_NESTED, STYLES_SECONDARY, VERTICAL_SPACING } from './styles';
@@ -32,6 +30,7 @@ const CLASS_NAMES_MAP: Record<string, string> = {
   DeviceMotionSensor: 'DeviceMotion',
   GyroscopeSensor: 'Gyroscope',
   MagnetometerSensor: 'Magnetometer',
+  LightSensor: 'LightSensor',
 } as const;
 
 const CLASSES_TO_IGNORE_INHERITED_PROPS = [
@@ -41,19 +40,33 @@ const CLASSES_TO_IGNORE_INHERITED_PROPS = [
   'SharedRef',
 ] as const;
 
-const isProp = (child: PropData) =>
-  child.kind &&
-  [TypeDocKind.Property, TypeDocKind.Accessor].includes(child.kind) &&
-  !child.overwrites &&
-  !child.name.startsWith('_') &&
-  !child.implementationOf;
+const isProp = (child: PropData) => {
+  const isImplementationOfBlobInterface =
+    child.implementationOf?.type === 'reference' &&
+    child.implementationOf?.name?.startsWith('Blob.');
 
-const isMethod = (child: PropData, allowOverwrites: boolean = false) =>
-  child.kind &&
-  [TypeDocKind.Method, TypeDocKind.Function].includes(child.kind) &&
-  (allowOverwrites || !child.overwrites) &&
-  !child.name.startsWith('_') &&
-  !child?.implementationOf;
+  return (
+    child.kind &&
+    [TypeDocKind.Property, TypeDocKind.Accessor].includes(child.kind) &&
+    !child.overwrites &&
+    !child.name.startsWith('_') &&
+    (!child.implementationOf || isImplementationOfBlobInterface)
+  );
+};
+
+const isMethod = (child: PropData, allowOverwrites: boolean = false) => {
+  const isImplementationOfBlobInterface =
+    child.implementationOf?.type === 'reference' &&
+    child.implementationOf?.name?.startsWith('Blob.');
+
+  return (
+    child.kind &&
+    [TypeDocKind.Method, TypeDocKind.Function].includes(child.kind) &&
+    (allowOverwrites || !child.overwrites) &&
+    !child.name.startsWith('_') &&
+    (!child?.implementationOf || isImplementationOfBlobInterface)
+  );
+};
 
 // This is intended to filter out inherited properties from some
 // common classes that are documented inside the `expo` package docs.
@@ -64,10 +77,10 @@ const isInheritedFromCommonClass = (child: PropData) =>
   );
 
 const remapClass = (clx: ClassDefinitionData) => {
-  clx.isSensor = !!CLASS_NAMES_MAP[clx.name] || Object.values(CLASS_NAMES_MAP).includes(clx.name);
+  clx.allowOverwrites = true;
   clx.name = CLASS_NAMES_MAP[clx.name] ?? clx.name;
 
-  if (clx.isSensor && clx.extendedTypes) {
+  if (clx.allowOverwrites && clx.extendedTypes) {
     clx.extendedTypes = clx.extendedTypes.map(type => ({
       ...type,
       name: type.name === 'default' ? 'DeviceSensor' : type.name,
@@ -78,12 +91,20 @@ const remapClass = (clx: ClassDefinitionData) => {
 };
 
 const renderClass = (
-  { name, comment, type, extendedTypes, children, implementedTypes, isSensor }: ClassDefinitionData,
+  {
+    name,
+    comment,
+    type,
+    extendedTypes,
+    children,
+    implementedTypes,
+    allowOverwrites,
+  }: ClassDefinitionData,
   sdkVersion: string
-): JSX.Element => {
+) => {
   const properties = children?.filter(isProp);
   const methods = children
-    ?.filter(child => isMethod(child, isSensor) && !isInheritedFromCommonClass(child))
+    ?.filter(child => isMethod(child, allowOverwrites) && !isInheritedFromCommonClass(child))
     .sort((a: PropData, b: PropData) => a.name.localeCompare(b.name));
   const returnComment = getTagData('returns', comment);
 
@@ -96,7 +117,7 @@ const renderClass = (
       <APISectionDeprecationNote comment={comment} sticky />
       <APIBoxHeader name={name} comment={comment} />
       {(extendedTypes?.length || implementedTypes?.length) && (
-        <CALLOUT className={mergeClasses('mb-3 !font-normal', STYLES_SECONDARY, VERTICAL_SPACING)}>
+        <CALLOUT className={mergeClasses('mb-3 font-normal!', STYLES_SECONDARY, VERTICAL_SPACING)}>
           <span className="font-medium">Type: </span>
           {type ? <CODE>{resolveTypeName(type, sdkVersion)}</CODE> : <span>Class</span>}
           {extendedTypes?.length && (
@@ -126,14 +147,20 @@ const renderClass = (
         includePlatforms={false}
         afterContent={
           returnComment && (
-            <div className="flex flex-col items-start gap-2">
+            <div className="flex flex-col items-start">
               <div className="flex flex-row items-center gap-2">
-                <CornerDownRightIcon className="icon-sm relative -mt-0.5 inline-block text-icon-tertiary" />
+                <CornerDownRightIcon
+                  aria-hidden="true"
+                  className="relative -mt-0.5 inline-block icon-sm text-icon-tertiary"
+                />
                 <span className={STYLES_SECONDARY}>Returns</span>
               </div>
-              <ReactMarkdown components={mdComponents}>
-                {getCommentContent(returnComment.content)}
-              </ReactMarkdown>
+              <div className="mt-1.5 mb-1 flex flex-col pl-6">
+                <APICommentTextBlock
+                  comment={{ summary: returnComment.content }}
+                  includeSpacing={false}
+                />
+              </div>
             </div>
           )
         }
@@ -151,6 +178,7 @@ const renderClass = (
                 property,
                 sdkVersion,
                 extractDefaultPropValue(property) ?? property?.defaultValue,
+                getAllTagData('platform', comment),
                 {
                   exposeInSidebar: true,
                   baseNestingLevel: linksNestingLevel,
@@ -167,15 +195,14 @@ const renderClass = (
             exposeInSidebar={false}
             baseNestingLevel={DEFAULT_BASE_NESTING_LEVEL + 2}
           />
-          <div className={mergeClasses(VERTICAL_SPACING, 'mt-4')}>
-            {methods.map(method =>
-              renderMethod(method, {
-                exposeInSidebar: true,
-                baseNestingLevel: linksNestingLevel,
-                sdkVersion,
-              })
-            )}
-          </div>
+          {methods.map(method =>
+            renderMethod(method, {
+              exposeInSidebar: true,
+              nested: true,
+              baseNestingLevel: linksNestingLevel,
+              sdkVersion,
+            })
+          )}
         </>
       )}
     </div>

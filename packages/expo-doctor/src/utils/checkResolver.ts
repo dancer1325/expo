@@ -1,28 +1,35 @@
-import { ExpoConfig, PackageJSONConfig } from '@expo/config';
+import type { ExpoConfig, PackageJSONConfig } from '@expo/config';
 import semver from 'semver';
 
+import { AppConfigFieldsNotSyncedToNativeProjectsCheck } from '../checks/AppConfigFieldsNotSyncedToNativeProjectsCheck';
+import { AutolinkingDependencyDuplicatesCheck } from '../checks/AutolinkingDependencyDuplicatesCheck';
+import { DependencyVersionOverrideCheck } from '../checks/DependencyVersionOverrideCheck';
+import { DirectPackageInstallCheck } from '../checks/DirectPackageInstallCheck';
+import { EnvLocalFilesCheck } from '../checks/EnvLocalFilesCheck';
+import { ExpoConfigCommonIssueCheck } from '../checks/ExpoConfigCommonIssueCheck';
+import { ExpoConfigSchemaCheck } from '../checks/ExpoConfigSchemaCheck';
+import { ExpoRouterReactNavigationCheck } from '../checks/ExpoRouterReactNavigationCheck';
+import { GlobalPackageInstalledLocallyCheck } from '../checks/GlobalPackageInstalledLocallyCheck';
+import { IllegalPackageCheck } from '../checks/IllegalPackageCheck';
+import { InstalledDependencyVersionCheck } from '../checks/InstalledDependencyVersionCheck';
+import { LockfileCheck } from '../checks/LockfileCheck';
+import { MetroConfigCheck } from '../checks/MetroConfigCheck';
+import { NativeToolingVersionCheck } from '../checks/NativeToolingVersionCheck';
+import { PackageJsonCheck } from '../checks/PackageJsonCheck';
+import { PackageManagerVersionCheck } from '../checks/PackageManagerVersionCheck';
+import { PeerDependencyChecks } from '../checks/PeerDependencyChecks';
+import { ProjectSetupCheck } from '../checks/ProjectSetupCheck';
+import { ReactNativeDirectoryCheck } from '../checks/ReactNativeDirectoryCheck';
+import { StoreCompatibilityCheck } from '../checks/StoreCompatibilityCheck';
+import { SupportPackageVersionCheck } from '../checks/SupportPackageVersionCheck';
+import { VectorIconsCheck } from '../checks/VectorIconsCheck';
+import type { DoctorCheck } from '../checks/checks.types';
 import {
   getAppConfigFieldsNotSyncedCheckStatus,
   getReactNativeDirectoryCheckEnabled,
 } from './doctorConfig';
 import { env } from './env';
 import { Log } from './log';
-import { AppConfigFieldsNotSyncedToNativeProjectsCheck } from '../checks/AppConfigFieldsNotSyncedToNativeProjectsCheck';
-import { DirectPackageInstallCheck } from '../checks/DirectPackageInstallCheck';
-import { ExpoConfigCommonIssueCheck } from '../checks/ExpoConfigCommonIssueCheck';
-import { ExpoConfigSchemaCheck } from '../checks/ExpoConfigSchemaCheck';
-import { GlobalPackageInstalledLocallyCheck } from '../checks/GlobalPackageInstalledLocallyCheck';
-import { IllegalPackageCheck } from '../checks/IllegalPackageCheck';
-import { InstalledDependencyVersionCheck } from '../checks/InstalledDependencyVersionCheck';
-import { MetroConfigCheck } from '../checks/MetroConfigCheck';
-import { NativeToolingVersionCheck } from '../checks/NativeToolingVersionCheck';
-import { PackageJsonCheck } from '../checks/PackageJsonCheck';
-import { PackageManagerVersionCheck } from '../checks/PackageManagerVersionCheck';
-import { ProjectSetupCheck } from '../checks/ProjectSetupCheck';
-import { ReactNativeDirectoryCheck } from '../checks/ReactNativeDirectoryCheck';
-import { StoreCompatibilityCheck } from '../checks/StoreCompatibilityCheck';
-import { SupportPackageVersionCheck } from '../checks/SupportPackageVersionCheck';
-import { DoctorCheck } from '../checks/checks.types';
 
 /**
  * Resolves the checks that should be run for a given project.
@@ -35,7 +42,9 @@ export function resolveChecksInScope(exp: ExpoConfig, pkg: PackageJSONConfig): D
   const resolvedChecks: DoctorCheck[] = [
     // Project Structure Checks
     new ProjectSetupCheck(),
+    new EnvLocalFilesCheck(),
     new PackageJsonCheck(),
+    new LockfileCheck(),
     new ExpoConfigSchemaCheck(),
     new ExpoConfigCommonIssueCheck(),
     new MetroConfigCheck(),
@@ -45,10 +54,15 @@ export function resolveChecksInScope(exp: ExpoConfig, pkg: PackageJSONConfig): D
     new IllegalPackageCheck(),
     new GlobalPackageInstalledLocallyCheck(),
     new DirectPackageInstallCheck(),
+    new PeerDependencyChecks(),
+    new ExpoRouterReactNavigationCheck(),
+    new AutolinkingDependencyDuplicatesCheck(),
+    new VectorIconsCheck(),
 
     // Version Checks
     new SupportPackageVersionCheck(),
     new NativeToolingVersionCheck(),
+    new DependencyVersionOverrideCheck(),
 
     // Compatibility Checks
     new StoreCompatibilityCheck(),
@@ -58,9 +72,6 @@ export function resolveChecksInScope(exp: ExpoConfig, pkg: PackageJSONConfig): D
   const isAppConfigFieldsNotSyncedCheckEnabled = getAppConfigFieldsNotSyncedCheckStatus(pkg);
 
   if (getReactNativeDirectoryCheckEnabled(exp, pkg)) {
-    Log.log(
-      'Enabled experimental React Native Directory checks. Unset the EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK environment variable to disable this check.'
-    );
     resolvedChecks.push(new ReactNativeDirectoryCheck());
   }
 

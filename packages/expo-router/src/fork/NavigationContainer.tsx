@@ -1,26 +1,29 @@
-import {
-  BaseNavigationContainer,
-  DefaultTheme,
+import React from 'react';
+import { I18nManager } from 'react-native';
+
+import { useImperativeApiEmitter } from '../imperative-api';
+import type {
   DocumentTitleOptions,
-  LinkingContext,
   LinkingOptions,
-  LocaleDirContext,
   LocaleDirection,
   NavigationContainerProps,
   NavigationContainerRef,
   NavigationState,
   ParamListBase,
+} from '../react-navigation/native';
+import {
+  BaseNavigationContainer,
+  DefaultTheme,
+  LinkingContext,
+  LocaleDirContext,
   ThemeProvider,
   UNSTABLE_UnhandledLinkingContext as UnhandledLinkingContext,
   getActionFromState,
   getPathFromState,
   getStateFromPath,
   validatePathConfig,
-} from '@react-navigation/native';
-import React from 'react';
-import { I18nManager } from 'react-native';
-import useLatestCallback from 'use-latest-callback';
-
+} from '../react-navigation/native';
+import useLatestCallback from '../utils/useLatestCallback';
 import { useBackButton } from './useBackButton';
 import { useDocumentTitle } from './useDocumentTitle';
 import { useLinking } from './useLinking';
@@ -78,10 +81,11 @@ function NavigationContainerInner(
     validatePathConfig(linking.config);
   }
 
-  const refContainer = React.useRef<NavigationContainerRef<ParamListBase>>(null);
+  const refContainer = React.useRef<NavigationContainerRef<ParamListBase> | null>(null);
 
   useBackButton(refContainer);
   useDocumentTitle(refContainer, documentTitle);
+  useImperativeApiEmitter(refContainer);
 
   const [lastUnhandledLink, setLastUnhandledLink] = React.useState<string | undefined>();
 
@@ -148,7 +152,7 @@ function NavigationContainerInner(
 
   const [isResolved, initialState] = useThenable(getInitialState);
 
-  React.useImperativeHandle(ref, () => refContainer.current);
+  React.useImperativeHandle(ref, () => refContainer.current!);
 
   const isLinkingReady = rest.initialState != null || !isLinkingEnabled || isResolved;
 

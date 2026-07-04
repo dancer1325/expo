@@ -1,6 +1,6 @@
-import { ExpoMiddleware } from './ExpoMiddleware';
-import { ServerNext, ServerRequest, ServerResponse } from './server.types';
 import { getFaviconFromExpoConfigAsync } from '../../../export/favicon';
+import { ExpoMiddleware } from './ExpoMiddleware';
+import type { ServerNext, ServerRequest, ServerResponse } from './server.types';
 
 const debug = require('debug')('expo:start:server:middleware:favicon') as typeof console.log;
 
@@ -34,7 +34,11 @@ export class FaviconMiddleware extends ExpoMiddleware {
       faviconImageData = data.source;
       debug('✅ Generated favicon successfully.');
     } catch (error: any) {
+      // Pass through on ENOENT errors
       debug('Failed to generate favicon from Expo config:', error);
+      if (error.code === 'ENOENT') {
+        return next();
+      }
       return next(error);
     }
     // Respond with the generated favicon file

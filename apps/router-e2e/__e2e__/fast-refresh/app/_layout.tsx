@@ -1,4 +1,4 @@
-import { Slot, ErrorBoundary } from 'expo-router';
+import { ErrorBoundary, Tabs } from 'expo-router';
 import Head from 'expo-router/head';
 import { View, Text } from 'react-native';
 
@@ -21,9 +21,16 @@ export default function Layout() {
       <Head>
         <meta name="expo-nested-layout" content={layoutValue} />
       </Head>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View
+        style={{
+          width: '100%',
+          height: '100%',
+          maxWidth: 320,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}>
         <Text testID="layout-value">{layoutValue}</Text>
-        <Slot />
+        <Tabs />
       </View>
     </>
   );

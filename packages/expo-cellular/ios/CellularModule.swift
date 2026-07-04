@@ -2,35 +2,12 @@ import CoreTelephony
 import ExpoModulesCore
 
 public class CellularModule: Module {
+
   public func definition() -> ModuleDefinition {
     Name("ExpoCellular")
 
-    Constants {
-      Self.getCurrentCellularInfo()
-    }
-
     AsyncFunction("getCellularGenerationAsync") { () -> Int in
       Self.currentCellularGeneration().rawValue
-    }
-
-    AsyncFunction("allowsVoipAsync") { () -> Bool? in
-      Self.currentCarrier()?.allowsVOIP
-    }
-
-    AsyncFunction("getIsoCountryCodeAsync") { () -> String? in
-      Self.currentCarrier()?.isoCountryCode
-    }
-
-    AsyncFunction("getCarrierNameAsync") { () -> String? in
-      Self.currentCarrier()?.carrierName
-    }
-
-    AsyncFunction("getMobileCountryCodeAsync") { () -> String? in
-      Self.currentCarrier()?.mobileCountryCode
-    }
-
-    AsyncFunction("getMobileNetworkCodeAsync") { () -> String? in
-      Self.currentCarrier()?.mobileNetworkCode
     }
   }
 
@@ -76,34 +53,9 @@ public class CellularModule: Module {
     }
   }
 
-  static func getCurrentCellularInfo() -> [String: Any?] {
-    let carrier = Self.currentCarrier()
-    let generation = Self.currentCellularGeneration()
-
-    return [
-      "allowsVoip": carrier?.allowsVOIP,
-      "carrier": carrier?.carrierName,
-      "isoCountryCode": carrier?.isoCountryCode,
-      "mobileCountryCode": carrier?.mobileCountryCode,
-      "mobileNetworkCode": carrier?.mobileNetworkCode,
-      "generation": generation.rawValue
-    ]
-  }
-
   static func currentRadioAccessTechnology() -> String? {
     let netinfo = CTTelephonyNetworkInfo()
     return netinfo.serviceCurrentRadioAccessTechnology?.values.first
   }
 
-  static func currentCarrier() -> CTCarrier? {
-    let netinfo = CTTelephonyNetworkInfo()
-
-    if let providers = netinfo.serviceSubscriberCellularProviders {
-      for carrier in providers.values where carrier.carrierName != nil {
-        return carrier
-      }
-      return providers.values.first
-    }
-    return nil
-  }
 }

@@ -1,8 +1,7 @@
 package expo.modules.kotlin.jni
 
 import com.google.common.truth.Truth
-import expo.modules.kotlin.RuntimeContext
-import expo.modules.kotlin.apifeatures.EitherType
+import expo.modules.kotlin.runtime.Runtime
 import expo.modules.kotlin.exception.CodedException
 import expo.modules.kotlin.exception.JavaScriptEvaluateException
 import expo.modules.kotlin.jni.extensions.addSingleQuotes
@@ -16,6 +15,7 @@ import expo.modules.kotlin.typedarray.TypedArray
 import expo.modules.kotlin.types.Either
 import expo.modules.kotlin.types.Enumerable
 import org.junit.Test
+import expo.modules.kotlin.types.OptimizedRecord
 
 class JSIFunctionsTest {
   enum class SimpleEnumClass : Enumerable {
@@ -203,6 +203,7 @@ class JSIFunctionsTest {
 
   @Test
   fun records_should_be_obtainable_as_function_argument() {
+    @OptimizedRecord
     class MyRecord : Record {
       @Field
       var x: Int = 0
@@ -386,6 +387,96 @@ class JSIFunctionsTest {
   }
 
   @Test
+  fun array_int_should_be_convertible() = withSingleModule({
+    Function("arrayInt") { a: Array<Int> -> a }
+  }) {
+    val array = call("arrayInt", "[1, 2, 3]").getArray()
+    Truth.assertThat(array.size).isEqualTo(3)
+
+    val e1 = array[0].getInt()
+    val e2 = array[1].getInt()
+    val e3 = array[2].getInt()
+
+    Truth.assertThat(e1).isEqualTo(1)
+    Truth.assertThat(e2).isEqualTo(2)
+    Truth.assertThat(e3).isEqualTo(3)
+  }
+
+  @Test
+  fun nullable_int_array_should_be_convertible() = withSingleModule({
+    Function("nullableIntArray") { a: Array<Int?> -> a }
+  }) {
+    val array = call("nullableIntArray", "[1, null, 3, undefined]").getArray()
+    Truth.assertThat(array.size).isEqualTo(4)
+
+    val e1 = array[0].getInt()
+    val e2 = array[1].isNull()
+    val e3 = array[2].getInt()
+    val e4 = array[3].isNull()
+
+    Truth.assertThat(e1).isEqualTo(1)
+    Truth.assertThat(e2).isTrue()
+    Truth.assertThat(e3).isEqualTo(3)
+    Truth.assertThat(e4).isTrue()
+  }
+
+  @Test
+  fun array_array_int_array_should_be_convertible() = withSingleModule({
+    Function("arrayArrayIntArray") { a: Array<Array<IntArray>> -> a }
+  }) {
+    val array = call("arrayArrayIntArray", "[[[1, 2, 3]]]").getArray()
+    Truth.assertThat(array.size).isEqualTo(1)
+    val innerArray = array[0].getArray()
+    Truth.assertThat(innerArray.size).isEqualTo(1)
+    val intArray = innerArray[0].getArray()
+    Truth.assertThat(intArray.size).isEqualTo(3)
+
+    val e1 = intArray[0].getInt()
+    val e2 = intArray[1].getInt()
+    val e3 = intArray[2].getInt()
+
+    Truth.assertThat(e1).isEqualTo(1)
+    Truth.assertThat(e2).isEqualTo(2)
+    Truth.assertThat(e3).isEqualTo(3)
+  }
+
+  @Test
+  fun array_array_array_int_should_be_convertible() = withSingleModule({
+    Function("arrayArrayArrayInt") { a: Array<Array<Array<Int>>> -> a }
+  }) {
+    val array = call("arrayArrayArrayInt", "[[[1, 2, 3]]]").getArray()
+    Truth.assertThat(array.size).isEqualTo(1)
+    val innerArray = array[0].getArray()
+    Truth.assertThat(innerArray.size).isEqualTo(1)
+    val intArray = innerArray[0].getArray()
+    Truth.assertThat(intArray.size).isEqualTo(3)
+
+    val e1 = intArray[0].getInt()
+    val e2 = intArray[1].getInt()
+    val e3 = intArray[2].getInt()
+
+    Truth.assertThat(e1).isEqualTo(1)
+    Truth.assertThat(e2).isEqualTo(2)
+    Truth.assertThat(e3).isEqualTo(3)
+  }
+
+  @Test
+  fun nullable_string_array_array_should_be_convertible() = withSingleModule({
+    Function("nullableStringArrayArray") { a: Array<Array<String?>> -> a }
+  }) {
+    val array = call("nullableStringArrayArray", "[[null, 'a'], ['b', undefined]]").getArray()
+    Truth.assertThat(array.size).isEqualTo(2)
+
+    val e1 = array[0].getArray()
+    val e2 = array[1].getArray()
+
+    Truth.assertThat(e1[0].isNull()).isEqualTo(true)
+    Truth.assertThat(e1[1].getString()).isEqualTo("a")
+    Truth.assertThat(e2[0].getString()).isEqualTo("b")
+    Truth.assertThat(e2[1].isNull()).isEqualTo(true)
+  }
+
+  @Test
   fun int_array_array_should_be_convertible() = withSingleModule({
     Function("array") { a: Array<IntArray> -> a }
   }) {
@@ -433,7 +524,6 @@ class JSIFunctionsTest {
     }
   }
 
-  @OptIn(EitherType::class)
   @Test
   fun either_should_be_convertible() = withSingleModule({
     Function("eitherFirst") { either: Either<Int, String> ->
@@ -483,6 +573,7 @@ class JSIFunctionsTest {
 
   @Test
   fun complex_types_should_be_convertible() {
+    @OptimizedRecord
     data class InlineRecord(@Field var name: String = "") : Record
 
     withSingleModule({
@@ -503,12 +594,12 @@ class JSIFunctionsTest {
     }
   }
 
-  private class MySharedRef(value: Int, runtimeContext: RuntimeContext) : SharedRef<Int>(value, runtimeContext)
+  private class MySharedRef(value: Int, runtime: Runtime) : SharedRef<Int>(value, runtime)
 
   @Test
   fun shared_ref_should_be_convertible() = withSingleModule({
     Function("createRef") {
-      MySharedRef(123, module!!.runtimeContext)
+      MySharedRef(123, module!!.runtime)
     }
     Function("getRef") { ref: MySharedRef ->
       ref.ref

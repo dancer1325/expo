@@ -1,8 +1,15 @@
+import type { BuildCacheProvider } from '@expo/config';
+import { getConfig } from '@expo/config';
+
 import { resolveDeviceAsync } from './resolveDevice';
-import { GradleProps, resolveGradlePropsAsync } from './resolveGradlePropsAsync';
-import { LaunchProps, resolveLaunchPropsAsync } from './resolveLaunchProps';
-import { AndroidDeviceManager } from '../../start/platforms/android/AndroidDeviceManager';
-import { BundlerProps, resolveBundlerPropsAsync } from '../resolveBundlerProps';
+import type { GradleProps } from './resolveGradlePropsAsync';
+import { resolveGradlePropsAsync } from './resolveGradlePropsAsync';
+import type { LaunchProps } from './resolveLaunchProps';
+import { resolveLaunchPropsAsync } from './resolveLaunchProps';
+import type { AndroidDeviceManager } from '../../start/platforms/android/AndroidDeviceManager';
+import { resolveBuildCacheProvider } from '../../utils/build-cache-providers';
+import type { BundlerProps } from '../resolveBundlerProps';
+import { resolveBundlerPropsAsync } from '../resolveBundlerProps';
 
 export type Options = {
   variant?: string;
@@ -25,6 +32,7 @@ export type ResolvedOptions = GradleProps &
     install: boolean;
     architectures?: string;
     appId?: string;
+    buildCacheProvider?: BuildCacheProvider;
   };
 
 export async function resolveOptionsAsync(
@@ -33,6 +41,12 @@ export async function resolveOptionsAsync(
 ): Promise<ResolvedOptions> {
   // Resolve the device before the gradle props because we need the device to be running to get the ABI.
   const device = await resolveDeviceAsync(options.device);
+
+  const projectConfig = getConfig(projectRoot);
+  const buildCacheProvider = await resolveBuildCacheProvider(
+    projectConfig.exp?.buildCacheProvider ?? projectConfig.exp.experiments?.buildCacheProvider,
+    projectRoot
+  );
 
   return {
     ...(await resolveBundlerPropsAsync(projectRoot, options)),
@@ -44,5 +58,6 @@ export async function resolveOptionsAsync(
     device,
     buildCache: !!options.buildCache,
     install: !!options.install,
+    buildCacheProvider,
   };
 }

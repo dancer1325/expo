@@ -14,13 +14,17 @@ private const val SNACK_STAGING = "2dce2748-c51f-4865-bae0-392af794d60a"
 private const val SNACK_PROD = "933fd9c0-1666-11e7-afca-d980795c5824"
 
 class ManifestException : ExponentException {
-  private val manifestUrl: String
   private var errorJSON: JSONObject? = null
-  private lateinit var errorMessage: String
-  private var fixInstructions: String? = null
   private val isSnackURL: Boolean
     get() =
       manifestUrl.contains(SNACK_STAGING) || manifestUrl.contains(SNACK_PROD)
+
+  val manifestUrl: String
+  lateinit var errorMessage: String
+    private set
+
+  var fixInstructions: String? = null
+    private set
 
   var canRetry: Boolean = true
   val errorHeader: String?
@@ -33,6 +37,7 @@ class ManifestException : ExponentException {
           }
           "EXPERIENCE_SDK_VERSION_TOO_NEW" -> "Project is incompatible with this version of Expo Go"
           "SNACK_NOT_FOUND_FOR_SDK_VERSION" -> "This Snack is incompatible with this version of Expo Go"
+          "EXPERIENCE_HERMES_BUNDLE_NOT_SUPPORTED" -> "Project is incompatible with Expo Go"
           else -> null
         }
       } catch (e: JSONException) {
@@ -110,6 +115,13 @@ class ManifestException : ExponentException {
             formattedMessage = "The experience you requested is not viewable by you."
             fixInstructions =
               "You need to log in. If the snack is still unavailable after logging in, ask the owner to grant you access."
+          }
+
+          "EXPERIENCE_HERMES_BUNDLE_NOT_SUPPORTED" -> {
+            formattedMessage = "This project was published with a precompiled Hermes bytecode bundle. Expo Go runs plain JavaScript bundles, so it can't load this update."
+            fixInstructions =
+              "Open this project in a <a href='https://docs.expo.dev/develop/development-builds/introduction/'>development build</a> instead, or use <b>eas update --no-bytecode</b>."
+            canRetry = false
           }
 
           "USER_SNACK_NOT_FOUND", "SNACK_NOT_FOUND" ->

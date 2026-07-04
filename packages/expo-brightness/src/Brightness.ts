@@ -1,12 +1,9 @@
 import {
+  type PermissionResponse,
   createPermissionHook,
   type EventSubscription,
-  PermissionExpiration,
-  PermissionHookOptions,
-  PermissionResponse,
-  PermissionStatus,
   UnavailabilityError,
-} from 'expo-modules-core';
+} from 'expo';
 import { Platform } from 'react-native';
 
 import ExpoBrightness from './ExpoBrightness';
@@ -36,7 +33,12 @@ export type BrightnessEvent = {
   brightness: number;
 };
 
-export { PermissionExpiration, PermissionHookOptions, PermissionResponse, PermissionStatus };
+export {
+  type PermissionExpiration,
+  type PermissionHookOptions,
+  type PermissionResponse,
+  PermissionStatus,
+} from 'expo';
 
 /**
  * Returns whether the Brightness API is enabled on the current device. This does not check the app
@@ -115,14 +117,6 @@ export async function setSystemBrightnessAsync(brightnessValue: number): Promise
     return await setBrightnessAsync(clampedBrightnessValue);
   }
   return await ExpoBrightness.setSystemBrightnessAsync(clampedBrightnessValue);
-}
-
-/**
- * @deprecated Use [`restoreSystemBrightnessAsync`](#brightnessrestoresystembrightnessasync) method instead.
- * @platform android
- */
-export async function useSystemBrightnessAsync(): Promise<void> {
-  return restoreSystemBrightnessAsync();
 }
 
 // @needsAudit

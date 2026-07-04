@@ -1,6 +1,8 @@
-import { Button, mergeClasses } from '@expo/styleguide';
+import { Button, ButtonBase, mergeClasses } from '@expo/styleguide';
 import { ArrowCircleUpIcon } from '@expo/styleguide-icons/outline/ArrowCircleUpIcon';
+import { ChevronDownIcon } from '@expo/styleguide-icons/outline/ChevronDownIcon';
 import { LayoutAlt03Icon } from '@expo/styleguide-icons/outline/LayoutAlt03Icon';
+import { useRouter } from 'next/compat/router';
 import {
   PropsWithChildren,
   RefObject,
@@ -10,23 +12,28 @@ import {
   useRef,
   useImperativeHandle,
   useEffect,
+  SyntheticEvent,
 } from 'react';
+import { useIntl } from 'react-intl';
 
 import { BASE_HEADING_LEVEL, Heading } from '~/common/headingManager';
+import { isVersionedPath } from '~/common/routes';
 import { prefersReducedMotion } from '~/common/window';
 import { HeadingManagerProps, HeadingsContext } from '~/common/withHeadingManager';
-import { ScrollContainer } from '~/components/ScrollContainer';
-import { TableOfContentsLink } from '~/ui/components/TableOfContents';
+import { type ScrollContainerHandle } from '~/components/ScrollContainer';
 import { CALLOUT } from '~/ui/components/Text';
 
+import { TableOfContentsLink } from './TableOfContentsLink';
+
 const UPPER_SCROLL_LIMIT_FACTOR = 1 / 4;
-const LOWER_SCROLL_LIMIT_FACTOR = 7 / 8;
+const LOWER_SCROLL_LIMIT_FACTOR = 3 / 4;
 const ACTIVE_ITEM_OFFSET_FACTOR = 1 / 20;
+const TARGET_IN_VIEW_BUFFER = 48;
 
 export type TableOfContentsProps = PropsWithChildren<{
   maxNestingDepth?: number;
-  selfRef?: RefObject<ScrollContainer>;
-  contentRef?: RefObject<ScrollContainer>;
+  selfRef?: RefObject<ScrollContainerHandle | null>;
+  contentRef?: RefObject<ScrollContainerHandle | null>;
 }>;
 
 export type TableOfContentsHandles = {
@@ -37,9 +44,18 @@ export const TableOfContents = forwardRef<
   TableOfContentsHandles,
   HeadingManagerProps & TableOfContentsProps
 >(({ headingManager: { headings }, contentRef, selfRef, maxNestingDepth = 4 }, ref) => {
+  const router = useRouter();
+  const intl = useIntl();
+  const isVersioned = isVersionedPath(router?.pathname ?? '');
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const [activeParentSlug, setActiveParentSlug] = useState<string | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [collapsedH3s, setCollapsedH3s] = useState<Set<string>>(() =>
+    isVersioned
+      ? new Set(headings.filter(h => h.level === BASE_HEADING_LEVEL + 1).map(h => h.slug))
+      : new Set()
+  );
 
   const slugScrollingTo = useRef<string | null>(null);
   const activeItemRef = useRef<HTMLAnchorElement | null>(null);
@@ -60,29 +76,132 @@ export const TableOfContents = forwardRef<
 
   useImperativeHandle(ref, () => ({ handleContentScroll }), []);
 
+  function getContentScrollElement() {
+    return contentRef?.current?.getScrollRef().current;
+  }
+
+  function getViewportHeight() {
+    return getContentScrollElement()?.clientHeight ?? window.innerHeight;
+  }
+
+  function getScrollMetrics() {
+    const scrollElement = getContentScrollElement();
+    const viewportHeight = getViewportHeight();
+    const scrollHeight = scrollElement?.scrollHeight ?? 0;
+    const activationOffset = viewportHeight * ACTIVE_ITEM_OFFSET_FACTOR;
+
+    return { scrollElement, viewportHeight, scrollHeight, activationOffset };
+  }
+
   function handleContentScroll(contentScrollPosition: number) {
-    for (const { ref, slug } of headings) {
-      if (!ref?.current) {
+    const showScrollTopValue = contentScrollPosition > 120;
+
+    if (showScrollTopValue !== showScrollTop) {
+      setShowScrollTop(showScrollTopValue);
+    }
+
+    const { scrollElement, viewportHeight, scrollHeight, activationOffset } = getScrollMetrics();
+    const activationLine = contentScrollPosition + activationOffset;
+    const bottomThreshold = Math.min(200, viewportHeight * 0.1);
+
+    if (slugScrollingTo.current) {
+      const targetHeading = headings.find(h => h.slug === slugScrollingTo.current);
+      const targetTop = targetHeading?.ref?.current?.offsetTop;
+
+      if (targetTop != null) {
+        const targetInView =
+          targetTop >= activationLine - TARGET_IN_VIEW_BUFFER &&
+          targetTop <= activationLine + TARGET_IN_VIEW_BUFFER;
+
+        if (!targetInView) {
+          return;
+        }
+      } else {
+        slugScrollingTo.current = null;
+      }
+
+      slugScrollingTo.current = null;
+    }
+
+    let nextActive: Heading | null = null;
+
+    for (const heading of headings) {
+      if (!heading.ref?.current) {
         continue;
       }
 
-      setShowScrollTop(contentScrollPosition > 120);
+      const headingTop = heading.ref.current.offsetTop;
 
-      if (
-        ref.current.offsetTop >=
-          contentScrollPosition + window.innerHeight * ACTIVE_ITEM_OFFSET_FACTOR &&
-        ref.current.offsetTop <= contentScrollPosition + window.innerHeight / 2
-      ) {
-        if (slug !== activeSlug) {
-          if (slug === slugScrollingTo.current) {
-            slugScrollingTo.current = null;
-          }
-          setActiveSlug(slug);
-          updateSelfScroll();
-        }
-        return;
+      if (headingTop <= activationLine) {
+        nextActive = heading;
+      } else {
+        break;
       }
     }
+
+    const isNearBottom =
+      scrollElement && scrollHeight
+        ? contentScrollPosition + viewportHeight >= scrollHeight - bottomThreshold
+        : false;
+
+    if (isNearBottom && headings.length > 0) {
+      const viewportTop = contentScrollPosition;
+      const viewportBottom = contentScrollPosition + viewportHeight;
+
+      let bestHeading: Heading | null = null;
+      let bestVisibleArea = 0;
+
+      for (let i = 0; i < headings.length; i++) {
+        const heading = headings[i];
+        if (!heading.ref?.current) {
+          continue;
+        }
+
+        const sectionStart = heading.ref.current.offsetTop;
+        const nextHeading = headings[i + 1];
+        const sectionEnd = nextHeading?.ref?.current?.offsetTop ?? scrollHeight;
+
+        const visibleStart = Math.max(sectionStart, viewportTop);
+        const visibleEnd = Math.min(sectionEnd, viewportBottom);
+        const visibleArea = Math.max(0, visibleEnd - visibleStart);
+
+        if (visibleArea >= bestVisibleArea) {
+          bestVisibleArea = visibleArea;
+          bestHeading = heading;
+        }
+      }
+
+      if (bestHeading && bestVisibleArea > 0) {
+        nextActive = bestHeading;
+      }
+    }
+
+    const activeHeading = nextActive ?? headings[0] ?? null;
+
+    if (!activeHeading) {
+      return;
+    }
+
+    if (activeHeading.slug === activeSlug) {
+      return;
+    }
+
+    if (activeHeading.level > BASE_HEADING_LEVEL + 1 && isVersioned) {
+      const currentIndex = headings.findIndex(h => h.slug === activeHeading.slug);
+      for (let i = currentIndex; i >= 0; i--) {
+        const h = headings[i];
+        if (h.level === BASE_HEADING_LEVEL + 1) {
+          setActiveParentSlug(h.slug);
+          setActiveSlug(activeHeading.slug);
+          updateSelfScroll();
+          return;
+        }
+      }
+    }
+
+    setActiveParentSlug(null);
+    setActiveSlug(activeHeading.slug);
+    updateSelfScroll();
   }
 
   function updateSelfScroll() {
@@ -110,21 +229,78 @@ export const TableOfContents = forwardRef<
     }
   }
 
+  function focusHeadingElement(ref?: Heading['ref']) {
+    if (!ref?.current || typeof window === 'undefined') {
+      return;
+    }
+
+    const element = ref.current;
+
+    if (!(element instanceof HTMLElement)) {
+      return;
+    }
+
+    const headingElement = element.closest('[data-heading]');
+    const focusTarget = headingElement instanceof HTMLElement ? headingElement : element;
+
+    const hadTabIndex = focusTarget.hasAttribute('tabindex');
+
+    if (!hadTabIndex) {
+      focusTarget.setAttribute('tabindex', '-1');
+    }
+
+    try {
+      focusTarget.focus({ preventScroll: true });
+    } catch {
+      focusTarget.focus();
+    }
+
+    if (!hadTabIndex) {
+      const removeTabIndex = () => {
+        focusTarget.removeAttribute('tabindex');
+        focusTarget.removeEventListener('blur', removeTabIndex);
+      };
+      focusTarget.addEventListener('blur', removeTabIndex);
+    }
+  }
+
+  function queueHeadingFocus(ref?: Heading['ref']) {
+    if (!ref?.current || typeof window === 'undefined') {
+      return;
+    }
+
+    const applyFocus = () => {
+      focusHeadingElement(ref);
+    };
+
+    if (typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(applyFocus);
+      });
+      return;
+    }
+
+    setTimeout(applyFocus, 0);
+  }
+
   function handleLinkClick(event: MouseEvent, { slug, ref, type }: Heading) {
     event.preventDefault();
 
     slugScrollingTo.current = slug;
 
+    const { activationOffset } = getScrollMetrics();
     const scrollOffset = type === 'inlineCode' ? 35 : 21;
 
     contentRef?.current?.getScrollRef().current?.scrollTo({
       behavior: reducedMotion ? 'instant' : 'smooth',
-      top: ref.current?.offsetTop - window.innerHeight * ACTIVE_ITEM_OFFSET_FACTOR - scrollOffset,
+      top: Math.max(0, (ref.current?.offsetTop ?? 0) - activationOffset + scrollOffset),
     });
 
     if (history?.replaceState) {
       history.replaceState(history.state, '', '#' + slug);
     }
+
+    queueHeadingFocus(ref);
   }
 
   function handleTopClick(event: MouseEvent) {
@@ -138,35 +314,99 @@ export const TableOfContents = forwardRef<
     if (history?.replaceState) {
       history.replaceState(history.state, '', ' ');
     }
+
+    queueHeadingFocus(headings[0]?.ref);
   }
+
+  const toggleH3 = (slug: string, event: SyntheticEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setCollapsedH3s(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(slug)) {
+        newSet.delete(slug);
+      } else {
+        newSet.add(slug);
+      }
+      return newSet;
+    });
+  };
 
   const displayedHeadings = headings.filter(
     head =>
       head.level <= BASE_HEADING_LEVEL + maxNestingDepth && head.title.toLowerCase() !== 'see also'
   );
 
-  return (
-    <nav className="w-[280px] px-6 pb-10 pt-14" data-sidebar>
-      <CALLOUT
-        weight="medium"
-        className="absolute z-10 -mt-14 mb-2 flex min-h-[32px] w-[248px] select-none items-center gap-2 bg-default pb-2 pt-4">
-        <LayoutAlt03Icon className="icon-sm" /> On this page
-        <Button
-          theme="quaternary"
-          size="xs"
+  const renderTOC = () => {
+    let currentH3: string | null = null;
+
+    return displayedHeadings.map((heading, index) => {
+      const isActive = heading.slug === activeSlug || heading.slug === activeParentSlug;
+      const isH3 = heading.level === BASE_HEADING_LEVEL + 1;
+
+      if (isH3 && isVersioned) {
+        currentH3 = heading.slug;
+      } else if (heading.level <= BASE_HEADING_LEVEL) {
+        currentH3 = null;
+      }
+
+      const parentH3 = currentH3 ?? '';
+      const shouldHide =
+        Boolean(currentH3) && heading.level > BASE_HEADING_LEVEL + 1 && collapsedH3s.has(parentH3);
+
+      if (shouldHide) {
+        return null;
+      }
+
+      const hasChildren =
+        isH3 &&
+        (() => {
+          for (let i = index + 1; i < displayedHeadings.length; i++) {
+            const nextHeading = displayedHeadings[i];
+            if (nextHeading.level <= heading.level) {
+              break;
+            }
+            if (nextHeading.level > heading.level) {
+              return true;
+            }
+          }
+          return false;
+        })();
+
+      return (
+        <div
+          key={heading.slug}
+          role="listitem"
           className={mergeClasses(
-            'ml-auto mr-2 px-2 transition-opacity duration-300',
-            !showScrollTop && 'pointer-events-none opacity-0'
+            'flex items-center',
+            currentH3 && heading.level > BASE_HEADING_LEVEL + 2 && 'ml-0',
+            hasChildren && isVersioned && '-ml-2'
+          )}>
+          {hasChildren && isVersioned && (
+            <ButtonBase
+              onClick={event => {
+                toggleH3(heading.slug, event);
+              }}
+              onKeyDown={event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  toggleH3(heading.slug, event);
+                }
+              }}
+              aria-expanded={!collapsedH3s.has(heading.slug)}
+              aria-controls={`toc-section-${heading.slug}`}
+              className="-mr-2 flex h-full cursor-pointer items-center justify-center self-start pt-0.5 hocus:opacity-75"
+              aria-label={`${collapsedH3s.has(heading.slug) ? 'Expand' : 'Collapse'} section ${heading.title}`}>
+              <ChevronDownIcon
+                aria-hidden="true"
+                className={mergeClasses(
+                  'icon-sm text-icon-secondary transition-transform',
+                  collapsedH3s.has(heading.slug) ? '-rotate-90' : 'rotate-0'
+                )}
+              />
+            </ButtonBase>
           )}
-          onClick={handleTopClick}>
-          <ArrowCircleUpIcon className="icon-sm text-icon-secondary" aria-label="Scroll to top" />
-        </Button>
-      </CALLOUT>
-      {displayedHeadings.map(heading => {
-        const isActive = heading.slug === activeSlug;
-        return (
           <TableOfContentsLink
-            key={heading.slug}
             heading={heading}
             onClick={event => {
               handleLinkClick(event, heading);
@@ -175,8 +415,33 @@ export const TableOfContents = forwardRef<
             ref={isActive ? activeItemRef : undefined}
             shortenCode
           />
-        );
-      })}
+        </div>
+      );
+    });
+  };
+
+  return (
+    <nav className="w-70 px-6 pt-13 pb-10" data-toc>
+      <CALLOUT
+        weight="medium"
+        className={mergeClasses(
+          'absolute z-100 -mt-13 -ml-6 flex min-h-8 w-68 select-none',
+          'items-center gap-2 bg-linear-to-b from-default from-80% to-transparent py-3 pl-6'
+        )}>
+        <LayoutAlt03Icon aria-hidden="true" className="icon-sm" />{' '}
+        {intl.formatMessage({ id: 'onThisPage' })}
+        <Button
+          theme="quaternary"
+          size="xs"
+          className={mergeClasses(
+            'mr-2 ml-auto px-2 transition-opacity duration-300',
+            !showScrollTop && 'pointer-events-none opacity-0'
+          )}
+          onClick={handleTopClick}>
+          <ArrowCircleUpIcon className="icon-sm text-icon-secondary" aria-label="Scroll to top" />
+        </Button>
+      </CALLOUT>
+      <div role="list">{renderTOC()}</div>
     </nav>
   );
 });

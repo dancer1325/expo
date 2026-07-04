@@ -4,7 +4,7 @@ import {
   assertMissingRuntimePlatform,
   assertRuntimePlatform,
 } from '../resolvePlatform';
-import { ServerRequest } from '../server.types';
+import type { ServerRequest } from '../server.types';
 
 const asRequest = (req: Partial<ServerRequest>) => req as ServerRequest;
 
@@ -128,7 +128,7 @@ describe(assertMissingRuntimePlatform, () => {
   it('asserts missing', () => {
     expect(() => {
       assertMissingRuntimePlatform();
-    }).toThrowError('Must specify "expo-platform" header or "platform" query parameter');
+    }).toThrow('Must specify "expo-platform" header or "platform" query parameter');
   });
   it('does not assert on valid', () => {
     assertMissingRuntimePlatform('ios');
@@ -145,7 +145,15 @@ describe(assertRuntimePlatform, () => {
       assertRuntimePlatform('android');
     }).not.toThrow();
     expect(() => {
+      assertRuntimePlatform('tvos');
+    }).not.toThrow();
+    expect(() => {
+      assertRuntimePlatform('macos');
+    }).not.toThrow();
+    expect(() => {
       assertRuntimePlatform('not-supported');
-    }).toThrowError('platform must be "android", "ios", or "web". Received: "not-supported"');
+    }).toThrow(
+      'platform must be "android", "ios", "web", "tvos", or "macos". Received: "not-supported"'
+    );
   });
 });

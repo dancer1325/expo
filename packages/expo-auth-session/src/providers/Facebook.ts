@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
 import { Platform } from 'react-native';
 
-import { ProviderAuthRequestConfig } from './Provider.types';
-import { applyRequiredScopes } from './ProviderUtils';
 import { AuthRequest } from '../AuthRequest';
-import { AuthRequestConfig, AuthRequestPromptOptions, ResponseType } from '../AuthRequest.types';
+import type { AuthRequestConfig, AuthRequestPromptOptions } from '../AuthRequest.types';
+import { ResponseType } from '../AuthRequest.types';
 import { useAuthRequestResult, useLoadedAuthRequest } from '../AuthRequestHooks';
 import { makeRedirectUri } from '../AuthSession';
-import { AuthSessionRedirectUriOptions, AuthSessionResult } from '../AuthSession.types';
-import { DiscoveryDocument } from '../Discovery';
+import type { AuthSessionRedirectUriOptions, AuthSessionResult } from '../AuthSession.types';
+import type { DiscoveryDocument } from '../Discovery';
 import { generateHexStringAsync } from '../PKCE';
+import type { ProviderAuthRequestConfig } from './Provider.types';
+import { applyRequiredScopes, invariantClientId } from './ProviderUtils';
 
 const settings = {
   windowFeatures: { width: 700, height: 600 },
@@ -32,11 +33,11 @@ export type FacebookAuthRequestConfig = ProviderAuthRequestConfig & {
    */
   webClientId?: string;
   /**
-   * iOS native client ID for use in development builds and bare workflow.
+   * iOS native client ID for use in development builds and existing React Native projects.
    */
   iosClientId?: string;
   /**
-   * Android native client ID for use in development builds and bare workflow.
+   * Android native client ID for use in development builds and existing React Native projects.
    */
   androidClientId?: string;
 };
@@ -119,13 +120,15 @@ export function useAuthRequest(
   AuthSessionResult | null,
   (options?: AuthRequestPromptOptions) => Promise<AuthSessionResult>,
 ] {
-  const clientId = useMemo((): string => {
+  const clientId = useMemo(() => {
     const propertyName = Platform.select({
       ios: 'iosClientId',
       android: 'androidClientId',
       default: 'webClientId',
-    });
-    return config[propertyName as any] ?? config.clientId;
+    } as const);
+    const clientId = config[propertyName] ?? config.clientId;
+    invariantClientId(propertyName, clientId, 'Facebook');
+    return clientId;
   }, [config.iosClientId, config.androidClientId, config.webClientId, config.clientId]);
 
   const redirectUri = useMemo((): string => {

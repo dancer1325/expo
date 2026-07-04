@@ -1,48 +1,37 @@
-import {
+import type { ComponentProps, ReactElement, ReactNode, PropsWithChildren } from 'react';
+import { Children, Fragment, isValidElement, use, useMemo } from 'react';
+import type { ViewProps } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
+import { useRouteNode, useContextKey } from '../Route';
+import { useRouteInfo } from '../hooks';
+import { resolveHref } from '../link/href';
+import type {
   DefaultNavigatorOptions,
-  LinkingContext,
   ParamListBase,
   TabActionHelpers,
   TabNavigationState,
   TabRouterOptions,
-  useNavigationBuilder,
-} from '@react-navigation/native';
-import {
-  Children,
-  ComponentProps,
-  Fragment,
-  ReactElement,
-  ReactNode,
-  isValidElement,
-  useContext,
-  useMemo,
-  PropsWithChildren,
-} from 'react';
-import { StyleSheet, ViewProps, View } from 'react-native';
-
-import {
-  ExpoTabsScreenOptions,
-  TabNavigationEventMap,
-  TabTriggerMapContext,
-  TabsContextValue,
-} from './TabContext';
+} from '../react-navigation/native';
+import { LinkingContext, useNavigationBuilder } from '../react-navigation/native';
+import { shouldLinkExternally } from '../utils/url';
+import type { NavigatorContextValue } from '../views/Navigator';
+import { NavigatorContext } from '../views/Navigator';
+import type { ExpoTabsScreenOptions, TabNavigationEventMap, TabsContextValue } from './TabContext';
+import { TabTriggerMapContext } from './TabContext';
 import { isTabList } from './TabList';
-import { ExpoTabRouter, ExpoTabRouterOptions } from './TabRouter';
+import type { ExpoTabRouterOptions } from './TabRouter';
+import { ExpoTabRouter } from './TabRouter';
 import { isTabSlot } from './TabSlot';
 import { isTabTrigger } from './TabTrigger';
-import { SafeAreaViewSlot, ScreenTrigger, triggersToScreens } from './common';
+import type { ScreenTrigger } from './common';
+import { ViewSlot, triggersToScreens } from './common';
 import { useComponent } from './useComponent';
-import { useRouteNode, useContextKey } from '../Route';
-import { useRouteInfo } from '../hooks';
-import { resolveHref } from '../link/href';
-import { shouldLinkExternally } from '../utils/url';
-import { NavigatorContext, NavigatorContextValue } from '../views/Navigator';
 
 export * from './TabContext';
 export * from './TabList';
 export * from './TabSlot';
 export * from './TabTrigger';
-export { ExpoTabsResetValue } from './TabRouter';
 
 /**
  * Options to provide to the Tab Router.
@@ -83,11 +72,18 @@ export type TabsProps = ViewProps & {
  */
 export function Tabs(props: TabsProps) {
   const { children, asChild, options, ...rest } = props;
-  const Comp = asChild ? SafeAreaViewSlot : View;
+  const Comp = asChild ? ViewSlot : View;
 
   const { NavigationContent } = useTabsWithChildren({
     // asChild adds an extra layer, so we need to process the child's children
-    children: asChild && isValidElement(children) ? children.props.children : children,
+    children:
+      asChild &&
+      isValidElement(children) &&
+      children.props &&
+      typeof children.props === 'object' &&
+      'children' in children.props
+        ? (children.props.children as ReactNode)
+        : children,
     ...options,
   });
 
@@ -108,7 +104,10 @@ export type UseTabsWithTriggersOptions = UseTabsOptions & {
 
 /**
  * Hook version of `Tabs`. The returned NavigationContent component
- * should be rendered.
+ * should be rendered. Using the hook requires using the `<TabList />`
+ * and `<TabTrigger />` components exported from Expo Router.
+ *
+ * The `useTabsWithTriggers()` hook can be used for custom components.
  *
  * @see [`Tabs`](#tabs) for the component version of this hook.
  * @example
@@ -142,10 +141,10 @@ export function useTabsWithChildren(options: UseTabsWithChildrenOptions) {
 export function useTabsWithTriggers(options: UseTabsWithTriggersOptions): TabsContextValue {
   const { triggers, ...rest } = options;
   // Ensure we extend the parent triggers, so we can trigger them as well
-  const parentTriggerMap = useContext(TabTriggerMapContext);
+  const parentTriggerMap = use(TabTriggerMapContext);
   const routeNode = useRouteNode();
   const contextKey = useContextKey();
-  const linking = useContext(LinkingContext).options;
+  const linking = use(LinkingContext).options;
   const routeInfo = useRouteInfo();
 
   if (!routeNode || !linking) {
@@ -228,8 +227,14 @@ function parseTriggersFromChildren(
       let children = child.props.children;
 
       // <TabList asChild /> adds an extra layer. We need to parse the child's children
-      if (child.props.asChild && isValidElement(children)) {
-        children = children.props.children;
+      if (
+        child.props.asChild &&
+        isValidElement(children) &&
+        children.props &&
+        typeof children.props === 'object' &&
+        'children' in children.props
+      ) {
+        children = children.props.children as ReactNode;
       }
 
       return parseTriggersFromChildren(children, screenTriggers, isInTabList || isTabList(child));
@@ -245,7 +250,7 @@ function parseTriggersFromChildren(
     if (!href) {
       if (process.env.NODE_ENV === 'development') {
         console.warn(
-          `<TabTrigger name={${name}}> does not have a 'href' prop. TabTriggers within a <TabList /> are required to have a href.`
+          `<TabTrigger name={${name}}> does not have a 'href' prop. TabTriggers within a <TabList /> are required to have an href.`
         );
       }
       return;

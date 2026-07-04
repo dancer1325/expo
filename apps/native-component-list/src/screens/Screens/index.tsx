@@ -1,5 +1,9 @@
-import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
-import React from 'react';
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
+import { useObserve } from 'expo-observe';
+import React, { useEffect } from 'react';
 import { FlatList, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 
 import Container from './container';
@@ -14,30 +18,29 @@ const SCREENS: Record<string, { component: any; options: { title: string } }> = 
 
 type Links = { Container: undefined; NativeStack: undefined; Navigation: undefined };
 
-type Props = { navigation: StackNavigationProp<Links> };
+type Props = { navigation: NativeStackNavigationProp<Links> };
 
-class MainScreen extends React.Component<Props> {
-  static navigationOptions = {
-    title: '📱 React Native Screens Examples',
-  };
-  render() {
-    const data = Object.keys(SCREENS);
-    return (
-      <FlatList
-        style={styles.list}
-        data={data}
-        ItemSeparatorComponent={ItemSeparator}
-        keyExtractor={(item) => item}
-        renderItem={(props) => (
-          <MainScreenItem
-            item={props.item}
-            // @ts-ignore
-            onPressItem={(key) => this.props.navigation.navigate(key)}
-          />
-        )}
-      />
-    );
-  }
+function MainScreen({ navigation }: Props) {
+  const data = Object.keys(SCREENS);
+  const { markInteractive } = useObserve();
+  useEffect(() => {
+    markInteractive();
+  }, [markInteractive]);
+  return (
+    <FlatList
+      style={styles.list}
+      data={data}
+      ItemSeparatorComponent={ItemSeparator}
+      keyExtractor={(item) => item}
+      renderItem={(props) => (
+        <MainScreenItem
+          item={props.item}
+          // @ts-ignore
+          onPressItem={(key) => navigation.navigate(key)}
+        />
+      )}
+    />
+  );
 }
 
 const ItemSeparator = () => <View style={styles.separator} />;
@@ -59,8 +62,8 @@ class MainScreenItem extends React.Component<{
   }
 }
 
-const Stack = createStackNavigator();
-const SwitchStack = createStackNavigator();
+const Stack = createNativeStackNavigator();
+const SwitchStack = createNativeStackNavigator();
 
 const ExampleApp = () => (
   <SwitchStack.Navigator initialRouteName="Main" screenOptions={{ headerShown: false }}>

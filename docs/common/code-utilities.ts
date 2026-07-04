@@ -1,6 +1,69 @@
 import partition from 'lodash/partition';
 import { Language, Prism } from 'prism-react-renderer';
-import { Children, ReactElement, ReactNode, isValidElement } from 'react';
+import { Children, ReactElement, ReactNode, PropsWithChildren, isValidElement } from 'react';
+
+import sdkVersions from '~/ui/components/SDKTables/sdk-versions.json';
+
+import { toString } from './utilities';
+
+/**
+ * Build the code block variables map for a given SDK version entry.
+ * Variables can be used in fenced code blocks with the `{{variableName}}` syntax.
+ */
+function buildVariablesForSdk(sdk: (typeof sdkVersions.sdkVersions)[0]): Record<string, string> {
+  return {
+    '{{iosDeploymentTarget}}': sdk.ios.replace('+', ''),
+    '{{androidVersion}}': sdk.android.replace('+', ''),
+    '{{compileSdkVersion}}': sdk.compileSdkVersion,
+    '{{targetSdkVersion}}': sdk.targetSdkVersion,
+    '{{buildToolsVersion}}': sdk.buildToolsVersion,
+    '{{reactNativeVersion}}': sdk['react-native'],
+    '{{xcodeVersion}}': sdk.xcode.replace('+', ''),
+    '{{nodeVersion}}': sdk.node,
+    '{{reactVersion}}': sdk.react,
+    '{{expoSdkVersion}}': sdk.sdk,
+    '{{expoSdkMajorVersion}}': sdk.sdk.split('.')[0],
+  };
+}
+
+const variablesCache = new Map<string, Record<string, string>>();
+
+function getVariablesForVersion(version?: string): Record<string, string> {
+  const cacheKey = version ?? 'latest';
+  const cached = variablesCache.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
+  let sdk = sdkVersions.sdkVersions[0];
+  if (version && version !== 'latest' && version !== 'unversioned') {
+    const normalized = version.replace(/^v/, '');
+    const match = sdkVersions.sdkVersions.find(s => s.sdk === normalized);
+    if (match) {
+      sdk = match;
+    }
+  }
+
+  const variables = buildVariablesForSdk(sdk);
+  variablesCache.set(cacheKey, variables);
+  return variables;
+}
+
+function replaceCodeBlockVariables(value: string, version?: string): string {
+  const variables = getVariablesForVersion(version);
+  let result = value;
+  for (const [key, val] of Object.entries(variables)) {
+    result = result.replaceAll(key, val);
+  }
+  const unreplaced = result.match(/{{[A-Za-z]+}}/g);
+  if (unreplaced) {
+    throw new Error(
+      `Unknown code block variable(s): ${[...new Set(unreplaced)].join(', ')}. ` +
+        `Available: ${Object.keys(variables).join(', ')}`
+    );
+  }
+  return result;
+}
 
 // Read more: https://github.com/FormidableLabs/prism-react-renderer#custom-language-support
 async function initPrismAsync() {
@@ -14,6 +77,7 @@ async function initPrismAsync() {
   await import('prismjs/components/prism-objectivec' as Language);
   await import('prismjs/components/prism-properties' as Language);
   await import('prismjs/components/prism-ruby' as Language);
+  await import('prismjs/components/prism-ignore' as Language);
 }
 
 await initPrismAsync();
@@ -25,19 +89,25 @@ export const LANGUAGES_REMAP: Record<string, string> = {
   rb: 'ruby',
 };
 
-export function cleanCopyValue(value: string) {
-  return value
+export function cleanCopyValue(value: string, version?: string) {
+  return replaceCodeBlockVariables(value, version)
     .replace(/\/\*\s?@(info[^*]+|end|hide[^*]+).?\*\//g, '')
     .replace(/#\s?@(info[^#]+|end|hide[^#]+).?#/g, '')
     .replace(/<!--\s?@(info[^<>]+|end|hide[^<>]+).?-->/g, '')
     .replace(/\/\*\s?@(tutinfo[^*]+|end|hide[^*]+).?\*\//g, '')
     .replace(/#\s?@(tutinfo[^#]+|end|hide[^#]+).?#/g, '')
     .replace(/<!--\s?@(tutinfo[^<>]+|end|hide[^<>]+).?-->/g, '')
+    .replace(/%%placeholder-start%%.*%%placeholder-end%%/g, '')
     .replace(/^ +\r?\n|\n +\r?$/gm, '');
 }
 
 export function escapeHtml(text: string) {
-  return text.replace(/"/g, '&quot;');
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 export function replaceXmlCommentsWithAnnotations(value: string) {
@@ -142,16 +212,19 @@ export function parseValue(value: string) {
   if (value.startsWith('@@@')) {
     const valueChunks = value.split('@@@');
     const titleChunks = valueChunks[1].split('|');
+    // Boolean params are bare flags (no `=`) because an `=` in the code fence meta
+    // breaks Vale's code block detection via the TokenIgnores patterns in .vale.ini.
+    const BOOLEAN_PARAMS = ['wrap'];
     const [params, title] = partition(
       titleChunks,
-      chunk => chunk.includes('=') && !chunk.includes(' ')
+      chunk => (chunk.includes('=') && !chunk.includes(' ')) || BOOLEAN_PARAMS.includes(chunk)
     );
     return {
       title: title[0],
       params: Object.assign(
         {},
         ...params.map(param => {
-          const [key, value] = param.split('=');
+          const [key, value = 'true'] = param.split('=');
           return { [key]: value };
         })
       ) as Record<string, string>,
@@ -163,46 +236,53 @@ export function parseValue(value: string) {
   };
 }
 
-export function getRootCodeBlockProps(children: ReactNode, className?: string) {
-  if (className?.startsWith('language')) {
-    return { className, children };
+export function findNodeByPropInChildren<T>(
+  element: ReactElement,
+  propToFind: string
+): PropsWithChildren<{ [propToFind]: T }> | T | null {
+  if (!isValidElement<PropsWithChildren>(element)) {
+    return null;
   }
 
-  const firstChild = Children.toArray(children)[0];
-  if (isValidElement(firstChild) && firstChild.props.className) {
-    if (firstChild.props.className.startsWith('language')) {
-      return {
-        className: firstChild.props.className,
-        children: firstChild.props.children,
-        isNested: true,
-      };
+  const props = element.props as PropsWithChildren<{ [propToFind]: T }>;
+  if (props && Object.prototype.hasOwnProperty.call(props, propToFind)) {
+    return props;
+  }
+
+  const { children } = props;
+  if (!children) {
+    return null;
+  }
+
+  if (Array.isArray(children)) {
+    for (const child of Children.toArray(children)) {
+      const found = findNodeByPropInChildren<T>(child as ReactElement, propToFind);
+      if (found) {
+        return found;
+      }
     }
+    return null;
   }
 
-  return {};
+  return findNodeByPropInChildren<T>(children as ReactElement, propToFind);
 }
 
-export function findPropInChildren(element: ReactElement, propToFind: string): string | null {
-  if (!element || typeof element !== 'object') return null;
-
-  if (element.props?.[propToFind]) {
-    return element.props[propToFind];
+export function getCodeBlockDataFromChildren(children?: ReactNode, className?: string) {
+  if (typeof children === 'string') {
+    return {
+      ...parseValue(children),
+      language: className ? className.split('-')[1] : 'jsx',
+    };
   }
+  const codeNode = findNodeByPropInChildren<PropsWithChildren<{ className: string }>>(
+    children as ReactElement,
+    'className'
+  );
+  const code = parseValue(toString(codeNode?.children));
+  const codeLanguage =
+    typeof codeNode?.className === 'string' ? codeNode.className.split('-')[1] : 'jsx';
 
-  if (element.props?.children) {
-    const children = element.props.children;
-
-    if (Array.isArray(children)) {
-      for (const child of Children.toArray(children)) {
-        const wantedProp: string | null = findPropInChildren(child as ReactElement, propToFind);
-        if (wantedProp) return wantedProp;
-      }
-    } else {
-      return findPropInChildren(children as ReactElement, propToFind);
-    }
-  }
-
-  return null;
+  return { ...code, language: codeLanguage };
 }
 
 export function getCollapseHeight(params?: Record<string, string>) {
@@ -210,7 +290,7 @@ export function getCollapseHeight(params?: Record<string, string>) {
   return customCollapseHeight ? Number(customCollapseHeight) : EXPAND_SNIPPET_BOUND;
 }
 
-export function getCodeData(value: string, className?: string) {
+export function getCodeData(value: string, className?: string, version?: string) {
   // mdx will add the class `language-foo` to codeblocks with the tag `foo`
   // if this class is present, we want to slice out `language-`
   let lang = className?.split('-').at(-1)?.toLowerCase();
@@ -227,7 +307,8 @@ export function getCodeData(value: string, className?: string) {
     throw new Error(`docs currently do not support language: ${lang}`);
   }
 
-  const rawHtml = Prism.highlight(value, grammar, lang);
+  const processedValue = replaceCodeBlockVariables(value, version);
+  const rawHtml = Prism.highlight(processedValue, grammar, lang);
   if (['properties', 'ruby', 'bash', 'yaml'].includes(lang)) {
     return replaceHashCommentsWithAnnotations(rawHtml);
   } else if (['xml', 'html'].includes(lang)) {

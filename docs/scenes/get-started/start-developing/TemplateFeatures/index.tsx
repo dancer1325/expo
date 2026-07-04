@@ -6,7 +6,6 @@ import { HEADLINE } from '~/ui/components/Text';
 import { Content } from './Content';
 import { Tab } from './Tab';
 import Animations from './features/animations.mdx';
-import Fonts from './features/fonts.mdx';
 import Images from './features/images.mdx';
 import Navigation from './features/navigation.mdx';
 import Platforms from './features/platforms.mdx';
@@ -20,11 +19,11 @@ export function TemplateFeatures() {
       <div className="flex border-b border-default bg-subtle p-3 pl-4">
         <HEADLINE>Default project</HEADLINE>
       </div>
-      <div className="grid grid-cols-[250px_minmax(0,_1fr)] max-md-gutters:grid-cols-1">
+      <div className="grid grid-cols-[250px_minmax(0,1fr)] max-md:grid-cols-1">
         <div
           className={mergeClasses(
             'flex flex-col gap-1 border-r border-default p-3',
-            'max-md-gutters:border-b max-md-gutters:border-r-0'
+            'max-md:border-r-0 max-md:border-b'
           )}>
           <Tab
             title="File-based routing"
@@ -46,13 +45,6 @@ export function TemplateFeatures() {
               setSelected('images');
             }}
             isSelected={selected === 'images'}
-          />
-          <Tab
-            title="Custom fonts"
-            onClick={() => {
-              setSelected('fonts');
-            }}
-            isSelected={selected === 'fonts'}
           />
           <Tab
             title="Light and dark modes"
@@ -94,15 +86,6 @@ export function TemplateFeatures() {
               alt="React image in a header component"
               content={<Images />}
               href="/versions/latest/sdk/image"
-            />
-          ) : null}
-          {selected === 'fonts' ? (
-            <Content
-              imgSrc="/static/images/get-started/fonts.png"
-              darkImgSrc="/static/images/get-started/fonts-dark.png"
-              alt="Various fonts on a screen"
-              content={<Fonts />}
-              href="/develop/user-interface/fonts"
             />
           ) : null}
           {selected === 'themes' ? (

@@ -1,5 +1,6 @@
 import { InstalledDependencyVersionCheck } from '../checks/InstalledDependencyVersionCheck';
-import { DoctorCheck } from '../checks/checks.types';
+import { VectorIconsCheck } from '../checks/VectorIconsCheck';
+import type { DoctorCheck } from '../checks/checks.types';
 import {
   printCheckResultSummaryOnComplete,
   printFailedCheckIssueAndAdvice,
@@ -33,14 +34,14 @@ const additionalProjectProps = {
 class MockSuccessfulCheck implements DoctorCheck {
   description = 'Mock successful check';
   sdkVersionRange = '*';
-  runAsync = jest.fn(() => Promise.resolve({ isSuccessful: true, issues: [], advice: '' }));
+  runAsync = jest.fn(() => Promise.resolve({ isSuccessful: true, issues: [], advice: [''] }));
 }
 
 class MockFailedCheck implements DoctorCheck {
   description = 'Mock failed check';
   sdkVersionRange = '*';
   runAsync = jest.fn(() =>
-    Promise.resolve({ isSuccessful: false, issues: ['issue'], advice: 'advice' })
+    Promise.resolve({ isSuccessful: false, issues: ['issue'], advice: ['advice'] })
   );
 }
 
@@ -58,11 +59,14 @@ describe(resolveChecksInScope, () => {
   it('skips the InstalledDependencyVersionCheck if environment variable is set', async () => {
     process.env.EXPO_DOCTOR_SKIP_DEPENDENCY_VERSION_CHECK = '1';
     jest.mocked(Log.log).mockReset();
-    const checks = resolveChecksInScope({
-      name: 'foo',
-      slug: 'foo',
-      sdkVersion: 'UNVERSIONED',
-    });
+    const checks = resolveChecksInScope(
+      {
+        name: 'foo',
+        slug: 'foo',
+        sdkVersion: 'UNVERSIONED',
+      },
+      {}
+    );
     expect(
       checks.find((check) => check instanceof InstalledDependencyVersionCheck)
     ).toBeUndefined();
@@ -74,14 +78,43 @@ describe(resolveChecksInScope, () => {
   });
 
   it('includes the InstalledDependencyVersionCheck if environment variable is not set', async () => {
-    const checks = resolveChecksInScope({
-      name: 'foo',
-      slug: 'foo',
-      sdkVersion: 'UNVERSIONED',
-    });
+    const checks = resolveChecksInScope(
+      {
+        name: 'foo',
+        slug: 'foo',
+        sdkVersion: 'UNVERSIONED',
+      },
+      {}
+    );
     expect(
       checks.find((check) => check instanceof InstalledDependencyVersionCheck)
     ).not.toBeUndefined();
+  });
+
+  describe('VectorIconsCheck SDK version filtering', () => {
+    it('includes VectorIconsCheck for SDK 56 and above', async () => {
+      const checks = resolveChecksInScope(
+        {
+          name: 'foo',
+          slug: 'foo',
+          sdkVersion: '56.0.0',
+        },
+        {}
+      );
+      expect(checks.find((check) => check instanceof VectorIconsCheck)).not.toBeUndefined();
+    });
+
+    it('excludes VectorIconsCheck for SDK 55 and below', async () => {
+      const checks = resolveChecksInScope(
+        {
+          name: 'foo',
+          slug: 'foo',
+          sdkVersion: '55.0.0',
+        },
+        {}
+      );
+      expect(checks.find((check) => check instanceof VectorIconsCheck)).toBeUndefined();
+    });
   });
 });
 
@@ -164,25 +197,57 @@ describe(runChecksAsync, () => {
 });
 
 describe(printCheckResultSummaryOnComplete, () => {
-  it(`Prints test description with checkmark if test is successful`, () => {
+  it(`Doesn't print test description with checkmark if test is successful with default output`, () => {
     jest.mocked(Log.log).mockReset();
-    printCheckResultSummaryOnComplete({
-      result: { isSuccessful: true, issues: [], advice: '' },
-      check: new MockSuccessfulCheck(),
-      duration: 0,
-    });
+    printCheckResultSummaryOnComplete(
+      {
+        result: { isSuccessful: true, issues: [], advice: [''] },
+        check: new MockSuccessfulCheck(),
+        duration: 0,
+      },
+      false
+    );
+    expect(jest.mocked(Log.log)).not.toHaveBeenCalled();
+  });
+
+  it(`Doesn't print test description with x if test is not successful with default output`, () => {
+    jest.mocked(Log.log).mockReset();
+    printCheckResultSummaryOnComplete(
+      {
+        result: { isSuccessful: false, issues: [], advice: [''] },
+        check: new MockFailedCheck(),
+        duration: 0,
+      },
+      false
+    );
+    expect(jest.mocked(Log.log)).not.toHaveBeenCalled();
+  });
+
+  it(`Prints test description with checkmark if test is successful with verbose test output`, () => {
+    jest.mocked(Log.log).mockReset();
+    printCheckResultSummaryOnComplete(
+      {
+        result: { isSuccessful: true, issues: [], advice: [''] },
+        check: new MockSuccessfulCheck(),
+        duration: 0,
+      },
+      true
+    );
     expect(jest.mocked(Log.log)).toHaveBeenCalledWith(
       expect.stringMatching('✔ Mock successful check')
     );
   });
 
-  it(`Prints test description with x if test is not successful`, () => {
+  it(`Prints test description with x if test is not successful with verbose test output`, () => {
     jest.mocked(Log.log).mockReset();
-    printCheckResultSummaryOnComplete({
-      result: { isSuccessful: false, issues: [], advice: '' },
-      check: new MockFailedCheck(),
-      duration: 0,
-    });
+    printCheckResultSummaryOnComplete(
+      {
+        result: { isSuccessful: false, issues: [], advice: [''] },
+        check: new MockFailedCheck(),
+        duration: 0,
+      },
+      true
+    );
     expect(jest.mocked(Log.log)).toHaveBeenCalledWith(
       expect.stringContaining('✖ Mock failed check')
     );
@@ -191,14 +256,17 @@ describe(printCheckResultSummaryOnComplete, () => {
   it(`Prints error if check throws an unexpected error`, () => {
     jest.mocked(Log.error).mockReset();
     jest.mocked(Log.exception).mockReset();
-    printCheckResultSummaryOnComplete({
-      result: { isSuccessful: false, issues: [], advice: '' },
-      check: new MockFailedCheck(),
-      duration: 0,
-      error: new Error('Some error'),
-    });
-    expect(jest.mocked(Log.error).mock.calls[0][0]).toContain('Unexpected error while running');
-    expect(jest.mocked(Log.exception).mock.calls[0][0].message).toContain('Some error');
+    printCheckResultSummaryOnComplete(
+      {
+        result: { isSuccessful: false, issues: [], advice: [''] },
+        check: new MockFailedCheck(),
+        duration: 0,
+        error: new Error('Some error'),
+      },
+      false
+    );
+    expect(jest.mocked(Log.error).mock.calls[0]![0]).toContain('Unexpected error while running');
+    expect(jest.mocked(Log.exception).mock.calls[0]![0].message).toContain('Some error');
   });
 
   it(`Prints the error cause if check throws a network error`, () => {
@@ -209,13 +277,16 @@ describe(printCheckResultSummaryOnComplete, () => {
     error.cause = { code: 'ENOTFOUND' };
     // @ts-ignore
     error.cause.toString = () => 'ENOTFOUND';
-    printCheckResultSummaryOnComplete({
-      result: { isSuccessful: false, issues: [], advice: '' },
-      check: new MockFailedCheck(),
-      duration: 0,
-      error,
-    });
-    expect(jest.mocked(Log.error).mock.calls[1][0]).toContain('ENOTFOUND');
+    printCheckResultSummaryOnComplete(
+      {
+        result: { isSuccessful: false, issues: [], advice: [''] },
+        check: new MockFailedCheck(),
+        duration: 0,
+        error,
+      },
+      false
+    );
+    expect(jest.mocked(Log.error).mock.calls[1]![0]).toContain('ENOTFOUND');
   });
 });
 
@@ -223,42 +294,30 @@ describe(printFailedCheckIssueAndAdvice, () => {
   it(`Does not print when check is successful`, () => {
     jest.mocked(Log.log).mockReset();
     printFailedCheckIssueAndAdvice({
-      result: { isSuccessful: true, issues: [], advice: '' },
+      result: { isSuccessful: true, issues: [], advice: [''] },
       check: new MockSuccessfulCheck(),
       duration: 0,
     });
     expect(jest.mocked(Log.log)).not.toHaveBeenCalled();
   });
 
-  // these errors print in-line so they're easier to associate with the origianl check
-  it(`Does not print when check throws an error`, () => {
+  it(`Prints issues when check fails`, () => {
     jest.mocked(Log.log).mockReset();
     printFailedCheckIssueAndAdvice({
-      result: { isSuccessful: false, issues: [], advice: '' },
-      check: new MockUnexpectedThrowCheck(),
-      error: new Error('Some error'),
-      duration: 0,
-    });
-    expect(jest.mocked(Log.log)).not.toHaveBeenCalled();
-  });
-
-  it(`Prints issues when check fails`, () => {
-    jest.mocked(Log.warn).mockReset();
-    printFailedCheckIssueAndAdvice({
-      result: { isSuccessful: false, issues: ['issue1', 'issue2'], advice: '' },
+      result: { isSuccessful: false, issues: ['issue1', 'issue2'], advice: [''] },
       check: new MockFailedCheck(),
       duration: 0,
     });
-    expect(jest.mocked(Log.warn).mock.calls[0][0]).toContain('issue1');
-    expect(jest.mocked(Log.warn).mock.calls[1][0]).toContain('issue2');
+    expect(jest.mocked(Log.log).mock.calls[1]![0]).toContain('issue1');
+    expect(jest.mocked(Log.log).mock.calls[2]![0]).toContain('issue2');
   });
   it(`Prints advice when check fails if available`, () => {
     jest.mocked(Log.log).mockReset();
     printFailedCheckIssueAndAdvice({
-      result: { isSuccessful: false, issues: ['issue1'], advice: 'advice' },
+      result: { isSuccessful: false, issues: ['issue1'], advice: ['advice'] },
       check: new MockFailedCheck(),
       duration: 0,
     });
-    expect(jest.mocked(Log.log).mock.calls[0][0]).toContain('advice');
+    expect(jest.mocked(Log.log).mock.calls[2]![0]).toContain('Advice:');
   });
 });

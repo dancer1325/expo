@@ -1,4 +1,4 @@
-import { ExpoConfig, PackageJSONConfig } from '@expo/config';
+import type { ExpoConfig, PackageJSONConfig } from '@expo/config';
 
 import { env } from './env';
 import { gteSdkVersion } from './versions';
@@ -71,13 +71,13 @@ export function getReactNativeDirectoryCheckEnabled(exp: ExpoConfig, pkg: Packag
   return pkgJsonConfigSetting ?? isEnabledByDefault;
 }
 
-export function getReactNativeDirectoryCheckListUnknownPackagesEnabled(pkg: any) {
+export function getReactNativeDirectoryCheckListUnknownPackagesEnabled(pkg: any): boolean | null {
   const config = getDoctorConfig(pkg);
   const listUnknownPackages = config.reactNativeDirectoryCheck?.listUnknownPackages;
 
-  // Default to true if config is missing
+  // Default to null if config is missing
   if (typeof listUnknownPackages !== 'boolean') {
-    return true;
+    return null;
   }
 
   return listUnknownPackages;

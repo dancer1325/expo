@@ -57,6 +57,8 @@ Expo projects should extend the default Babel preset [`babel-preset-expo`](https
 
 ### Bare workflow
 
+> **warning** [**Deprecated**](/more/release-statuses/#deprecated): Expo no longer separates "managed" and "bare" workflows. All projects use the same architecture based on Continuous Native Generation (CNG). Run `npx expo prebuild` to generate native directories when you need native access. Config plugins let you customize native configuration declaratively.
+
 * := approach / native projects (**android/** and **ios/**) are
   * versioned | Git
   * maintained manually
@@ -73,7 +75,7 @@ Expo projects should extend the default Babel preset [`babel-preset-expo`](https
 
 ### Bun
 
-A JavaScript runtime and a drop-in alternative for Node.js. For more information about usage with Expo and EAS, see [using Bun](/guides/using-bun/) guide.
+A JavaScript runtime and a drop-in alternative for Node.js. Bun can also be used as a [package manager for JavaScript](#package-manager). For more information about usage with Expo and EAS, see [using Bun](/guides/using-bun/) guide.
 
 ### CocoaPods
 
@@ -85,7 +87,7 @@ This refers to the React Native community [fork](https://github.com/react-native
 
 ### Config introspection
 
-A process for evaluating the results of [`npx expo prebuild`](#prebuild) in-memory without persisting any code changes. This is used in [Auto Capability Signing](#auto-capability-signing) to determine what the entitlements file will look like without generating any native code. This process is also used in the [VS Code Expo](#vs-code-expo) extension to debug [Config Mods](#config-mods).
+A process for evaluating the results of [`npx expo prebuild`](#prebuild) in-memory without persisting any code changes. This is used in [Auto Capability Signing](#auto-capability-signing) to determine what the entitlements file will look like without generating any native code. This process is also used in the [VS Code Expo Tools](#vs-code-expo-tools) extension to debug [Config Mods](#config-mods).
 
 ### Config Mods
 
@@ -97,15 +99,19 @@ A JavaScript function that is used to append [config mods](#config-mods) to the 
 
 ### Continuous Native Generation (CNG)
 
-An abstract concept that describes the process of generating native projects from a set of inputs. In the context of Expo, CNG is implemented via the [`prebuild`](#prebuild) command. See [CNG](/workflow/continuous-native-generation/) and [Expo Prebuild](/workflow/prebuild/) for more information.
+An abstract concept that describes the process of generating native projects from a set of inputs. In the context of Expo, CNG is implemented via the [`prebuild`](#prebuild) command. See [Continuous Native Generation](/workflow/continuous-native-generation/) for more information.
 
 ### create-expo-app
 
-A standalone command line tool (CLI) for bootstrapping new React Native apps with the `expo` package installed. See [`create-expo-app` reference](/more/create-expo/) for more information.
+A standalone command-line tool (CLI) for bootstrapping new React Native apps with the `expo` package installed. See [`create-expo-app` reference](/more/create-expo/) for more information.
+
+### create-expo-module
+
+A standalone command-line tool (CLI) for creating Expo modules and adding platform support to existing modules. See [`create-expo-module` reference](/more/create-expo-module/) for more information.
 
 ### create-react-native-app
 
-A standalone command line tool (CLI) for bootstrapping new React Native apps with the `expo` package installed and the native code generated. This CLI also enables the use of bootstrapping from an example project in [expo/examples](https://github.com/expo/examples).
+A standalone command-line tool (CLI) for bootstrapping new React Native apps with the `expo` package installed and the native code generated. This CLI also enables the use of bootstrapping from an example project in [expo/examples](https://github.com/expo/examples).
 
 This package can be used by running any of the following commands:
 
@@ -113,9 +119,9 @@ This package can be used by running any of the following commands:
 - `yarn create expo-app`
 - `npm create expo-app`
 
-### Dangerous Mods
+### Dangerous mods
 
-Config [modifiers](#config-mods) that apply unstable changes to a native project during [prebuild](#prebuild). Using these modifiers is unpredictable and prone to breaking changes between major version bumps in [Expo SDK](#expo-sdk).
+Config [modifiers](#config-mods) that apply unstable changes to a native project during [prebuild](#prebuild). Using these modifiers is unpredictable and prone to breaking changes between major version bumps in [Expo SDK](#expo-sdk). For more information, see [Using a dangerous mod](/config-plugins/dangerous-mods/).
 
 ### Development build
 
@@ -139,26 +145,46 @@ Config [modifiers](#config-mods) that apply unstable changes to a native project
   * hosts a [manifest](#expo-manifest) | `/` 
     * used by the client -- to request, from the bundler, the -- JS bundle 
 
-### EAS
+### Expo Application Services (EAS)
 
-[Expo Application Services (EAS)](/eas) are deeply integrated cloud services for Expo and React Native apps, such as [EAS Build](/build/introduction), [EAS Submit](/submit/introduction) and [EAS Update](/eas-update/introduction).
+[Expo Application Services (EAS)](/eas) are deeply integrated cloud services for Expo and React Native apps, such as [EAS Build](/build/introduction/), [EAS Submit](/submit/introduction/), [EAS Update](/eas-update/introduction/), [EAS Metadata](/eas/metadata/), [EAS Insights](/eas-insights/introduction/), [EAS Hosting](/eas/hosting/introduction/), [EAS Workflows](/eas/workflows/introduction/), and [EAS Observe](/eas/observe/introduction/).
+
+### EAS Build
+
+[EAS Build](/build/introduction/) is a cloud service from [EAS](#expo-application-services-eas) for building Android and iOS binaries for Expo and React Native apps. EAS Build can be used to build [development builds](#development-build) and [standalone apps](#standalone-app).
 
 ### EAS CLI
 
-The command-line tool for working with EAS. {/* Pending creation of eas-cli [Read more](/eas-cli). */}
+The command-line tool for working with EAS. For more information, see [EAS CLI](/eas/cli/) reference.
 
 ### EAS Config
 
 The **eas.json** file used to configure [EAS CLI](#eas-cli). For more information, see [Configuring EAS Build with eas.json](/build/eas-json/).
 
+### EAS Hosting
+
+[EAS Hosting](/eas/hosting/introduction/) is a cloud service from [EAS](#expo-application-services-eas) for quickly deploying web projects built using [Expo Router](#expo-router) and [React Native Web](#react-native-web).
+
+### EAS Insights
+
+[EAS Insights](/eas-insights/introduction/) is a cloud service from [EAS](#expo-application-services-eas) that provides usage, performance, and reach information for an Expo project. It uses the `expo-insights` library to send events to EAS Insights from the app.
+
 ### EAS Metadata
 
-A command-line tool for uploading and downloading Apple App Store metadata as JSON. This tool is available in the [EAS CLI](#eas-cli) package and should be used to improve the iOS submission process. For more information, see [EAS Metadata](/eas/metadata).
+A command-line tool for uploading and downloading Apple App Store metadata as JSON. This tool is available in the [EAS CLI](#eas-cli) package and should be used to improve the iOS submission process. For more information, see [EAS Metadata](/eas/metadata/).
+
+### EAS Observe
+
+[EAS Observe](/eas/observe/introduction/) is a performance monitoring service that tracks how an app performs in production, including cold and warm launch times, time to first render, and time to interactive. It uses the `expo-observe` library to collect metrics from production builds, which can then be viewed in the Observe dashboard.
 
 ### EAS Update
 
-1. The cloud hosting service [EAS Update](/eas-update/introduction/) that is used for OTA Updates.
+1. The cloud hosting service [EAS Update](/eas-update/introduction/) from [EAS](#expo-application-services-eas) that is used for OTA Updates.
 2. The CLI command `eas update` from [EAS CLI](#eas-cli) used to publish static files to the cloud hosting service.
+
+### EAS Workflows
+
+[EAS Workflows](/eas/workflows/introduction/) is a CI/CD service from [EAS](#expo-application-services-eas) that lets teams automate repeated tasks such as building Android and iOS binaries, publishing over-the-air updates, submitting to app stores, running E2E tests with Maestro, and deploying web apps to [EAS Hosting](/eas/hosting/introduction/). Workflows are configured in YAML files under the **.eas/workflows** directory.
 
 ### Emulator
 
@@ -171,6 +197,10 @@ The entry point usually refers to the initial JavaScript file used to load an ap
 ### Experience
 
 A synonym for an app that usually implies something more single-use and smaller in scope, sometimes artistic and whimsical.
+
+### Expo Atlas
+
+[Expo Atlas](/guides/analyzing-bundles/) is a tool for visualizing JavaScript bundles. It is used to inspect bundle size and identify which libraries contribute to the production bundle.
 
 ### Expo Autolinking
 
@@ -187,9 +217,17 @@ The original [Autolinking](#autolinking) system is designed for projects using `
 
 The former name for the [Expo Go](#expo-go) app.
 
+### Expo Doctor
+
+[Expo Doctor](/develop/tools/#expo-doctor) is a command-line tool used to diagnose issues in your Expo project. To use it, run `npx expo doctor` from your project's directory.
+
 ### Expo export
 
 Refers to the command `npx expo export` from [Expo CLI](#expo-cli). This command is used to bundle the app's JavaScript and assets, and then export them into a static folder that can be uploaded to a hosting service like [EAS Update](#eas-update), and embedded in a [native runtime](#native-runtime) for offline use.
+
+### Expo Fingerprint
+
+[`@expo/fingerprint`](/versions/latest/sdk/fingerprint/) library that hashes the files and configuration that determine a project's native build (app dependencies, custom native code, native project files, and config). The hash represents native layer state, so tools can tell whether a TypeScript/JavaScript bundle is compatible with a given build without rebuilding. Primarily used for EAS Update's fingerprint runtime version policy and EAS Workflows for CI/CD automation.
 
 ### Expo Go
 
@@ -208,9 +246,25 @@ Refers to the command `npx expo export` from [Expo CLI](#expo-cli). This command
 
 Refers to the command `npx expo install` from [Expo CLI](#expo-cli). This command is used to install npm packages containing [native modules](#native-module) that work with the currently installed version of `expo` in the project. Not all packages are supported. This command wraps the globally installed [package managers](#package-manager).
 
+### Expo MCP server
+
+[Expo MCP (Model Context Protocol) server](/mcp/) is a remote server hosted by Expo that integrates with AI-assisted tools such as Claude Code, Cursor, VS Code, and others. It enables them to interact directly with your Expo projects.
+
 ### Expo Module Config
 
 A file named **expo-module.config.json** that lives in the root directory of a [native module](#native-module). For more information, see [Module Config](/modules/module-config/).
+
+### Expo Modules API
+
+[Expo Modules API](/modules/module-api/) is a cross-platform API for writing native modules in Kotlin and Swift to add new capabilities to your apps. This API is provided by the library `expo-modules-core` which is included in the `expo` package.
+
+### Expo Orbit
+
+[Expo Orbit](/build/orbit/) is an application for macOS, Windows, and Linux that enables faster installation and launching of builds or updates from EAS, local files, or Snack projects, on devices or emulators/simulators.
+
+### Expo Router
+
+[Expo Router](/router/introduction/) is a file-based router for React Native and web applications. It allows you to manage navigation between screens in your app, allowing users to move seamlessly between different parts of your app's UI, using the same components on multiple platforms (Android, iOS, and web).
 
 ### Expo SDK
 
@@ -229,10 +283,6 @@ Refers to the command `npx expo start` from [Expo CLI](#expo-cli). This command 
 ### Fabric
 
 The React Native rendering system which is used to create and manage native views. For more information, see [Fabric Renderer](https://reactnative.dev/architecture/fabric-renderer).
-
-### Flipper
-
-A mobile app debugger used internally at Meta. It was previously recommended for use with React Native, but the integration is now deprecated and no longer supported by the React Native team [(RFC-0641)](https://github.com/react-native-community/discussions-and-proposals/blob/main/proposals/0641-decoupling-flipper-from-react-native-core.md).
 
 ### FYI
 
@@ -291,7 +341,7 @@ Formerly Facebook, Meta is the group that develops [React Native](#react-native)
 
 The bundler used for converting JavaScript files and assets into a format that runs on a [native runtime](#native-runtime). This bundler is maintained by [Meta](#meta) and used for React Native (including web) apps. For more information, see [Metro documentation](https://metrobundler.dev/).
 
-### Metro Config
+### Metro config
 
 The **metro.config.js** file used to configure [Metro bundler](#metro-bundler). This should extend the package `@expo/metro-config` when using [Expo CLI](#expo-cli). For more information, see [Customizing Metro](/guides/customizing-metro).
 
@@ -313,11 +363,15 @@ A native application containing a [JavaScript engine](#javascript-engine), and i
 
 ### npm
 
-[npm](https://www.npmjs.com/) is a package manager for JavaScript and the registry where the packages are stored. An alternative package manager, which we use internally at Expo, is [yarn](#yarn).
+[npm](https://www.npmjs.com/) is a [package manager for JavaScript](#package-manager) and the registry where the packages are stored.
 
 ### Package manager
 
-Automates the process of installing, upgrading, configuring, and removing libraries, also known as dependencies, from your project. See [npm](#npm) and [yarn](#yarn).
+Automates the process of installing, upgrading, configuring, and removing libraries, also known as dependencies, from your project. See [Bun](#bun), [npm](#npm), [pnpm](#pnpm), and [Yarn](#yarn).
+
+### Package manager workspaces
+
+The recommended [monorepo](#monorepo) solution for Expo users. See [Working with Monorepos](/guides/monorepos) guide for more information on how to configure workspaces with supported package managers.
 
 ### Platform extensions
 
@@ -331,6 +385,10 @@ By default, platform extensions are resolved in `@expo/metro-config` using the f
 
 {/* TODO: Multi-Resolution Asset Extensions */}
 
+### pnpm
+
+[pnpm](https://pnpm.io/) is [package manager for JavaScript](#package-manager), focused on disk space efficiency.
+
 ### Prebuild
 
 * := process of generating, for a React Native project based on the [app config](#app-config), the temporary native
@@ -340,6 +398,8 @@ By default, platform extensions are resolved in `@expo/metro-config` using the f
   * running `npx expo prebuild`
     * from [Expo CLI](#expo-cli)
     * | project directory
+
+See [Prebuild template](#prebuild-template) and [Autolinking](#autolinking) for further information.
 
 ### Prebuild template
 
@@ -379,7 +439,7 @@ The preferred navigation library for React Native apps, developed and sponsored 
 
 ### Remote Debugging
 
-Remote Debugging is a deprecated way of debugging React Native apps. A better alternative today is to use [Hermes](#hermes-engine), as you can connect Chrome Dev Tools to it.
+Remote Debugging is a deprecated way of debugging React Native apps. A better alternative today is to use [Hermes](#hermes-engine), as you can connect React Native DevTools to it.
 
 Also known as Async Chrome Debugging, it was an experimental system for debugging React Native apps. The system works by executing the application JavaScript in a Chrome tab's web worker, then sending native commands over a websocket to the native device.
 
@@ -389,7 +449,7 @@ An emulator for iOS devices that you can run on macOS (or in [Snack](#snack)) to
 
 ### Slug
 
-`slug` in the [app config]((#appjson) is a URL-friendly name for your project. It is unique across your Expo account.
+`slug` in the [app config](#appjson) is a URL-friendly name for your project. It is unique across your Expo account.
 
 ### Snack
 
@@ -403,7 +463,7 @@ A development agency in Kraków, Poland. Maintainers of `react-native-gesture-ha
 
 Synonymous with "Production build". An application binary that can be submitted to the Google Play Store or Apple App Store. For more information, see [Build your project for app stores](/deploy/build-project/) or [Run builds locally or on your own infrastructure](/build-reference/local-builds/).
 
-### Store Config
+### Store config
 
 The **store.config.json** file used to configure [EAS Metadata](#eas-metadata). This file can be generated from an existing App Store entry using `eas metadata:pull`.
 
@@ -425,7 +485,7 @@ The VS Code extension for improving the developer experience of working with app
 
 ### Watchman
 
-The file watcher used by [Metro](#metro-bundler) to perform hot reloads during development. Watchman contains native code and may cause issues when installed globally. Watchman is maintained by [Meta](#meta).
+A file watcher daemon which [Metro](#metro-bundler) can optionally use to crawl and query a project's files. Watchman contains native code and may cause issues when installed globally. Watchman is maintained by [Meta](#meta).
 
 ### webpack
 
@@ -433,11 +493,7 @@ The deprecated bundler used by [Expo CLI](#expo-cli) for developing [`react-nati
 
 ### Yarn
 
-A package manager for JavaScript. For more information, see [Yarn](https://yarnpkg.com/) documentation.
-
-### Yarn workspaces
-
-The [monorepo](#monorepo) solution we recommend for Expo users. See [Working with Monorepos](/guides/monorepos) for more information on how to configure Yarn workspaces.
+[Yarn](https://yarnpkg.com/) is a [package manager for JavaScript](#package-manager), created at Meta. It has two mainline versions [Yarn v1 (Classic)](https://classic.yarnpkg.com/lang/en/) and [Yarn Berry](https://github.com/yarnpkg/berry).
 
 ### Yoga
 

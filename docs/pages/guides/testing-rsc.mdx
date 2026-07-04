@@ -7,7 +7,7 @@ platforms: ['android', 'ios', 'web']
 
 import { Terminal } from '~/ui/components/Snippet';
 
-> **warning** This guide refers to the experimental feature React Server Components which is still in development.
+> **important** This guide refers to the [experimental](/more/release-statuses/#experimental) feature React Server Components which is still in development.
 
 React Server Components (RSC) is a new feature in React that allows you to build components that render on the server and can be hydrated on the client. This guide provides details on how to write unit tests for RSC in your project.
 
@@ -48,7 +48,7 @@ Then, you can add a script such as `test:rsc` to your **package.json**:
 
 Tests should be written in a **\_\_rsc_tests\_\_** directory to prevent Jest from running your client tests on the server.
 
-```js __rsc_tests__/my-component.test.ts
+```tsx __rsc_tests__/my-component.test.ts
 /// <reference types="jest-expo/rsc/expect" />
 
 import { LinearGradient } from 'expo-linear-gradient';

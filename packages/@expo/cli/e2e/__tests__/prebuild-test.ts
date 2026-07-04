@@ -17,6 +17,9 @@ import { createPackageTarball } from '../utils/package';
 const originalForceColor = process.env.FORCE_COLOR;
 const originalCI = process.env.CI;
 
+// to avoid flaky fail when testing prebuild form github template
+jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
 beforeAll(async () => {
   await fs.mkdir(projectRoot, { recursive: true });
   process.env.FORCE_COLOR = '0';
@@ -50,10 +53,10 @@ it('runs `npx expo prebuild --help`', async () => {
       Options
         <dir>                                    Directory of the Expo project. Default: Current working directory
         --no-install                             Skip installing npm packages and CocoaPods
-        --clean                                  Delete the native folders and regenerate them before applying changes
+        --no-clean                               Apply changes to the existing native folders instead of recreating them
         --npm                                    Use npm to install dependencies. Default when package-lock.json exists
         --yarn                                   Use Yarn to install dependencies. Default when yarn.lock exists
-        --bun                                    Use bun to install dependencies. Default when bun.lockb exists
+        --bun                                    Use bun to install dependencies. Default when bun.lock or bun.lockb exists
         --pnpm                                   Use pnpm to install dependencies. Default when pnpm-lock.yaml exists
         --template <template>                    Project template to clone from. File path pointing to a local tar file, npm package or a github repo
         -p, --platform <all|android|ios>         Platforms to sync: ios, android, all. Default: all
@@ -68,14 +71,23 @@ it('runs `npx expo prebuild` asserts when expo is not installed', async () => {
 
   // Create the project root aot
   await fs.mkdir(projectRoot, { recursive: true });
+
   // Create a fake package.json -- this is a terminal file that cannot be overwritten.
-  await fs.writeFile(path.join(projectRoot, 'package.json'), '{ "version": "1.0.0" }');
+  await fs.writeFile(path.join(projectRoot, 'package.json'), JSON.stringify({ version: '1.0.0' }));
+
   await fs.writeFile(path.join(projectRoot, 'app.json'), '{ "expo": { "name": "foobar" } }');
 
   await expect(
-    executeExpoAsync(projectRoot, ['prebuild', '--no-install'], { verbose: false })
+    executeExpoAsync(projectRoot, ['prebuild', '--no-install'], {
+      verbose: false,
+      env: {
+        ...process.env,
+        // TODO(@kitten): remove once hoist=false in pnpm; Prevent node_modules/.pnpm/node_modules hoist path from being passed
+        NODE_PATH: '',
+      },
+    })
   ).rejects.toThrow(
-    /Cannot determine which native SDK version your project uses because the module `expo` is not installed\. Please install it with `yarn add expo` and try again./
+    /Cannot determine the project's Expo SDK version because the module `expo` is not installed\. Install it with `npm install expo` and try again./
   );
 });
 
@@ -176,12 +188,6 @@ itNotWindows('runs `npx expo prebuild`', async () => {
     'react-native',
   ]);
 
-  // Updated scripts
-  expect(pkg.scripts).toStrictEqual({
-    android: 'expo run:android',
-    ios: 'expo run:ios',
-  });
-
   // If this changes then everything else probably changed as well.
   expect(findProjectFiles(projectRoot)).toMatchSnapshot();
 });
@@ -210,17 +216,56 @@ itNotWindows('runs `npx expo prebuild --template expo-template-bare-minimum@50.0
     'react-native': expect.any(String),
   });
 
-  // Updated scripts
-  expect(pkg.read().scripts).toMatchObject({
-    android: 'expo run:android',
-    ios: 'expo run:ios',
-  });
-
   // If this changes then everything else probably changed as well.
   expect(findProjectFiles(projectRoot)).toMatchSnapshot();
 });
 
 // This tests contains assertions related to ios files, making it incompatible with Windows
+itNotWindows('runs `npx expo prebuild --template <invalid-url>`', async () => {
+  const projectRoot = await setupTestProjectWithOptionsAsync(
+    'github-template-prebuild',
+    'with-blank',
+    { reuseExisting: false }
+  );
+
+  const expoPackage = require(
+    require.resolve('expo/package.json', {
+      paths: [path.join(projectRoot, 'package.json')],
+    })
+  );
+  const expoSdkVersion = semver.minVersion(expoPackage.version)?.major;
+  if (!expoSdkVersion) {
+    throw new Error('Could not determine Expo SDK major version from template');
+  }
+
+  const templateUrl = `https://github.com/expo/expo/tree/sdk-${expoSdkVersion}/templates/this-template-does-not-exist`;
+
+  let error: unknown = undefined;
+  try {
+    await executeExpoAsync(projectRoot, ['prebuild', '--no-install', '--template', templateUrl], {
+      // To avoid error log output in tests
+      verbose: false,
+    });
+  } catch (e) {
+    error = e;
+  }
+
+  expect(error).toBeDefined();
+  expect(error).toMatchObject({
+    message: expect.stringContaining(`Could not locate the repository for "${templateUrl}".`),
+  });
+  expect(error).toMatchObject({
+    message: expect.stringContaining(`Failed to create the native directories`),
+  });
+  expect(findProjectFiles(projectRoot)).toEqual(
+    expect.not.arrayContaining([
+      expect.stringMatching(/^ios\//),
+      expect.stringMatching(/^android\//),
+    ])
+  );
+});
+
+/*
 itNotWindows('runs `npx expo prebuild --template <github-url>`', async () => {
   const projectRoot = await setupTestProjectWithOptionsAsync(
     'github-template-prebuild',
@@ -246,12 +291,50 @@ itNotWindows('runs `npx expo prebuild --template <github-url>`', async () => {
     'react-native': expect.any(String),
   });
 
-  // Updated scripts
-  expect(pkg.read().scripts).toMatchObject({
-    android: 'expo run:android',
-    ios: 'expo run:ios',
-  });
-
   // If this changes then everything else probably changed as well.
   expect(findProjectFiles(projectRoot)).toMatchSnapshot();
+});
+*/
+
+// Regression test for https://github.com/expo/expo/issues/36289
+// This tests contains assertions related to ios files, making it incompatible with Windows
+itNotWindows('runs `npx expo prebuild --platform ios` after building Android', async () => {
+  const projectRoot = await setupTestProjectWithOptionsAsync(
+    'regression-expo-36289',
+    'with-blank',
+    { reuseExisting: false }
+  );
+
+  const templateTarball = await createPackageTarball(
+    projectRoot,
+    'templates/expo-template-bare-minimum'
+  );
+
+  // Execute prebuild for android
+  await executeExpoAsync(projectRoot, [
+    'prebuild',
+    '--platform=android',
+    '--no-install',
+    '--template',
+    templateTarball.relativePath,
+  ]);
+
+  // Create the `android/.gradle` folder that Gradle creates, and create the empty `android/.gradle/vcs-1/gc.properties` file
+  // We can also run `./gradlew :app:assembleDebug` but that's an expensive operation.
+  await fs.mkdir(path.join(projectRoot, 'android/.gradle/vcs-1'), { recursive: true });
+  await fs.writeFile(path.join(projectRoot, 'android/.gradle/vcs-1/gc.properties'), '');
+
+  // Execute prebuild for iOS
+  const command = await executeExpoAsync(projectRoot, [
+    'prebuild',
+    '--platform=ios',
+    '--no-install',
+    '--template',
+    templateTarball.relativePath,
+  ]);
+
+  // Ensure there are no errors
+  expect(command).not.toMatchObject({
+    stderr: expect.stringContaining('Failed to read template file'),
+  });
 });

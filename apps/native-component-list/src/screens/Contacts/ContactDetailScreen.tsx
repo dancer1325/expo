@@ -1,17 +1,17 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import * as Contacts from 'expo-contacts';
+import * as Contacts from 'expo-contacts/legacy';
 import * as ImagePicker from 'expo-image-picker';
 import * as Linking from 'expo-linking';
 import * as React from 'react';
 import { Platform, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import ContactDetailList, { DetailListItem } from './ContactDetailList';
-import * as ContactUtils from './ContactUtils';
-import ContactsAvatar from './ContactsAvatar';
 import HeaderContainerRight from '../../components/HeaderContainerRight';
 import HeaderIconButton from '../../components/HeaderIconButton';
 import Colors from '../../constants/Colors';
 import usePermissions from '../../utilities/usePermissions';
+import ContactDetailList, { DetailListItem } from './ContactDetailList';
+import * as ContactUtils from './ContactUtils';
+import ContactsAvatar from './ContactsAvatar';
 
 const isIos = Platform.OS === 'ios';
 
@@ -39,7 +39,11 @@ export default function ContactDetailScreen(props: any) {
           <HeaderIconButton
             name="open"
             onPress={async () => {
-              await Contacts.presentFormAsync(props.route.params.id);
+              await Contacts.presentFormAsync(props.route.params.id, undefined, {
+                cancelButtonTitle: 'Exit',
+                message: 'Message below name',
+                allowsEditing: true,
+              });
               console.log('the native contact form has been closed');
             }}
           />
@@ -90,8 +94,8 @@ function ContactDetailView({
     try {
       await Contacts.removeContactAsync(id);
       navigation.goBack();
-    } catch ({ message }) {
-      console.error(message);
+    } catch (error: any) {
+      console.error(error.message);
     }
   };
 
@@ -187,14 +191,14 @@ function ContactDetailView({
             case Contacts.Fields.Addresses:
               {
                 const address = ContactUtils.parseAddress(item);
-                const targetUriAdress = encodeURI(address);
+                const targetUriAddress = encodeURI(address);
                 transform = {
                   value: address,
                   onPress: () =>
                     Linking.openURL(
                       Platform.select<string>({
-                        ios: `https://maps.apple.com/maps?daddr=${targetUriAdress}`,
-                        default: `https://maps.google.com/maps?daddr=${targetUriAdress}`,
+                        ios: `https://maps.apple.com/maps?daddr=${targetUriAddress}`,
+                        default: `https://maps.google.com/maps?daddr=${targetUriAddress}`,
                       })
                     ),
                 };
@@ -223,13 +227,6 @@ function ContactDetailView({
     return items;
   }, [contact]);
 
-  const onPressImage = async () => {
-    if (!isIos) {
-      return;
-    }
-    _selectPhoto();
-  };
-
   React.useEffect(() => {
     loadAsync();
   }, []);
@@ -239,10 +236,10 @@ function ContactDetailView({
     try {
       await Contacts.updateContactAsync({
         [Contacts.Fields.ID]: id,
-        [Contacts.Fields.Image]: uri,
-      } as any);
-    } catch ({ message }) {
-      console.error(message);
+        [Contacts.Fields.Image]: { uri },
+      });
+    } catch (error: any) {
+      console.error(error.message);
     }
 
     loadAsync();
@@ -269,7 +266,7 @@ function ContactDetailView({
         <View style={{ alignItems: 'center', marginBottom: 8 }}>
           <ContactsAvatar
             style={styles.image}
-            onPress={onPressImage}
+            onPress={_selectPhoto}
             name={contact?.name ?? ''}
             image={contact?.image?.uri}
           />
@@ -291,9 +288,29 @@ function ContactDetailView({
   };
 
   const renderListFooterComponent = () => (
-    <Text onPress={deleteAsync} style={styles.footer}>
-      Delete Contact
-    </Text>
+    <>
+      <Text
+        onPress={async () => {
+          const contact = await Contacts.getContactByIdAsync(id);
+          await Contacts.presentFormAsync(undefined, contact, {
+            isNew: true,
+          });
+        }}
+        style={styles.footer}>
+        Clone Contact
+      </Text>
+
+      <Text
+        onPress={deleteAsync}
+        style={[
+          styles.footer,
+          {
+            color: 'red',
+          },
+        ]}>
+        Delete Contact
+      </Text>
+    </>
   );
 
   if (!contact) {
@@ -387,11 +404,10 @@ const styles = StyleSheet.create({
   },
   footer: {
     width: '100%',
-    padding: 24,
+    padding: 12,
     textAlign: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    color: 'red',
   },
   header: {
     paddingHorizontal: 36,

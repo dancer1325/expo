@@ -3,17 +3,23 @@
 import CoreLocation
 import ExpoModulesCore
 
-internal class LocationsStreamer: BaseLocationProvider {
+internal class LocationsStreamer: BaseStreamer {
   typealias LocationsStream = AsyncThrowingStream<[CLLocation], Error>
 
   private var locationsStream: LocationsStream?
   private var continuation: LocationsStream.Continuation?
 
   deinit {
-    stopStreaming()
+    if continuation != nil {
+      stopStreaming()
+    }
   }
 
-  func streamLocations() -> LocationsStream {
+  func streamLocations() throws -> LocationsStream {
+    if !CLLocationManager.locationServicesEnabled() {
+      throw Exceptions.LocationServicesDisabled()
+    }
+
     if let stream = locationsStream {
       return stream
     }
@@ -25,7 +31,7 @@ internal class LocationsStreamer: BaseLocationProvider {
     return stream
   }
 
-  func stopStreaming() {
+  override func stopStreaming() {
     manager.stopUpdatingLocation()
     continuation?.finish()
 
@@ -42,6 +48,12 @@ internal class LocationsStreamer: BaseLocationProvider {
   }
 
   func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
+    // Ignore `locationUnknown` (code 0) as it might be a temporary issue.
+    // The location manager will keep trying to obtain the location.
+    // It's a common error on simulator when there is no default location set in the scheme.
+    guard let clError = error as? CLError, clError.code != .locationUnknown else {
+      return
+    }
     continuation?.finish(throwing: Exceptions.LocationUnavailable().causedBy(error))
     locationsStream = nil
     continuation = nil

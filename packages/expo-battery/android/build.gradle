@@ -1,28 +1,15 @@
-apply plugin: 'com.android.library'
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
 
 group = 'host.exp.exponent'
-version = '9.0.1'
-
-def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
-apply from: expoModulesCorePlugin
-applyKotlinExpoModulesCorePlugin()
-useCoreDependencies()
-useDefaultAndroidSdkVersions()
-useExpoPublishing()
+version = '56.0.4'
 
 android {
   namespace "expo.modules.battery"
   defaultConfig {
     versionCode 11
-    versionName '9.0.1'
+    versionName '56.0.4'
   }
-}
-
-dependencies {
-  api "androidx.legacy:legacy-support-v4:1.0.0"
-
-  if (project.findProject(':expo-modules-test-core')) {
-    testImplementation project(':expo-modules-test-core')
-  }
-  testImplementation "org.robolectric:robolectric:4.10"
 }

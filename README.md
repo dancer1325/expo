@@ -10,7 +10,7 @@
       * -- via -- writing React and JavaScript
 
 * this repository
-  * == [Expo SDK](docs/pages/versions) + Expo Modules API + Expo Go app + [Expo CLI](docs/pages/more/expo-cli.mdx) + [Router](/docs/pages/router) + documentation + OTHER supporting tools
+  * == [Expo SDK](docs/pages/versions) + Expo Modules API + Expo Go app + [Expo CLI](docs/pages/more/expo-cli.md) + [Router](docs/pages/router) + documentation + OTHER supporting tools
 
 * [Expo Application Services (EAS)](https://expo.dev/eas)
   * == platform of hosted services / -- deeply integrated with -- Expo open source tools
@@ -35,23 +35,11 @@
 
 ## 🗺 Project Layout
 
-- [`packages`](/packages)
-  - ALL source code -- for -- Expo modules
-- [`apps`](/apps)
-  - Expo projects / linked to the development modules
-  - uses
-    - testing
-- [`apps/expo-go`](/apps/expo-go)
-  - source code for Expo Go
-- [`apps/expo-go/ios/Exponent.xcworkspace`](/apps/expo-go/ios)
-  - Xcode workspace
-  - uses
-    - | developing iOS, ALWAYS open this
-      - instead of `Exponent.xcodeproj`
-      - Reason: 🧠 workspace ALSO loads the CocoaPods dependencies 🧠
-- [`docs`](/docs)
-  - source code for **https://docs.expo.dev**
-- [`templates`](/templates)
+* [`packages`](packages)
+  * ALL source code -- for -- Expo modules
+* [`apps`](apps/README.md)
+* [`docs`](/docs)
+* [`templates`](/templates)
   - template projects / get -- via running -- `npx create-expo-app`
 - [`react-native-lab`](/react-native-lab)
   - fork of `react-native`
@@ -72,5 +60,5 @@
 ## ❓ FAQ
 
 * see 
-  * [FAQ](docs/pages/faq.mdx)
+  * [FAQ](docs/pages/faq.md)
   * [Discord](https://chat.expo.dev)

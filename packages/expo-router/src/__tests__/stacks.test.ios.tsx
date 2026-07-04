@@ -1,10 +1,28 @@
-import React from 'react';
+import { act, screen } from '@testing-library/react-native';
+import { expectTypeOf } from 'expect-type';
+import { Text } from 'react-native';
 
 import { store } from '../global-state/router-store';
 import { router } from '../imperative-api';
 import Stack from '../layouts/Stack';
 import Tabs from '../layouts/Tabs';
-import { act, screen, renderRouter, testRouter } from '../testing-library';
+import type { StackScreenProps } from '../layouts/stack-utils';
+import { renderRouter, testRouter } from '../testing-library';
+
+jest.mock('react-native-screens', () => {
+  const actualScreens = jest.requireActual(
+    'react-native-screens'
+  ) as typeof import('react-native-screens');
+  return {
+    ...actualScreens,
+    ScreenStackItem: jest.fn((props) => <actualScreens.ScreenStackItem {...props} />),
+  };
+});
+
+const { ScreenStackItem } = jest.requireMock(
+  'react-native-screens'
+) as typeof import('react-native-screens');
+const MockedScreenStackItem = ScreenStackItem as jest.MockedFunction<typeof ScreenStackItem>;
 /**
  * Stacks are the most common navigator and have unique navigation actions
  *
@@ -127,79 +145,57 @@ test('dismissAll nested', () => {
   // The last route should include a sub-state for /one/_layout
   // It will have three routes  (/one/index, /one/page, /one/two)
   // The last route should include a sub-state for /one/two/_layout
-  expect(store.rootStateSnapshot()).toStrictEqual({
-    history: [
-      {
-        key: expect.any(String),
-        type: 'route',
-      },
-      {
-        key: expect.any(String),
-        type: 'route',
-      },
-    ],
-    index: 2,
+  expect(store.state).toStrictEqual({
+    index: 0,
     key: expect.any(String),
-    preloadedRouteKeys: [],
-    routeNames: ['a', 'b', 'one', '_sitemap', '+not-found'],
+    preloadedRoutes: [],
+    routeNames: ['__root', '+not-found', '_sitemap'],
     routes: [
       {
         key: expect.any(String),
-        name: 'a',
+        name: '__root',
         params: undefined,
-        path: '/a',
-      },
-      {
-        key: expect.any(String),
-        name: 'b',
-        params: {},
-        path: undefined,
-      },
-      {
-        key: expect.any(String),
-        name: 'one',
-        params: {
-          params: {},
-          screen: 'index',
-        },
-        path: undefined,
         state: {
-          index: 3,
+          history: [
+            {
+              key: expect.any(String),
+              type: 'route',
+            },
+            {
+              key: expect.any(String),
+              type: 'route',
+            },
+          ],
+          index: 2,
           key: expect.any(String),
-          preloadedRoutes: [],
-          routeNames: ['index', 'two', 'page'],
+          preloadedRouteKeys: [],
+          routeNames: ['a', 'b', 'one'],
           routes: [
             {
               key: expect.any(String),
-              name: 'index',
+              name: 'a',
+              params: undefined,
+              path: '/a',
+            },
+            {
+              key: expect.any(String),
+              name: 'b',
               params: {},
               path: undefined,
             },
             {
               key: expect.any(String),
-              name: 'page',
-              params: {},
-              path: undefined,
-            },
-            {
-              key: expect.any(String),
-              name: 'page',
-              params: {},
-              path: undefined,
-            },
-            {
-              key: expect.any(String),
-              name: 'two',
+              name: 'one',
               params: {
                 params: {},
                 screen: 'index',
               },
               path: undefined,
               state: {
-                index: 2,
+                index: 3,
                 key: expect.any(String),
                 preloadedRoutes: [],
-                routeNames: ['index', 'page'],
+                routeNames: ['index', 'two', 'page'],
                 routes: [
                   {
                     key: expect.any(String),
@@ -219,6 +215,43 @@ test('dismissAll nested', () => {
                     params: {},
                     path: undefined,
                   },
+                  {
+                    key: expect.any(String),
+                    name: 'two',
+                    params: {
+                      params: {},
+                      screen: 'index',
+                    },
+                    path: undefined,
+                    state: {
+                      index: 2,
+                      key: expect.any(String),
+                      preloadedRoutes: [],
+                      routeNames: ['index', 'page'],
+                      routes: [
+                        {
+                          key: expect.any(String),
+                          name: 'index',
+                          params: {},
+                          path: undefined,
+                        },
+                        {
+                          key: expect.any(String),
+                          name: 'page',
+                          params: {},
+                          path: undefined,
+                        },
+                        {
+                          key: expect.any(String),
+                          name: 'page',
+                          params: {},
+                          path: undefined,
+                        },
+                      ],
+                      stale: false,
+                      type: 'stack',
+                    },
+                  },
                 ],
                 stale: false,
                 type: 'stack',
@@ -226,90 +259,171 @@ test('dismissAll nested', () => {
             },
           ],
           stale: false,
-          type: 'stack',
+          type: 'tab',
         },
-      },
-      {
-        key: expect.any(String),
-        name: '_sitemap',
-        params: undefined,
-      },
-      {
-        key: expect.any(String),
-        name: '+not-found',
-        params: undefined,
       },
     ],
     stale: false,
-    type: 'tab',
+    type: 'stack',
   });
 
   // This should only dismissing the sub-state for /one/two/_layout
   testRouter.dismissAll();
   expect(screen).toHavePathname('/one/two');
-  expect(store.rootStateSnapshot()).toStrictEqual({
-    history: [
-      {
-        key: expect.any(String),
-        type: 'route',
-      },
-      {
-        key: expect.any(String),
-        type: 'route',
-      },
-    ],
-    index: 2,
+  expect(store.state).toStrictEqual({
+    index: 0,
     key: expect.any(String),
-    preloadedRouteKeys: [],
-    routeNames: ['a', 'b', 'one', '_sitemap', '+not-found'],
+    preloadedRoutes: [],
+    routeNames: ['__root', '+not-found', '_sitemap'],
     routes: [
       {
         key: expect.any(String),
-        name: 'a',
+        name: '__root',
         params: undefined,
-        path: '/a',
-      },
-      {
-        key: expect.any(String),
-        name: 'b',
-        params: {},
-        path: undefined,
-      },
-      {
-        key: expect.any(String),
-        name: 'one',
-        params: {
-          params: {},
-          screen: 'index',
-        },
-        path: undefined,
         state: {
-          index: 3,
+          history: [
+            {
+              key: expect.any(String),
+              type: 'route',
+            },
+            {
+              key: expect.any(String),
+              type: 'route',
+            },
+          ],
+          index: 2,
           key: expect.any(String),
-          preloadedRoutes: [],
-          routeNames: ['index', 'two', 'page'],
+          preloadedRouteKeys: [],
+          routeNames: ['a', 'b', 'one'],
           routes: [
             {
               key: expect.any(String),
-              name: 'index',
+              name: 'a',
+              params: undefined,
+              path: '/a',
+            },
+            {
+              key: expect.any(String),
+              name: 'b',
               params: {},
               path: undefined,
             },
             {
               key: expect.any(String),
-              name: 'page',
+              name: 'one',
+              params: {
+                params: {},
+                screen: 'index',
+              },
+              path: undefined,
+              state: {
+                index: 3,
+                key: expect.any(String),
+                preloadedRoutes: [],
+                routeNames: ['index', 'two', 'page'],
+                routes: [
+                  {
+                    key: expect.any(String),
+                    name: 'index',
+                    params: {},
+                    path: undefined,
+                  },
+                  {
+                    key: expect.any(String),
+                    name: 'page',
+                    params: {},
+                    path: undefined,
+                  },
+                  {
+                    key: expect.any(String),
+                    name: 'page',
+                    params: {},
+                    path: undefined,
+                  },
+                  {
+                    key: expect.any(String),
+                    name: 'two',
+                    params: {
+                      params: {},
+                      screen: 'index',
+                    },
+                    path: undefined,
+                    state: {
+                      index: 0,
+                      key: expect.any(String),
+                      preloadedRoutes: [],
+                      routeNames: ['index', 'page'],
+                      routes: [
+                        {
+                          key: expect.any(String),
+                          name: 'index',
+                          params: {},
+                          path: undefined,
+                        },
+                      ],
+                      stale: false,
+                      type: 'stack',
+                    },
+                  },
+                ],
+                stale: false,
+                type: 'stack',
+              },
+            },
+          ],
+          stale: false,
+          type: 'tab',
+        },
+      },
+    ],
+    stale: false,
+    type: 'stack',
+  });
+
+  // This should only dismissing the sub-state for /one/_layout
+  testRouter.dismissAll();
+  expect(screen).toHavePathname('/one');
+  expect(store.state).toStrictEqual({
+    index: 0,
+    key: expect.any(String),
+    preloadedRoutes: [],
+    routeNames: ['__root', '+not-found', '_sitemap'],
+    routes: [
+      {
+        key: expect.any(String),
+        name: '__root',
+        params: undefined,
+        state: {
+          history: [
+            {
+              key: expect.any(String),
+              type: 'route',
+            },
+            {
+              key: expect.any(String),
+              type: 'route',
+            },
+          ],
+          index: 2,
+          key: expect.any(String),
+          preloadedRouteKeys: [],
+          routeNames: ['a', 'b', 'one'],
+          routes: [
+            {
+              key: expect.any(String),
+              name: 'a',
+              params: undefined,
+              path: '/a',
+            },
+            {
+              key: expect.any(String),
+              name: 'b',
               params: {},
               path: undefined,
             },
             {
               key: expect.any(String),
-              name: 'page',
-              params: {},
-              path: undefined,
-            },
-            {
-              key: expect.any(String),
-              name: 'two',
+              name: 'one',
               params: {
                 params: {},
                 screen: 'index',
@@ -319,7 +433,7 @@ test('dismissAll nested', () => {
                 index: 0,
                 key: expect.any(String),
                 preloadedRoutes: [],
-                routeNames: ['index', 'page'],
+                routeNames: ['index', 'two', 'page'],
                 routes: [
                   {
                     key: expect.any(String),
@@ -334,93 +448,12 @@ test('dismissAll nested', () => {
             },
           ],
           stale: false,
-          type: 'stack',
+          type: 'tab',
         },
-      },
-      {
-        key: expect.any(String),
-        name: '_sitemap',
-        params: undefined,
-      },
-      {
-        key: expect.any(String),
-        name: '+not-found',
-        params: undefined,
       },
     ],
     stale: false,
-    type: 'tab',
-  });
-
-  // This should only dismissing the sub-state for /one/_layout
-  testRouter.dismissAll();
-  expect(screen).toHavePathname('/one');
-  expect(store.rootStateSnapshot()).toStrictEqual({
-    history: [
-      {
-        key: expect.any(String),
-        type: 'route',
-      },
-      {
-        key: expect.any(String),
-        type: 'route',
-      },
-    ],
-    index: 2,
-    key: expect.any(String),
-    preloadedRouteKeys: [],
-    routeNames: ['a', 'b', 'one', '_sitemap', '+not-found'],
-    routes: [
-      {
-        key: expect.any(String),
-        name: 'a',
-        params: undefined,
-        path: '/a',
-      },
-      {
-        key: expect.any(String),
-        name: 'b',
-        params: {},
-        path: undefined,
-      },
-      {
-        key: expect.any(String),
-        name: 'one',
-        params: {
-          params: {},
-          screen: 'index',
-        },
-        path: undefined,
-        state: {
-          index: 0,
-          key: expect.any(String),
-          preloadedRoutes: [],
-          routeNames: ['index', 'two', 'page'],
-          routes: [
-            {
-              key: expect.any(String),
-              name: 'index',
-              params: {},
-              path: undefined,
-            },
-          ],
-          stale: false,
-          type: 'stack',
-        },
-      },
-      {
-        key: expect.any(String),
-        name: '_sitemap',
-        params: undefined,
-      },
-      {
-        key: expect.any(String),
-        name: '+not-found',
-        params: undefined,
-      },
-    ],
-    stale: false,
-    type: 'tab',
+    type: 'stack',
   });
 
   // Cannot dismiss again as we are at the root Tabs layout
@@ -455,4 +488,479 @@ test('pushing in a nested stack should only rerender the nested stack', () => {
   expect(RootLayout).toHaveBeenCalledTimes(1);
   expect(NestedLayout).toHaveBeenCalledTimes(1);
   expect(NestedNestedLayout).toHaveBeenCalledTimes(1);
+});
+
+test('can preserve the nested initialRouteName when navigating to a nested stack', () => {
+  renderRouter({
+    index: () => <Text testID="link">Index</Text>,
+    '/fruit/_layout': {
+      unstable_settings: {
+        anchor: 'apple',
+      },
+      default: () => {
+        return <Stack />;
+      },
+    },
+    '/fruit/apple': () => <Text testID="apple">Apple</Text>,
+    '/fruit/banana': () => <Text testID="banana">Banana</Text>,
+  });
+
+  act(() => router.push('/fruit/banana', { withAnchor: true }));
+  expect(screen.getByTestId('banana')).toBeDefined();
+  act(() => router.back());
+  expect(screen.getByTestId('apple')).toBeDefined();
+  act(() => router.back());
+  expect(screen.getByTestId('link')).toBeDefined();
+});
+
+describe('presentation validation', () => {
+  let consoleSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    consoleSpy.mockRestore();
+  });
+
+  it('throws when an invalid presentation is set via screen options', () => {
+    expect(() => {
+      renderRouter({
+        _layout: () => <Stack screenOptions={{ presentation: 'xyz' as any }} />,
+        index: () => <Text>Index</Text>,
+      });
+    }).toThrow('Invalid presentation value "xyz"');
+  });
+
+  it('throws when an invalid presentation is set via layout options', () => {
+    expect(() => {
+      renderRouter({
+        _layout: () => (
+          <Stack>
+            <Stack.Screen name="index" options={{ presentation: 'xyz' as any }} />
+          </Stack>
+        ),
+        index: () => <Text>Index</Text>,
+      });
+    }).toThrow('Invalid presentation value "xyz"');
+  });
+
+  it('throws when an invalid presentation is set via page-level Stack.Screen', () => {
+    expect(() => {
+      renderRouter({
+        index: () => (
+          <>
+            <Stack.Screen options={{ presentation: 'xyz' as any }} />
+            <Text>Index</Text>
+          </>
+        ),
+      });
+    }).toThrow('Invalid presentation value "xyz"');
+  });
+});
+
+describe('singular', () => {
+  test('singular should only allow one instance of a screen', () => {
+    renderRouter(
+      {
+        _layout: () => (
+          <Stack>
+            <Stack.Screen name="[slug]" dangerouslySingular />
+          </Stack>
+        ),
+        '[slug]': () => <Text>slug</Text>,
+      },
+      {
+        initialUrl: '/apple',
+      }
+    );
+
+    expect(screen).toHaveRouterState({
+      routes: [
+        {
+          name: '__root',
+          params: {
+            slug: 'apple',
+          },
+          state: {
+            routes: [
+              {
+                name: '[slug]',
+                params: {
+                  slug: 'apple',
+                },
+                path: '/apple',
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    // Normally pushing would add a new route, but since we have singular set to true
+    // Nothing should happen, as the current route is already the same as the target route
+    act(() => router.push('/apple'));
+    expect(screen).toHaveRouterState({
+      index: 0,
+      key: expect.any(String),
+      preloadedRoutes: [],
+      routeNames: ['__root', '+not-found', '_sitemap'],
+      routes: [
+        {
+          key: expect.any(String),
+          name: '__root',
+          params: {
+            slug: 'apple',
+          },
+          state: {
+            index: 0,
+            key: expect.any(String),
+            preloadedRoutes: [],
+            routeNames: ['[slug]'],
+            routes: [
+              {
+                key: expect.any(String),
+                name: '[slug]',
+                params: {
+                  slug: 'apple',
+                },
+                path: '/apple',
+              },
+            ],
+            stale: false,
+            type: 'stack',
+          },
+        },
+      ],
+      stale: false,
+      type: 'stack',
+    });
+
+    // Adding a new screen with different params should work
+    act(() => router.push('/banana'));
+    expect(screen).toHaveRouterState({
+      index: 0,
+      key: expect.any(String),
+      preloadedRoutes: [],
+      routeNames: ['__root', '+not-found', '_sitemap'],
+      routes: [
+        {
+          key: expect.any(String),
+          name: '__root',
+          params: {
+            slug: 'apple',
+          },
+          state: {
+            index: 1,
+            key: expect.any(String),
+            preloadedRoutes: [],
+            routeNames: ['[slug]'],
+            routes: [
+              {
+                key: expect.any(String),
+                name: '[slug]',
+                params: {
+                  slug: 'apple',
+                },
+                path: '/apple',
+              },
+              {
+                key: expect.any(String),
+                name: '[slug]',
+                params: {
+                  slug: 'banana',
+                },
+                path: undefined,
+              },
+            ],
+            stale: false,
+            type: 'stack',
+          },
+        },
+      ],
+      stale: false,
+      type: 'stack',
+    });
+
+    // Normally pushing would add a new route, but since we have singular set to true
+    // It rearranges the Stack to move /apple to the current route
+    act(() => router.push('/apple'));
+    expect(screen).toHaveRouterState({
+      index: 0,
+      key: expect.any(String),
+      preloadedRoutes: [],
+      routeNames: ['__root', '+not-found', '_sitemap'],
+      routes: [
+        {
+          key: expect.any(String),
+          name: '__root',
+          params: {
+            slug: 'apple',
+          },
+          state: {
+            index: 1,
+            key: expect.any(String),
+            preloadedRoutes: [],
+            routeNames: ['[slug]'],
+            routes: [
+              {
+                key: expect.any(String),
+                name: '[slug]',
+                params: {
+                  slug: 'banana',
+                },
+                path: undefined,
+              },
+              {
+                key: expect.any(String),
+                name: '[slug]',
+                params: {
+                  slug: 'apple',
+                },
+                path: '/apple',
+              },
+            ],
+            stale: false,
+            type: 'stack',
+          },
+        },
+      ],
+      stale: false,
+      type: 'stack',
+    });
+  });
+});
+
+describe('Stack.Screen types', () => {
+  it('accepts layout navigation props', () => {
+    expectTypeOf({ name: 'home', redirect: true }).toExtend<StackScreenProps>();
+    expectTypeOf({ name: 'profile', initialParams: { id: '123' } }).toExtend<StackScreenProps>();
+    expectTypeOf({ name: 'settings', dangerouslySingular: true }).toExtend<StackScreenProps>();
+    expectTypeOf({
+      name: 'details',
+      dangerouslySingular: (name, params) => `${name}-${params.id}`,
+    } satisfies StackScreenProps).toExtend<StackScreenProps>();
+    expectTypeOf({
+      name: 'page',
+      listeners: { transitionStart: () => {} },
+    }).toExtend<StackScreenProps>();
+    expectTypeOf({
+      name: 'page',
+      listeners: ({ route, navigation }) => ({ focus: () => {} }),
+    } satisfies StackScreenProps).toExtend<StackScreenProps>();
+    expectTypeOf({
+      name: 'page',
+      getId: ({ params }) => params?.id,
+    } satisfies StackScreenProps).toExtend<StackScreenProps>();
+  });
+
+  it('accepts function-form options', () => {
+    expectTypeOf({
+      options: ({ route }) => ({ title: (route.params as Record<string, string>)?.name }),
+    } satisfies StackScreenProps).toExtend<StackScreenProps>();
+    expectTypeOf({
+      name: 'profile',
+      options: ({ route, navigation }) => ({
+        title: `Profile: ${(route.params as Record<string, string>)?.id}`,
+      }),
+    } satisfies StackScreenProps).toExtend<StackScreenProps>();
+  });
+});
+
+describe('function-form options', () => {
+  beforeEach(() => {
+    MockedScreenStackItem.mockClear();
+  });
+
+  it('passes resolved function-form options to ScreenStackItem', () => {
+    renderRouter({
+      _layout: () => (
+        <Stack>
+          <Stack.Screen name="index" options={({ route }) => ({ title: `Page: ${route.name}` })} />
+        </Stack>
+      ),
+      index: () => <Text testID="index">Index</Text>,
+    });
+
+    expect(screen.getByTestId('index')).toBeVisible();
+    expect(MockedScreenStackItem.mock.calls[0]![0].headerConfig?.title).toBe('Page: index');
+  });
+
+  it('calls function-form options with route and navigation', () => {
+    const optionsFn = jest.fn(({ route }) => ({ title: `Page: ${route.name}` }));
+
+    renderRouter({
+      _layout: () => (
+        <Stack>
+          <Stack.Screen name="index" options={optionsFn} />
+        </Stack>
+      ),
+      index: () => <Text testID="index">Index</Text>,
+    });
+
+    expect(optionsFn).toHaveBeenCalled();
+    const arg = optionsFn.mock.calls[0]![0];
+    expect(arg).toHaveProperty('route');
+    expect(arg).toHaveProperty('navigation');
+    expect(arg.route).toHaveProperty('name', 'index');
+  });
+
+  it('passes updated options to ScreenStackItem after navigation', () => {
+    renderRouter({
+      _layout: () => (
+        <Stack>
+          <Stack.Screen name="index" options={({ route }) => ({ title: `Page: ${route.name}` })} />
+          <Stack.Screen
+            name="profile"
+            options={({ route }) => ({ title: `Page: ${route.name}` })}
+          />
+        </Stack>
+      ),
+      index: () => <Text testID="index">Index</Text>,
+      profile: () => <Text testID="profile">Profile</Text>,
+    });
+
+    act(() => router.push('/profile'));
+
+    expect(screen.getByTestId('profile')).toBeVisible();
+
+    expect(MockedScreenStackItem.mock.calls[2]![0].headerConfig?.title).toBe('Page: profile');
+  });
+
+  it('warns when function-form options are used in page context', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    renderRouter({
+      index: () => (
+        <>
+          <Stack.Screen options={({ route }) => ({ title: `Page: ${route.name}` })} />
+          <Text testID="index">Index</Text>
+        </>
+      ),
+    });
+
+    expect(screen.getByTestId('index')).toBeVisible();
+    expect(spy).toHaveBeenCalledWith(
+      expect.stringContaining('Function-form options are not supported inside page components')
+    );
+
+    spy.mockRestore();
+  });
+});
+
+describe('Screen options with /index suffix normalization', () => {
+  it('should apply Screen options when name omits /index suffix', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    renderRouter(
+      {
+        _layout: () => (
+          <Stack id={undefined}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="settings/general" options={{ title: 'General Settings' }} />
+          </Stack>
+        ),
+        index: () => <Text testID="index">Index</Text>,
+        'settings/general/index': () => <Text testID="settings">Settings</Text>,
+      },
+      { initialUrl: '/settings/general' }
+    );
+
+    expect(screen.getByTestId('settings')).toBeVisible();
+    expect(screen).toHavePathname('/settings/general');
+
+    // Verify the title option is actually applied
+    expect(MockedScreenStackItem.mock.calls[0]![0].headerConfig?.title).toBe('General Settings');
+
+    expect(spy).not.toHaveBeenCalledWith(
+      expect.stringContaining('[Layout children]'),
+      expect.anything()
+    );
+
+    spy.mockRestore();
+  });
+
+  it('should apply options when _layout exists alongside index', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    renderRouter(
+      {
+        _layout: () => (
+          <Stack id={undefined}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="otp/[flow]" options={{ title: 'OTP Flow' }} />
+          </Stack>
+        ),
+        index: () => <Text testID="index">Index</Text>,
+        'otp/[flow]/_layout': () => <Stack />,
+        'otp/[flow]/index': () => <Text testID="otp">OTP</Text>,
+      },
+      { initialUrl: '/otp/signin' }
+    );
+
+    expect(screen.getByTestId('otp')).toBeVisible();
+    expect(screen).toHavePathname('/otp/signin');
+
+    // Verify the title option is actually applied
+    expect(MockedScreenStackItem.mock.calls[0]![0].headerConfig?.title).toBe('OTP Flow');
+
+    expect(spy).not.toHaveBeenCalledWith(
+      expect.stringContaining('[Layout children]'),
+      expect.anything()
+    );
+
+    spy.mockRestore();
+  });
+
+  it('should apply options when _layout exists without index', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    renderRouter(
+      {
+        _layout: () => (
+          <Stack id={undefined}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="otp/[flow]" options={{ title: 'OTP Flow' }} />
+          </Stack>
+        ),
+        index: () => <Text testID="index">Index</Text>,
+        'otp/[flow]/_layout': () => <Stack />,
+        'otp/[flow]/step1': () => <Text testID="step1">Step 1</Text>,
+      },
+      { initialUrl: '/otp/signin/step1' }
+    );
+
+    expect(screen.getByTestId('step1')).toBeVisible();
+    expect(screen).toHavePathname('/otp/signin/step1');
+
+    // Verify the title option is actually applied
+    expect(MockedScreenStackItem.mock.calls[0]![0].headerConfig?.title).toBe('OTP Flow');
+
+    expect(spy).not.toHaveBeenCalledWith(
+      expect.stringContaining('[Layout children]'),
+      expect.anything()
+    );
+
+    spy.mockRestore();
+  });
+
+  it('should throw when both name="otp/[flow]" and name="otp/[flow]/index" are used', () => {
+    expect(() =>
+      renderRouter(
+        {
+          _layout: () => (
+            <Stack id={undefined}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="otp/[flow]" options={{ title: 'OTP Short' }} />
+              <Stack.Screen name="otp/[flow]/index" options={{ title: 'OTP Full' }} />
+            </Stack>
+          ),
+          index: () => <Text testID="index">Index</Text>,
+          'otp/[flow]/index': () => <Text testID="otp">OTP</Text>,
+        },
+        { initialUrl: '/otp/signin' }
+      )
+    ).toThrow('Screen names must be unique');
+  });
 });

@@ -14,14 +14,16 @@ import com.reactnativecommunity.picker.RNCPickerPackage
 import com.reactnativecommunity.slider.ReactSliderPackage
 import com.reactnativecommunity.webview.RNCWebViewModule
 import com.reactnativecommunity.webview.RNCWebViewPackage
+import com.reactnativekeyboardcontroller.KeyboardControllerModule
+import com.reactnativekeyboardcontroller.KeyboardControllerPackage
 import com.reactnativepagerview.PagerViewPackage
 import com.reactnativestripesdk.StripeSdkPackage
 import com.rnmaps.maps.MapsPackage
-import com.shopify.reactnative.flash_list.ReactNativeFlashListPackage
 import com.shopify.reactnative.skia.RNSkiaPackage
 import com.swmansion.gesturehandler.RNGestureHandlerPackage
 import com.swmansion.gesturehandler.react.RNGestureHandlerModule
 import com.swmansion.rnscreens.RNScreensPackage
+import com.th3rdwave.safeareacontext.SafeAreaContextModule
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage
 import expo.modules.adapters.react.ReactModuleRegistryProvider
 import expo.modules.core.interfaces.Package
@@ -40,9 +42,7 @@ import versioned.host.exp.exponent.modules.api.KeyboardModule
 import versioned.host.exp.exponent.modules.api.PedometerModule
 import versioned.host.exp.exponent.modules.api.ScreenOrientationModule
 import versioned.host.exp.exponent.modules.api.URLHandlerModule
-import versioned.host.exp.exponent.modules.api.cognito.RNAWSCognitoModule
 import versioned.host.exp.exponent.modules.api.notifications.NotificationsModule
-import versioned.host.exp.exponent.modules.internal.DevMenuModule
 import versioned.host.exp.exponent.modules.internal.ExponentAsyncStorageModule
 import versioned.host.exp.exponent.modules.internal.ExponentUnsignedAsyncStorageModule
 import versioned.host.exp.exponent.modules.test.ExponentTestNativeModule
@@ -61,14 +61,12 @@ class ExponentPackage : ReactPackage {
     isKernel: Boolean,
     experienceProperties: Map<String, Any?>,
     manifest: Manifest,
-    expoPackages: List<Package>,
-    moduleProvider: ModulesProvider,
     singletonModules: List<SingletonModule>?
   ) {
     this.isKernel = isKernel
     this.experienceProperties = experienceProperties
     this.manifest = manifest
-    moduleRegistryAdapter = createDefaultModuleRegistryAdapterForPackages(expoPackages, singletonModules, moduleProvider)
+    moduleRegistryAdapter = createDefaultModuleRegistryAdapterForPackages(emptyList(), singletonModules, null)
   }
 
   constructor(
@@ -114,10 +112,6 @@ class ExponentPackage : ReactPackage {
       nativeModules.add((ExponentKernelModuleProvider.newInstance(reactContext) as NativeModule?)!!)
       // WHEN_VERSIONING_REMOVE_TO_HERE
     }
-    if (!isKernel) {
-      // We need DevMenuModule only in non-home apps.
-      nativeModules.add(DevMenuModule(reactContext, experienceProperties, manifest))
-    }
 
     if (isVerified) {
       try {
@@ -127,15 +121,16 @@ class ExponentPackage : ReactPackage {
         nativeModules.add(RNViewShotModule(reactContext, scopedContext.cacheDir, scopedContext.externalCacheDir))
         nativeModules.add(ExponentTestNativeModule(reactContext))
         nativeModules.add(PedometerModule(reactContext))
+        nativeModules.add(SafeAreaContextModule(reactContext))
         nativeModules.add(ScreenOrientationModule(reactContext))
         nativeModules.add(RNGestureHandlerModule(reactContext))
-        nativeModules.add(RNAWSCognitoModule(reactContext))
         nativeModules.add(RNCWebViewModule(reactContext))
         nativeModules.add(NetInfoModule(reactContext))
-        nativeModules.addAll(SvgPackage().getNativeModuleIterator(reactContext).map { it.module })
-        nativeModules.addAll(MapsPackage().createNativeModules(reactContext))
-        nativeModules.addAll(RNDateTimePickerPackage().getReactModuleInfoProvider().getReactModuleInfos().map { RNDateTimePickerPackage().getModule(it.value.name(), reactContext)!! })
-        nativeModules.addAll(stripePackage.createNativeModules(reactContext))
+        nativeModules.add(KeyboardControllerModule(reactContext))
+        nativeModules.addAll(svgPackage.getReactModuleInfoProvider().getReactModuleInfos().values.mapNotNull { svgPackage.getModule(it.name, reactContext) })
+        nativeModules.addAll(mapsPackage.getReactModuleInfoProvider().getReactModuleInfos().values.mapNotNull { mapsPackage.getModule(it.name, reactContext) })
+        nativeModules.addAll(dateTimePackage.getReactModuleInfoProvider().getReactModuleInfos().values.mapNotNull { dateTimePackage.getModule(it.name, reactContext) })
+        nativeModules.addAll(stripePackage.getReactModuleInfoProvider().getReactModuleInfos().values.mapNotNull { stripePackage.getModule(it.name, reactContext) })
         nativeModules.addAll(skiaPackage.createNativeModules(reactContext))
 
         // Call to create native modules has to be at the bottom --
@@ -168,8 +163,8 @@ class ExponentPackage : ReactPackage {
       viewManagers,
       listOf(
         SvgPackage(),
-        MapsPackage(),
         LottiePackage(),
+        MapsPackage(),
         RNGestureHandlerPackage(),
         RNScreensPackage(),
         RNCWebViewPackage(),
@@ -181,7 +176,7 @@ class ExponentPackage : ReactPackage {
         SafeAreaContextPackage(),
         stripePackage,
         skiaPackage,
-        ReactNativeFlashListPackage()
+        KeyboardControllerPackage()
       )
     )
     viewManagers.addAll(moduleRegistryAdapter.createViewManagers(reactContext))
@@ -215,12 +210,13 @@ class ExponentPackage : ReactPackage {
     // Need to avoid initializing duplicated packages
     private val stripePackage = StripeSdkPackage()
     private val skiaPackage = RNSkiaPackage()
+    private val mapsPackage = MapsPackage()
+    private val dateTimePackage = RNDateTimePickerPackage()
+    private val svgPackage = SvgPackage()
 
     fun kernelExponentPackage(
       context: Context,
       manifest: Manifest,
-      expoPackages: List<Package>,
-      modulesProvider: ModulesProvider,
       initialURL: String?
     ): ExponentPackage {
       val kernelExperienceProperties = mutableMapOf(
@@ -231,13 +227,11 @@ class ExponentPackage : ReactPackage {
           this[KernelConstants.INTENT_URI_KEY] = initialURL
         }
       }
-      val singletonModules = getOrCreateSingletonModules(context, manifest, expoPackages)
+      val singletonModules = getOrCreateSingletonModules(context, manifest, null)
       return ExponentPackage(
         true,
         kernelExperienceProperties,
         manifest,
-        expoPackages,
-        modulesProvider,
         singletonModules
       )
     }

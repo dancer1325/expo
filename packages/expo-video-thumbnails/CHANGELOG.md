@@ -10,6 +10,154 @@
 
 ### 💡 Others
 
+## 56.0.3 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.1 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+### 🛠 Breaking changes
+
+- Bumped minimum iOS/tvOS version to 16.4, macOS to 13.4. ([#43296](https://github.com/expo/expo/pull/43296) by [@tsapeta](https://github.com/tsapeta))
+
+## 55.0.14 - 2026-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.13 - 2026-04-07
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.12 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.11 - 2026-03-17
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.10 - 2026-02-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.9 — 2026-02-25
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.8 — 2026-02-20
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.7 — 2026-02-20
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.6 — 2026-02-16
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.5 — 2026-02-08
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.4 — 2026-02-03
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.3 — 2026-01-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 🐛 Bug fixes
+
+- [Android] Fixed broken thumbnail generation on Android 9 and lower. ([#3854081613](https://github.com/expo/expo/pull/40816) by [@andrejpavlovic](https://github.com/andrejpavlovic))
+
+### 💡 Others
+
+- [Android] Remove unused `androidx.annotation:annotation` dependency. ([#39755](https://github.com/expo/expo/pull/39755) by [@lukmccall](https://github.com/lukmccall))
+
+## 10.0.8 - 2025-12-05
+
+_This version does not introduce any user-facing changes._
+
+## 10.0.7 — 2025-09-10
+
+### 💡 Others
+
+- Extracted the read permission check from `FileSystemUtilities` ([#39210](https://github.com/expo/expo/pull/39210) by [@kosmydel](https://github.com/kosmydel))
+
+## 10.0.6 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 10.0.5 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 10.0.4 — 2025-08-27
+
+_This version does not introduce any user-facing changes._
+
+## 10.0.3 — 2025-08-25
+
+_This version does not introduce any user-facing changes._
+
+## 10.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 10.0.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 10.0.0 — 2025-08-13
+
+### 🎉 New features
+
+- [iOS] Add Apple TV support. ([#38513](https://github.com/expo/expo/pull/38513) by [@douglowder](https://github.com/douglowder))
+
+## 9.1.3 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 9.1.2 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 9.1.1 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 9.1.0 — 2025-04-04
+
+### 💡 Others
+
+- [Android] Started using expo modules gradle plugin. ([#34176](https://github.com/expo/expo/pull/34176) by [@lukmccall](https://github.com/lukmccall))
+- [apple] Migrate remaining `expo-module.config.json` to unified platform syntax. ([#34445](https://github.com/expo/expo/pull/34445) by [@reichhartd](https://github.com/reichhartd))
+- [iOS] Fix warnings which will become errors in Swift 6. ([#35288](https://github.com/expo/expo/pull/35288) by [@behenate](https://github.com/behenate))
+
+## 9.0.3 - 2025-01-10
+
+_This version does not introduce any user-facing changes._
+
 ## 9.0.2 — 2024-11-13
 
 _This version does not introduce any user-facing changes._

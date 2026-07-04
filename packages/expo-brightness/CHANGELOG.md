@@ -10,6 +10,163 @@
 
 ### 💡 Others
 
+## 56.0.5 — 2026-05-21
+
+### 🐛 Bug fixes
+
+- Fix an ES module import error in the typed config plugin. ([#46089](https://github.com/expo/expo/pull/46089) by [@zoontek](https://github.com/zoontek))
+
+## 56.0.4 — 2026-05-13
+
+### 💡 Others
+
+- Updated permission hooks and permission type imports to be imported from `expo` instead of `expo-modules-core` ([#45565](https://github.com/expo/expo/pull/45565) by [@Wenszel](https://github.com/Wenszel))
+
+## 56.0.3 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.1 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+### 🛠 Breaking changes
+
+- Bumped minimum iOS/tvOS version to 16.4, macOS to 13.4. ([#43296](https://github.com/expo/expo/pull/43296) by [@tsapeta](https://github.com/tsapeta))
+
+### 🎉 New features
+
+- Expose a typed config plugin function ([#44098](https://github.com/expo/expo/pull/44098) by [@zoontek](https://github.com/zoontek))
+
+## 55.0.13 - 2026-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.12 - 2026-04-07
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.11 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.10 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.9 - 2026-03-17
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.8 — 2026-02-25
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.7 — 2026-02-20
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.6 — 2026-02-16
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.5 — 2026-02-08
+
+### 🐛 Bug fixes
+
+- **Android**: Fixed `setSystemBrightnessAsync` to support brightness value 0 by mapping [0,1] range to Android's valid [1,255] range. ([#42470](https://github.com/expo/expo/pull/42470) by [@davidalo](https://github.com/davidalo))
+
+## 55.0.4 — 2026-02-03
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.3 — 2026-01-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 🛠 Breaking changes
+
+- Remove deprecated `useSystemBrightnessAsync` ([#40168](https://github.com/expo/expo/pull/40168) by [@vonovak](https://github.com/vonovak))
+
+## 14.0.8 - 2025-12-05
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.7 — 2025-09-11
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.6 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.5 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.4 — 2025-08-27
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.3 — 2025-08-25
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.0 — 2025-08-13
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.4 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.3 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.2 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.1 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.0 — 2025-04-04
+
+### 💡 Others
+
+- [Android] Started using expo modules gradle plugin. ([#34176](https://github.com/expo/expo/pull/34176) by [@lukmccall](https://github.com/lukmccall))
+- [apple] Migrate remaining `expo-module.config.json` to unified platform syntax. ([#34445](https://github.com/expo/expo/pull/34445) by [@reichhartd](https://github.com/reichhartd))
+
+## 13.0.3 - 2025-01-10
+
+_This version does not introduce any user-facing changes._
+
 ## 13.0.2 — 2024-10-24
 
 _This version does not introduce any user-facing changes._

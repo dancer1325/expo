@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
 import { optionalRequire } from '../../navigation/routeBuilder';
-import ComponentListScreen, { ListElement } from '../ComponentListScreen';
+import ComponentListScreen, { componentScreensToListElements } from '../ComponentListScreen';
 
 export const VideoScreens = [
   {
@@ -10,6 +10,30 @@ export const VideoScreens = [
     options: {},
     getComponent() {
       return optionalRequire(() => require('./VideoAudioScreen'));
+    },
+  },
+  {
+    name: 'Audio Tracks',
+    route: 'video/audio-tracks',
+    options: {},
+    getComponent() {
+      return optionalRequire(() => require('./VideoAudioTracksScreen'));
+    },
+  },
+  {
+    name: 'Cache',
+    route: 'video/cache',
+    options: {},
+    getComponent() {
+      return optionalRequire(() => require('./VideoCacheScreen'));
+    },
+  },
+  {
+    name: 'Changing VideoPlayer output view',
+    route: 'video/player_prop',
+    options: {},
+    getComponent() {
+      return optionalRequire(() => require('./VideoChangePlayerOutputScreen'));
     },
   },
   {
@@ -101,6 +125,14 @@ export const VideoScreens = [
       return optionalRequire(() => require('./VideoThumbnailsScreen'));
     },
   },
+  {
+    name: 'Video scrubbing options',
+    route: 'video/scrubbing',
+    options: {},
+    getComponent() {
+      return optionalRequire(() => require('./VideoScrubbingScreen'));
+    },
+  },
 ];
 
 if (Platform.OS === 'ios') {
@@ -115,13 +147,18 @@ if (Platform.OS === 'ios') {
   });
 }
 
-export default function VideoScreen() {
-  const apis: ListElement[] = VideoScreens.map((screen) => {
-    return {
-      name: screen.name,
-      isAvailable: true,
-      route: `/components/${screen.route}`,
-    };
+if (Platform.OS === 'android') {
+  VideoScreens.push({
+    name: 'VideoView Surface Type',
+    route: 'video/video-view-surface-type',
+    options: {},
+    getComponent() {
+      return optionalRequire(() => require('./VideoSurfaceTypeScreen'));
+    },
   });
+}
+
+export default function VideoScreen() {
+  const apis = componentScreensToListElements(VideoScreens);
   return <ComponentListScreen apis={apis} sort={false} />;
 }

@@ -3,11 +3,18 @@ import { useEffect } from 'react';
 import { listMissingHashLinkTargets } from '~/common/utilities';
 import {
   ClassDefinitionData,
+  DefaultPropsDefinitionData,
   GeneratedData,
+  PropData,
+  TypeDefinitionData,
   TypeDocKind,
 } from '~/components/plugins/api/APIDataTypes';
 import APISectionClasses from '~/components/plugins/api/APISectionClasses';
 import APISectionComponents from '~/components/plugins/api/APISectionComponents';
+import {
+  COMPONENT_TYPE_NAMES,
+  deriveComponentsFromProps,
+} from '~/components/plugins/api/APISectionCompoundNames';
 import APISectionConstants from '~/components/plugins/api/APISectionConstants';
 import APISectionEnums from '~/components/plugins/api/APISectionEnums';
 import APISectionInterfaces from '~/components/plugins/api/APISectionInterfaces';
@@ -21,6 +28,7 @@ import {
 } from '~/components/plugins/api/APISectionUtils';
 import { usePageApiVersion } from '~/providers/page-api-version';
 import versions from '~/public/static/constants/versions.json';
+import { WithTestRequire } from '~/types/common';
 import { P } from '~/ui/components/Text';
 
 const { LATEST_VERSION } = versions;
@@ -29,47 +37,101 @@ type Props = {
   packageName?: string | string[];
   apiName?: string;
   forceVersion?: string;
-  testRequire?: any;
   headersMapping?: Record<string, string>;
-};
+} & WithTestRequire;
 
-const filterDataByKind = (
-  entries: GeneratedData[] = [],
+type ApiDataEntry = GeneratedData | PropData;
+
+const filterDataByKind = <T extends { kind?: TypeDocKind }>(
+  entries: T[] = [],
   kind: TypeDocKind | TypeDocKind[],
-  additionalCondition: (entry: GeneratedData) => boolean = () => true
+  additionalCondition: (entry: T) => boolean = () => true
 ) =>
   entries.filter(
-    (entry: GeneratedData) =>
+    (entry: T) =>
+      entry.kind !== undefined &&
       (Array.isArray(kind) ? kind.includes(entry.kind) : entry.kind === kind) &&
       additionalCondition(entry)
   );
 
-const isHook = ({ name }: { name: string }) =>
-  name.startsWith('use') &&
-  // note(simek): hardcode this exception until the method will be renamed
-  name !== 'useSystemBrightnessAsync';
+const isHook = ({ name }: { name: string }) => name.startsWith('use');
 
 const isListener = ({ name }: GeneratedData) =>
   name.endsWith('Listener') || name.endsWith('Listeners');
+
+const isFunctionLikeVariable = (entry: ApiDataEntry) =>
+  entry.kind === TypeDocKind.Variable && !!entry.type?.declaration?.signatures?.length;
+
+const isConfigPluginVariable = (entry: ApiDataEntry) =>
+  entry.kind === TypeDocKind.Variable &&
+  entry.type?.type === 'reference' &&
+  entry.type?.name === 'ConfigPlugin' &&
+  (!entry.type?.target?.qualifiedName || entry.type?.target?.qualifiedName === 'ConfigPlugin');
+
+const isFunctionLikeEntry = (entry: ApiDataEntry) =>
+  entry.kind === TypeDocKind.Function ||
+  isFunctionLikeVariable(entry) ||
+  isConfigPluginVariable(entry);
+
+const getTypeSignatures = (type?: TypeDefinitionData) => {
+  if (type?.declaration?.signatures?.length) {
+    return type.declaration.signatures;
+  }
+  if (type?.type === 'intersection' || type?.type === 'union') {
+    return (
+      type.types?.find(
+        candidate => candidate.type === 'reflection' && candidate.declaration?.signatures?.length
+      )?.declaration?.signatures ?? []
+    );
+  }
+  return [];
+};
+
+const getEntrySignatures = (entry: ApiDataEntry) =>
+  entry.signatures?.length ? entry.signatures : getTypeSignatures(entry.type);
+
+const isDefaultPropsDefinitionData = (entry?: PropData): entry is DefaultPropsDefinitionData =>
+  !!entry?.type && entry.kind !== undefined;
+
+const sortByName = <T extends { name?: string }>(entries: T[]): T[] =>
+  entries
+    .slice()
+    .sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '', undefined, { sensitivity: 'base' }));
+
+const PROP_EXCEPTIONS = new Set(['StackHeaderItemSharedProps']);
 
 const isProp = ({ name }: GeneratedData) =>
   name.includes('Props') &&
   name !== 'ErrorRecoveryProps' &&
   name !== 'WebAnchorProps' &&
-  name !== 'ScreenProps';
+  name !== 'ScreenProps' &&
+  !PROP_EXCEPTIONS.has(name);
 
-const componentTypeNames = ['React.FC', 'ForwardRefExoticComponent', 'ComponentType'];
+const componentTypeNames = COMPONENT_TYPE_NAMES;
 
-const isComponent = ({ type, extendedTypes, signatures }: GeneratedData) => {
-  if (type?.name && componentTypeNames.includes(type?.name)) {
+const interfaceClassNames = new Set([
+  'EventEmitterType',
+  'NativeModuleType',
+  'SharedObjectType',
+  'SharedRefType',
+  'FileHandle',
+  'ImageManipulatorContext',
+  'ImageRef',
+  'VideoThumbnail',
+]);
+
+const isComponent = (entry: GeneratedData) => {
+  const { type, extendedTypes } = entry;
+  const signatures = getEntrySignatures(entry);
+  if (type?.name && componentTypeNames.has(type?.name)) {
     return true;
   } else if (extendedTypes?.length) {
     return extendedTypes[0].name === 'Component' || extendedTypes[0].name === 'PureComponent';
   } else if (signatures?.length) {
     const mainSignature = signatures[0];
     if (
-      (mainSignature.parameters && mainSignature.parameters[0].name === 'props') ||
-      (mainSignature.parameters && mainSignature.parameters[0].name === '__namedParameters')
+      mainSignature.parameters?.[0].name === 'props' ||
+      mainSignature.parameters?.[0].name === '__namedParameters'
     ) {
       return true;
     }
@@ -79,19 +141,25 @@ const isComponent = ({ type, extendedTypes, signatures }: GeneratedData) => {
 
 const isConstant = ({ name, type }: GeneratedData) =>
   !['default', 'Constants', 'EventEmitter', 'SharedObject', 'NativeModule'].includes(name) &&
-  !(type?.name && componentTypeNames.includes(type?.name));
+  !(type?.name && componentTypeNames.has(type?.name));
 
-const hasCategoryHeader = ({ signatures }: GeneratedData): boolean =>
-  (signatures?.[0].comment?.blockTags &&
-    signatures[0].comment.blockTags.length > 0 &&
-    signatures[0].comment.blockTags.some(tag => tag?.tag === '@header')) ??
-  false;
+const hasCategoryHeader = (entry: ApiDataEntry): boolean => {
+  const signature = getEntrySignatures(entry)[0];
+  const comment = signature?.comment ?? entry.comment;
+  return (
+    (comment?.blockTags &&
+      comment.blockTags.length > 0 &&
+      comment.blockTags.some(tag => tag?.tag === '@header')) ??
+    false
+  );
+};
 
-const groupByHeader = (entries: GeneratedData[]) => {
-  return entries.reduce((group: Record<string, GeneratedData[]>, entry) => {
-    const signature = entry.signatures[0];
+const groupByHeader = (entries: ApiDataEntry[]) => {
+  return entries.reduce((group: Record<string, ApiDataEntry[]>, entry) => {
+    const signature = getEntrySignatures(entry)[0];
+    const comment = signature?.comment ?? entry.comment;
     const header = getCommentContent(
-      signature.comment?.blockTags?.filter(tag => tag.tag === '@header')[0].content ?? []
+      comment?.blockTags?.filter(tag => tag.tag === '@header')[0].content ?? []
     );
     if (header) {
       group[header] = group[header] ?? [];
@@ -109,9 +177,22 @@ const renderAPI = (
     testRequire = undefined,
     headersMapping = {},
   }: Omit<Props, 'forceVersion'>
-): JSX.Element => {
+) => {
   try {
-    let data;
+    let data: GeneratedData[] = [];
+    // `deriveComponentsFromProps` synthesizes a derived component entry
+    // for each static property typed as `React.FC<X>` or similar. It
+    // powers compound-component APIs like `Stack.Screen` in `expo-router`
+    // and `FieldGroup.Section` in `expo-ui`.
+    //
+    // Scope the opt-in to those package families so unrelated docs aren't
+    // affected if their props happen to match the heuristic. Drop the gate
+    // when more packages adopt the pattern.
+    const isCompoundComponentsPackage = (name?: string) =>
+      !!name && (name.startsWith('expo-router') || name.startsWith('expo-ui'));
+    const shouldDeriveCompoundComponents = Array.isArray(packageName)
+      ? packageName.some(isCompoundComponentsPackage)
+      : isCompoundComponentsPackage(packageName);
 
     if (Array.isArray(packageName)) {
       data = packageName
@@ -130,41 +211,48 @@ const renderAPI = (
       data = children;
     }
 
-    const methods = filterDataByKind(
-      data,
-      TypeDocKind.Function,
-      entry =>
-        !isListener(entry) && !isHook(entry) && !isComponent(entry) && !hasCategoryHeader(entry)
-    );
-    const eventSubscriptions = filterDataByKind(
-      data,
-      TypeDocKind.Function,
-      entry => isListener(entry) && !hasCategoryHeader(entry)
-    );
-
-    const categorizedMethods = groupByHeader(
-      filterDataByKind(
-        data,
-        TypeDocKind.Function,
-        entry => !isComponent(entry) && hasCategoryHeader(entry)
+    const functionLikeEntries = data.filter(isFunctionLikeEntry);
+    const methods = sortByName<GeneratedData>(
+      functionLikeEntries.filter(
+        (entry: GeneratedData) =>
+          !isListener(entry) && !isHook(entry) && !isComponent(entry) && !hasCategoryHeader(entry)
       )
     );
+    const eventSubscriptions = sortByName<GeneratedData>(
+      functionLikeEntries.filter(
+        (entry: GeneratedData) => isListener(entry) && !hasCategoryHeader(entry)
+      )
+    );
+
+    const categorizedMethods = Object.entries(
+      groupByHeader(
+        functionLikeEntries.filter(
+          (entry: GeneratedData) => !isComponent(entry) && hasCategoryHeader(entry)
+        )
+      )
+    ).reduce((group: Record<string, ApiDataEntry[]>, [key, entries]) => {
+      group[key] = sortByName<ApiDataEntry>(entries);
+      return group;
+    }, {});
     const hasCategorizedMethods = Object.keys(categorizedMethods).length > 0;
     const hasHeadersMapping = Object.keys(headersMapping).length;
 
-    const types = filterDataByKind(
+    const allTypes = filterDataByKind(
       data,
       [TypeDocKind.TypeAlias, TypeDocKind.TypeAlias_Legacy],
       entry =>
         !isProp(entry) &&
-        !(entry?.variant === 'reference') &&
+        entry?.variant !== 'reference' &&
         !!(
-          entry.type.declaration ??
-          entry.type.types ??
-          entry.type.type ??
-          entry.type.typeArguments
+          entry.type?.declaration ??
+          entry.type?.types ??
+          entry.type?.type ??
+          entry.type?.typeArguments ??
+          entry.children
         )
     );
+    const types = allTypes.filter(entry => entry._source !== 'plugin');
+    const configPluginTypes = allTypes.filter(entry => entry._source === 'plugin');
 
     const props = filterDataByKind(
       data,
@@ -172,69 +260,110 @@ const renderAPI = (
       entry =>
         isProp(entry) &&
         ([TypeDocKind.TypeAlias, TypeDocKind.TypeAlias_Legacy].includes(entry.kind)
-          ? !!(entry.type.types ?? entry.type.declaration?.children)
+          ? !!(entry.type?.types ?? entry.type?.declaration?.children ?? entry.children)
           : true)
     );
-    const defaultProps = filterDataByKind(
-      data
-        .filter((entry: GeneratedData) => entry.kind === TypeDocKind.Class)
-        .map((entry: GeneratedData) => entry.children)
-        .flat(),
+    const classChildren = data
+      .filter(entry => entry.kind === TypeDocKind.Class)
+      .flatMap(entry => (entry as ClassDefinitionData).children ?? []);
+    const defaultPropsCandidate = filterDataByKind<PropData>(
+      classChildren,
       TypeDocKind.Property,
       entry => entry.name === 'defaultProps'
     )[0];
+    const defaultProps = isDefaultPropsDefinitionData(defaultPropsCandidate)
+      ? defaultPropsCandidate
+      : undefined;
 
-    const enums = filterDataByKind(data, TypeDocKind.Enum, entry => entry.name !== 'default');
+    const shouldStripLocationEnumPrefix =
+      packageName === 'expo-location' ||
+      (Array.isArray(packageName) && packageName.includes('expo-location'));
+    const enums = filterDataByKind(data, TypeDocKind.Enum, entry => entry.name !== 'default').map(
+      entry =>
+        shouldStripLocationEnumPrefix && entry.name.startsWith('Location')
+          ? { ...entry, name: entry.name.replace(/^Location/, '') }
+          : entry
+    );
+    const isRouterUiPackage =
+      packageName === 'expo-router-ui' ||
+      packageName === 'expo-router/ui' ||
+      (Array.isArray(packageName) &&
+        (packageName.includes('expo-router-ui') || packageName.includes('expo-router/ui')));
+    const routerUiComponentOverrides = new Set(['TabContext']);
+    const isRouterUiComponentOverride = (entry: GeneratedData) =>
+      isRouterUiPackage && routerUiComponentOverrides.has(entry.name);
+
     const interfaces = filterDataByKind(
       data,
       TypeDocKind.Interface,
-      entry => !entry.name.includes('Props')
+      entry =>
+        (!entry.name.includes('Props') || PROP_EXCEPTIONS.has(entry.name)) &&
+        !interfaceClassNames.has(entry.name)
     );
-    const constants = filterDataByKind(data, TypeDocKind.Variable, entry => isConstant(entry));
+    const constants = filterDataByKind(
+      data,
+      TypeDocKind.Variable,
+      entry =>
+        isConstant(entry) &&
+        !isFunctionLikeVariable(entry) &&
+        !isConfigPluginVariable(entry) &&
+        !isComponent(entry) &&
+        !isRouterUiComponentOverride(entry)
+    );
 
     const components = filterDataByKind(
       data,
       [TypeDocKind.Variable, TypeDocKind.Class, TypeDocKind.Function],
-      entry => isComponent(entry)
+      entry => isComponent(entry) || isRouterUiComponentOverride(entry)
     );
-    const componentsPropNames = components
-      .map(({ name, children }) => getPossibleComponentPropsNames(name, children))
-      .flat();
+    const componentsWithDerived = shouldDeriveCompoundComponents
+      ? deriveComponentsFromProps(components)
+      : components;
+    const componentsPropNames = new Set(
+      componentsWithDerived
+        .map(({ name, children }) => getPossibleComponentPropsNames(name, children))
+        .flat()
+    );
 
     const componentsProps = filterDataByKind(
       props,
       [TypeDocKind.TypeAlias, TypeDocKind.TypeAlias_Legacy, TypeDocKind.Interface],
-      entry => componentsPropNames.includes(entry.name)
+      entry => componentsPropNames.has(entry.name)
     );
 
     const namespaces = filterDataByKind(data, TypeDocKind.Namespace);
 
-    const classes = filterDataByKind(
-      data,
-      TypeDocKind.Class,
-      entry => !isComponent(entry) && entry.name !== 'default'
-    );
+    const classes = [
+      ...filterDataByKind(
+        data,
+        TypeDocKind.Class,
+        entry => !isComponent(entry) && entry.name !== 'default'
+      ),
+      ...filterDataByKind(data, TypeDocKind.Interface, entry =>
+        interfaceClassNames.has(entry.name)
+      ),
+    ].filter((entry, index, list) => list.findIndex(item => item.name === entry.name) === index);
 
-    const componentsChildren = components
-      .map((cls: ClassDefinitionData) =>
-        cls.children?.filter(
-          child =>
-            (child?.kind === TypeDocKind.Method || child?.kind === TypeDocKind.Property) &&
-            !child.inheritedFrom &&
-            child.name !== 'render' &&
-            // note(simek): hide unannotated "private" methods
-            !child.name.startsWith('_')
-        )
-      )
-      .flat();
+    const filterComponentMembers = (children: PropData[] = []) =>
+      children.filter(
+        child =>
+          (child?.kind === TypeDocKind.Method || child?.kind === TypeDocKind.Property) &&
+          !child.inheritedFrom &&
+          child.name !== 'render' &&
+          // note(simek): hide unannotated "private" methods
+          !child.name.startsWith('_')
+      );
+    const componentMembers = (cls: ClassDefinitionData) => filterComponentMembers(cls.children);
 
-    const methodsNames = methods.map(method => method.name);
+    const componentsChildren = components.flatMap(componentMembers).filter(Boolean);
+
+    const methodsNames = new Set(methods.map(method => method.name));
     const staticMethods = componentsChildren.filter(
       // note(simek): hide duplicate exports from class components
       method =>
         method?.kind === TypeDocKind.Method &&
         method?.flags?.isStatic === true &&
-        !methodsNames.includes(method.name) &&
+        !methodsNames.has(method.name) &&
         !isHook(method)
     );
     const componentMethods = componentsChildren
@@ -246,10 +375,15 @@ const renderAPI = (
       )
       .filter(Boolean);
 
-    const hooks = filterDataByKind(
-      [...data, ...componentsChildren].filter(Boolean),
-      [TypeDocKind.Function, TypeDocKind.Property],
-      entry => isHook(entry) && !hasCategoryHeader(entry)
+    const hooks = sortByName<ApiDataEntry>(
+      filterDataByKind(
+        [...data, ...componentsChildren].filter(Boolean),
+        [TypeDocKind.Function, TypeDocKind.Property, TypeDocKind.Variable],
+        entry =>
+          isHook(entry) &&
+          !hasCategoryHeader(entry) &&
+          (entry.kind !== TypeDocKind.Variable || isFunctionLikeVariable(entry))
+      )
     );
 
     return (
@@ -273,7 +407,7 @@ const renderAPI = (
                 />
               )))}
         <APISectionComponents
-          data={components}
+          data={componentsWithDerived}
           sdkVersion={sdkVersion}
           componentsProps={componentsProps}
         />
@@ -286,7 +420,7 @@ const renderAPI = (
         <APISectionConstants data={constants} apiName={apiName} sdkVersion={sdkVersion} />
         <APISectionMethods data={hooks} header="Hooks" sdkVersion={sdkVersion} />
         <APISectionClasses data={classes} sdkVersion={sdkVersion} />
-        {props && !componentsProps.length ? (
+        {props && componentsProps.length === 0 ? (
           <APISectionProps data={props} sdkVersion={sdkVersion} defaultProps={defaultProps} />
         ) : null}
         <APISectionMethods data={methods} apiName={apiName} sdkVersion={sdkVersion} />
@@ -299,6 +433,11 @@ const renderAPI = (
         <APISectionNamespaces data={namespaces} sdkVersion={sdkVersion} />
         <APISectionInterfaces data={interfaces} sdkVersion={sdkVersion} />
         <APISectionTypes data={types} sdkVersion={sdkVersion} />
+        <APISectionTypes
+          data={configPluginTypes}
+          sdkVersion={sdkVersion}
+          header="Config plugin types"
+        />
         <APISectionEnums data={enums} />
       </>
     );

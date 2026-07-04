@@ -1,20 +1,32 @@
 import chalk from 'chalk';
 
-import { DoctorCheck, DoctorCheckParams, DoctorCheckResult } from './checks.types';
+import type { AutolinkingResolutionsCache } from '../utils/autolinkingResolutions';
+import { scanNativeModuleResolutions } from '../utils/autolinkingResolutions';
 import {
   getReactNativeDirectoryCheckExcludes,
   getReactNativeDirectoryCheckListUnknownPackagesEnabled,
 } from '../utils/doctorConfig';
+import { checkLibraries } from '../utils/reactNativeDirectoryApi';
+import type { VersionedNativeModuleNamesCache } from '../utils/versionedNativeModules';
+import { getVersionedNativeModuleNamesAsync } from '../utils/versionedNativeModules';
+import type { DoctorCheck, DoctorCheckParams, DoctorCheckResult } from './checks.types';
 
 // Filter out common packages that don't make sense for us to validate on the directory.
-const DEFAULT_PACKAGES_TO_IGNORE = [
-  'react-native',
+export const DEFAULT_PACKAGES_TO_IGNORE = [
+  'jest',
   'react',
   'react-dom',
+  'react-native',
   'react-native-web',
-  'jest',
   /^babel-.*$/,
+  /^@expo\/.*$/,
+  /^@expo-google-fonts\/.*$/,
   /^@types\/.*$/,
+  'expo-dev-launcher',
+  'expo-dev-menu',
+  'expo-dev-menu-interface',
+  'expo-updates-interface',
+  'expo-eas-client',
 ];
 
 export function filterPackages(packages: string[], ignoredPackages: (RegExp | string)[]) {
@@ -28,95 +40,120 @@ export function filterPackages(packages: string[], ignoredPackages: (RegExp | st
   });
 }
 
-export class ReactNativeDirectoryCheck implements DoctorCheck {
+type DoctorCache = AutolinkingResolutionsCache & VersionedNativeModuleNamesCache;
+
+export class ReactNativeDirectoryCheck implements DoctorCheck<DoctorCache> {
   description = 'Validate packages against React Native Directory package metadata';
 
   sdkVersionRange = '>=51.0.0';
 
-  async runAsync({ pkg }: DoctorCheckParams): Promise<DoctorCheckResult> {
+  async runAsync(
+    { projectRoot, pkg, exp }: DoctorCheckParams,
+    cache: DoctorCache
+  ): Promise<DoctorCheckResult> {
     const issues: string[] = [];
     const newArchUnsupportedPackages: string[] = [];
     const newArchUntestedPackages: string[] = [];
     const unmaintainedPackages: string[] = [];
     const unknownPackages: string[] = [];
-    const dependencies = pkg.dependencies ?? {};
     const userDefinedIgnoredPackages = getReactNativeDirectoryCheckExcludes(pkg);
     const listUnknownPackagesEnabled = getReactNativeDirectoryCheckListUnknownPackagesEnabled(pkg);
 
-    const packageNames = filterPackages(Object.keys(dependencies), [
+    const basePackageNames: string[] = [];
+    try {
+      // We try to do an autolinking to filter RNDirectory checks to only apply to native modules
+      const resolutions = await scanNativeModuleResolutions(cache, {
+        projectRoot,
+        sdkVersion: exp.sdkVersion!,
+      });
+      const bundledNativeModuleNames = await getVersionedNativeModuleNamesAsync(cache, {
+        projectRoot,
+        sdkVersion: exp.sdkVersion!,
+      });
+      const ignoreModuleNames = new Set(bundledNativeModuleNames);
+      for (const dependencyName of resolutions.keys()) {
+        // We'll forcefully ignore bundled native modules
+        if (!ignoreModuleNames.has(dependencyName)) {
+          basePackageNames.push(dependencyName);
+        }
+      }
+    } catch {
+      // However, if this fails, we fall back to the old logic, which just
+      // looks at all direct dependencies
+      basePackageNames.push(...Object.keys(pkg.dependencies || {}));
+    }
+
+    const packageNames = filterPackages(basePackageNames, [
       ...DEFAULT_PACKAGES_TO_IGNORE,
       ...userDefinedIgnoredPackages,
     ]);
 
-    try {
-      const response = await fetch('https://reactnative.directory/api/libraries/check', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ packages: packageNames }),
-      });
-
-      if (!response.ok) {
-        return {
-          isSuccessful: false,
-          issues: [
-            `Directory check failed with unexpected server response: ${response.statusText}`,
-          ],
-          advice: undefined,
-        };
-      }
-
-      const packageMetadata = (await response.json()) as Record<
-        string,
-        ReactNativeDirectoryCheckResult
-      >;
-
-      packageNames.forEach((packageName) => {
-        const metadata = packageMetadata[packageName];
-        if (!metadata) {
-          unknownPackages.push(packageName);
-          return;
-        }
-
-        if (metadata.unmaintained) {
-          unmaintainedPackages.push(packageName);
-        }
-
-        if (metadata.newArchitecture === 'untested') {
-          newArchUntestedPackages.push(packageName);
-        }
-
-        if (metadata.newArchitecture === 'unsupported') {
-          newArchUnsupportedPackages.push(packageName);
-        }
-      });
-    } catch (error) {
+    const packageMetadata = await checkLibraries(packageNames);
+    if (!packageMetadata) {
       return {
         isSuccessful: false,
-        issues: [`Directory check failed with error: ${error}`],
-        advice: undefined,
+        issues: ['Directory check failed with unexpected server response'],
+        advice: [],
       };
     }
 
+    packageNames.forEach((packageName) => {
+      const metadata = packageMetadata[packageName];
+      if (!metadata) {
+        unknownPackages.push(packageName);
+        return;
+      }
+
+      if (metadata.unmaintained) {
+        unmaintainedPackages.push(packageName);
+      }
+
+      if (metadata.newArchitecture === 'untested') {
+        newArchUntestedPackages.push(packageName);
+      }
+
+      if (metadata.newArchitecture === 'unsupported') {
+        newArchUnsupportedPackages.push(packageName);
+      }
+    });
+
+    let hasCriticalIssues = false;
+
     if (newArchUnsupportedPackages.length > 0) {
+      hasCriticalIssues = true;
       issues.push(
-        `${chalk.bold(`Unsupported on New Architecture:`)} ${newArchUnsupportedPackages.join(', ')}`
+        `${chalk.bold(`  Unsupported on New Architecture:`)} ${newArchUnsupportedPackages.join(', ')}`
       );
     }
 
     if (newArchUntestedPackages.length > 0) {
+      hasCriticalIssues = true;
       issues.push(
-        `${chalk.bold(`Untested on New Architecture:`)} ${newArchUntestedPackages.join(', ')}`
+        `${chalk.bold(`  Untested on New Architecture:`)} ${newArchUntestedPackages.join(', ')}`
       );
     }
 
     if (unmaintainedPackages.length > 0) {
-      issues.push(`${chalk.bold(`Unmaintained:`)} ${unmaintainedPackages.join(', ')}`);
+      hasCriticalIssues = true;
+      issues.push(`${chalk.bold(`  Unmaintained:`)} ${unmaintainedPackages.join(', ')}`);
     }
 
-    if (listUnknownPackagesEnabled && unknownPackages.length > 0) {
-      issues.push(`${chalk.bold(`No metadata available`)}: ${unknownPackages.join(', ')}`);
+    if (
+      (listUnknownPackagesEnabled === null || listUnknownPackagesEnabled) &&
+      unknownPackages.length > 0
+    ) {
+      issues.push(`${chalk.bold(`  No metadata available`)}: ${unknownPackages.join(', ')}`);
+    }
+
+    if (!hasCriticalIssues && listUnknownPackagesEnabled === null) {
+      // NOTE(@kitten): We shouldn't output just "no metadata available" packages with no other
+      // issues, if the user hasn't explicitly opted-in or opted-out, since it adds to the output
+      // noise of doctor
+      return {
+        isSuccessful: true,
+        issues: [],
+        advice: [],
+      };
     }
 
     if (issues.length) {
@@ -125,36 +162,35 @@ export class ReactNativeDirectoryCheck implements DoctorCheck {
       );
     }
 
-    let advice = ``;
+    const advice = [];
 
     if (
       unmaintainedPackages.length > 0 ||
       newArchUnsupportedPackages.length > 0 ||
       newArchUntestedPackages.length > 0
     ) {
-      advice += `\n- Use libraries that are actively maintained and support the New Architecture. Find alternative libraries with ${chalk.bold('https://reactnative.directory')}.`;
-      advice += `\n${chalk.bold('-')} Add packages to ${chalk.bold(
-        'expo.doctor.reactNativeDirectoryCheck.exclude'
-      )} in package.json to selectively skip validations, if the warning is not relevant.`;
+      advice.push(
+        `Use libraries that are actively maintained and support the New Architecture. Find alternative libraries with ${chalk.bold('https://reactnative.directory')}.`
+      );
+      advice.push(
+        `Add packages to ${chalk.bold(
+          'expo.doctor.reactNativeDirectoryCheck.exclude'
+        )} in package.json to selectively skip validations, if the warning is not relevant.`
+      );
     }
 
     if (unknownPackages.length > 0) {
-      advice += `\n${chalk.bold('-')} Update React Native Directory to include metadata for unknown packages. Alternatively, set ${chalk.bold(
-        'expo.doctor.reactNativeDirectoryCheck.listUnknownPackages'
-      )} in package.json to ${chalk.bold('false')} to skip warnings about packages with no metadata, if the warning is not relevant.`;
+      advice.push(
+        `Update React Native Directory to include metadata for unknown packages. Alternatively, set ${chalk.bold(
+          'expo.doctor.reactNativeDirectoryCheck.listUnknownPackages'
+        )} in package.json to ${chalk.bold('false')} to skip warnings about packages with no metadata, if the warning is not relevant.`
+      );
     }
 
     return {
       isSuccessful: issues.length === 0,
       issues,
-      advice: issues.length ? advice : undefined,
+      advice: issues.length ? advice : [],
     };
   }
 }
-
-// See: https://github.com/react-native-community/directory/blob/1fb5e7b899e021a18f14b3c32b79d8d5995022d6/pages/api/libraries/check.ts#L8-L17
-type ReactNativeDirectoryCheckResult = {
-  unmaintained: boolean;
-  // See: https://github.com/react-native-community/directory/blob/1fb5e7b899e021a18f14b3c32b79d8d5995022d6/util/newArchStatus.ts#L3-L7
-  newArchitecture: 'supported' | 'unsupported' | 'untested';
-};

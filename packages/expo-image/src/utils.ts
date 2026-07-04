@@ -1,7 +1,8 @@
 import { SharedRef } from 'expo';
-import type { SharedRef as SharedRefType } from 'expo/types';
+import type { SharedRefType } from 'expo';
+import type { ImageResizeMode } from 'react-native';
 
-import {
+import type {
   ImageContentFit,
   ImageContentPosition,
   ImageContentPositionObject,
@@ -17,10 +18,12 @@ let loggedFadeDurationDeprecationWarning = false;
 /**
  * If the `contentFit` is not provided, it's resolved from the equivalent `resizeMode` prop
  * that we support to provide compatibility with React Native Image.
+ * For SF Symbols, the default is `'contain'` instead of `'cover'`.
  */
 export function resolveContentFit(
   contentFit?: ImageContentFit,
-  resizeMode?: ImageProps['resizeMode']
+  resizeMode?: ImageResizeMode,
+  isSFSymbol?: boolean
 ): ImageContentFit {
   if (contentFit) {
     return contentFit;
@@ -34,6 +37,7 @@ export function resolveContentFit(
     switch (resizeMode) {
       case 'contain':
       case 'cover':
+      case 'none':
         return resizeMode;
       case 'stretch':
         return 'fill';
@@ -44,9 +48,15 @@ export function resolveContentFit(
           console.log('[expo-image]: Resize mode "repeat" is no longer supported');
           loggedRepeatDeprecationWarning = true;
         }
+        return 'cover';
+      default: {
+        const exhaustiveCheck: never = resizeMode;
+        throw new Error(`Unhandled resizeMode case: ${exhaustiveCheck}`);
+      }
     }
   }
-  return 'cover';
+  // SF Symbols default to 'contain' to preserve aspect ratio
+  return isSFSymbol ? 'contain' : 'cover';
 }
 
 /**

@@ -1,11 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import {
-  Link,
-  NavigationAction,
-  StackActions,
-  useLinkBuilder,
-  useLinkProps,
-} from '@react-navigation/native';
+import { Link, NavigationAction, useLinkBuilder, useLinkProps } from '@react-navigation/native';
+import { useObserve } from 'expo-observe';
 import React from 'react';
 import {
   FlatList,
@@ -21,12 +16,40 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getScreenIdForLinking } from 'test-suite/screens/getScreenIdForLinking';
+
+import { useTheme } from '../../../common/ThemeProvider';
+import type { ScreenConfig } from '../types/ScreenConfig';
 
 export interface ListElement {
   screenName?: string;
   name: string;
-  route?: string;
-  isAvailable?: boolean;
+  route: string;
+  isAvailable: boolean;
+}
+
+/**
+ * Converts component screen configs to ListElements with '/components/' prefix.
+ * @param screens - Array of screen configurations
+ */
+export function componentScreensToListElements(screens: ScreenConfig[]): ListElement[] {
+  return screens.map((screen) => ({
+    name: screen.name,
+    isAvailable: true,
+    route: `/components/${getScreenIdForLinking(screen)}`,
+  }));
+}
+
+/**
+ * Converts API screen configs to ListElements with '/apis/' prefix.
+ * @param screens - Array of screen configurations
+ */
+export function apiScreensToListElements(screens: ScreenConfig[]): ListElement[] {
+  return screens.map((screen) => ({
+    name: screen.name,
+    isAvailable: true,
+    route: `/apis/${getScreenIdForLinking(screen)}`,
+  }));
 }
 
 interface Props {
@@ -38,19 +61,15 @@ interface Props {
 function LinkButton({
   href,
   children,
-  screenName,
   ...rest
 }: Omit<React.ComponentProps<typeof Link>, 'action'> & {
   href: string;
   disabled?: boolean;
   children?: React.ReactNode;
-  screenName?: string;
 }) {
+  const { theme } = useTheme();
   const { buildAction } = useLinkBuilder();
-  let action: NavigationAction = buildAction(href);
-  if (screenName) {
-    action = StackActions.push(screenName);
-  }
+  const action: NavigationAction = buildAction(href);
 
   const { onPress, ...props } = useLinkProps({ href, action });
 
@@ -71,7 +90,7 @@ function LinkButton({
         {...rest}
         style={[
           {
-            backgroundColor: isPressed ? '#dddddd' : undefined,
+            backgroundColor: isPressed ? theme.background.hover : undefined,
           },
           rest.style,
         ]}>
@@ -81,16 +100,24 @@ function LinkButton({
   }
 
   return (
-    <TouchableHighlight underlayColor="#dddddd" onPress={onPress} {...props} {...rest}>
+    <TouchableHighlight
+      underlayColor={theme.background.hover}
+      onPress={onPress}
+      {...props}
+      {...rest}>
       {children}
     </TouchableHighlight>
   );
 }
 
 export default function ComponentListScreen(props: Props) {
+  const { theme } = useTheme();
+  const { markInteractive } = useObserve();
+
   React.useEffect(() => {
     StatusBar.setHidden(false);
-  }, []);
+    markInteractive();
+  }, [markInteractive]);
 
   const { width } = useWindowDimensions();
   const isMobile = width <= 640;
@@ -104,15 +131,14 @@ export default function ComponentListScreen(props: Props) {
       <LinkButton
         disabled={!isAvailable}
         href={route ?? screenName ?? exampleName}
-        screenName={screenName ?? exampleName}
-        style={[styles.rowTouchable]}>
+        style={[styles.rowTouchable, { borderBottomColor: theme.border.secondary }]}>
         <View
           pointerEvents="none"
           style={[styles.row, !isAvailable && styles.disabledRow, { paddingRight: 10 + right }]}>
           {props.renderItemRight && props.renderItemRight(item)}
-          <Text style={styles.rowLabel}>{exampleName}</Text>
+          <Text style={[styles.rowLabel, { color: theme.text.default }]}>{exampleName}</Text>
           <Text style={styles.rowDecorator}>
-            <Ionicons name="chevron-forward" size={18} color="#595959" />
+            <Ionicons name="chevron-forward" size={18} color={theme.icon.secondary} />
           </Text>
         </View>
       </LinkButton>
@@ -142,7 +168,10 @@ export default function ComponentListScreen(props: Props) {
       removeClippedSubviews={false}
       keyboardShouldPersistTaps="handled"
       keyboardDismissMode="on-drag"
-      contentContainerStyle={{ backgroundColor: '#fff', paddingBottom: isMobile ? 0 : bottom }}
+      style={{ backgroundColor: theme.background.screen }}
+      contentContainerStyle={{
+        paddingBottom: isMobile ? 0 : bottom,
+      }}
       data={sortedApis}
       keyExtractor={keyExtractor}
       renderItem={renderExampleSection}
@@ -168,7 +197,6 @@ const styles = StyleSheet.create({
   },
   rowTouchable: {
     borderBottomWidth: 1.0 / PixelRatio.get(),
-    borderBottomColor: '#dddddd',
   },
   disabledRow: {
     opacity: 0.3,

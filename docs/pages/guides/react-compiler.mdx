@@ -5,10 +5,9 @@ description: Learn how to enable and use the React Compiler in Expo apps.
 
 import { Terminal } from '~/ui/components/Snippet';
 import { Step } from '~/ui/components/Step';
+import { Tabs, Tab } from '~/ui/components/Tabs';
 
-> **warning** **Warning:** React Compiler is experimental. Currently, it is on hold and we'll soon provide more updates on its usage.
-
-The new [React Compiler](https://react.dev/learn/react-compiler) automatically memoizes components and hooks to enable fine-grained reactivity. This can lead to significant performance improvements in your app. The React Compiler is currently experimental and is not enabled by default. You can enable it in your app by following the instructions below.
+The new [React Compiler](https://react.dev/learn/react-compiler) automatically memoizes components and hooks to enable fine-grained reactivity. This can lead to significant performance improvements in your app. You can enable it in your app by following the instructions below.
 
 ## Enabling React Compiler
 
@@ -16,7 +15,14 @@ The new [React Compiler](https://react.dev/learn/react-compiler) automatically m
 
 [Check how compatible](https://react.dev/learn/react-compiler#checking-compatibility) your project is with the React Compiler.
 
-<Terminal cmd={['$ npx react-compiler-healthcheck@latest']} />
+<Terminal
+  cmd={{
+    npm: ['$ npx react-compiler-healthcheck@latest'],
+    yarn: ['$ yarn dlx react-compiler-healthcheck@latest'],
+    pnpm: ['$ pnpm dlx react-compiler-healthcheck@latest'],
+    bun: ['$ bunx react-compiler-healthcheck@latest'],
+  }}
+/>
 
 This will generally verify if your app is following the [**rules of React**](https://react.dev/reference/rules).
 
@@ -24,9 +30,35 @@ This will generally verify if your app is following the [**rules of React**](htt
 
 <Step label="2">
 
-Install `babel-plugin-react-compiler` in your project:
+Install `babel-plugin-react-compiler` and the React compiler runtime in your project:
 
-<Terminal cmd={['$ npx expo install babel-plugin-react-compiler']} />
+<Tabs tabs={['SDK 54 and later', 'SDK 53', 'SDK 52 and earlier']}>
+  <Tab>
+
+    Babel is automatically configured in Expo SDK 54 and later.
+
+  </Tab>
+  <Tab>
+    <Terminal
+      cmd={{
+        npm: ['$ npx expo install babel-plugin-react-compiler@beta'],
+        yarn: ['$ yarn expo install babel-plugin-react-compiler@beta'],
+        pnpm: ['$ pnpm expo install babel-plugin-react-compiler@beta'],
+        bun: ['$ bun expo install babel-plugin-react-compiler@beta'],
+      }}
+    />
+  </Tab>
+  <Tab>
+    <Terminal
+      cmd={{
+        npm: ['$ npx expo install babel-plugin-react-compiler@beta react-compiler-runtime@beta'],
+        yarn: ['$ yarn expo install babel-plugin-react-compiler@beta react-compiler-runtime@beta'],
+        pnpm: ['$ pnpm expo install babel-plugin-react-compiler@beta react-compiler-runtime@beta'],
+        bun: ['$ bun expo install babel-plugin-react-compiler@beta react-compiler-runtime@beta'],
+      }}
+    />
+  </Tab>
+</Tabs>
 
 </Step>
 
@@ -36,52 +68,60 @@ Toggle on the React Compiler experiment in your app config file:
 
 ```json app.json
 {
-  "experiments": {
-    "reactCompiler": true
+  "expo": {
+    "experiments": {
+      "reactCompiler": true
+    }
   }
 }
 ```
 
 </Step>
 
-<Step label="4">
-
-Install the React compiler runtime module:
-
-<Terminal cmd={['$ npx expo install react-compiler-runtime@beta']} />
-
-</Step>
-
 ### Enabling the linter
 
-> In the future, all of these steps below will be automated by Expo CLI.
+Run [`npx expo lint`](/guides/using-eslint/#eslint) to set up ESLint in your app, then follow the instructions for your SDK version:
 
-Additionally, you should use the ESLint plugin to continuously enforce the rules of React in your project.
+<Tabs tabs={['SDK 55 and later', 'SDK 54 and earlier']}>
+  <Tab>
 
-<Step label="1">
+    React Compiler lint rules are included by default with `eslint-config-expo` in SDK 55 and later.
 
-Run [`npx expo lint`](/guides/using-eslint/#eslint) to ensure ESLint is setup in your app, then install the ESLint plugin for React Compiler:
+    If you previously installed `eslint-plugin-react-compiler`, you can uninstall it and remove it from your ESLint configuration.
 
-<Terminal cmd={['$ npx expo install eslint-plugin-react-compiler']} />
+  </Tab>
+  <Tab>
 
-</Step>
+    Install the ESLint plugin for React Compiler:
 
-<Step label="2">
+    <Terminal
+      cmd={{
+        npm: ['$ npx expo install eslint-plugin-react-compiler -- -D'],
+        yarn: ['$ yarn expo install eslint-plugin-react-compiler -- -D'],
+        pnpm: ['$ pnpm expo install eslint-plugin-react-compiler -- -D'],
+        bun: ['$ bun expo install eslint-plugin-react-compiler -- -D'],
+      }}
+    />
 
-Update your ESLint configuration to include the plugin:
+    Update your [ESLint configuration](/guides/using-eslint/) to include the plugin:
 
-```js .eslintrc.js
-// https://docs.expo.dev/guides/using-eslint/
-module.exports = {
-  extends: 'expo',
-  plugins: ['eslint-plugin-react-compiler'],
-  rules: {
-    'react-compiler/react-compiler': 'error',
-  },
-};
-```
+    ```js eslint.config.js
+    // https://docs.expo.dev/guides/using-eslint/
+    const { defineConfig } = require('eslint/config');
+    const expoConfig = require('eslint-config-expo/flat');
+    const reactCompiler = require('eslint-plugin-react-compiler');
 
-</Step>
+    module.exports = defineConfig([
+      expoConfig,
+      reactCompiler.configs.recommended,
+      {
+        ignores: ['dist/*'],
+      },
+    ]);
+    ```
+
+  </Tab>
+</Tabs>
 
 ## Incremental adoption
 
@@ -89,7 +129,10 @@ You can incrementally adopt the React Compiler in your app using a few strategie
 
 <Step label="1">
 
-Configure the Babel plugin to only run on specific files or components. To do this, add the following to your project's Babel configuration:
+Configure the Babel plugin to only run on specific files or components. To do this:
+
+1. If your project doesn't have [**babel.config.js**](/versions/latest/config/babel/), create one by running `npx expo customize babel.config.js`.
+2. Add the following configuration to **babel.config.js**:
 
 ```js babel.config.js
 module.exports = function (api) {
@@ -115,7 +158,14 @@ module.exports = function (api) {
 
 Whenever you change your **babel.config.js** file, you need to restart the Metro bundler to apply the changes:
 
-<Terminal cmd={['$ npx expo start --clear']} />
+<Terminal
+  cmd={{
+    npm: ['$ npx expo start --clear'],
+    yarn: ['$ yarn expo start --clear'],
+    pnpm: ['$ pnpm expo start --clear'],
+    bun: ['$ bun expo start --clear'],
+  }}
+/>
 
 </Step>
 
@@ -156,7 +206,7 @@ module.exports = function (api) {
         {
           'react-compiler': {
             // Passed directly to the React Compiler Babel plugin.
-            compilationMode: 'strict',
+            compilationMode: 'all',
             panicThreshold: 'all_errors',
           },
           web: {

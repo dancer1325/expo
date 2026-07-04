@@ -18,6 +18,7 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.github.penfeizhou.animation.gif.GifDrawable
 import expo.modules.image.enums.ContentFit
 import expo.modules.image.enums.Priority
 import expo.modules.image.events.GlideRequestListener
@@ -37,7 +38,6 @@ import expo.modules.kotlin.tracing.beginAsyncTraceBlock
 import expo.modules.kotlin.tracing.trace
 import expo.modules.kotlin.viewevent.EventDispatcher
 import expo.modules.kotlin.views.ExpoView
-import jp.wasabeef.glide.transformations.BlurTransformation
 import java.lang.ref.WeakReference
 import kotlin.math.abs
 import kotlin.math.min
@@ -163,30 +163,55 @@ class ExpoImageViewWrapper(context: Context, appContext: AppContext) : ExpoView(
 
   internal var autoplay: Boolean = true
 
+  internal var lockResource: Boolean = false
+
   internal var priority: Priority = Priority.NORMAL
   internal var cachePolicy: CachePolicy = CachePolicy.DISK
 
   fun setIsAnimating(setAnimating: Boolean) {
-    val resource = activeView.drawable
+    // Animatable animations always start from the beginning when resumed.
+    // So we check first if the resource is a GifDrawable, because it can continue
+    // from where it was paused.
+    when (val resource = activeView.drawable) {
+      is GifDrawable -> setIsAnimating(resource, setAnimating)
+      is Animatable -> setIsAnimating(resource, setAnimating)
+    }
+  }
 
-    if (resource is Animatable) {
-      if (setAnimating) {
-        resource.start()
+  private fun setIsAnimating(resource: GifDrawable, setAnimating: Boolean) {
+    if (setAnimating) {
+      if (resource.isPaused) {
+        resource.resume()
       } else {
-        resource.stop()
+        resource.start()
       }
+    } else {
+      resource.pause()
+    }
+  }
+
+  private fun setIsAnimating(resource: Animatable, setAnimating: Boolean) {
+    if (setAnimating) {
+      resource.start()
+    } else {
+      resource.stop()
     }
   }
 
   /**
    * Whether the image should be loaded again
    */
-  private var shouldRerender = false
+  internal var shouldRerender = false
 
   /**
    * Currently loaded source
    */
   private var loadedSource: GlideModelProvider? = null
+
+  /**
+   * Currently loaded placeholder
+   */
+  private var loadedPlaceholder: GlideModelProvider? = null
 
   /**
    * Whether the transformation matrix should be reapplied
@@ -286,11 +311,17 @@ class ExpoImageViewWrapper(context: Context, appContext: AppContext) : ExpoView(
             newView.bringToFront()
             previousView.alpha = 1f
             newView.alpha = 0f
+            // A newer source can reuse this view as its `newView` before the fade-out ends. That
+            // cancels this animation, and the end action runs on cancel too, so without this guard
+            // it would recycle the view now holding the new image. See issue #46703.
+            val previousTarget = previousView.currentTarget
             previousView.animate().apply {
               duration = transitionDuration
               alpha(0f)
               withEndAction {
-                clearPreviousView()
+                if (previousView.currentTarget === previousTarget) {
+                  clearPreviousView()
+                }
               }
             }
             newView.animate().apply {
@@ -412,7 +443,7 @@ class ExpoImageViewWrapper(context: Context, appContext: AppContext) : ExpoView(
         diskCacheStrategy(DiskCacheStrategy.NONE)
       }
       .customize(blurRadius) {
-        transform(BlurTransformation(min(it, 25), 4))
+        transform(SoftwareBlurTransformation(min(it, 25), 4))
       }
   }
 
@@ -439,6 +470,7 @@ class ExpoImageViewWrapper(context: Context, appContext: AppContext) : ExpoView(
 
       shouldRerender = false
       loadedSource = null
+      loadedPlaceholder = null
       transformationMatrixChanged = false
       clearViewBeforeChangingSource = false
       return true
@@ -477,8 +509,11 @@ class ExpoImageViewWrapper(context: Context, appContext: AppContext) : ExpoView(
     }
   }
 
-  internal fun rerenderIfNeeded(shouldRerenderBecauseOfResize: Boolean = false) =
-    trace(Trace.tag, "rerenderIfNeeded(shouldRerenderBecauseOfResize=$shouldRerenderBecauseOfResize)") {
+  internal fun rerenderIfNeeded(shouldRerenderBecauseOfResize: Boolean = false, force: Boolean = false) =
+    trace(Trace.tag, "rerenderIfNeeded(shouldRerenderBecauseOfResize=$shouldRerenderBecauseOfResize,force=$force)") {
+      if (lockResource && !force) {
+        return@trace
+      }
       val bestSource = bestSource
       val bestPlaceholder = bestPlaceholder
 
@@ -490,7 +525,7 @@ class ExpoImageViewWrapper(context: Context, appContext: AppContext) : ExpoView(
         return@trace
       }
 
-      val shouldRerender = sourceToLoad != loadedSource || shouldRerender || (sourceToLoad == null && placeholder != null)
+      val shouldRerender = sourceToLoad != loadedSource || placeholder != loadedPlaceholder || shouldRerender || (sourceToLoad == null && placeholder != null)
       if (!shouldRerender && !shouldRerenderBecauseOfResize) {
         // In the case where the source didn't change, but the transformation matrix has to be
         // recalculated, we can apply the new transformation right away.
@@ -511,6 +546,7 @@ class ExpoImageViewWrapper(context: Context, appContext: AppContext) : ExpoView(
 
       this.shouldRerender = false
       loadedSource = sourceToLoad
+      loadedPlaceholder = placeholder
       val options = bestSource?.createGlideOptions(context)
       val propOptions = createPropOptions()
 

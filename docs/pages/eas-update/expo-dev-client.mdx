@@ -1,6 +1,6 @@
 ---
-title: Preview an update in a development build
-sidebar_title: Use development builds
+title: Preview updates in development builds
+sidebar_title: Using development builds
 description: Learn how to use the expo-dev-client library to preview a published EAS Update inside a development build.
 ---
 
@@ -8,6 +8,8 @@ import { GithubIcon } from '@expo/styleguide-icons/custom/GithubIcon';
 
 import { BoxLink } from '~/ui/components/BoxLink';
 import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
+import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
+import { Terminal } from '~/ui/components/Snippet';
 import { Step } from '~/ui/components/Step';
 import { CODE } from '~/ui/components/Text';
 
@@ -15,10 +17,21 @@ import { CODE } from '~/ui/components/Text';
 
 This guide walks through the steps required to load and preview a published update inside a development build using the **Extensions** tab or constructing a specific Update URL.
 
-## Prerequisites
-
-- [Create a development build and install it](/develop/development-builds/create-a-build/) on your device or Android Emulator or iOS Simulator.
-- Make sure your development build has the [`expo-updates` library installed](/eas-update/getting-started/#configure-your-project).
+<Prerequisites>
+  <Requirement title="A development build installed">
+    [Create a development build and install it](/develop/development-builds/create-a-build/) on your
+    device, Android Emulator, or iOS Simulator.
+  </Requirement>
+  <Requirement
+    title={
+      <>
+        <CODE>expo-updates</CODE> installed
+      </>
+    }>
+    Make sure your development build has the [`expo-updates` library
+    installed](/eas-update/getting-started/#configure-your-project).
+  </Requirement>
+</Prerequisites>
 
 ## What is an Extensions tab
 
@@ -58,11 +71,11 @@ In the **Extensions** tab, you can view the list of all published updates for a 
   className="max-w-[480px]"
 />
 
-## Preview an update using the Expo dashboard
+## Preview an update using the EAS dashboard
 
-You can also preview an update using the Expo dashboard by following the steps below:
+You can also preview an update using the EAS dashboard by following the steps below:
 
-- Click the published updated link in the CLI after running the command to publish an update. This will open the update's details on the **Updates** page in the Expo dashboard.
+- Click the published updated link in the CLI after running the command to publish an update. This will open the update's details on the **Updates** page in the EAS dashboard.
 - Click **Preview**. This will open the **Preview** dialog.
 - To preview the update, you can either scan the QR code with your device's camera or select a platform to [launch the update under **Open with Orbit**](/review/with-orbit/).
 
@@ -70,12 +83,14 @@ You can also preview an update using the Expo dashboard by following the steps b
 
 As an alternative to the methods described in the previous sections, you can construct a specific URL to open your EAS Update in the development build. The URL will look like the following:
 
-```bash
-[slug]://expo-development-client/?url=[https://u.expo.dev/project-id]/group/[group-id]
-
-# Example
-my-app://expo-development-client/?url=https://u.expo.dev/675cb1f0-fa3c-11e8-ac99-6374d9643cb2/group/47839bf2-9e01-467b-9378-4a978604ab11
-```
+<Terminal
+  cmd={[
+    '[slug]://expo-development-client/?url=[https://u.expo.dev/project-id]/group/[group-id]',
+    '',
+    '# Example',
+    'my-app://expo-development-client/?url=https://u.expo.dev/675cb1f0-fa3c-11e8-ac99-6374d9643cb2/group/47839bf2-9e01-467b-9378-4a978604ab11',
+  ]}
+/>
 
 Let's break this URL to understand what each part does:
 

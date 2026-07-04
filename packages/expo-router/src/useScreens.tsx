@@ -1,28 +1,48 @@
 'use client';
 
-import type {
-  EventMapBase,
-  NavigationState,
-  ParamListBase,
-  RouteConfig,
-  RouteProp,
-  ScreenListeners,
-} from '@react-navigation/native';
-import React from 'react';
+import React, { use, useEffect } from 'react';
 
-import {
-  DynamicConvention,
-  LoadedRoute,
-  Route,
-  RouteNode,
-  sortRoutesWithInitial,
-  useRouteNode,
-} from './Route';
+import type { LoadedRoute, RouteNode } from './Route';
+import { SuspenseFallbackContext, Route, sortRoutesWithInitial, useRouteNode } from './Route';
+import { useExpoRouterStore } from './global-state/storeContext';
+import { useColorSchemeChangesIfNeeded } from './global-state/utils';
+// Direct import to prevent a require cycle
+import { useCurrentRouteInfo } from './hooks/useCurrentRouteInfo';
 import EXPO_ROUTER_IMPORT_MODE from './import-mode';
+import { ZoomTransitionEnabler } from './link/zoom/ZoomTransitionEnabler';
+import { ZoomTransitionTargetContextProvider } from './link/zoom/zoom-transition-context-providers';
+import { unstable_navigationEvents } from './navigationEvents';
+import {
+  hasParam,
+  INTERNAL_EXPO_ROUTER_NO_ANIMATION_PARAM_NAME,
+  removeParams,
+} from './navigationParams';
 import { Screen } from './primitives';
+import type { BottomTabNavigationEventMap } from './react-navigation/bottom-tabs';
+import {
+  useStateForPath,
+  type EventConsumer,
+  type EventMapBase,
+  type NavigationProp,
+  type NavigationState,
+  type ParamListBase,
+  type RouteProp,
+  type ScreenListeners,
+} from './react-navigation/native';
+import type { NativeStackNavigationEventMap } from './react-navigation/native-stack';
+import type { UnknownOutputParams } from './types';
 import { EmptyRoute } from './views/EmptyRoute';
-import { SuspenseFallback } from './views/SuspenseFallback';
+import {
+  SuspenseFallback as DefaultSuspenseFallback,
+  type SuspenseFallbackProps,
+} from './views/SuspenseFallback';
 import { Try } from './views/Try';
+
+declare module 'react' {
+  export function lazy<T extends React.ComponentType<any>>(
+    load: () => PromiseLike<{ default: T }> | Promise<{ default: T }>
+  ): React.LazyExoticComponent<T>;
+}
 
 export type ScreenProps<
   TOptions extends Record<string, any> = Record<string, any>,
@@ -49,11 +69,17 @@ export type ScreenProps<
       }) => ScreenListeners<TState, TEventMap>);
 
   getId?: ({ params }: { params?: Record<string, any> }) => string | undefined;
+
+  dangerouslySingular?: SingularOptions;
 };
+
+export type SingularOptions =
+  | boolean
+  | ((name: string, params: UnknownOutputParams) => string | undefined);
 
 function getSortedChildren(
   children: RouteNode[],
-  order?: ScreenProps[],
+  order: ScreenProps[] = [],
   initialRouteName?: string
 ): { route: RouteNode; props: Partial<ScreenProps> }[] {
   if (!order?.length) {
@@ -64,37 +90,71 @@ function getSortedChildren(
   const entries = [...children];
 
   const ordered = order
-    .map(({ name, redirect, initialParams, listeners, options, getId }) => {
-      if (!entries.length) {
-        console.warn(`[Layout children]: Too many screens defined. Route "${name}" is extraneous.`);
-        return null;
-      }
-      const matchIndex = entries.findIndex((child) => child.route === name);
-      if (matchIndex === -1) {
-        console.warn(
-          `[Layout children]: No route named "${name}" exists in nested children:`,
-          children.map(({ route }) => route)
-        );
-        return null;
-      } else {
-        // Get match and remove from entries
-        const match = entries[matchIndex];
-        entries.splice(matchIndex, 1);
-
-        // Ensure to return null after removing from entries.
-        if (redirect) {
-          if (typeof redirect === 'string') {
-            throw new Error(`Redirecting to a specific route is not supported yet.`);
-          }
+    .map(
+      ({
+        name,
+        redirect,
+        initialParams,
+        listeners,
+        options,
+        getId,
+        dangerouslySingular: singular,
+      }) => {
+        if (!entries.length) {
+          console.warn(
+            `[Layout children]: Too many screens defined. Route "${name}" is extraneous.`
+          );
           return null;
         }
+        const matchIndex = entries.findIndex(
+          (child) => child.route === name || child.route === `${name}/index`
+        );
+        if (matchIndex === -1) {
+          console.warn(
+            `[Layout children]: No route named "${name}" exists in nested children:`,
+            children.map(({ route }) => route)
+          );
+          return null;
+        } else {
+          // Get match and remove from entries
+          const match = entries[matchIndex];
+          entries.splice(matchIndex, 1);
 
-        return {
-          route: match,
-          props: { initialParams, listeners, options, getId },
-        };
+          // Ensure to return null after removing from entries.
+          if (redirect) {
+            if (typeof redirect === 'string') {
+              throw new Error(`Redirecting to a specific route is not supported yet.`);
+            }
+            return null;
+          }
+
+          if (getId) {
+            console.warn(
+              `Deprecated: prop 'getId' on screen ${name} is deprecated. Please rename the prop to 'dangerouslySingular'`
+            );
+            if (singular) {
+              console.warn(
+                `Screen ${name} cannot use both getId and dangerouslySingular together.`
+              );
+            }
+          } else if (singular) {
+            // If singular is set, use it as the getId function.
+            if (typeof singular === 'string') {
+              getId = () => singular;
+            } else if (typeof singular === 'function' && name) {
+              getId = (options) => singular(name, options.params || {});
+            } else if (singular === true && name) {
+              getId = (options) => getSingularId(name, options);
+            }
+          }
+
+          return {
+            route: match,
+            props: { initialParams, listeners, options, getId },
+          };
+        }
       }
-    })
+    )
     .filter(Boolean) as {
     route: RouteNode;
     props: Partial<ScreenProps>;
@@ -111,28 +171,66 @@ function getSortedChildren(
 /**
  * @returns React Navigation screens sorted by the `route` property.
  */
-export function useSortedScreens(order: ScreenProps[]): React.ReactNode[] {
+export function useSortedScreens(
+  order: ScreenProps[],
+  protectedScreens: Set<string>,
+  useOnlyUserDefinedScreens: boolean = false
+): React.ReactNode[] {
   const node = useRouteNode();
 
-  const sorted = node?.children?.length
-    ? getSortedChildren(node.children, order, node.initialRouteName)
-    : [];
+  const nodeChildren = node?.children ?? [];
+  const children = useOnlyUserDefinedScreens
+    ? nodeChildren.filter((child) =>
+        order.some(
+          (userDefinedScreen) =>
+            userDefinedScreen.name === child.route ||
+            `${userDefinedScreen.name}/index` === child.route
+        )
+      )
+    : nodeChildren;
+
+  const sorted = children.length ? getSortedChildren(children, order, node?.initialRouteName) : [];
   return React.useMemo(
-    () => sorted.map((value) => routeToScreen(value.route, value.props)),
-    [sorted]
+    () =>
+      sorted
+        .filter((item) => {
+          const route = item.route.route;
+          return (
+            !protectedScreens.has(route) && !protectedScreens.has(route.replace(/\/index$/, ''))
+          );
+        })
+        .map((value) => {
+          return routeToScreen(value.route, value.props);
+        }),
+    [sorted, protectedScreens]
   );
 }
 
-function fromImport({ ErrorBoundary, ...component }: LoadedRoute) {
+function fromImport(
+  value: RouteNode,
+  { ErrorBoundary, SuspenseFallback, ...component }: LoadedRoute
+) {
+  // If possible, add a more helpful display name for the component stack to improve debugging of React errors such as `Text strings must be rendered within a <Text> component.`.
+  if (component?.default && __DEV__) {
+    component.default.displayName ??= `${component.default.name ?? 'Route'}(${value.contextKey})`;
+  }
+
   if (ErrorBoundary) {
+    const Wrapped = React.forwardRef((props: any, ref: any) => {
+      const children = React.createElement(component.default || EmptyRoute, {
+        ...props,
+        ref,
+      });
+      return <Try catch={ErrorBoundary}>{children}</Try>;
+    });
+
+    if (__DEV__) {
+      Wrapped.displayName = `ErrorBoundary(${value.contextKey})`;
+    }
+
     return {
-      default: React.forwardRef((props: any, ref: any) => {
-        const children = React.createElement(component.default || EmptyRoute, {
-          ...props,
-          ref,
-        });
-        return <Try catch={ErrorBoundary}>{children}</Try>;
-      }),
+      default: Wrapped,
+      SuspenseFallback,
     };
   }
   if (process.env.NODE_ENV !== 'production') {
@@ -141,19 +239,11 @@ function fromImport({ ErrorBoundary, ...component }: LoadedRoute) {
       component.default &&
       Object.keys(component.default).length === 0
     ) {
-      return { default: EmptyRoute };
+      return { default: EmptyRoute, SuspenseFallback };
     }
   }
 
-  return { default: component.default };
-}
-
-function fromLoadedRoute(res: LoadedRoute) {
-  if (!(res instanceof Promise)) {
-    return fromImport(res);
-  }
-
-  return res.then(fromImport);
+  return { default: component.default!, SuspenseFallback };
 }
 
 // TODO: Maybe there's a more React-y way to do this?
@@ -166,121 +256,247 @@ export function getQualifiedRouteComponent(value: RouteNode) {
     return qualifiedStore.get(value)!;
   }
 
-  let ScreenComponent: React.ForwardRefExoticComponent<React.RefAttributes<unknown>>;
+  let ScreenComponent: React.ComponentType<any>;
+  let LayoutSuspenseFallback: React.ComponentType<SuspenseFallbackProps> | undefined;
 
   // TODO: This ensures sync doesn't use React.lazy, but it's not ideal.
   if (EXPO_ROUTER_IMPORT_MODE === 'lazy') {
-    ScreenComponent = React.lazy(async () => {
-      const res = value.loadRoute();
-      return fromLoadedRoute(res) as Promise<{
-        default: React.ComponentType<any>;
-      }>;
+    ScreenComponent = React.lazy<React.ComponentType<any>>(() => {
+      const res = value.loadRoute() as LoadedRoute | PromiseLike<LoadedRoute>;
+      // NOTE(@kitten): React.lazy supports promise likes, which we can use to ensure that
+      // the route is synchronously available, if the `loadRoute` method returns a loaded route
+      // synchronously
+      if (!('then' in res)) {
+        return {
+          then(resolve) {
+            const ret = fromImport(value, res);
+            return Promise.resolve(resolve ? resolve(ret) : ret);
+          },
+        } as PromiseLike<{ default: React.ComponentType<any> }>;
+      } else {
+        return res.then(fromImport.bind(null, value));
+      }
     });
+
+    if (__DEV__) {
+      ScreenComponent.displayName = `AsyncRoute(${value.route})`;
+    }
   } else {
-    const res = value.loadRoute();
-    const Component = fromImport(res).default as React.ComponentType<any>;
-    ScreenComponent = React.forwardRef((props, ref) => {
-      return <Component {...props} ref={ref} />;
-    });
+    const res = value.loadRoute() as LoadedRoute;
+    const result = fromImport(value, res);
+    ScreenComponent = result.default!;
+    LayoutSuspenseFallback = value.type === 'layout' ? result.SuspenseFallback : undefined;
+  }
+  const WrappedScreenComponent: typeof ScreenComponent = (props: object) => {
+    useColorSchemeChangesIfNeeded();
+    return <ScreenComponent {...props} />;
+  };
+  function BaseRoute({
+    // Remove these React Navigation props to
+    // enforce usage of expo-router hooks (where the query params are correct).
+    route,
+    navigation,
+
+    // Pass all other props to the component
+    ...props
+  }: {
+    route?: RouteProp<ParamListBase, string>;
+    navigation: Omit<
+      NavigationProp<
+        ParamListBase,
+        string,
+        undefined,
+        NavigationState,
+        object,
+        NativeStackNavigationEventMap | BottomTabNavigationEventMap
+      >,
+      'getState'
+    > & {
+      getState(): NavigationState | undefined;
+    };
+  }) {
+    const stateForPath = useStateForPath();
+    const isFocused = navigation.isFocused();
+    const store = useExpoRouterStore();
+    const InheritedSuspenseFallback = use(SuspenseFallbackContext);
+
+    const ResolvedSuspenseFallback =
+      EXPO_ROUTER_IMPORT_MODE === 'lazy'
+        ? DefaultSuspenseFallback
+        : (LayoutSuspenseFallback ?? InheritedSuspenseFallback ?? DefaultSuspenseFallback);
+    const providedSuspenseFallback =
+      value.type === 'layout'
+        ? (LayoutSuspenseFallback ?? InheritedSuspenseFallback)
+        : InheritedSuspenseFallback;
+
+    if (isFocused) {
+      const state = navigation.getState();
+      const isLeaf = !(state && 'state' in state.routes[state.index]!);
+      if (isLeaf && stateForPath) store.setFocusedState(stateForPath);
+    }
+
+    useEffect(
+      () =>
+        navigation.addListener('focus', () => {
+          const state = navigation.getState();
+          const isLeaf = !(state && 'state' in state.routes[state.index]!);
+          // Because setFocusedState caches the route info, this call will only trigger rerenders
+          // if the component itself didn’t rerender and the route info changed.
+          // Otherwise, the update from the `if` above will handle it,
+          // and this won’t cause a redundant second update.
+          if (isLeaf && stateForPath) store.setFocusedState(stateForPath);
+        }),
+      [navigation]
+    );
+
+    useEffect(() => {
+      return navigation.addListener('transitionEnd', (e) => {
+        if (!e?.data?.closing) {
+          // When navigating to a screen, remove the no animation param to re-enable animations
+          // Otherwise the navigation back would also have no animation
+          if (hasParam(route?.params, INTERNAL_EXPO_ROUTER_NO_ANIMATION_PARAM_NAME)) {
+            navigation.replaceParams(
+              removeParams(route?.params, [INTERNAL_EXPO_ROUTER_NO_ANIMATION_PARAM_NAME])
+            );
+          }
+        }
+      });
+    }, [navigation]);
+
+    const isRouteType = value.type === 'route';
+    const hasRouteKey = !!route?.key;
+
+    return (
+      <Route node={value} params={route?.params}>
+        <SuspenseFallbackContext value={providedSuspenseFallback}>
+          {unstable_navigationEvents.isEnabled() && isRouteType && hasRouteKey && (
+            <AnalyticsListeners navigation={navigation} screenId={route.key} />
+          )}
+          <ZoomTransitionTargetContextProvider route={route}>
+            <ZoomTransitionEnabler route={route} />
+            <React.Suspense
+              name={route ? `Route(${route.name})` : undefined}
+              fallback={
+                <ResolvedSuspenseFallback
+                  route={value.contextKey}
+                  params={(route?.params ?? {}) as SuspenseFallbackProps['params']}
+                />
+              }>
+              <WrappedScreenComponent
+                {...props}
+                // Expose the template segment path, e.g. `(home)`, `[foo]`, `index`
+                // the intention is to make it possible to deduce shared routes.
+                segment={value.route}
+              />
+            </React.Suspense>
+          </ZoomTransitionTargetContextProvider>
+        </SuspenseFallbackContext>
+      </Route>
+    );
   }
 
-  const getLoadable = (props: any, ref: any) => (
-    <React.Suspense fallback={<SuspenseFallback route={value} />}>
-      <ScreenComponent
-        {...{
-          ...props,
-          ref,
-          // Expose the template segment path, e.g. `(home)`, `[foo]`, `index`
-          // the intention is to make it possible to deduce shared routes.
-          segment: value.route,
-        }}
-      />
-    </React.Suspense>
-  );
+  if (__DEV__) {
+    BaseRoute.displayName = `Route(${value.route})`;
+  }
 
-  const QualifiedRoute = React.forwardRef(
-    (
-      {
-        // Remove these React Navigation props to
-        // enforce usage of expo-router hooks (where the query params are correct).
-        route,
-        navigation,
-
-        // Pass all other props to the component
-        ...props
-      }: any,
-      ref: any
-    ) => {
-      const loadable = getLoadable(props, ref);
-
-      return (
-        <Route node={value} route={route}>
-          {loadable}
-        </Route>
-      );
-    }
-  );
-
-  QualifiedRoute.displayName = `Route(${value.route})`;
-
-  qualifiedStore.set(value, QualifiedRoute);
-  return QualifiedRoute;
+  qualifiedStore.set(value, BaseRoute);
+  return BaseRoute;
 }
 
-/**
- * @param getId Override that will be wrapped to remove __EXPO_ROUTER_key which is added by PUSH
- * @returns a function which provides a screen id that matches the dynamic route name in params. */
-export function createGetIdForRoute(
-  route: Pick<RouteNode, 'dynamic' | 'route' | 'contextKey' | 'children'>,
-  getId: ScreenProps['getId']
-): ScreenProps['getId'] {
-  const include = new Map<string, DynamicConvention>();
+function AnalyticsListeners({
+  navigation,
+  screenId,
+}: {
+  navigation: EventConsumer<EventMapBase> & {
+    isFocused(): boolean;
+  };
+  screenId: string;
+}) {
+  const isFirstRenderRef = React.useRef(true);
+  const hasBlurredRef = React.useRef(true);
+  const routeInfo = useCurrentRouteInfo();
 
-  if (route.dynamic) {
-    for (const segment of route.dynamic) {
-      include.set(segment.name, segment);
+  const isFocused = navigation.isFocused();
+
+  if (isFirstRenderRef.current) {
+    isFirstRenderRef.current = false;
+    if (routeInfo && !isFocused) {
+      unstable_navigationEvents.emit('pagePreloaded', {
+        pathname: routeInfo.pathname,
+        params: routeInfo.params,
+        segments: routeInfo.segments,
+        screenId,
+      });
     }
   }
 
-  return (options = {}) => {
-    const { params = {} } = options;
-    if (params.__EXPO_ROUTER_key) {
-      const key = params.__EXPO_ROUTER_key;
-      delete params.__EXPO_ROUTER_key;
-      if (getId == null) {
-        return key;
-      }
+  useEffect(() => {
+    if (routeInfo) {
+      return () => {
+        unstable_navigationEvents.emit('pageRemoved', {
+          pathname: routeInfo.pathname,
+          params: routeInfo.params,
+          segments: routeInfo.segments,
+          screenId,
+        });
+      };
     }
+    return () => {};
+  }, [routeInfo?.params, routeInfo?.pathname, routeInfo?.segments, screenId]);
 
-    if (getId != null) {
-      return getId(options);
+  // Emit `pageFocused` from an effect — not during render — so it fires after the
+  // focused screen's content has committed. `hasBlurredRef` deduplicates across both paths.
+  useEffect(() => {
+    if (isFocused && routeInfo && hasBlurredRef.current) {
+      unstable_navigationEvents.emit('pageFocused', {
+        pathname: routeInfo.pathname,
+        params: routeInfo.params,
+        segments: routeInfo.segments,
+        screenId,
+      });
+      hasBlurredRef.current = false;
     }
+  }, [isFocused, routeInfo?.pathname, routeInfo?.params, routeInfo?.segments, screenId]);
 
-    const segments: string[] = [];
-
-    for (const dynamic of include.values()) {
-      const value = params?.[dynamic.name];
-      if (Array.isArray(value) && value.length > 0) {
-        // If we are an array with a value
-        segments.push(value.join('/'));
-      } else if (value && !Array.isArray(value)) {
-        // If we have a value and not an empty array
-        segments.push(value);
-      } else if (dynamic.deep) {
-        segments.push(`[...${dynamic.name}]`);
-      } else {
-        segments.push(`[${dynamic.name}]`);
-      }
+  useEffect(() => {
+    if (routeInfo) {
+      const cleanFocus = navigation.addListener('focus', () => {
+        // If the screen was not blurred, don't emit focused again
+        // hasBlurredRef will be false when the screen was initially focused
+        if (hasBlurredRef.current) {
+          unstable_navigationEvents.emit('pageFocused', {
+            pathname: routeInfo.pathname,
+            params: routeInfo.params,
+            segments: routeInfo.segments,
+            screenId,
+          });
+          hasBlurredRef.current = false;
+        }
+      });
+      const cleanBlur = navigation.addListener('blur', () => {
+        unstable_navigationEvents.emit('pageBlurred', {
+          pathname: routeInfo.pathname,
+          params: routeInfo.params,
+          segments: routeInfo.segments,
+          screenId,
+        });
+        hasBlurredRef.current = true;
+      });
+      return () => {
+        cleanFocus();
+        cleanBlur();
+      };
     }
+    return () => {};
+  }, [navigation, routeInfo?.pathname, routeInfo?.params, routeInfo?.segments, screenId]);
 
-    return segments.join('/') ?? route.contextKey;
-  };
+  return null;
 }
 
 export function screenOptionsFactory(
   route: RouteNode,
   options?: ScreenProps['options']
-): RouteConfig<any, any, any, any, any, any>['options'] {
+): ScreenProps['options'] {
   return (args) => {
     // Only eager load generated components
     const staticOptions = route.generated ? route.loadRoute()?.getNavOptions : null;
@@ -292,7 +508,7 @@ export function screenOptionsFactory(
     };
 
     // Prevent generated screens from showing up in the tab bar.
-    if (route.generated) {
+    if (route.internal) {
       output.tabBarItemStyle = { display: 'none' };
       output.tabBarButton = () => null;
       // TODO: React Navigation doesn't provide a way to prevent rendering the drawer item.
@@ -310,11 +526,26 @@ export function routeToScreen(
   return (
     <Screen
       {...props}
-      getId={createGetIdForRoute(route, getId)}
       name={route.route}
       key={route.route}
+      getId={getId}
       options={screenOptionsFactory(route, options)}
       getComponent={() => getQualifiedRouteComponent(route)}
     />
   );
+}
+
+export function getSingularId(name: string, options: Record<string, any> = {}) {
+  return name
+    .split('/')
+    .map((segment) => {
+      if (segment.startsWith('[...')) {
+        return options.params?.[segment.slice(4, -1)]?.join('/') || segment;
+      } else if (segment.startsWith('[') && segment.endsWith(']')) {
+        return options.params?.[segment.slice(1, -1)] || segment;
+      } else {
+        return segment;
+      }
+    })
+    .join('/');
 }

@@ -10,29 +10,43 @@ protocol DynamicModuleWrapperProtocol {
 }
 
 /**
- Each module that has a view manager definition needs to be wrapped by `RCTViewManager`.
- Unfortunately, we can't use just one class because React Native checks for duplicated classes.
- We're generating its subclasses in runtime as a workaround.
+ Wrapper class that holds view module metadata and creates views.
+ With Fabric, views are registered directly with RCTComponentViewFactory
+ rather than through the legacy RCTViewManager bridge module system.
+
+ - Warning: The ObjC name `EXViewModuleWrapper`, and the selectors `moduleName`, `viewName`,
+   and `createViewModuleWrapperClassWithModule:appId:` are resolved at runtime via
+   `NSClassFromString` / `NSSelectorFromString` from `ExpoFabricViewObjC.mm`.
+   Renaming the class or these methods will break those call sites silently at runtime.
  */
-@objc
-public final class ViewModuleWrapper: RCTViewManager, DynamicModuleWrapperProtocol {
+@objc(EXViewModuleWrapper)
+public final class ViewModuleWrapper: NSObject, DynamicModuleWrapperProtocol {
   /**
    A reference to the module holder that stores the module definition.
    */
   weak var moduleHolder: ModuleHolder?
+  /**
+   A reference to the module definition
+   */
+  var viewDefinition: AnyViewDefinition?
+
+  /**
+   A boolean indicating if the view manager represents the default module view – the first exported definition available without specifying a view name.
+   */
+  var isDefaultModuleView: Bool = true
 
   /**
    The designated initializer. At first, we use this base class to hide `ModuleHolder` from Objective-C runtime.
    */
-  public init(_ moduleHolder: ModuleHolder) {
+  public init(_ moduleHolder: ModuleHolder, _ viewDefinition: AnyViewDefinition, isDefaultModuleView: Bool = false) {
     self.moduleHolder = moduleHolder
+    self.viewDefinition = viewDefinition
+    self.isDefaultModuleView = isDefaultModuleView
   }
 
   /**
-   The designated initializer that is used by React Native to create module instances.
-   https://github.com/facebook/react-native/blob/540c41be9/packages/react-native/React/Views/RCTComponentData.m#L506-L507
-   It doesn't matter to return dummy class here. The wrapper will then to subclass dynamically.
-   Must be called on a dynamic class to get access to underlying wrapped module. Throws fatal exception otherwise.
+   Default initializer required by NSObject and used by dynamic subclasses.
+   When called on a dynamic subclass, retrieves the wrapped module reference.
    */
   @objc
   public override init() {
@@ -41,6 +55,7 @@ public final class ViewModuleWrapper: RCTViewManager, DynamicModuleWrapperProtoc
       return
     }
     self.moduleHolder = module.moduleHolder
+    self.viewDefinition = moduleHolder?.definition.views[DEFAULT_MODULE_VIEW]
   }
 
   /**
@@ -56,6 +71,17 @@ public final class ViewModuleWrapper: RCTViewManager, DynamicModuleWrapperProtoc
    */
   @objc
   public func name() -> String {
+    guard let moduleHolder, let viewDefinition else {
+      fatalError("Failed to create ModuleHolder or a viewDefinition")
+    }
+    return self.isDefaultModuleView ? moduleHolder.name : "\(moduleHolder.name)_\(viewDefinition.name)"
+  }
+
+  /**
+   Returns the original name of the wrapped module.
+   */
+  @objc
+  public func moduleName() -> String {
     guard let moduleHolder else {
       fatalError("Failed to create ModuleHolder")
     }
@@ -63,11 +89,22 @@ public final class ViewModuleWrapper: RCTViewManager, DynamicModuleWrapperProtoc
   }
 
   /**
+   Returns the original name of the wrapped module.
+   */
+  @objc
+  public func viewName() -> String {
+    guard let viewDefinition else {
+      fatalError("Failed to create ModuleHolder or a viewDefinition")
+    }
+    return self.isDefaultModuleView ? DEFAULT_MODULE_VIEW : viewDefinition.name
+  }
+
+  /**
    Static function that returns the class name, but keep in mind that dynamic wrappers
    have custom class name (see `objc_allocateClassPair` invocation in `createViewModuleWrapperClass`).
    */
   @objc
-  public override class func moduleName() -> String {
+  public class func moduleName() -> String {
     return NSStringFromClass(Self.self)
   }
 
@@ -76,7 +113,7 @@ public final class ViewModuleWrapper: RCTViewManager, DynamicModuleWrapperProtoc
    Also, lazy-loaded modules must return false here.
    */
   @objc
-  public override class func requiresMainQueueSetup() -> Bool {
+  public class func requiresMainQueueSetup() -> Bool {
     return false
   }
 
@@ -84,12 +121,12 @@ public final class ViewModuleWrapper: RCTViewManager, DynamicModuleWrapperProtoc
    Creates a view from the wrapped module.
    */
   @objc
-  public override func view() -> UIView! {
+  public func view() -> UIView! {
     guard let appContext = moduleHolder?.appContext else {
       fatalError(Exceptions.AppContextLost().reason)
     }
-    guard let view = moduleHolder?.definition.view?.createView(appContext: appContext) else {
-      fatalError("Cannot create a view from module '\(String(describing: self.name))'")
+    guard let view = try? viewDefinition?.createView(appContext: appContext)?.toUIView() else {
+      fatalError("Cannot create a view '\(String(describing: viewDefinition?.name))' from module '\(String(describing: self.name))'")
     }
     return view
   }
@@ -126,4 +163,4 @@ public final class ViewModuleWrapper: RCTViewManager, DynamicModuleWrapperProtoc
 }
 
 // The direct event implementation can be cached and lazy-loaded (global and static variables are lazy by default in Swift).
-let directEventBlockImplementation = imp_implementationWithBlock({ ["RCTDirectEventBlock"] } as @convention(block) () -> [String])
+nonisolated(unsafe) let directEventBlockImplementation = imp_implementationWithBlock({ ["RCTDirectEventBlock"] } as @convention(block) () -> [String])

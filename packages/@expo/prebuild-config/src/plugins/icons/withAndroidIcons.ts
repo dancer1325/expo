@@ -1,13 +1,9 @@
-import {
-  AndroidConfig,
-  ConfigPlugin,
-  withAndroidColors,
-  withDangerousMod,
-} from '@expo/config-plugins';
-import { ResourceXML } from '@expo/config-plugins/build/android/Resources';
-import { ExpoConfig } from '@expo/config-types';
+import type { ConfigPlugin } from '@expo/config-plugins';
+import { AndroidConfig, withAndroidColors, withDangerousMod } from '@expo/config-plugins';
+import type { ResourceXML } from '@expo/config-plugins/build/android/Resources';
+import type { ExpoConfig } from '@expo/config-types';
 import { compositeImagesAsync, generateImageAsync } from '@expo/image-utils';
-import fs from 'fs-extra';
+import fs from 'fs';
 import path from 'path';
 
 import { withAndroidManifestIcons } from './withAndroidManifestIcons';
@@ -42,9 +38,10 @@ const IC_LAUNCHER_ROUND_XML = 'ic_launcher_round.xml';
 export const withAndroidIcons: ConfigPlugin = (config) => {
   const { foregroundImage, backgroundColor, backgroundImage, monochromeImage } =
     getAdaptiveIcon(config);
-  const icon = foregroundImage ?? getIcon(config);
+  const icon = getIcon(config);
+  const hasIcon = icon ?? foregroundImage;
 
-  if (!icon) {
+  if (!hasIcon) {
     return config;
   }
 
@@ -56,6 +53,7 @@ export const withAndroidIcons: ConfigPlugin = (config) => {
     async (config) => {
       await setIconAsync(config.modRequest.projectRoot, {
         icon,
+        foregroundImage,
         backgroundColor,
         backgroundImage,
         monochromeImage,
@@ -110,38 +108,62 @@ export async function setIconAsync(
   projectRoot: string,
   {
     icon,
+    foregroundImage,
     backgroundColor,
     backgroundImage,
     monochromeImage,
     isAdaptive,
   }: {
     icon: string | null;
+    foregroundImage?: string | null;
     backgroundColor: string | null;
     backgroundImage: string | null;
     monochromeImage: string | null;
     isAdaptive: boolean;
   }
 ) {
-  if (!icon) {
+  const legacyIcon = icon ?? foregroundImage;
+  const adaptiveForegroundImage = foregroundImage ?? legacyIcon;
+
+  if (!legacyIcon || !adaptiveForegroundImage) {
     return null;
   }
 
-  await configureLegacyIconAsync(projectRoot, icon, backgroundImage, backgroundColor);
+  const legacyBackgroundImage = icon ? null : backgroundImage;
+  const legacyBackgroundColor = icon ? null : backgroundColor;
+
+  await configureLegacyIconAsync(
+    projectRoot,
+    legacyIcon,
+    legacyBackgroundImage,
+    legacyBackgroundColor
+  );
   if (isAdaptive) {
-    await generateRoundIconAsync(projectRoot, icon, backgroundImage, backgroundColor);
+    await generateRoundIconAsync(
+      projectRoot,
+      legacyIcon,
+      legacyBackgroundImage,
+      legacyBackgroundColor
+    );
   } else {
     await deleteIconNamedAsync(projectRoot, IC_LAUNCHER_ROUND_WEBP);
   }
-  await configureAdaptiveIconAsync(projectRoot, icon, backgroundImage, monochromeImage, isAdaptive);
+  await configureAdaptiveIconAsync(
+    projectRoot,
+    adaptiveForegroundImage,
+    backgroundImage,
+    monochromeImage,
+    isAdaptive
+  );
 
   return true;
 }
 
 /**
- * Configures legacy icon files to be used on Android 7 and earlier. If adaptive icon configuration
- * was provided, we create a pseudo-adaptive icon by layering the provided files (or background
- * color if no backgroundImage is provided. If no backgroundImage and no backgroundColor are provided,
- * the background is set to transparent.)
+ * Configures legacy icon files to be used on Android 7 and earlier. If only adaptive icon
+ * configuration was provided, we create a pseudo-adaptive icon by layering the provided files (or
+ * background color if no backgroundImage is provided. If no backgroundImage and no backgroundColor
+ * are provided, the background is set to transparent.)
  */
 async function configureLegacyIconAsync(
   projectRoot: string,
@@ -253,21 +275,19 @@ async function createAdaptiveIconXmlFiles(
   add: boolean
 ) {
   const anyDpiV26Directory = path.resolve(projectRoot, ANDROID_RES_PATH, MIPMAP_ANYDPI_V26);
-  await fs.ensureDir(anyDpiV26Directory);
+  await fs.promises.mkdir(anyDpiV26Directory, { recursive: true });
   const launcherPath = path.resolve(anyDpiV26Directory, IC_LAUNCHER_XML);
   const launcherRoundPath = path.resolve(anyDpiV26Directory, IC_LAUNCHER_ROUND_XML);
   if (add) {
     await Promise.all([
-      fs.writeFile(launcherPath, icLauncherXmlString),
-      fs.writeFile(launcherRoundPath, icLauncherXmlString),
+      fs.promises.writeFile(launcherPath, icLauncherXmlString, 'utf8'),
+      fs.promises.writeFile(launcherRoundPath, icLauncherXmlString, 'utf8'),
     ]);
   } else {
     // Remove the xml if the icon switches from adaptive to standard.
     await Promise.all(
       [launcherPath, launcherRoundPath].map(async (path) => {
-        if (fs.existsSync(path)) {
-          return fs.remove(path);
-        }
+        return fs.promises.rm(path, { force: true });
       })
     );
   }
@@ -319,7 +339,10 @@ async function generateMultiLayerImageAsync(
       });
 
       if (backgroundImageFileName) {
-        await fs.writeFile(path.resolve(dpiFolder, backgroundImageFileName), backgroundLayer);
+        await fs.promises.writeFile(
+          path.resolve(dpiFolder, backgroundImageFileName),
+          backgroundLayer
+        );
       } else {
         iconLayer = await compositeImagesAsync({
           foreground: iconLayer,
@@ -331,8 +354,8 @@ async function generateMultiLayerImageAsync(
       await deleteIconNamedAsync(projectRoot, backgroundImageFileName);
     }
 
-    await fs.ensureDir(dpiFolder);
-    await fs.writeFile(path.resolve(dpiFolder, outputImageFileName), iconLayer);
+    await fs.promises.mkdir(dpiFolder, { recursive: true });
+    await fs.promises.writeFile(path.resolve(dpiFolder, outputImageFileName), iconLayer);
   });
 }
 
@@ -352,8 +375,8 @@ async function generateMonochromeImageAsync(
       backgroundColor: 'transparent',
       isAdaptive: true,
     });
-    await fs.ensureDir(dpiFolder);
-    await fs.writeFile(path.resolve(dpiFolder, outputImageFileName), monochromeIcon);
+    await fs.promises.mkdir(dpiFolder, { recursive: true });
+    await fs.promises.writeFile(path.resolve(dpiFolder, outputImageFileName), monochromeIcon);
   });
 }
 
@@ -373,7 +396,7 @@ function iterateDpiValues(
 
 async function deleteIconNamedAsync(projectRoot: string, name: string) {
   return iterateDpiValues(projectRoot, ({ dpiFolder }) => {
-    return fs.remove(path.resolve(dpiFolder, name));
+    return fs.promises.rm(path.resolve(dpiFolder, name), { force: true });
   });
 }
 

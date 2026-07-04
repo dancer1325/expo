@@ -1,10 +1,11 @@
-@file:OptIn(EitherType::class)
-
 package expo.modules.image
 
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.util.Base64
+import android.util.Log
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toBitmapOrNull
 import androidx.core.view.doOnDetach
 import com.bumptech.glide.Glide
@@ -16,9 +17,11 @@ import com.bumptech.glide.load.model.Headers
 import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.EmptySignature
 import com.github.penfeizhou.animation.apng.APNGDrawable
 import com.github.penfeizhou.animation.gif.GifDrawable
 import com.github.penfeizhou.animation.webp.WebPDrawable
+import expo.modules.image.blurhash.BlurhashEncoder
 import expo.modules.image.enums.ContentFit
 import expo.modules.image.enums.Priority
 import expo.modules.image.records.CachePolicy
@@ -27,21 +30,38 @@ import expo.modules.image.records.DecodeFormat
 import expo.modules.image.records.DecodedSource
 import expo.modules.image.records.ImageLoadOptions
 import expo.modules.image.records.ImageTransition
+import expo.modules.image.okhttp.GlideUrlWithCustomCacheKey
 import expo.modules.image.records.SourceMap
+import expo.modules.image.thumbhash.ThumbhashEncoder
 import expo.modules.kotlin.Promise
-import expo.modules.kotlin.apifeatures.EitherType
 import expo.modules.kotlin.exception.Exceptions
 import expo.modules.kotlin.functions.Coroutine
 import expo.modules.kotlin.functions.Queues
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.sharedobjects.SharedRef
+import expo.modules.kotlin.types.Either
 import expo.modules.kotlin.types.EitherOfThree
 import expo.modules.kotlin.types.toKClass
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.net.URL
 
 class ExpoImageModule : Module() {
+  // Whether JS subscribed to `imageLoaded`. Skips the per-image-load bridge hop when nothing is
+  // listening
+  @Volatile
+  private var hasImageLoadedListener = false
+
   override fun definition() = ModuleDefinition {
     Name("ExpoImage")
+
+    Events("imageLoaded")
+
+    OnStartObserving("imageLoaded") { hasImageLoadedListener = true }
+    OnStopObserving("imageLoaded") { hasImageLoadedListener = false }
 
     OnCreate {
       appContext.reactContext?.registerComponentCallbacks(ExpoImageComponentCallbacks)
@@ -108,8 +128,99 @@ class ExpoImageModule : Module() {
       }
     }
 
+    AsyncFunction("writeToCacheAsync") Coroutine { source: Either<URL, Image>, cacheKey: String ->
+      val context = appContext.reactContext ?: throw Exceptions.ReactContextLost()
+
+      val isImageRef = source.`is`(Image::class)
+
+      val localFilePath = withContext(Dispatchers.IO) {
+        if (isImageRef) {
+          // The ref carries no original encoded data, so re-encode the drawable into a temporary file.
+          val bitmap = source.get(Image::class).ref.toBitmap()
+          val tempFile = File.createTempFile("expo-image-cache-seed", null, context.cacheDir)
+          try {
+            FileOutputStream(tempFile).use { output ->
+              bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)
+            }
+          } catch (e: Exception) {
+            tempFile.delete()
+            throw WriteToCacheEncodeException()
+          }
+          return@withContext tempFile
+        }
+
+        val url = source.get(URL::class)
+        if (url.protocol != "file") {
+          throw WriteToCacheRemoteSourceException(url.toString())
+        }
+        val file = File(url.toURI())
+        if (!file.exists()) {
+          throw WriteToCacheReadException(file.absolutePath)
+        }
+        return@withContext file
+      }
+
+      try {
+        // A non-empty URI is required by `GlideUrl`, but only the cache key affects the disk cache key.
+        val model = GlideUrlWithCustomCacheKey(
+          uri = localFilePath.toURI().toString(),
+          headers = Headers.DEFAULT,
+          cacheKey = cacheKey,
+          localFilePath = localFilePath.absolutePath
+        )
+
+        withContext(Dispatchers.IO) {
+          Glide
+            .with(context)
+            .asFile()
+            .load(model)
+            .diskCacheStrategy(DiskCacheStrategy.DATA)
+            .signature(EmptySignature.obtain())
+            .submit()
+            .get()
+        }
+      } finally {
+        if (isImageRef) {
+          localFilePath.delete()
+        }
+      }
+    }
+
     AsyncFunction("loadAsync") Coroutine { source: SourceMap, options: ImageLoadOptions? ->
-      ImageLoadTask(appContext, source, options ?: ImageLoadOptions()).load()
+      val image = ImageLoadTask(appContext, source, options ?: ImageLoadOptions()).load()
+      emitImageLoaded(source.uri ?: "", image.ref.intrinsicWidth, image.ref.intrinsicHeight)
+      image
+    }
+
+    suspend fun generatePlaceholder(
+      source: Either<URL, Image>,
+      encoder: (Bitmap) -> String
+    ): String {
+      val image = source.let {
+        if (it.`is`(Image::class)) {
+          it.get(Image::class)
+        } else {
+          ImageLoadTask(appContext, SourceMap(uri = it.get(URL::class).toString()), ImageLoadOptions()).load()
+        }
+      }
+      return withContext(Dispatchers.Default) {
+        encoder(image.ref.toBitmap())
+      }
+    }
+
+    AsyncFunction("generateBlurhashAsync") Coroutine { source: Either<URL, Image>, numberOfComponents: Pair<Int, Int> ->
+      generatePlaceholder(source) { bitmap ->
+        BlurhashEncoder.encode(bitmap, numberOfComponents)
+      }
+    }
+
+    AsyncFunction("generateThumbhashAsync") Coroutine { source: Either<URL, Image> ->
+      generatePlaceholder(source) { bitmap ->
+        Base64.encodeToString(
+          ThumbhashEncoder.encode(bitmap),
+          Base64.NO_WRAP
+        )
+      }
     }
 
     Class(Image::class) {
@@ -168,6 +279,28 @@ class ExpoImageModule : Module() {
         file.absolutePath
       } catch (_: Exception) {
         null
+      }
+    }
+
+    AsyncFunction("readFromCacheAsync") Coroutine { cacheKey: String ->
+      val context = appContext.reactContext ?: throw Exceptions.ReactContextLost()
+
+      withContext(Dispatchers.IO) {
+        try {
+          val drawable = Glide
+            .with(context)
+            .load(GlideUrl(cacheKey))
+            .onlyRetrieveFromCache(true)
+            .submit()
+            .get()
+          return@withContext Image(drawable)
+        } catch (exception: Exception) {
+          // `onlyRetrieveFromCache` makes Glide fail the request when the image isn't cached, which
+          // is the expected miss path. A decode failure of a corrupt or partial cached entry surfaces
+          // here too, so log it to keep that case diagnosable rather than indistinguishable from a miss.
+          Log.d("ExpoImage", "readFromCacheAsync failed for key \"$cacheKey\"", exception)
+          return@withContext null
+        }
       }
     }
 
@@ -275,6 +408,19 @@ class ExpoImageModule : Module() {
         view.setIsAnimating(false)
       }
 
+      AsyncFunction("lockResourceAsync") { view: ExpoImageViewWrapper ->
+        view.lockResource = true
+      }
+
+      AsyncFunction("unlockResourceAsync") { view: ExpoImageViewWrapper ->
+        view.lockResource = false
+      }
+
+      AsyncFunction("reloadAsync") { view: ExpoImageViewWrapper ->
+        view.shouldRerender = true
+        view.rerenderIfNeeded(force = true)
+      }
+
       OnViewDidUpdateProps { view: ExpoImageViewWrapper ->
         view.rerenderIfNeeded()
       }
@@ -285,5 +431,19 @@ class ExpoImageModule : Module() {
         }
       }
     }
+  }
+
+  fun emitImageLoaded(url: String, width: Int, height: Int) {
+    if (!hasImageLoadedListener || width <= 0 || height <= 0 || url.isEmpty()) {
+      return
+    }
+    sendEvent(
+      "imageLoaded",
+      mapOf(
+        "url" to url,
+        "width" to width,
+        "height" to height
+      )
+    )
   }
 }

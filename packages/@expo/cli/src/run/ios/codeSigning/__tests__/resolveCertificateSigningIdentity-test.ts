@@ -50,7 +50,7 @@ describe(selectDevelopmentTeamAsync, () => {
     const preferredId = 'A1BCDEF234';
     await selectDevelopmentTeamAsync(identities, preferredId);
 
-    expect(selectAsync).toBeCalledWith('Development team for signing the app', [
+    expect(selectAsync).toHaveBeenCalledWith('Development team for signing the app', [
       {
         title: '650 Industries, Inc. (A1BCDEF234) - Apple Development: Evan Bacon (XXX)',
         value: 0,
@@ -62,7 +62,7 @@ describe(selectDevelopmentTeamAsync, () => {
 
 describe(resolveCertificateSigningIdentityAsync, () => {
   it(`asserts when no IDs are provided`, async () => {
-    const ids = [];
+    const ids: string[] = [];
     await expect(resolveCertificateSigningIdentityAsync(projectRoot, ids)).rejects.toThrow(
       'No code signing certificates are available to use.'
     );
@@ -122,7 +122,7 @@ describe(resolveCertificateSigningIdentityAsync, () => {
     ]);
 
     // Store the preferred ID for the next time.
-    expect(Settings.setLastDeveloperCodeSigningIdAsync).toBeCalledWith('YYY');
+    expect(Settings.setLastDeveloperCodeSigningIdAsync).toHaveBeenCalledWith('YYY');
   });
 
   it(`stores the apple team id in app manifest when prompted`, async () => {

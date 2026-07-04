@@ -1,9 +1,11 @@
-import { useIsFocused } from '@react-navigation/native';
+import type { JSX } from 'react';
 import React from 'react';
 
-import { ExpoHead, UserActivity } from './ExpoHeadModule';
-import { getStaticUrlFromExpoRouter } from './url';
 import { useLocalSearchParams, useUnstableGlobalHref, usePathname, useSegments } from '../hooks';
+import { useIsFocused } from '../useIsFocused';
+import type { UserActivity } from './ExpoHeadModule';
+import { ExpoHead } from './ExpoHeadModule';
+import { getStaticUrlFromExpoRouter } from './url';
 
 function urlToId(url: string) {
   return url.replace(/[^a-zA-Z0-9]/g, '-');
@@ -12,7 +14,7 @@ function urlToId(url: string) {
 function getLastSegment(path: string) {
   // Remove the extension
   const lastSegment = path.split('/').pop() ?? '';
-  return lastSegment.replace(/\.[^/.]+$/, '').split('?')[0];
+  return lastSegment.replace(/\.[^/.]+$/, '').split('?')[0]!;
 }
 
 // TODO: Use Head Provider to collect all props so only one Head is rendered for a given route.
@@ -61,15 +63,33 @@ function serializedMetaChildren(meta: MetaNode[]): SerializedMeta[] {
       return {
         type: 'title',
         props: {
-          children: typeof child.props.children === 'string' ? child.props.children : undefined,
+          children:
+            child.props &&
+            typeof child.props === 'object' &&
+            'children' in child.props &&
+            typeof child.props.children === 'string'
+              ? child.props.children
+              : undefined,
         },
       };
     }
     return {
       type: 'meta',
       props: {
-        property: typeof child.props.property === 'string' ? child.props.property : undefined,
-        content: typeof child.props.content === 'string' ? child.props.content : undefined,
+        property:
+          child.props &&
+          typeof child.props === 'object' &&
+          'property' in child.props &&
+          typeof child.props.property === 'string'
+            ? child.props.property
+            : undefined,
+        content:
+          child.props &&
+          typeof child.props === 'object' &&
+          'content' in child.props &&
+          typeof child.props.content === 'string'
+            ? child.props.content
+            : undefined,
       },
     };
   });
@@ -259,7 +279,7 @@ function useRegisterCurrentActivity(activity: UserActivity) {
   }, [activityId]);
 }
 
-function deepObjectCompare(a: any, b: any) {
+function deepObjectCompare(a: any, b: any): boolean {
   if (typeof a !== typeof b) {
     return false;
   }

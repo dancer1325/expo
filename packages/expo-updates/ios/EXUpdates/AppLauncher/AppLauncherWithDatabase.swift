@@ -32,6 +32,11 @@ public class AppLauncherWithDatabase: NSObject, AppLauncher {
   public var launchAssetUrl: URL?
   public var assetFilesMap: [String: String]?
 
+  /// Set when the launched update is served directly from the embedded app binary. Tracked
+  /// explicitly because `assetFilesMap` is now populated with the bundle-resolved embedded assets,
+  /// so it can no longer double as the "using embedded assets" signal.
+  private var launchedFromEmbeddedBundle = false
+
   private let launcherQueue: DispatchQueue
   private var completedAssets: Int
   private let config: UpdatesConfig
@@ -43,18 +48,18 @@ public class AppLauncherWithDatabase: NSObject, AppLauncher {
 
   private var launchAssetError: UpdatesError?
 
-  public required init(config: UpdatesConfig, database: UpdatesDatabase, directory: URL, completionQueue: DispatchQueue) {
+  public required init(config: UpdatesConfig, database: UpdatesDatabase, directory: URL, completionQueue: DispatchQueue, logger: UpdatesLogger) {
     self.launcherQueue = DispatchQueue(label: "expo.launcher.LauncherQueue")
     self.completedAssets = 0
     self.config = config
     self.database = database
     self.directory = directory
     self.completionQueue = completionQueue
-    self.logger = UpdatesLogger()
+    self.logger = logger
   }
 
   public func isUsingEmbeddedAssets() -> Bool {
-    return assetFilesMap == nil
+    return launchedFromEmbeddedBundle
   }
 
   public static func launchableUpdate(
@@ -92,18 +97,21 @@ public class AppLauncherWithDatabase: NSObject, AppLauncher {
           return
         }
 
-        // We can only run an update marked as embedded if it's actually the update embedded in the
-        // current binary. We might have an older update from a previous binary still listed in the
-        // database with Embedded status so we need to filter that out here.
-        let embeddedManifest = EmbeddedAppLoader.embeddedManifest(withConfig: config, database: database)
+        let embeddedManifest = EmbeddedAppLoader.originalEmbeddedManifest(withConfig: config, database: database)
         var filteredLaunchableUpdates: [Update] = []
-
         for update in launchableUpdates {
-          if update.status == UpdateStatus.StatusEmbedded {
-            if embeddedManifest != nil && update.updateId != embeddedManifest!.updateId {
-              continue
-            }
+          // We can only run an update marked as embedded if it's actually the update embedded in the
+          // current binary. We might have an older update from a previous binary still listed in the
+          // database with Embedded status so we need to filter that out here.
+          if update.status == UpdateStatus.StatusEmbedded && update.updateId != embeddedManifest?.updateId {
+            continue
           }
+
+          // If embedded update is disabled, we should exclude embedded update from launchable updates
+          if !config.hasEmbeddedUpdate && embeddedManifest?.updateId == update.updateId {
+            continue
+          }
+
           filteredLaunchableUpdates.append(update)
         }
 
@@ -175,8 +183,11 @@ public class AppLauncherWithDatabase: NSObject, AppLauncher {
     }
 
     if launchedUpdate.status == UpdateStatus.StatusEmbedded {
-      precondition(assetFilesMap == nil, "assetFilesMap should be null for embedded updates")
-      launchAssetUrl = Bundle.main.url(
+      launchedFromEmbeddedBundle = true
+      // The embedded update's assets aren't copied into the cache, so resolve them from the app
+      // binary. Populating the map here keeps `Updates.localAssets` available instead of empty.
+      assetFilesMap = UpdatesUtils.embeddedAssetsMap(withConfig: config, database: database, logger: logger)
+      launchAssetUrl = updatesBundle.url(
         forResource: EmbeddedAppLoader.EXUpdatesBareEmbeddedBundleFilename,
         withExtension: EmbeddedAppLoader.EXUpdatesBareEmbeddedBundleFileType
       )
@@ -338,10 +349,13 @@ public class AppLauncherWithDatabase: NSObject, AppLauncher {
 
     FileDownloader.assetFilesQueue.async {
       self.downloader.downloadAsset(
+        asset: asset,
         fromURL: assetUrl,
         verifyingHash: asset.expectedHash,
         toPath: assetLocalUrl.path,
-        extraHeaders: asset.extraRequestHeaders ?? [:]
+        extraHeaders: asset.extraRequestHeaders ?? [:],
+        allowPatch: false,
+        launchedUpdate: self.launchedUpdate
       ) { _, response, base64URLEncodedSHA256Hash in
         self.launcherQueue.async {
           if let response = response as? HTTPURLResponse {
@@ -360,7 +374,12 @@ public class AppLauncherWithDatabase: NSObject, AppLauncher {
   }
 
   private lazy var downloader: FileDownloader = {
-    FileDownloader(config: config)
+    FileDownloader(
+      config: config,
+      logger: self.logger,
+      updatesDirectory: self.directory,
+      database: self.database
+    )
   }()
 }
 // swiftlint:enable closure_body_length

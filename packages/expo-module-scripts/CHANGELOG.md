@@ -8,7 +8,136 @@
 
 ### 🐛 Bug fixes
 
+- Add missing `publishConfig.executableFiles` ([#46074](https://github.com/expo/expo/pull/46074) by [@kitten](https://github.com/kitten))
+- Fix `prepublishOnly` wiping `build/` for packages that compile with `expo-build`, by rebuilding via the package's own `build` script instead of `tsc`. ([#47344](https://github.com/expo/expo/pull/47344) by [@zoontek](https://github.com/zoontek))
+
 ### 💡 Others
+
+- Added `CLAUDE.md` and `CONTRIBUTING.md` to `.npmignore` template. ([#47451](https://github.com/expo/expo/pull/47451) by [@kudo](https://github.com/kudo))
+
+## 56.0.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.1 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.2 — 2026-01-23
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 🎉 New features
+
+- Ensure `loader()` functions are stripped from client bundles ([#40670](https://github.com/expo/expo/pull/40670) by [@hassankhan](https://github.com/hassankhan))
+- Rewrite using Node.js to add Windows support. ([#36296](https://github.com/expo/expo/pull/36296) by [@Simek](https://github.com/Simek) and [@kudo](https://github.com/kudo))
+- Add support for server data loaders in server export mode ([#41934](https://github.com/expo/expo/pull/41934) by [@hassankhan](https://github.com/hassankhan))
+
+### 💡 Others
+
+- Add more tests related files to the `.npmignore` template. ([#39551](https://github.com/expo/expo/pull/39551) by [@Simek](https://github.com/Simek))
+
+## 5.0.8 - 2025-12-04
+
+### 💡 Others
+
+- Update to `glob@^13.0.0` ([#41079](https://github.com/expo/expo/pull/41079) by [@kitten](https://github.com/kitten))
+
+## 5.0.7 — 2025-09-10
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.6 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.5 — 2025-08-28
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.4 — 2025-08-26
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.3 — 2025-08-21
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 5.0.1 — 2025-08-15
+
+### 💡 Others
+
+- Bump to `typescript@5.9` ([#38833](https://github.com/expo/expo/pull/38833) by [@kitten](https://github.com/kitten))
+
+## 5.0.0 — 2025-08-13
+
+_This version does not introduce any user-facing changes._
+
+## 4.1.9 - 2025-07-03
+
+_This version does not introduce any user-facing changes._
+
+## 4.1.8 - 2025-06-26
+
+_This version does not introduce any user-facing changes._
+
+## 4.1.7 — 2025-05-08
+
+### 🎉 New features
+
+- Added base **eslint.config.js** for ESLint 9. ([#36695](https://github.com/expo/expo/pull/36695) by [@kudo](https://github.com/kudo))
+
+## 4.1.6 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 4.1.5 — 2025-04-25
+
+### 🎉 New features
+
+- Add TS config base for Node apps. ([#36322](https://github.com/expo/expo/pull/36322) by [@Simek]
+
+## 4.1.4 — 2025-04-23
+
+_This version does not introduce any user-facing changes._
+
+## 4.1.3 — 2025-04-22
+
+_This version does not introduce any user-facing changes._
+
+## 4.1.2 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 4.1.1 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 4.1.0 — 2025-04-04
+
+_This version does not introduce any user-facing changes._
+
+## 4.0.4 - 2025-02-14
+
+_This version does not introduce any user-facing changes._
+
+## 4.0.3 - 2025-01-10
+
+_This version does not introduce any user-facing changes._
 
 ## 4.0.2 — 2024-11-11
 

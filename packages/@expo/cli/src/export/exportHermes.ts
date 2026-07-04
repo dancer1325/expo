@@ -1,11 +1,40 @@
-import { ExpoConfig, getConfigFilePaths, Platform } from '@expo/config';
+import type { ExpoConfig, Platform } from '@expo/config';
+import { getConfigFilePaths } from '@expo/config';
 import JsonFile from '@expo/json-file';
-import fs from 'fs-extra';
+import fs from 'fs';
 import path from 'path';
+
+const PODFILE_HERMES_LHS = /(?::hermes_enabled\s*=>|hermes_enabled\s*:)/;
+const PODFILE_HERMES_PROPS_REFERENCE_RE = new RegExp(
+  String.raw`^\s*${PODFILE_HERMES_LHS.source}\s*podfile_properties\['expo\.jsEngine'\]\s*==\s*nil\s*\|\|\s*podfile_properties\['expo\.jsEngine'\]\s*==\s*'hermes'\s*,?\s*(?:#.*)?$`,
+  'm'
+);
+const PODFILE_HERMES_TRUE_RE = new RegExp(
+  String.raw`^\s*${PODFILE_HERMES_LHS.source}\s*true\s*(?:,\s*)?(?:[^\n]*)?$`,
+  'm'
+);
+const PODFILE_HERMES_FALSE_RE = new RegExp(
+  String.raw`^\s*${PODFILE_HERMES_LHS.source}\s*false\s*(?:,\s*)?(?:[^\n]*)?$`,
+  'm'
+);
+
+function getLiteralHermesSettingFromPodfile(content: string): boolean | null {
+  const isPropsReference = content.search(PODFILE_HERMES_PROPS_REFERENCE_RE) >= 0;
+  if (isPropsReference) {
+    return null;
+  }
+  if (PODFILE_HERMES_TRUE_RE.test(content)) {
+    return true;
+  }
+  if (PODFILE_HERMES_FALSE_RE.test(content)) {
+    return false;
+  }
+  return null;
+}
 
 export async function assertEngineMismatchAsync(
   projectRoot: string,
-  exp: Pick<ExpoConfig, 'ios' | 'android' | 'jsEngine'>,
+  exp: Pick<ExpoConfig, 'ios' | 'android'>,
   platform: Platform
 ) {
   const isHermesManaged = isEnableHermesManaged(exp, platform);
@@ -20,15 +49,19 @@ export async function assertEngineMismatchAsync(
 }
 
 export function isEnableHermesManaged(
-  expoConfig: Partial<Pick<ExpoConfig, 'ios' | 'android' | 'jsEngine'>>,
+  expoConfig: Partial<Pick<ExpoConfig, 'ios' | 'android'>>,
   platform: string
 ): boolean {
   switch (platform) {
     case 'android': {
-      return (expoConfig.android?.jsEngine ?? expoConfig.jsEngine) !== 'jsc';
+      // NOTE(@kitten): `jsEngine` was deprecated, but we're preserving the check
+      return ((expoConfig.android as any)?.jsEngine ?? (expoConfig as any).jsEngine) !== 'jsc';
     }
-    case 'ios': {
-      return (expoConfig.ios?.jsEngine ?? expoConfig.jsEngine) !== 'jsc';
+    case 'ios':
+    case 'tvos':
+    case 'macos': {
+      // NOTE(@kitten): `jsEngine` was deprecated, but we're preserving the check
+      return ((expoConfig.ios as any)?.jsEngine ?? (expoConfig as any).jsEngine) !== 'jsc';
     }
     default:
       return false;
@@ -44,8 +77,8 @@ export function parseGradleProperties(content: string): Record<string, string> {
     }
 
     const sepIndex = line.indexOf('=');
-    const key = line.substr(0, sepIndex);
-    const value = line.substr(sepIndex + 1);
+    const key = line.slice(0, sepIndex);
+    const value = line.slice(sepIndex + 1);
     result[key] = value;
   }
   return result;
@@ -66,7 +99,7 @@ export async function maybeThrowFromInconsistentEngineAsync(
       `JavaScript engine configuration is inconsistent between ${configFileName} and Android native project.\n` +
         `In ${configFileName}: Hermes is ${isHermesManaged ? 'enabled' : 'not enabled'}\n` +
         `In Android native project: Hermes is ${isHermesManaged ? 'not enabled' : 'enabled'}\n` +
-        `Please check the following files for inconsistencies:\n` +
+        `Check the following files for inconsistencies:\n` +
         `  - ${configFilePath}\n` +
         `  - ${path.join(projectRoot, 'android', 'gradle.properties')}\n` +
         `  - ${path.join(projectRoot, 'android', 'app', 'build.gradle')}\n` +
@@ -74,12 +107,17 @@ export async function maybeThrowFromInconsistentEngineAsync(
     );
   }
 
-  if (platform === 'ios' && (await maybeInconsistentEngineIosAsync(projectRoot, isHermesManaged))) {
+  // TODO(@kitten): Since Hermes is now assumed, we loosen the relevant check for tvos and macos and just
+  // assume we should look at the ios folder, and can otherwise assume Hermes
+  if (
+    (platform === 'ios' || platform === 'tvos' || platform === 'macos') &&
+    (await maybeInconsistentEngineIosAsync(projectRoot, isHermesManaged))
+  ) {
     throw new Error(
       `JavaScript engine configuration is inconsistent between ${configFileName} and iOS native project.\n` +
         `In ${configFileName}: Hermes is ${isHermesManaged ? 'enabled' : 'not enabled'}\n` +
         `In iOS native project: Hermes is ${isHermesManaged ? 'not enabled' : 'enabled'}\n` +
-        `Please check the following files for inconsistencies:\n` +
+        `Check the following files for inconsistencies:\n` +
         `  - ${configFilePath}\n` +
         `  - ${path.join(projectRoot, 'ios', 'Podfile')}\n` +
         `  - ${path.join(projectRoot, 'ios', 'Podfile.properties.json')}\n` +
@@ -97,7 +135,7 @@ export async function maybeInconsistentEngineAndroidAsync(
   // Check gradle.properties from prebuild template
   const gradlePropertiesPath = path.join(projectRoot, 'android', 'gradle.properties');
   if (fs.existsSync(gradlePropertiesPath)) {
-    const props = parseGradleProperties(await fs.readFile(gradlePropertiesPath, 'utf8'));
+    const props = parseGradleProperties(await fs.promises.readFile(gradlePropertiesPath, 'utf8'));
     const isHermesBare = props['hermesEnabled'] === 'true';
     if (isHermesManaged !== isHermesBare) {
       return true;
@@ -110,16 +148,16 @@ export async function maybeInconsistentEngineAndroidAsync(
 export function isHermesPossiblyEnabled(projectRoot: string): boolean | null {
   // Trying best to check ios native project if by chance to be consistent between app config
 
-  // Check ios/Podfile for ":hermes_enabled => true"
+  // Check ios/Podfile for a literal :hermes_enabled => (true|false) or hermes_enabled: (true|false)
   const podfilePath = path.join(projectRoot, 'ios', 'Podfile');
   if (fs.existsSync(podfilePath)) {
     const content = fs.readFileSync(podfilePath, 'utf8');
-    const isPropsReference =
-      content.search(
-        /^\s*:hermes_enabled\s*=>\s*podfile_properties\['expo.jsEngine'\]\s*==\s*nil\s*\|\|\s*podfile_properties\['expo.jsEngine'\]\s*==\s*'hermes',?/m
-      ) >= 0;
-    const isHermesBare = content.search(/^\s*:hermes_enabled\s*=>\s*true,?\s+/m) >= 0;
-    if (!isPropsReference && isHermesBare) {
+    const literal = getLiteralHermesSettingFromPodfile(content);
+    if (literal != null) return literal;
+
+    // If there is no props reference and no literal, assume Hermes is enabled by default
+    const hasPropsReference = PODFILE_HERMES_PROPS_REFERENCE_RE.test(content);
+    if (!hasPropsReference) {
       return true;
     }
   }
@@ -144,17 +182,20 @@ export async function maybeInconsistentEngineIosAsync(
 ): Promise<boolean> {
   // Trying best to check ios native project if by chance to be consistent between app config
 
-  // Check ios/Podfile for ":hermes_enabled => true"
+  // Check ios/Podfile for a literal :hermes_enabled => (true|false)
   const podfilePath = path.join(projectRoot, 'ios', 'Podfile');
   if (fs.existsSync(podfilePath)) {
-    const content = await fs.readFile(podfilePath, 'utf8');
-    const isPropsReference =
-      content.search(
-        /^\s*:hermes_enabled\s*=>\s*podfile_properties\['expo.jsEngine'\]\s*==\s*nil\s*\|\|\s*podfile_properties\['expo.jsEngine'\]\s*==\s*'hermes',?/m
-      ) >= 0;
-    const isHermesBare = content.search(/^\s*:hermes_enabled\s*=>\s*true,?\s+/m) >= 0;
-    if (!isPropsReference && isHermesManaged !== isHermesBare) {
-      return true;
+    const content = await fs.promises.readFile(podfilePath, 'utf8');
+    const literal = getLiteralHermesSettingFromPodfile(content);
+    if (literal != null) {
+      if (isHermesManaged !== literal) return true;
+    } else {
+      // If there is no props reference and no literal, assume Hermes is enabled by default
+      const hasPropsReference = PODFILE_HERMES_PROPS_REFERENCE_RE.test(content);
+      if (!hasPropsReference) {
+        const assumedEnabled = true;
+        if (isHermesManaged !== assumedEnabled) return true;
+      }
     }
   }
 
@@ -176,22 +217,22 @@ const HERMES_MAGIC_HEADER = 'c61fbc03c103191f';
 
 export async function isHermesBytecodeBundleAsync(file: string): Promise<boolean> {
   const header = await readHermesHeaderAsync(file);
-  return header.slice(0, 8).toString('hex') === HERMES_MAGIC_HEADER;
+  return header.subarray(0, 8).toString('hex') === HERMES_MAGIC_HEADER;
 }
 
 export async function getHermesBytecodeBundleVersionAsync(file: string): Promise<number> {
   const header = await readHermesHeaderAsync(file);
-  if (header.slice(0, 8).toString('hex') !== HERMES_MAGIC_HEADER) {
+  if (header.subarray(0, 8).toString('hex') !== HERMES_MAGIC_HEADER) {
     throw new Error('Invalid hermes bundle file');
   }
   return header.readUInt32LE(8);
 }
 
 async function readHermesHeaderAsync(file: string): Promise<Buffer> {
-  const fd = await fs.open(file, 'r');
+  const fd = await fs.promises.open(file, 'r');
   const buffer = Buffer.alloc(12);
-  await fs.read(fd, buffer, 0, 12, null);
-  await fs.close(fd);
+  await fd.read(buffer, 0, 12, null);
+  await fd.close();
   return buffer;
 }
 
@@ -199,7 +240,7 @@ async function parsePodfilePropertiesAsync(
   podfilePropertiesPath: string
 ): Promise<Record<string, string>> {
   try {
-    return JSON.parse(await fs.readFile(podfilePropertiesPath, 'utf8'));
+    return JSON.parse(await fs.promises.readFile(podfilePropertiesPath, 'utf8'));
   } catch {
     return {};
   }
@@ -218,6 +259,10 @@ export function isAndroidUsingHermes(projectRoot: string) {
 }
 
 export function isIosUsingHermes(projectRoot: string) {
+  // Assume Hermes and/or just check iOS
+  if (!fs.existsSync(path.join(projectRoot, 'ios'))) {
+    return true;
+  }
   // If nullish, then assume Hermes is used.
   return isHermesPossiblyEnabled(projectRoot) !== false;
 }

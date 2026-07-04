@@ -9,6 +9,7 @@ import Button from '../components/Button';
 import MonoText from '../components/MonoText';
 
 export default function MailComposerScreen() {
+  const [isAvailable, setIsAvailable] = React.useState<boolean | undefined>();
   const [status, setStatus] = React.useState<MailComposer.MailComposerStatus | null>(null);
   const [clients, setClients] = React.useState<(MailComposer.MailClient & { icon?: string })[]>([]);
 
@@ -47,21 +48,31 @@ export default function MailComposerScreen() {
         isHtml: true,
       });
       setStatus(status);
-    } catch (error) {
+    } catch (error: any) {
       console.log('Error: ', error);
       Alert.alert(`Something went wrong: ${error.message}`);
     }
   };
 
+  const checkAvailability = () => {
+    MailComposer.isAvailableAsync().then(setIsAvailable);
+  };
+
   return (
     <View style={styles.container}>
+      <Button onPress={checkAvailability} title="isAvailable" />
+      {isAvailable !== undefined && <MonoText>{isAvailable.toString()}</MonoText>}
       {clients.map(({ label, packageName, icon, url }) => (
         <View style={styles.clientContainer} key={label}>
           {icon && <Image style={styles.image} source={icon} />}
           <Text>{label}</Text>
           <Button
             onPress={Platform.select({
-              android: () => packageName && openApplication(packageName),
+              android: () => {
+                if (packageName) {
+                  openApplication(packageName);
+                }
+              },
               ios: () => url && openURL(url),
             })}
             title="Open client"
@@ -90,7 +101,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 64,
-    marginBottom: 32,
+    marginVertical: 32,
   },
   image: {
     width: 64,

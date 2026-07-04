@@ -6,12 +6,12 @@ import fs from 'fs';
 import path from 'path';
 import resolveFrom from 'resolve-from';
 
-import { intersecting } from './array';
 import * as Log from '../log';
 import {
   hasRequiredAndroidFilesAsync,
   hasRequiredIOSFilesAsync,
 } from '../prebuild/clearNativeFolder';
+import { intersecting } from './array';
 
 const debug = require('debug')('expo:utils:scheme') as typeof console.log;
 
@@ -75,7 +75,7 @@ async function getManagedDevClientSchemeAsync(projectRoot: string): Promise<stri
     return scheme;
   } catch {
     Log.warn(
-      '\nDevelopment build: Unable to get the default URI scheme for the project. Please make sure the expo-dev-client package is installed.'
+      '\nDevelopment build: Unable to determine the default URI scheme for deep linking into the app. Ensure that the expo-dev-client package is installed.'
     );
     return null;
   }
@@ -102,10 +102,10 @@ export async function getOptionalDevClientSchemeAsync(
 
   // Allow for only one native project to exist.
   if (!hasIos) {
-    return { scheme: android[0], resolution: 'android' };
+    return { scheme: android[0]!, resolution: 'android' };
   } else if (!hasAndroid) {
-    return { scheme: ios[0], resolution: 'ios' };
+    return { scheme: ios[0]!, resolution: 'ios' };
   } else {
-    return { scheme: intersecting(ios, android)[0], resolution: 'shared' };
+    return { scheme: intersecting(ios, android)[0]!, resolution: 'shared' };
   }
 }

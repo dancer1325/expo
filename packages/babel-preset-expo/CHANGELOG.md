@@ -6,11 +6,457 @@
 
 ### 🎉 New features
 
-- Add `displayName` to DOM components for better debugging. ([#33369](https://github.com/expo/expo/pull/33369) by [@EvanBacon](https://github.com/EvanBacon))
+- Add `ios`, `android`, `macos`, `tvos` per-platform override support ([#46508](https://github.com/expo/expo/pull/46508) by [@kitten](https://github.com/kitten))
 
 ### 🐛 Bug fixes
 
+- Inline `EXPO_PUBLIC_USE_RN_FETCH` inside `node_modules` so the `expo/fetch` opt-out works in production builds. ([#46986](https://github.com/expo/expo/pull/46986) by [@intergalacticspacehighway](https://github.com/intergalacticspacehighway))
+- Bump `babel-plugin-syntax-hermes-parser` to `^0.36.0` to parse newer Flow syntax (e.g. `readonly` property modifiers) shipped in recent React Native versions ([#46636](https://github.com/expo/expo/pull/46636) by [@zoontek](https://github.com/zoontek))
+
 ### 💡 Others
+
+## 56.0.13 — 2026-05-26
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.12 — 2026-05-23
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.11 — 2026-05-21
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.10 — 2026-05-20
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.9 — 2026-05-19
+
+### 💡 Others
+
+- Enforce `routerRoot` to be within `projectRoot` ([#45892](https://github.com/expo/expo/pull/45892) by [@kitten](https://github.com/kitten))
+
+## 56.0.8 — 2026-05-13
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.7 — 2026-05-13
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.6 — 2026-05-11
+
+### 🐛 Bug fixes
+
+- Apply fix-up transform for Hermes v1 250829098 resolving undefined for async arrow functions with non-simple params ([#45601](https://github.com/expo/expo/pull/45601) by [@kitten](https://github.com/kitten))
+- Apply fix-up transform for Hermes v1 250829098 misdeclaring classes in finally blocks ([#45601](https://github.com/expo/expo/pull/45601) by [@kitten](https://github.com/kitten))
+- Apply fix-up transform for Hermes v1 250829098 mishandling super.prop accesses in computed object property methods ([#45601](https://github.com/expo/expo/pull/45601) by [@kitten](https://github.com/kitten))
+
+## 56.0.5 — 2026-05-08
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.4 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.3 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.2 — 2026-05-06
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.1 — 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 56.0.0 — 2026-05-05
+
+### 🛠 Breaking changes
+
+- Enable `import.meta` transform by default and rename option to `transformImportMeta` ([#44239](https://github.com/expo/expo/pull/44239) by [@kitten](https://github.com/kitten))
+- Refactor to split Hermes v0/v1 configs and fork away from `@react-native/babel-preset` ([#45337](https://github.com/expo/expo/pull/45337) by [@kitten](https://github.com/kitten))
+- Trim Hermes v1 preset to remove transforms for syntax that Hermes now supports ([#45345](https://github.com/expo/expo/pull/45345) by [@kitten](https://github.com/kitten))
+
+### 🎉 New features
+
+- Add support for metadata in streaming SSR ([#44731](https://github.com/expo/expo/pull/44731) by [@hassankhan](https://github.com/hassankhan))
+
+### 🐛 Bug fixes
+
+- Update plugin detection to resolve from project root ([#44197](https://github.com/expo/expo/pull/44197) by [@kitten](https://github.com/kitten))
+- Fixed DOM Components rendering issues on Android 9 devices. ([#43156](https://github.com/expo/expo/pull/43156) by [@kudo](https://github.com/kudo))
+
+### 💡 Others
+
+- Remove @babel/plugin-transform-parameters require when using Hermes v1 ([#43080](https://github.com/expo/expo/pull/43080) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- Delete Hermes v1 detection as it's the default ([#45263](https://github.com/expo/expo/pull/45263) by [@kitten](https://github.com/kitten))
+- Added `@expo/ui/babel-plugin` when `@expo/ui` is installed. ([#45217](https://github.com/expo/expo/pull/45217) by [@kudo](https://github.com/kudo))
+- Update JSX (`react-jsx`) transform to skip deprecated `react-display-name` transform, only apply pure annotations to production builds, and skip legacy source/self transforms when the automatic runtime is used ([#45351](https://github.com/expo/expo/pull/45351) by [@kitten](https://github.com/kitten))
+- Apply `@babel/plugin-proposal-decorators` lazily ([#45353](https://github.com/expo/expo/pull/45353) by [@kitten](https://github.com/kitten))
+- Optimize vendored `warn-on-deep-rn-imports` plugin ([#45354](https://github.com/expo/expo/pull/45354) by [@kitten](https://github.com/kitten))
+- [Internal] Cache `resolveModule` results in case of Babel config reevaluations ([#45405](https://github.com/expo/expo/pull/45405) by [@kitten](https://github.com/kitten))
+
+### ⚠️ Notices
+
+- Added support for React Native 0.84.x. ([#43018](https://github.com/expo/expo/pull/43018) by [@chrfalch](https://github.com/chrfalch))
+
+## 55.0.21 - 2026-05-05
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.20 - 2026-05-04
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.19 - 2026-05-01
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.18 - 2026-04-21
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.17 - 2026-04-10
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.16 - 2026-04-07
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.15 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.14 - 2026-04-02
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.13 - 2026-03-27
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.12 - 2026-03-18
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.11 - 2026-03-11
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.10 - 2026-02-27
+
+### 🐛 Bug fixes
+
+- Fix `"use no memo"` and `"use no forget"` default opt-out directives being ineffective in react-compiler transform ([#43521](https://github.com/expo/expo/pull/43521) by [@Titozzz](https://github.com/Titozzz), [@kitten](https://github.com/kitten))
+
+## 55.0.9 - 2026-02-26
+
+### 🐛 Bug fixes
+
+- Opt `"widget"` functions for `expo-widgets` out of react-compiler ([#43451](https://github.com/expo/expo/pull/43451) by [@kitten](https://github.com/kitten))
+
+## 55.0.8 — 2026-02-25
+
+### 💡 Others
+
+- Bump to `babel-plugin-syntax-hermes-parser@^0.32.0` ([#43429](https://github.com/expo/expo/pull/43429) by [@kitten](https://github.com/kitten))
+
+## 55.0.7 — 2026-02-25
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.6 — 2026-02-20
+
+### 🐛 Bug fixes
+
+- Strip loaders from server bundles ([#43212](https://github.com/expo/expo/pull/43212) by [@hassankhan](https://github.com/hassankhan))
+
+## 55.0.5 — 2026-02-16
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.4 — 2026-02-08
+
+### 🎉 New features
+
+- Add babel plugin for `expo-widgets`. ([#42941](https://github.com/expo/expo/pull/42941) by [@jakex7](https://github.com/jakex7))
+
+## 55.0.3 — 2026-02-03
+
+### 💡 Others
+
+- Add missing support for inlining environment variables as optional member expressions ([#42752](https://github.com/expo/expo/pull/42752) by [@kitten](https://github.com/kitten))
+
+## 55.0.2 — 2026-01-26
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.1 — 2026-01-22
+
+_This version does not introduce any user-facing changes._
+
+## 55.0.0 — 2026-01-21
+
+### 🎉 New features
+
+- Improve performance of Expo Router babel plugins. ([#41693](https://github.com/expo/expo/pull/41693) by [@EvanBacon](https://github.com/EvanBacon))
+- Ensure `loader()` functions are stripped from client bundles ([#40670](https://github.com/expo/expo/pull/40670) by [@hassankhan](https://github.com/hassankhan))
+- Add support for server data loaders in server export mode ([#41934](https://github.com/expo/expo/pull/41934) by [@hassankhan](https://github.com/hassankhan))
+
+### 🐛 Bug fixes
+
+- Resolve app root for each file to support bun monorepos. ([#42315](https://github.com/expo/expo/pull/42315) by [@EvanBacon](https://github.com/EvanBacon))
+
+### 💡 Others
+
+- Bump to `@expo/metro@54.2.0` and `metro@0.83.3` ([#41142](https://github.com/expo/expo/pull/41142) by [@kitten](https://github.com/kitten))
+
+### ⚠️ Notices
+
+- Added support for React Native 0.82.x. ([#39678](https://github.com/expo/expo/pull/39678) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+- Added support for React Native 0.83.x. ([#41564](https://github.com/expo/expo/pull/41564) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+## 54.0.8 - 2025-12-05
+
+_This version does not introduce any user-facing changes._
+
+## 54.0.7 - 2025-11-07
+
+### 🐛 Bug fixes
+
+- Ensure React Fast Refresh is disabled in `jest-expo` and other non-Expo environments ([#40774](https://github.com/expo/expo/pull/40774) by [@kitten](https://github.com/kitten))
+
+### 💡 Others
+
+- Add `enableReactFastRefresh` option to allow force-disabling `react-refresh` ([#40774](https://github.com/expo/expo/pull/40774) by [@kitten](https://github.com/kitten))
+
+## 54.0.6 - 2025-10-21
+
+_This version does not introduce any user-facing changes._
+
+## 54.0.5 - 2025-10-20
+
+### 💡 Others
+
+- Bump to `@expo/metro@54.1.0` and `metro@0.83.2` ([#39826](https://github.com/expo/expo/pull/39826) by [@kitten](https://github.com/kitten))
+
+## 54.0.4 - 2025-10-09
+
+### 💡 Others
+
+- Update to `babel-plugin-react-compiler@^1.0.0` ([#40281](https://github.com/expo/expo/pull/40281) by [@kitten](https://github.com/kitten))
+
+## 54.0.3 - 2025-09-22
+
+### 💡 Others
+
+- Remove unused module check. ([#39822](https://github.com/expo/expo/pull/39822) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 54.0.2 - 2025-09-18
+
+_This version does not introduce any user-facing changes._
+
+## 54.0.1 — 2025-09-12
+
+### 🐛 Bug fixes
+
+- Realign `babel-plugin-syntax-hermes-parser@^0.29.1` with `react-native@0.81.4`. ([#39600](https://github.com/expo/expo/pull/39600) by [@byCedric](https://github.com/byCedric))
+
+## 54.0.0 — 2025-09-10
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.6 — 2025-09-02
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.5 — 2025-08-31
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.4 — 2025-08-27
+
+### 💡 Others
+
+- Set default `@babel/runtime` minimum version to the project's installed version, if any (as determined by `@expo/metro-config`), or `^7.20.0` ([#39040](https://github.com/expo/expo/pull/39040) by [@kitten](https://github.com/kitten))
+
+## 14.0.3 — 2025-08-25
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.2 — 2025-08-16
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.1 — 2025-08-15
+
+_This version does not introduce any user-facing changes._
+
+## 14.0.0 — 2025-08-13
+
+### 🎉 New features
+
+- Add support for `@babel/plugin-transform-class-static-block` on web and native. ([#37495](https://github.com/expo/expo/pull/37495) by [@EvanBacon](https://github.com/EvanBacon))
+- Add `worklets` option to enable/disable Worklets Babel plugin ([#36783](https://github.com/expo/expo/pull/36783) by [@tjzel](https://github.com/tjzel))
+
+### 🐛 Bug fixes
+
+- Define default `@babel/runtime` minimum version as `^7.20.0` by default ([#38790](https://github.com/expo/expo/pull/38790) by [@kitten](https://github.com/kitten))
+
+### 💡 Others
+
+- Upgrade react-compiler to `19.1.0-rc.2`. ([#38309](https://github.com/expo/expo/pull/38309) by [@EvanBacon](https://github.com/EvanBacon))
+- Add fork of `@babel/transform-export-namespace-from` to preserve location of the transformed import/export statements ([#38042](https://github.com/expo/expo/pull/38042) by [@krystofwoldrich](https://github.com/krystofwoldrich))
+- Remove Babel value-imports instead only relying on types and the `@babel/core` instance passed to the preset and plugins ([#38171](https://github.com/expo/expo/pull/38171) by [@kitten](https://github.com/kitten))
+- Updated test snapshot. ([#38430](https://github.com/expo/expo/pull/38430) by [@kudo](https://github.com/kudo))
+- Replace `react-refresh` dependency with peer dependency fulfilled by `expo` ([#38562](https://github.com/expo/expo/pull/38562) by [@kitten](https://github.com/kitten))
+- Add optional reverse peer dependency on `expo` (for inline-manifest plugin) ([#38600](https://github.com/expo/expo/pull/38600) by [@kitten](https://github.com/kitten))
+
+### ⚠️ Notices
+
+- Added support for React Native 0.80.x. ([#37400](https://github.com/expo/expo/pull/37400) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+### 📚 3rd party library updates
+
+- Bumped `react-native-web` and `babel-plugin-react-native-web` to 0.21.0. ([#38425](https://github.com/expo/expo/pull/38425) by [@kudo](https://github.com/kudo))
+
+## 13.2.3 - 2025-07-03
+
+_This version does not introduce any user-facing changes._
+
+## 13.2.2 - 2025-07-02
+
+_This version does not introduce any user-facing changes._
+
+## 13.2.1 - 2025-06-18
+
+_This version does not introduce any user-facing changes._
+
+## 13.2.0 - 2025-06-04
+
+### 🎉 New features
+
+- Pass `disableDeepImportWarnings` option to the `@react-native/babel-preset` ([#36362](https://github.com/expo/expo/pull/36362) by [@coado](https://github.com/coado))
+
+### 🐛 Bug fixes
+
+- Disable `minifyTypeofWindow` for Web to prevent breaking Web Worker targets ([#36773](https://github.com/expo/expo/pull/36773) by [@kitten](https://github.com/kitten))
+
+### 💡 Others
+
+- Remove "Please" from warnings and errors ([#36862](https://github.com/expo/expo/pull/36862) by [@brentvatne](https://github.com/brentvatne))
+
+## 13.1.11 — 2025-05-01
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.10 — 2025-04-30
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.9 — 2025-04-30
+
+### 🐛 Bug fixes
+
+- Force disable `enableBabelRuntime` for when (new) Babel caller `type` input is `'script'` ([#36463](https://github.com/expo/expo/pull/36463) by [@kitten](https://github.com/kitten))
+
+## 13.1.8 — 2025-04-28
+
+### 🎉 New features
+
+- Always enable `import.meta` polyfill for server bundles. ([#36380](https://github.com/expo/expo/pull/36380) by [@EvanBacon](https://github.com/EvanBacon))
+
+### 🐛 Bug fixes
+
+- Remove absolute paths from server components output. ([#35276](https://github.com/expo/expo/pull/35276) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 13.1.7 — 2025-04-25
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.6 — 2025-04-23
+
+### 🎉 New features
+
+- Add hot reloading for environment variables. ([#36189](https://github.com/expo/expo/pull/36189) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 13.1.5 — 2025-04-21
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.4 — 2025-04-14
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.3 — 2025-04-11
+
+### 💡 Others
+
+- Throwing an error if people having `import.meta` in code but not enabled `unstable_transformImportMeta`. ([#36074](https://github.com/expo/expo/pull/36074) by [@kudo](https://github.com/kudo))
+
+## 13.1.2 — 2025-04-11
+
+### 🎉 New features
+
+- Update React Compiler support for React 19. ([#36081](https://github.com/expo/expo/pull/36081) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 13.1.1 — 2025-04-09
+
+_This version does not introduce any user-facing changes._
+
+## 13.1.0 — 2025-04-08
+
+### 🎉 New features
+
+- Use `registerClientReference` for client components and assert unsupported syntax. ([#35957](https://github.com/expo/expo/pull/35957) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 13.0.0 — 2025-04-04
+
+### 🛠 Breaking changes
+
+- upgrade RN to 0.78 ([#35050](https://github.com/expo/expo/pull/35050) by [@vonovak](https://github.com/vonovak))
+
+### 🎉 New features
+
+- Add add support for TypeScript exports in React Server Actions. ([#35859](https://github.com/expo/expo/pull/35859) by [@EvanBacon](https://github.com/EvanBacon))
+- Add `decorators` option to configure the `@babel/plugin-proposal-decorators` plugin. ([#34647](https://github.com/expo/expo/pull/34647) by [@EvanBacon](https://github.com/EvanBacon))
+- Add `babel-plugin-syntax-hermes-parser` to the server preset for native RSC. ([#34213](https://github.com/expo/expo/pull/34213) by [@EvanBacon](https://github.com/EvanBacon))
+- Add `displayName` to DOM components for better debugging. ([#33369](https://github.com/expo/expo/pull/33369) by [@EvanBacon](https://github.com/EvanBacon))
+- Added `import.meta` transform plugin. ([#34756](https://github.com/expo/expo/pull/34756) by [@kudo](https://github.com/kudo))
+
+### 🐛 Bug fixes
+
+- Fix namespace type export stripping. ([#35859](https://github.com/expo/expo/pull/35859) by [@EvanBacon](https://github.com/EvanBacon))
+- Add all missing dependencies for package resolution with NPM. ([#34628](https://github.com/expo/expo/pull/34628) by [@EvanBacon](https://github.com/EvanBacon))
+
+## 12.0.10 - 2025-03-31
+
+_This version does not introduce any user-facing changes._
+
+## 12.0.9 - 2025-02-20
+
+### 🐛 Bug fixes
+
+- Fixed EAS Update support for DOM Components. ([#35042](https://github.com/expo/expo/pull/35042) by [@kudo](https://github.com/kudo))
+
+## 12.0.8 - 2025-02-14
+
+_This version does not introduce any user-facing changes._
+
+## 12.0.7 - 2025-02-06
+
+_This version does not introduce any user-facing changes._
+
+## 12.0.5 - 2025-01-08
+
+### 🐛 Bug fixes
+
+- Fix server action scope position during extraction. ([#33933](https://github.com/expo/expo/pull/33933) by [@EvanBacon](https://github.com/EvanBacon))
 
 ## 12.0.4 - 2024-12-10
 

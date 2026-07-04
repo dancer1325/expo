@@ -86,7 +86,7 @@ const renderInterfaceComment = (
 const renderInterfacePropertyRow = (
   { name, flags, type, comment, signatures, defaultValue }: PropData,
   sdkVersion: string
-): JSX.Element => {
+) => {
   const defaultTag = getTagData('default', comment);
   const initValue = parseCommentContent(
     defaultValue ?? (defaultTag ? getCommentContent(defaultTag.content) : '')
@@ -98,7 +98,11 @@ const renderInterfacePropertyRow = (
         {renderFlags(flags, initValue)}
       </Cell>
       <Cell>
-        <APIDataType typeDefinition={type} sdkVersion={sdkVersion} />
+        {type ? (
+          <APIDataType typeDefinition={type} sdkVersion={sdkVersion} />
+        ) : (
+          <CODE>undefined</CODE>
+        )}
       </Cell>
       <Cell>{renderInterfaceComment(sdkVersion, comment, signatures, initValue)}</Cell>
     </Row>
@@ -108,13 +112,8 @@ const renderInterfacePropertyRow = (
 const renderInterface = (
   { name, children, comment, extendedTypes }: InterfaceDefinitionData,
   sdkVersion: string
-): JSX.Element | null => {
+) => {
   const interfaceChildren = children?.filter(child => !child?.inheritedFrom) || [];
-
-  if (!interfaceChildren.length) {
-    return null;
-  }
-
   const interfaceMethods = interfaceChildren.filter(child => child.signatures);
   const interfaceFields = interfaceChildren.filter(child => !child.signatures);
 
@@ -125,7 +124,7 @@ const renderInterface = (
       <APISectionDeprecationNote comment={comment} sticky />
       <APIBoxHeader name={name} comment={comment} />
       {extendedTypes?.length ? (
-        <CALLOUT className={ELEMENT_SPACING}>
+        <CALLOUT className={mergeClasses(ELEMENT_SPACING, 'px-4')}>
           <span className={STYLES_SECONDARY}>Extends: </span>
           {extendedTypes.map(extendedType => (
             <CODE key={`extend-${extendedType.name}`}>
@@ -135,14 +134,6 @@ const renderInterface = (
         </CALLOUT>
       ) : null}
       <APICommentTextBlock comment={comment} includePlatforms={false} />
-      {interfaceMethods.length > 0 && (
-        <>
-          <APIBoxSectionHeader text={`${name} Methods`} exposeInSidebar baseNestingLevel={99} />
-          {interfaceMethods.map(method =>
-            renderMethod(method, { exposeInSidebar: false, sdkVersion })
-          )}
-        </>
-      )}
       {interfaceFields.length > 0 && (
         <>
           <Table containerClassName="rounded-none border-0 border-t">
@@ -151,6 +142,19 @@ const renderInterface = (
               {interfaceFields.map(field => renderInterfacePropertyRow(field, sdkVersion))}
             </tbody>
           </Table>
+        </>
+      )}
+      {interfaceMethods.length > 0 && (
+        <>
+          <APIBoxSectionHeader text={`${name} Methods`} exposeInSidebar baseNestingLevel={99} />
+          {interfaceMethods.map(method =>
+            renderMethod(method, {
+              exposeInSidebar: true,
+              baseNestingLevel: 4,
+              sdkVersion,
+              nested: true,
+            })
+          )}
         </>
       )}
     </div>

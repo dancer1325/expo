@@ -1,11 +1,18 @@
-import AntDesign from '@expo/vector-icons/AntDesign';
+import Entypo from '@expo/vector-icons/Entypo';
 import { VideoView, VideoPlayer, createVideoPlayer, VideoSource } from 'expo-video';
 import { useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
-import { localVideoSource } from './videoSources';
+import {
+  bigBuckBunnySource,
+  elephantsDreamSource,
+  hlsSource,
+  localVideoSource,
+} from './videoSources';
 
-const videoSources = Array(100).fill(localVideoSource);
+const videoSources = Array(20)
+  .fill([localVideoSource, bigBuckBunnySource, elephantsDreamSource, hlsSource])
+  .flat();
 
 export type ViewSize = {
   width: number;
@@ -32,7 +39,10 @@ function RenderItem({ item, index, playerPool, viewSize }: RenderItemProps) {
   const [heart, setHeart] = useState(false);
 
   useEffect(() => {
-    player.replace(item);
+    (async () => {
+      await player.replaceAsync(item);
+      player.currentTime = 10;
+    })();
   }, [playerPool]);
 
   return (
@@ -41,21 +51,21 @@ function RenderItem({ item, index, playerPool, viewSize }: RenderItemProps) {
         player={player}
         style={styles.videoView}
         nativeControls={false}
-        contentFit="fill"
+        contentFit="contain"
         allowsVideoFrameAnalysis={false}
       />
       <View style={styles.overlayContainer}>
         <View style={styles.controlsContainer}>
-          <AntDesign
-            name={heart ? 'heart' : 'hearto'}
+          <Entypo
+            name={heart ? 'heart' : 'heart-outlined'}
             size={50}
             color="white"
             onPress={() => {
               setHeart(!heart);
             }}
           />
-          <AntDesign name="message1" size={50} color="white" />
-          <AntDesign name="cloudupload" size={50} color="white" />
+          <Entypo name="message" size={50} color="white" />
+          <Entypo name="upload-to-cloud" size={50} color="white" />
         </View>
       </View>
     </View>
@@ -71,6 +81,7 @@ export default function VideoFlatListScreen() {
       player.bufferOptions = {
         preferredForwardBufferDuration: 5,
       };
+      player.currentTime = 10;
       player.loop = true;
     });
 
@@ -136,6 +147,7 @@ export const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     alignSelf: 'stretch',
+    backgroundColor: 'black',
   },
   controlsContainer: {
     marginBottom: 50,

@@ -1,9 +1,9 @@
-import fs from 'fs-extra';
+import fs from 'fs';
 // @ts-ignore
 import Jimp from 'jimp-compact';
 import * as path from 'path';
 
-import {
+import type {
   FlattenOptions,
   Position,
   ResizeOptions,
@@ -66,16 +66,16 @@ export async function jimpAsync(
 
   const image = await getJimpImageAsync(options.input);
   const mime = typeof options.format === 'string' ? options.format : image.getMIME();
-  const imgBuffer = await image.getBufferAsync(mime);
+  const imgBuffer: Buffer = await image.getBufferAsync(mime);
 
   if (typeof options.output === 'string') {
     if (await isFolderAsync(options.output)) {
-      await fs.writeFile(
+      await fs.promises.writeFile(
         path.join(options.output, path.basename(options.originalInput)),
         imgBuffer
       );
     } else {
-      await fs.writeFile(options.output, imgBuffer);
+      await fs.promises.writeFile(options.output, imgBuffer);
     }
   }
   return imgBuffer;
@@ -83,7 +83,7 @@ export async function jimpAsync(
 
 export async function isFolderAsync(path: string): Promise<boolean> {
   try {
-    return (await fs.stat(path)).isDirectory();
+    return (await fs.promises.stat(path)).isDirectory();
   } catch {
     return false;
   }
@@ -169,7 +169,7 @@ export async function resize(
     initialImage = initialImage.contain(width, height, jimpPosition);
   } else {
     throw new Error(
-      `Unsupported fit: ${fit}. Please choose either 'cover', or 'contain' when using Jimp`
+      `Unsupported fit: ${fit}. Supported values are 'cover' or 'contain' when using Jimp`
     );
   }
   if (background) {

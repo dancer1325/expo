@@ -1,10 +1,10 @@
 import { Asset } from 'expo-asset';
-import * as MediaLibrary from 'expo-media-library';
+import * as MediaLibrary from 'expo-media-library/legacy';
 import { Platform } from 'react-native';
 
-import { waitFor } from './helpers';
 import * as TestUtils from '../TestUtils';
 import { isDeviceFarm } from '../utils/Environment';
+import { waitFor } from './helpers';
 
 export const name = 'MediaLibrary';
 
@@ -12,11 +12,12 @@ const FILES = [
   require('../assets/icons/app.png'),
   require('../assets/icons/loading.png'),
   require('../assets/black-128x256.png'),
+  require('../assets/hdr.jpg'),
   require('../assets/big_buck_bunny.mp4'),
 ];
 
 const WAIT_TIME = 1000;
-const IMG_NUMBER = 3;
+const IMG_NUMBER = 4;
 const VIDEO_NUMBER = 1;
 const DEFAULT_MEDIA_TYPES = [MediaLibrary.MediaType.photo];
 const DEFAULT_PAGE_SIZE = 20;
@@ -52,6 +53,7 @@ const ALBUM_KEYS = [
 const GET_ASSETS_KEYS = ['assets', 'endCursor', 'hasNextPage', 'totalCount'];
 const ALBUM_NAME = 'Expo Test-Suite Album #1';
 const SECOND_ALBUM_NAME = 'Expo Test-Suite Album #2';
+const THIRD_ALBUM_NAME = 'Expo Test-Suite Album #3';
 const WRONG_NAME = 'wertyuiopdfghjklvbnhjnftyujn';
 const WRONG_ID = '1234567890';
 
@@ -107,7 +109,7 @@ export async function test(t) {
       ? 30 * 1000
       : t.jasmine.DEFAULT_TIMEOUT_INTERVAL;
 
-  describeWithPermissions('MediaLibrary', async () => {
+  describeWithPermissions('MediaLibrary', () => {
     let files;
     let permissions;
 
@@ -138,18 +140,17 @@ export async function test(t) {
       }
     });
 
-    t.describe('With default assets', async () => {
+    t.describe('With default assets', () => {
       let testAssets;
       let album;
 
       async function initializeDefaultAssetsAsync() {
-        testAssets = await getAssets(files);
         album = await MediaLibrary.getAlbumAsync(ALBUM_NAME);
-        if (album == null) {
-          album = await createAlbum(testAssets, ALBUM_NAME);
-        } else {
-          await MediaLibrary.addAssetsToAlbumAsync(testAssets, album, shouldCopyAssets);
+        if (album != null) {
+          await MediaLibrary.deleteAlbumsAsync(album, true);
         }
+        testAssets = await getAssets(files);
+        album = await createAlbum(testAssets, ALBUM_NAME);
       }
 
       async function cleanupAsync() {
@@ -184,7 +185,7 @@ export async function test(t) {
         await cleanupAsync();
       }, TIMEOUT_WHEN_USER_NEEDS_TO_INTERACT);
 
-      t.describe('Every return value has proper shape', async () => {
+      t.describe('Every return value has proper shape', () => {
         t.it('createAssetAsync', () => {
           const keys = Object.keys(testAssets[0]);
           ASSET_KEYS.forEach((key) => t.expect(keys).toContain(key));
@@ -210,7 +211,7 @@ export async function test(t) {
         });
       });
 
-      t.describe('Small tests', async () => {
+      t.describe('Small tests', () => {
         t.it('Function getAlbums returns test album', async () => {
           const albums = await MediaLibrary.getAlbumsAsync();
           t.expect(albums.filter((elem) => elem.id === album.id).length).toBe(1);
@@ -232,6 +233,16 @@ export async function test(t) {
           t.expect(asset).toBeNull();
         });
 
+        if (Platform.OS === 'android') {
+          t.it('getAssetContentUriAsync returns content uri', async () => {
+            const asset = testAssets[0];
+            const volume = Platform.Version === 29 ? 'external_primary' : 'external';
+            const contentUri = await MediaLibrary.getAssetContentUriAsync(asset);
+
+            t.expect(contentUri).toBe(`content://media/${volume}/images/media/${asset.id}`);
+          });
+        }
+
         t.it(
           'saveToLibraryAsync should throw when the provided path does not contain an extension',
           async () => {
@@ -250,6 +261,17 @@ export async function test(t) {
           }
         );
 
+        if (Platform.OS === 'ios') {
+          t.it('setAssetFavoriteAsync should mark asset as favorite', async () => {
+            const favoriteTestAsset = testAssets[0];
+            const infoBefore = await MediaLibrary.getAssetInfoAsync(favoriteTestAsset);
+            t.expect(infoBefore.isFavorite).toBe(false);
+            await MediaLibrary.setAssetFavoriteAsync(favoriteTestAsset, true);
+            const infoAfter = await MediaLibrary.getAssetInfoAsync(favoriteTestAsset);
+            t.expect(infoAfter.isFavorite).toBe(true);
+          });
+        }
+
         // On both platforms assets should perserve their id. On iOS it's native behaviour,
         // but on Android it should be implemented (but it isn't)
         // t.it("After createAlbum and addAssetsTo album all assets have the same id", async () => {
@@ -260,7 +282,39 @@ export async function test(t) {
         // });
       });
 
-      t.describe('getAssetsAsync', async () => {
+      t.describe('Creating albums with initial assets', () => {
+        async function cleanupAsync() {
+          const album = await MediaLibrary.getAlbumAsync(THIRD_ALBUM_NAME);
+          await MediaLibrary.deleteAlbumsAsync([album], true);
+        }
+
+        t.afterAll(async () => {
+          await cleanupAsync();
+        }, TIMEOUT_WHEN_USER_NEEDS_TO_INTERACT);
+
+        t.it(
+          'When `localUri` is provided the album should contain asset created from the parameter',
+          async () => {
+            const album = await MediaLibrary.createAlbumAsync(
+              THIRD_ALBUM_NAME,
+              undefined,
+              undefined,
+              files[0].localUri
+            );
+
+            t.expect(album?.title).toEqual(THIRD_ALBUM_NAME);
+            t.expect((await MediaLibrary.getAssetsAsync({ album })).totalCount).toEqual(1);
+          }
+        );
+
+        t.it('Creating an asset inside the album works', async () => {
+          const album = await MediaLibrary.getAlbumAsync(THIRD_ALBUM_NAME);
+          await MediaLibrary.createAssetAsync(files[0].localUri, album);
+          t.expect((await MediaLibrary.getAssetsAsync({ album })).totalCount).toEqual(2);
+        });
+      });
+
+      t.describe('getAssetsAsync', () => {
         t.it('No arguments', async () => {
           const options = {};
           const { assets } = await MediaLibrary.getAssetsAsync(options);
@@ -390,7 +444,7 @@ export async function test(t) {
         });
       });
 
-      t.describe('getAssetInfoAsync', async () => {
+      t.describe('getAssetInfoAsync', () => {
         t.it('shouldDownloadFromNetwork: false, for photos', async () => {
           const mediaType = MediaLibrary.MediaType.photo;
           const options = { mediaType, album };
@@ -463,7 +517,7 @@ export async function test(t) {
       });
     });
 
-    t.describe('Delete tests', async () => {
+    t.describe('Delete tests', () => {
       t.it(
         'deleteAssetsAsync',
         async () => {
@@ -534,7 +588,7 @@ export async function test(t) {
       );
     });
 
-    t.describe('Listeners', async () => {
+    t.describe('Listeners', () => {
       const createdAssets = [];
 
       t.afterAll(async () => {

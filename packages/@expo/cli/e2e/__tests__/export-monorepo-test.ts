@@ -16,7 +16,19 @@ const configTypes = ['package-json', 'pnpm-workspace-yaml'] as const;
 let projectRoot: string;
 
 beforeAll(async () => {
-  projectRoot = await setupTestProjectWithOptionsAsync(`basic-export-monorepo`, 'with-monorepo');
+  projectRoot = await setupTestProjectWithOptionsAsync(`basic-export-monorepo`, 'with-monorepo', {
+    // NOTE(cedric): this is a temporary workaround to avoid `@expo/cli` or `@expo/metro-config` to link to packages inside the expo/expo monorepo
+    // For some reason, this has gotten more unstable than it was and may result in unexpected SHA1 files not being calculated (even though they are included in the watch folders)
+    // TODO(@hassankhan): remove expo-router and @expo/router-server after publishing
+    // TODO(@HubertBer): remove '@expo/inline-modules' after publishing.
+    linkExpoPackages: [
+      '@expo/inline-modules',
+      '@expo/cli',
+      '@expo/router-server',
+      'expo-router',
+      '@expo/require-utils',
+    ],
+  });
 });
 
 describe.each(configTypes)('exports monorepo using "%s"', (configType) => {
@@ -50,7 +62,6 @@ async function exportApp(monorepoRoot: string, workspacePath: string) {
     {
       env: {
         NODE_ENV: 'production',
-        EXPO_USE_FAST_RESOLVER: 'true',
       },
     }
   );

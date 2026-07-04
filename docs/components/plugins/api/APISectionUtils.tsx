@@ -1,6 +1,7 @@
 import { mergeClasses } from '@expo/styleguide';
 import { slug } from 'github-slugger';
 import { type ComponentType, type ReactNode } from 'react';
+import { type Components } from 'react-markdown';
 
 import { HeadingType } from '~/common/headingManager';
 import { Code as PrismCodeBlock } from '~/components/base/code';
@@ -15,7 +16,6 @@ import {
   H4,
   LI,
   OL,
-  RawH3,
   UL,
 } from '~/ui/components/Text';
 
@@ -41,31 +41,32 @@ import {
   replaceableTypes,
   sdkVersionHardcodedTypeLinks,
 } from './APIStaticData';
-import { APIParamRow } from './components/APIParamRow';
-import { APIParamsTableHeadRow } from './components/APIParamsTableHeadRow';
-import { ELEMENT_SPACING, STYLES_OPTIONAL, STYLES_SECONDARY, VERTICAL_SPACING } from './styles';
-import { CodeComponentProps, MDComponents } from './types';
+import { ELEMENT_SPACING, STYLES_OPTIONAL, STYLES_SECONDARY } from './styles';
 
 const isDev = process.env.NODE_ENV === 'development';
 
 export const DEFAULT_BASE_NESTING_LEVEL = 2;
+export const LITERAL_UNION_COLLAPSE_THRESHOLD = 50;
 
 const getInvalidLinkMessage = (href: string) =>
   `Using "../" when linking other packages in doc comments produce a broken link! Please use "./" instead. Problematic link:\n\t${href}`;
 
-export const mdComponents: MDComponents = {
+export const mdComponents: Components = {
   blockquote: ({ children }) => (
     <InlineHelp size="sm" className={mergeClasses('shadow-none', ELEMENT_SPACING)}>
       {children}
     </InlineHelp>
   ),
-  code: ({ className, children, node }: CodeComponentProps) => {
+  code: ({ className, children, node }) => {
+    const codeBlockTitle =
+      node?.data && 'meta' in node.data ? (node.data.meta as string) : undefined;
+
     return className ? (
-      <PrismCodeBlock className={className} title={node?.data?.meta}>
+      <PrismCodeBlock className={className} title={codeBlockTitle}>
         {children}
       </PrismCodeBlock>
     ) : (
-      <CODE className="break-words !inline py-0">{children}</CODE>
+      <CODE className="inline! py-0 wrap-break-word">{children}</CODE>
     );
   },
   pre: ({ children }) => <>{children}</>,
@@ -99,7 +100,7 @@ export const mdComponents: MDComponents = {
   sub: ({ children }) => <sub>{children}</sub>,
 };
 
-export const mdComponentsNoValidation: MDComponents = {
+export const mdComponentsNoValidation: Components = {
   ...mdComponents,
   a: ({ href, children }) => <A href={href}>{children}</A>,
 };
@@ -184,11 +185,12 @@ export const resolveTypeName = (
     tail,
   } = typeDefinition;
 
+  const builtinTypes = new Set(['Record', 'React.ComponentProps', 'Set', 'Map']);
   try {
     if (name) {
       if (type === 'reference') {
         if (typeArguments) {
-          if (name === 'Record' || name === 'React.ComponentProps') {
+          if (builtinTypes.has(name)) {
             return (
               <>
                 {name}
@@ -238,12 +240,16 @@ export const resolveTypeName = (
           sdkVersion,
         });
       } else if (type === 'array') {
-        return elementType.name + '[]';
+        return <>{resolveTypeName(elementType, sdkVersion)}[]</>;
       }
       return elementType.name + type;
+    } else if (type === 'rest' && elementType) {
+      return <>...{resolveTypeName(elementType, sdkVersion)}</>;
+    } else if (elementType?.type === 'array') {
+      return <>{resolveTypeName(elementType, sdkVersion)}[]</>;
     } else if (elementType?.declaration) {
       if (type === 'array') {
-        const { parameters, type: paramType } = elementType.declaration.indexSignature ?? {};
+        const { parameters, type: paramType } = elementType.declaration.indexSignatures?.[0] ?? {};
         if (parameters && paramType) {
           return (
             <>
@@ -256,8 +262,27 @@ export const resolveTypeName = (
       }
       return elementType.name + type;
     } else if (type === 'union' && types?.length) {
+      const COLLAPSIBLE_LITERAL_KINDS = new Set(['literal', 'templateLiteral']);
+      const literalMembers = types.filter((t: TypeDefinitionData) =>
+        COLLAPSIBLE_LITERAL_KINDS.has(t.type)
+      );
+      if (literalMembers.length > LITERAL_UNION_COLLAPSE_THRESHOLD) {
+        const nonLiteralMembers = types.filter(
+          (t: TypeDefinitionData) => !COLLAPSIBLE_LITERAL_KINDS.has(t.type)
+        );
+        if (nonLiteralMembers.length === 0) {
+          return 'See description for available values.';
+        }
+        return (
+          <>
+            {renderUnion(nonLiteralMembers, { sdkVersion })}
+            <span className="text-quaternary"> | </span>
+            See description for available values.
+          </>
+        );
+      }
       return renderUnion(types, { sdkVersion });
-    } else if (elementType && elementType.type === 'union' && elementType?.types?.length) {
+    } else if (elementType?.type === 'union' && elementType?.types?.length) {
       const unionTypes = elementType?.types ?? [];
       return (
         <>
@@ -298,15 +323,20 @@ export const resolveTypeName = (
       return (
         <>
           <span className="text-quaternary">{'{\n'}</span>
-          {declaration?.children.map((child: PropData, i) => (
-            <span key={`reflection-${name}-${i}`}>
-              {'  '}
-              {child.name + ': '}
-              {resolveTypeName(child.type, sdkVersion)}
-              {i + 1 !== declaration?.children?.length ? ', ' : null}
-              {'\n'}
-            </span>
-          ))}
+          {declaration?.children.map((child: PropData, i) => {
+            if (!child.type) {
+              return null;
+            }
+            return (
+              <span key={`reflection-${name}-${i}`}>
+                {'  '}
+                {child.name + ': '}
+                {resolveTypeName(child.type, sdkVersion)}
+                {i + 1 !== declaration?.children?.length ? ', ' : null}
+                {'\n'}
+              </span>
+            );
+          })}
           <span className="text-quaternary">{'}'}</span>
         </>
       );
@@ -379,8 +409,6 @@ export const resolveTypeName = (
       return operator ?? 'undefined';
     } else if (type === 'intrinsic') {
       return name ?? 'undefined';
-    } else if (type === 'rest' && elementType) {
-      return `...${resolveTypeName(elementType, sdkVersion)}`;
     } else if (value === null) {
       return 'null';
     }
@@ -391,26 +419,7 @@ export const resolveTypeName = (
   }
 };
 
-export const parseParamName = (name: string) => (name.startsWith('__') ? name.substr(2) : name);
-
-export const renderParams = (parameters: MethodParamData[], sdkVersion: string) => {
-  const hasDescription = Boolean(parameters.some(param => param.comment));
-  return (
-    <Table containerClassName={mergeClasses(VERTICAL_SPACING, 'mt-0.5')}>
-      <APIParamsTableHeadRow hasDescription={hasDescription} mainCellLabel="Parameter" />
-      <tbody>
-        {parameters?.map(param => (
-          <APIParamRow
-            key={param.name}
-            param={param}
-            sdkVersion={sdkVersion}
-            showDescription={hasDescription}
-          />
-        ))}
-      </tbody>
-    </Table>
-  );
-};
+export const parseParamName = (name: string) => (name.startsWith('__') ? name.slice(2) : name);
 
 export const listParams = (parameters: MethodParamData[]) =>
   parameters
@@ -428,7 +437,7 @@ export const renderDefaultValue = (defaultValue?: string) =>
   defaultValue && defaultValue !== '...' ? (
     <div className="flex items-start gap-1">
       <span className={STYLES_SECONDARY}>Default:</span>
-      <CODE className="!text-[90%]">{defaultValue}</CODE>
+      <CODE className="text-[90%]!">{defaultValue}</CODE>
     </div>
   ) : undefined;
 
@@ -465,7 +474,7 @@ export const getAllTagData = (tagName: string, comment?: CommentData) =>
           tag,
           content: [
             {
-              text: tag.substring(1),
+              text: tag.slice(1),
               tag,
             } as CommentContentData,
           ],
@@ -483,7 +492,7 @@ export const getAllTagData = (tagName: string, comment?: CommentData) =>
       }
       return tag;
     })
-    .filter(tag => tag.tag.substring(1) === tagName);
+    .filter(tag => tag.tag.slice(1) === tagName);
 
 export const getTagNamesList = (comment?: CommentData) =>
   comment && [
@@ -521,13 +530,11 @@ export const getMethodName = (
   return methodName;
 };
 
-export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
-
 export const getCommentContent = (content: CommentContentData[]) => {
   return content
     .map(entry => {
       if (entry.tag === '@link' && !entry.text.includes('/')) {
-        return `[${entry.tsLinkText?.length ? entry.tsLinkText : entry.text}](#${slug(entry.text)})`;
+        return `[\`${entry.tsLinkText?.length ? entry.tsLinkText : entry.text}\`](#${slug(entry.text)})`;
       }
       return entry.text;
     })
@@ -538,7 +545,7 @@ export const getCommentContent = (content: CommentContentData[]) => {
 const getMonospaceHeader = (
   element: ComponentType<any>,
   baseNestingLevel: number,
-  className: string | undefined = undefined
+  className?: string
 ) => {
   return createPermalinkedComponent(element, {
     baseNestingLevel,
@@ -550,11 +557,10 @@ const getMonospaceHeader = (
 export function getCodeHeadingWithBaseNestingLevel(
   baseNestingLevel: number,
   Element: ComponentType<any>,
-  className: string | undefined = undefined
+  className?: string
 ) {
   return getMonospaceHeader(Element, baseNestingLevel, className);
 }
-export const H3Code = getCodeHeadingWithBaseNestingLevel(3, RawH3);
 
 export const getComponentName = (name?: string, children: PropData[] = []) => {
   if (name && name !== 'default') {
@@ -580,4 +586,27 @@ export function extractDefaultPropValue(
   return defaultProps?.type?.declaration?.children?.filter(
     (defaultProp: PropData) => defaultProp.name === name
   )[0]?.defaultValue;
+}
+
+export function defineLiteralType(types: TypeDefinitionData[]) {
+  const uniqueTypes = Array.from(
+    new Set(
+      types.map((td: TypeDefinitionData) => {
+        if ('head' in td) {
+          return td.head;
+        } else if ('value' in td) {
+          return td.value && typeof td.value;
+        } else if ('name' in td) {
+          return td.name;
+        }
+      })
+    )
+  );
+  if (uniqueTypes.length === 1) {
+    return <CODE>{uniqueTypes[0]}</CODE>;
+  }
+  if (uniqueTypes.filter(Boolean).every(type => typeof type === 'string')) {
+    return <CODE>union</CODE>;
+  }
+  return null;
 }

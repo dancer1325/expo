@@ -3,24 +3,33 @@ import { EasMetadataIcon } from '@expo/styleguide-icons/custom/EasMetadataIcon';
 import { EasSubmitIcon } from '@expo/styleguide-icons/custom/EasSubmitIcon';
 import { PlanEnterpriseIcon } from '@expo/styleguide-icons/custom/PlanEnterpriseIcon';
 import { StoplightIcon } from '@expo/styleguide-icons/custom/StoplightIcon';
-import { Bell03Icon } from '@expo/styleguide-icons/outline/Bell03Icon';
+import { PlaySquareDuotoneIcon } from '@expo/styleguide-icons/duotone/PlaySquareDuotoneIcon';
+import { ActivityIcon } from '@expo/styleguide-icons/outline/ActivityIcon';
 import { CheckIcon } from '@expo/styleguide-icons/outline/CheckIcon';
+import { Cloud01Icon } from '@expo/styleguide-icons/outline/Cloud01Icon';
 import { CodeSquare01Icon } from '@expo/styleguide-icons/outline/CodeSquare01Icon';
 import { CpuChip01Icon } from '@expo/styleguide-icons/outline/CpuChip01Icon';
 import { Cube01Icon } from '@expo/styleguide-icons/outline/Cube01Icon';
 import { DataIcon } from '@expo/styleguide-icons/outline/DataIcon';
-import { Dataflow01Icon } from '@expo/styleguide-icons/outline/Dataflow01Icon';
+import { Dataflow03Icon } from '@expo/styleguide-icons/outline/Dataflow03Icon';
 import { LayersTwo02Icon } from '@expo/styleguide-icons/outline/LayersTwo02Icon';
+import { NotificationBoxIcon } from '@expo/styleguide-icons/outline/NotificationBoxIcon';
 import { PaletteIcon } from '@expo/styleguide-icons/outline/PaletteIcon';
 import { Phone01Icon } from '@expo/styleguide-icons/outline/Phone01Icon';
+import { PlaySquareIcon } from '@expo/styleguide-icons/outline/PlaySquareIcon';
+import { PuzzlePiece01Icon } from '@expo/styleguide-icons/outline/PuzzlePiece01Icon';
 import { Rocket01Icon } from '@expo/styleguide-icons/outline/Rocket01Icon';
+import { Star06Icon } from '@expo/styleguide-icons/outline/Star06Icon';
 import { TerminalBrowserIcon } from '@expo/styleguide-icons/outline/TerminalBrowserIcon';
+import { useRouter } from 'next/compat/router';
 
+import { isRouteActive } from '~/common/routes';
 import { reportEasTutorialCompleted } from '~/providers/Analytics';
 import { useTutorialChapterCompletion } from '~/providers/TutorialChapterCompletionProvider';
 import { NavigationRoute } from '~/types/common';
 import { HandWaveIcon } from '~/ui/components/CustomIcons/HandWaveIcon';
 import { CircularProgressBar } from '~/ui/components/ProgressTracker/CircularProgressBar';
+import { Chapter } from '~/ui/components/ProgressTracker/TutorialData';
 
 import { SidebarLink } from './SidebarLink';
 import { SidebarSection } from './SidebarSection';
@@ -28,30 +37,66 @@ import { SidebarTitle } from './SidebarTitle';
 import { SidebarNodeProps } from './types';
 
 export const SidebarGroup = ({ route, parentRoute }: SidebarNodeProps) => {
-  const { chapters, setChapters, getStartedChapters, setGetStartedChapters } =
-    useTutorialChapterCompletion();
+  const {
+    chapters,
+    setChapters,
+    getStartedChapters,
+    setGetStartedChapters,
+    buildWithAiChapters,
+    setBuildWithAiChapters,
+  } = useTutorialChapterCompletion();
+  const router = useRouter();
 
   const title = route.sidebarTitle ?? route.name;
-  const Icon = getIconElement(title);
+  const Icon = route.hideIcon ? undefined : getIconElement(route.name);
 
-  if (route.children?.[0]?.section === 'EAS tutorial') {
-    const allChaptersCompleted = chapters.every(chapter => chapter.completed);
-    const completedChaptersCount = chapters.filter(chapter => chapter.completed).length;
-    const totalChapters = chapters.length;
+  const tutorialTracks: Record<
+    string,
+    {
+      trackChapters: Chapter[];
+      setTrackChapters: (chapters: Chapter[]) => void;
+      resetHref: string;
+      onAllCompleted?: () => void;
+    }
+  > = {
+    'EAS tutorial': {
+      trackChapters: chapters,
+      setTrackChapters: setChapters,
+      resetHref: '/tutorial/eas/introduction/',
+      onAllCompleted: reportEasTutorialCompleted,
+    },
+    'Expo tutorial': {
+      trackChapters: getStartedChapters,
+      setTrackChapters: setGetStartedChapters,
+      resetHref: '/tutorial/introduction/',
+    },
+    'Build with AI tutorial': {
+      trackChapters: buildWithAiChapters,
+      setTrackChapters: setBuildWithAiChapters,
+      resetHref: '/tutorial/build-with-ai/introduction/',
+    },
+  };
+  const tutorialTrack = tutorialTracks[route.children?.[0]?.section ?? ''];
+
+  if (tutorialTrack && route.children) {
+    const { trackChapters, setTrackChapters, resetHref, onAllCompleted } = tutorialTrack;
+    const allChaptersCompleted = trackChapters.every(chapter => chapter.completed);
+    const completedChaptersCount = trackChapters.filter(chapter => chapter.completed).length;
+    const totalChapters = trackChapters.length;
     const progressPercentage = (completedChaptersCount / totalChapters) * 100;
 
     if (allChaptersCompleted) {
-      reportEasTutorialCompleted();
+      onAllCompleted?.();
     }
 
     const isChapterCompleted = (childSlug: string) => {
-      return chapters.some(chapter => chapter.slug === childSlug && chapter.completed);
+      return trackChapters.some(chapter => chapter.slug === childSlug && chapter.completed);
     };
 
     const resetTutorial = () => {
       if (allChaptersCompleted) {
-        const resetChapters = chapters.map(chapter => ({ ...chapter, completed: false }));
-        setChapters(resetChapters);
+        const resetChapters = trackChapters.map(chapter => ({ ...chapter, completed: false }));
+        setTrackChapters(resetChapters);
       }
     };
 
@@ -59,21 +104,41 @@ export const SidebarGroup = ({ route, parentRoute }: SidebarNodeProps) => {
       <div className="mb-5">
         {!shouldSkipTitle(route, parentRoute) && title && (
           <div className="flex flex-row items-center justify-between py-0">
-            <SidebarTitle Icon={Icon}>{title}</SidebarTitle>
+            <SidebarTitle Icon={Icon} sectionName={title}>
+              {title}
+            </SidebarTitle>
             <div className="flex flex-row items-center pb-1">
               <CircularProgressBar progress={progressPercentage} />{' '}
-              <p className="ml-2 text-sm text-secondary">{`${completedChaptersCount} of ${totalChapters}`}</p>
+              <p className="ml-2 text-sm text-tertiary">{`${completedChaptersCount} of ${totalChapters}`}</p>
             </div>
           </div>
         )}
         {route.children.map(child => {
           const childSlug = child.href;
           const completed = isChapterCompleted(childSlug);
+          const isSelected = isRouteActive(child, router?.asPath, router?.pathname);
 
           return (
-            <SidebarLink info={child} className="flex flex-1" key={`${route.name}-${child.name}`}>
-              {child.sidebarTitle ?? child.name}
-              {completed && <CheckIcon className="icon-sm ml-auto mt-0.5 self-start" />}
+            <SidebarLink
+              info={{ ...child, hasVideoLink: false }}
+              className="flex flex-1"
+              key={`${route.name}-${child.name}`}>
+              <span className="inline">
+                {child.sidebarTitle ?? child.name}
+                {child.hasVideoLink &&
+                  (!isSelected ? (
+                    <PlaySquareIcon
+                      aria-hidden="true"
+                      className="ml-1 inline icon-xs text-icon-secondary"
+                    />
+                  ) : (
+                    <PlaySquareDuotoneIcon
+                      aria-hidden="true"
+                      className="ml-1 inline icon-xs text-palette-blue11"
+                    />
+                  ))}
+              </span>
+              {completed && <CheckIcon aria-hidden="true" className="ml-auto icon-sm" />}
             </SidebarLink>
           );
         })}
@@ -82,65 +147,7 @@ export const SidebarGroup = ({ route, parentRoute }: SidebarNodeProps) => {
             onClick={resetTutorial}
             theme="secondary"
             className="flex w-full items-center justify-center"
-            href="/tutorial/eas/introduction/">
-            Reset tutorial
-          </Button>
-        )}
-      </div>
-    );
-  }
-
-  if (route.children?.[0]?.section === 'Expo tutorial') {
-    const allGetStartedChaptersCompleted = getStartedChapters.every(chapter => chapter.completed);
-    const completedGetStartedChaptersCount = getStartedChapters.filter(
-      chapter => chapter.completed
-    ).length;
-    const totalGetStartedChapters = getStartedChapters.length;
-    const progressPercentageForGetStarted =
-      (completedGetStartedChaptersCount / totalGetStartedChapters) * 100;
-
-    const isGetStartedChapterCompleted = (childSlug: string) => {
-      return getStartedChapters.some(chapter => chapter.slug === childSlug && chapter.completed);
-    };
-
-    const resetGetStartedTutorial = () => {
-      if (allGetStartedChaptersCompleted) {
-        const resetChapters = getStartedChapters.map(chapter => ({
-          ...chapter,
-          completed: false,
-        }));
-        setGetStartedChapters(resetChapters);
-      }
-    };
-
-    return (
-      <div className="mb-5">
-        {!shouldSkipTitle(route, parentRoute) && title && (
-          <div className="flex flex-row items-center justify-between py-0">
-            <SidebarTitle Icon={Icon}>{title}</SidebarTitle>
-            <div className="flex flex-row items-center pb-1">
-              <CircularProgressBar progress={progressPercentageForGetStarted} />{' '}
-              <p className="ml-2 text-sm text-secondary">{`${completedGetStartedChaptersCount} of ${totalGetStartedChapters}`}</p>
-            </div>
-          </div>
-        )}
-        {route.children.map(child => {
-          const childSlug = child.href;
-          const completed = isGetStartedChapterCompleted(childSlug);
-
-          return (
-            <SidebarLink info={child} className="flex flex-1" key={`${route.name}-${child.name}`}>
-              {child.sidebarTitle ?? child.name}
-              {completed && <CheckIcon className="icon-sm ml-auto mt-0.5 self-start" />}
-            </SidebarLink>
-          );
-        })}
-        {allGetStartedChaptersCompleted && (
-          <Button
-            onClick={resetGetStartedTutorial}
-            theme="secondary"
-            className="flex w-full items-center justify-center"
-            href="/tutorial/eas/introduction/">
+            href={resetHref}>
             Reset tutorial
           </Button>
         )}
@@ -151,7 +158,9 @@ export const SidebarGroup = ({ route, parentRoute }: SidebarNodeProps) => {
   return (
     <div className="mb-5">
       {!shouldSkipTitle(route, parentRoute) && title && (
-        <SidebarTitle Icon={Icon}>{title}</SidebarTitle>
+        <SidebarTitle Icon={Icon} sectionName={title}>
+          {title}
+        </SidebarTitle>
       )}
       {(route.children ?? []).map(child =>
         child.type === 'page' ? (
@@ -178,7 +187,7 @@ function shouldSkipTitle(info: NavigationRoute, parentGroup?: NavigationRoute) {
     return true;
   } else if (
     info.children &&
-    (info.children[0]?.sidebarTitle || info.children[0]?.name) === info.name
+    (info.children[0]?.sidebarTitle ?? info.children[0]?.name) === info.name
   ) {
     // If the first child post in the group has the same name as the group, then hide the
     // group title, lest we be very repetitive
@@ -190,12 +199,16 @@ function shouldSkipTitle(info: NavigationRoute, parentGroup?: NavigationRoute) {
 
 function getIconElement(iconName?: string) {
   switch (iconName) {
+    case 'AI':
+      return Star06Icon;
     case 'Develop':
       return TerminalBrowserIcon;
     case 'Review':
       return StoplightIcon;
     case 'Deploy':
       return Rocket01Icon;
+    case 'Monitor':
+      return DataIcon;
     case 'Development process':
       return CodeSquare01Icon;
     case 'EAS Build':
@@ -209,13 +222,19 @@ function getIconElement(iconName?: string) {
     case 'EAS Insights':
       return DataIcon;
     case 'EAS Workflows':
-      return Dataflow01Icon;
+      return Dataflow03Icon;
+    case 'EAS Hosting':
+      return Cloud01Icon;
+    case 'EAS Observe':
+      return ActivityIcon;
     case 'Expo Modules API':
       return CpuChip01Icon;
     case 'Expo Router':
       return RouterLogo;
     case 'Push notifications':
-      return Bell03Icon;
+      return NotificationBoxIcon;
+    case 'Integrations':
+      return PuzzlePiece01Icon;
     case 'Distribution':
       return Phone01Icon;
     case 'UI programming':
@@ -226,6 +245,8 @@ function getIconElement(iconName?: string) {
       return HandWaveIcon;
     case 'Expo tutorial':
       return HandWaveIcon;
+    case 'Build with AI tutorial':
+      return Star06Icon;
     case 'EAS tutorial':
       return PlanEnterpriseIcon;
     default:
