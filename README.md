@@ -1,7 +1,8 @@
 ## Introduction
 
 * Expo
-  * := open-source platform /
+  * := platform /
+    * open-source
     * == universal runtime + libraries  
   * allows
     * building universal native apps / 
@@ -27,14 +28,6 @@
   * := sandbox -- for -- trying out Expo quickly
     * ❌== NOT | long-term projects ❌
   * free | app store
-
-## Table of contents
-
-- [📚 Documentation](#-documentation)
-- [🗺 Project Layout](#-project-layout)
-- [🏅 Badges](#-badges)
-- [👏 Contributing](#-contributing)
-- [❓ FAQ](#-faq)
 
 ## 📚 Documentation
 
