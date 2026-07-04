@@ -222,7 +222,9 @@ EAS Build is compatible with bare (existing) React Native projects (where native
 
 ### Expo Go
 
-[Expo Go](/get-started/set-up-your-environment/?redirected=#how-would-you-like-to-develop) provides a quick way to get started with your app development. It comes with a pre-configured set of libraries known as the Expo SDK. This makes experimentation much faster and brings the mobile development experience much closer to the web development experience.
+[Expo Go](/get-started/set-up-your-environment/?redirected=#how-would-you-like-to-develop) provides a quick way to get started with your app development
+* It comes with a pre-configured set of libraries known as the Expo SDK
+* This makes experimentation much faster and brings the mobile development experience much closer to the web development experience.
 
 Like any other tool, it too has its limitations:
 

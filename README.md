@@ -31,10 +31,7 @@
 
 ## 📚 Documentation
 
-* goal
-  * Learn about universal apps,
-    * building
-    * deploying
+* [here](docs/README.md)
 
 ## 🗺 Project Layout
 

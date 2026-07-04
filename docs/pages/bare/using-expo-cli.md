@@ -3,14 +3,6 @@ title: Migrate to Expo CLI
 description: Learn how to migrate to use Expo CLI instead of @react-native-community/cli in any React Native project.
 ---
 
-import { DocsLogo, RouterLogo } from '@expo/styleguide';
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { DEMI } from '~/ui/components/Text';
-
 To migrate from `npx @react-native-community/cli@latest init` to Expo CLI, you'll need to install the `expo` package, which includes the Expo Modules API and Expo CLI. This guide covers the installation step, the benefits of using Expo CLI, and how to compile and run your project after migrating to Expo CLI.
 
 It is strongly recommended to use Expo CLI when using other Expo tools. It is required for many tools, such as EAS Update, Expo Router, and expo-dev-client, and other features may not work as well without it.

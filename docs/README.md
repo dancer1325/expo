@@ -1,6 +1,16 @@
 # Expo Documentation
 
-This is the public documentation for **Expo**, its SDK, client, and services (**EAS**). This documentation is built using Next.js and you can access it online at https://docs.expo.dev/.
+* goal
+  * documentation about
+    * Expo
+    * Expo SDK
+    * Expo client
+    * Expo services (**EAS**)
+
+* published | https://docs.expo.dev/
+* built -- via -- Next.js 
+
+
 
 > **Note** **Contributors:** Please make sure that you edit the docs in the **pages/versions/unversioned** for SDK reference if you want your changes to apply to the next SDK version too!
 
@@ -38,7 +48,8 @@ yarn run export-server
 
 ## Edit Docs Content
 
-All documentation-related content is inside the **pages** directory. We write docs in markdown with the help of custom React components that provide additional functionality, such as embedding Snack examples, representing commands inside a terminal component and so on.
+All documentation-related content is inside the **pages** directory
+* We write docs in markdown with the help of custom React components that provide additional functionality, such as embedding Snack examples, representing commands inside a terminal component and so on.
 
 The documentation is divided into four main sections:
 
@@ -131,7 +142,8 @@ You can add your own client-side redirect rules in `common/error-utilities.ts`.
 
 ## Search
 
-We use Algolia as a main search results provider for our docs. Besides the query, results are also filtered based on the `version` tag which represents the user's current location. The tag is set in the `components/DocumentationPage.tsx` head.
+* -- based on -- Algolia
+* Besides the query, results are also filtered based on the `version` tag which represents the user's current location. The tag is set in the `components/DocumentationPage.tsx` head.
 
 In `ui/components/CommandMenu/utils.ts`, you can see the `facetFilters` set to `[['version:none', 'version:{version}']]`. Translated to English, this means - search on all pages where `version` is `none`, or the currently selected version. Here are the rules we use to set this tag:
 
