@@ -8,7 +8,7 @@
 * recommendations
   * `npx create-expo-app@latest`
     * create a default project
-    * if you wan to specify a template -> pass [`--template` option](../more/create-expo.md#--template)
+    * if you want to specify a template -> pass [`--template` option](../more/create-expo.md#--template)
 
 ## Next step
 

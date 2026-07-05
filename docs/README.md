@@ -8,17 +8,14 @@
     * Expo services (**EAS**)
 
 * published | https://docs.expo.dev/
-* built -- via -- Next.js 
-
-
-
-> **Note** **Contributors:** Please make sure that you edit the docs in the **pages/versions/unversioned** for SDK reference if you want your changes to apply to the next SDK version too!
-
-> **Note**
-> If you are looking for Expo Documentation Writing Style guidelines, please refer [Expo Documentation Style Guide](https://github.com/expo/expo/blob/main/guides/Expo%20Documentation%20Writing%20Style%20Guide.md).
+* built -- via -- Next.js
+* index
+  * TODO:
+  * [home](pages/index.md)
 
 ## To run locally in development mode
 
+TODO: 
 1. Download a copy of this repository.
 
 ```sh

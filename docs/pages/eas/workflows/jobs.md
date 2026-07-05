@@ -3,11 +3,14 @@ title: Jobs
 description: Learn which pre-packaged and custom jobs you can run with EAS Workflows.
 ---
 
-EAS Workflows sequence jobs together to automate your development and release processes. You can run two types of jobs: pre-packaged jobs and custom jobs.
+EAS Workflows sequence jobs together to automate your development and release processes
+* You can run two types of jobs: pre-packaged jobs and custom jobs.
 
-Expo provides pre-packaged jobs that meet common use cases for developers, such as building, submitting, and running end-to-end tests. Since they are provided by Expo, they are continuously maintained and updated.
+Expo provides pre-packaged jobs that meet common use cases for developers, such as building, submitting, and running end-to-end tests
+* Since they are provided by Expo, they are continuously maintained and updated.
 
-Custom jobs are jobs that you write yourself. They are useful for any use case not met by the pre-packaged jobs.
+Custom jobs are jobs that you write yourself
+* They are useful for any use case not met by the pre-packaged jobs.
 
 ## Build
 
@@ -29,7 +32,8 @@ This job outputs the following variables:
 
 ## Submit
 
-This is a pre-packaged job that submits a build to an app store. Given a `build_id`, we'll choose the correct automation to submit the build to the correct store.
+This is a pre-packaged job that submits a build to an app store
+* Given a `build_id`, we'll choose the correct automation to submit the build to the correct store.
 
 ```yaml .eas/workflows/submit.yaml
 jobs:
@@ -47,7 +51,9 @@ This job outputs the following variables:
 
 ## Update
 
-This is a pre-packaged job that publishes an update. If starting workflows via `eas workflow:run`, a hard coded branch name will be required. We recommending using `branch: ${{ github.ref_name || 'your-branch-name' }}` if you start workflows locally and via GitHub events.
+This is a pre-packaged job that publishes an update
+* If starting workflows via `eas workflow:run`, a hard coded branch name will be required
+* We recommending using `branch: ${{ github.ref_name || 'your-branch-name' }}` if you start workflows locally and via GitHub events.
 
 ```yaml .eas/workflows/update.yaml
 jobs:
@@ -62,7 +68,8 @@ jobs:
 
 ## End-to-end tests with Maestro
 
-This is a pre-packaged job that runs end-to-end tests with Maestro. Given a `build_id`, we'll choose the correct machine to run the tests on the correct platform.
+This is a pre-packaged job that runs end-to-end tests with Maestro
+* Given a `build_id`, we'll choose the correct machine to run the tests on the correct platform.
 
 ```yaml .eas/workflows/e2e-test.yaml
 jobs:
@@ -75,7 +82,8 @@ jobs:
 
 ## Custom jobs
 
-Custom jobs are jobs that you write yourself. They are useful for any use case that isn't met by the pre-packaged jobs.
+Custom jobs are jobs that you write yourself
+* They are useful for any use case that isn't met by the pre-packaged jobs.
 
 ```yaml .eas/workflows/custom-job.yaml
 jobs:
@@ -86,7 +94,8 @@ jobs:
         run: echo "Hello, world!"
 ```
 
-Within custom jobs, you can use our [built-in functions](/custom-builds/schema/#built-in-eas-functions), like `eas/checkout`, `eas/use_npm_token` to interact with the project. These need to be prefixed with the `uses:` keyword.
+Within custom jobs, you can use our [built-in functions](/custom-builds/schema/#built-in-eas-functions), like `eas/checkout`, `eas/use_npm_token` to interact with the project
+* These need to be prefixed with the `uses:` keyword.
 
 ```yaml .eas/workflows/custom-job.yaml
 jobs:

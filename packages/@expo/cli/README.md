@@ -1,56 +1,19 @@
-<!-- Title -->
-
 <p align="center">
   <a href="https://expo.dev/">
     <img alt="Expo CLI" src="../../../.github/resources/cli-banner.svg">
   </a>
 </p>
 
-<p align="center">The fastest way to build and run universal React Native apps for Android, iOS, and the web</p>
+* `@expo/cli` package
+  * == CLI binary /
+    * uses: -- via -- `expo` package
 
-<p align="center">
-  <a aria-label="expo documentation" href="https://docs.expo.dev/more/expo-cli/">📚 Read the Documentation</a>
-  &ensp;•&ensp;
-  <a aria-label="expo documentation" href="https://expo.dev/blog">Learn more on our blog</a>
-  &ensp;•&ensp;
-  <a aria-label="Contribute to Expo CLI" href="#contributing">Contribute to Expo CLI</a>
-</p>
-
-<p align="center">
-  <a aria-label="Join the Expo Discord" href="https://discord.gg/4gtbPAdpaE" target="_blank">
-    <img alt="Discord" src="https://img.shields.io/discord/695411232856997968.svg?style=for-the-badge&color=5865F2&logo=discord&logoColor=FFFFFF" />
-  </a>
-</p>
-
-<p align="center">
-  <a aria-label="Follow @expo on X" href="https://x.com/intent/follow?screen_name=expo" target="_blank">
-    <img alt="Expo on X" src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" target="_blank" />
-  </a>&nbsp;
-  <a aria-label="Follow @expo on GitHub" href="https://github.com/expo" target="_blank">
-    <img alt="Expo on GitHub" src="https://img.shields.io/badge/GitHub-222222?style=for-the-badge&logo=github&logoColor=white" target="_blank" />
-  </a>&nbsp;
-  <a aria-label="Follow @expo on Reddit" href="https://www.reddit.com/r/expo/" target="_blank">
-    <img alt="Expo on Reddit" src="https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white" target="_blank" />
-  </a>&nbsp;
-  <a aria-label="Follow @expo on Bluesky" href="https://bsky.app/profile/expo.dev" target="_blank">
-    <img alt="Expo on LinkedIn" src="https://img.shields.io/badge/Bluesky-1DA1F2?style=for-the-badge&logo=bluesky&logoColor=white" target="_blank" />
-  </a>&nbsp;
-  <a aria-label="Follow @expo on LinkedIn" href="https://www.linkedin.com/company/expo-dev" target="_blank">
-    <img alt="Expo on LinkedIn" src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=LinkedIn&logoColor=white" target="_blank" />
-  </a>
-
-  <p align="center">⭐️ Be sure to star the Expo GitHub repo if you enjoy using the project! ⭐️</p>
-</p>
-
----
-
-The `@expo/cli` package is a CLI binary that should be used via the `expo` package, like `npx expo start` (or `npx expo` for short).
-
-```
-npx expo
-```
-
-> ⭐️ Be sure to star the Expo GitHub repo if you enjoy using the project!
+      ```bash
+      # 1. long command
+      npx expo start
+      # 2. short
+      npx expo
+      ```
 
 ## Design
 

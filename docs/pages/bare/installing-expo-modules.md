@@ -4,14 +4,16 @@ sidebar_title: Install Expo modules
 description: Learn how to prepare your existing React Native project to install and use any Expo module.
 ---
 
-import InstallSection from '~/components/plugins/InstallSection';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { YesIcon, NoIcon } from '~/ui/components/DocIcons';
-import { DiffBlock } from '~/ui/components/Snippet';
+* goal
+  * use Expo modules | your app
 
-To use Expo modules in your app, you will need to install and configure the `expo` package.
+* requirements
+  * install & configure the `expo` package
 
-The `expo` package has a small footprint; it includes only a minimal set of packages that are needed in nearly every app and the module and autolinking infrastructure that other Expo SDK packages are built with. Once the `expo` package is installed and configured in your project, you can use `npx expo install` to add any other Expo module from the SDK.
+TODO: 
+The `expo` package has a small footprint; it includes only a minimal set of packages that
+are needed in nearly every app and the module and autolinking infrastructure that other Expo SDK packages are built with
+* Once the `expo` package is installed and configured in your project, you can use `npx expo install` to add any other Expo module from the SDK.
 
 Depending on how you [initialized the project](/bare/overview/), there are two ways you can install the Expo modules: [automatically](#automatic-installation) or [manually](#manual-installation).
 
@@ -38,11 +40,13 @@ To install and use Expo modules, the easiest way to get up and running is with t
 
 ## Manual installation
 
-The following instructions apply to installing the latest version of Expo modules in React Native 0.76. For previous versions, check the [native upgrade helper](/bare/upgrade) to see how these files are customized.
+The following instructions apply to installing the latest version of Expo modules in React Native 0.76
+* For previous versions, check the [native upgrade helper](/bare/upgrade) to see how these files are customized.
 
 <InstallSection packageName="expo" cmd={['$ npm install expo']} hideBareInstructions />
 
-Once installation is complete, apply the changes from the following diffs to configure Expo modules in your project. This is expected to take about five minutes, and you may need to adapt it slightly depending on how customized your project is.
+Once installation is complete, apply the changes from the following diffs to configure Expo modules in your project
+* This is expected to take about five minutes, and you may need to adapt it slightly depending on how customized your project is.
 
 ### Configuration for Android
 
@@ -52,7 +56,9 @@ Once installation is complete, apply the changes from the following diffs to con
 
 <DiffBlock source="/static/diffs/expo-ios.diff" />
 
-Optionally, you can also add additional delegate methods to your **AppDelegate.mm**. Some libraries may require them, so unless you have a good reason to leave them out, it is recommended to add them. [See delegate methods in AppDelegate.mm](https://github.com/expo/expo/blob/main/templates/expo-template-bare-minimum/ios/HelloWorld/AppDelegate.mm#L28-L55).
+Optionally, you can also add additional delegate methods to your **AppDelegate.mm**
+* Some libraries may require them, so unless you have a good reason to leave them out, it is recommended to add them
+* [See delegate methods in AppDelegate.mm](https://github.com/expo/expo/blob/main/templates/expo-template-bare-minimum/ios/HelloWorld/AppDelegate.mm#L28-L55).
 
 Save all of your changes and update your iOS Deployment Target in Xcode to `iOS 15.1`:
 
@@ -75,7 +81,10 @@ The last step is to install the project's CocoaPods again to pull in Expo module
 
 ### Configure Expo CLI for bundling on Android and iOS
 
-We recommend using Expo CLI and related tooling configurations to bundle your app JavaScript code and assets. This adds support for using the `"main"` field in **package.json** to use [Expo Router](/router/introduction/) library. Not using Expo CLI for bundling may result in unexpected behavior. [Learn more about Expo CLI](/bare/using-expo-cli/).
+We recommend using Expo CLI and related tooling configurations to bundle your app JavaScript code and assets
+* This adds support for using the `"main"` field in **package.json** to use [Expo Router](/router/introduction/) library
+* Not using Expo CLI for bundling may result in unexpected behavior
+* [Learn more about Expo CLI](/bare/using-expo-cli/).
 
 <Collapsible summary="Use babel-preset-expo in your babel.config.js">
   <DiffBlock source="/static/diffs/babel-config.diff" />
@@ -155,7 +164,8 @@ console.log(Constants.systemFonts);
 
 ### Using Expo SDK packages
 
-Once the `expo` package is installed and configured in your project, you can use `npx expo install` to add any other Expo module from the SDK. See [Using Libraries](/workflow/using-libraries) for more information.
+Once the `expo` package is installed and configured in your project, you can use `npx expo install` to add any other Expo module from the SDK
+* See [Using Libraries](/workflow/using-libraries) for more information.
 
 ### Expo modules included in the `expo` package
 

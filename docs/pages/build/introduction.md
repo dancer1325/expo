@@ -14,21 +14,34 @@ description: EAS Build is a hosted service for building app binaries for your Ex
       * React Native projects
 
 * TODO:
-It makes building your apps for distribution simple and easy to automate by providing defaults that work well for Expo and React Native projects out of the box, and by handling your app signing credentials for you (if you wish). 
-It also makes sharing builds with your team easier than ever with [internal distribution](/build/internal-distribution/) (using ad hoc and/or enterprise "universal" provisioning), deeply integrates with EAS Submit for app store submissions, and has first-class support for the [`expo-updates`](/build/updates/) library.
+It makes building your apps for distribution simple and easy to automate by providing defaults that 
+work well for Expo and React Native projects out of the box, and
+by handling your app signing credentials for you (if you wish). 
+It also makes sharing builds with your team easier than ever with [internal distribution](/build/internal-distribution/) 
+(using ad hoc and/or enterprise "universal" provisioning), 
+deeply integrates with EAS Submit for app store submissions, and
+has first-class support for the [`expo-updates`](/build/updates/) library.
 
 It's designed to work for any native project, whether or not you use Expo and React Native.
 It's the fastest way to get from `npx create-expo-app` or `npx @react-native-community/cli@latest init` to app stores.
 
+* allows
+  * | 1! codebase
+    * build your app
+    * distribute it | Android, iOS, and the web
+
 ## Quick start
 
-> **info** The `eas` commands below require EAS CLI. See [How to install EAS CLI](/eas/cli/#installation) for more information.
+> **info** The `eas` commands below require EAS CLI
+* See [How to install EAS CLI](/eas/cli/#installation) for more information.
 
 To build your app, run the following command:
 
 <Terminal cmd={['$ eas build --platform all']} />
 
-This command sends your project to EAS Build and produces installable binaries for Android and iOS. You can also build for one platform at a time by passing in `--platform android` or `--platform ios` as desired. For complete setup instructions, see [Create your first build](/build/setup/).
+This command sends your project to EAS Build and produces installable binaries for Android and iOS
+* You can also build for one platform at a time by passing in `--platform android` or `--platform ios` as desired
+* For complete setup instructions, see [Create your first build](/build/setup/).
 
 ## Key features
 

@@ -5,15 +5,20 @@ hideTOC: true
 description: Learn about Expo Application Services (EAS) for Expo and React Native apps.
 ---
 
-import { BuildIcon } from '@expo/styleguide-icons/custom/BuildIcon';
-import { EasMetadataIcon } from '@expo/styleguide-icons/custom/EasMetadataIcon';
-import { EasSubmitIcon } from '@expo/styleguide-icons/custom/EasSubmitIcon';
-import { DataIcon } from '@expo/styleguide-icons/outline/DataIcon';
-import { Dataflow01Icon } from '@expo/styleguide-icons/outline/Dataflow01Icon';
-import { LayersTwo02Icon } from '@expo/styleguide-icons/outline/LayersTwo02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
+* [Expo Application Services (EAS)](https://expo.dev/eas)
+  * == platform of hosted services / -- deeply integrated with -- Expo open source tools
+  * allows you, about your app -- as an -- individual or a team,
+    * build,
+      * uses
+        * install | your device or emulator
+    * ship | stores,
+    * iterate
+    * send push notifications
+  * uses
+    * 👀 | ANY React Native app / REGARDLESS using `expo` 👀
 
+TODO: 
 Expo Application Services (EAS) are deeply integrated cloud services for Expo and React Native apps, from the team behind Expo.
 
 Read the full pitch at [expo.dev/eas](https://expo.dev/eas), or follow the links below to learn how to get started.

@@ -1,6 +1,9 @@
 # Developing Expo Go
 
-* UI -- for the -- Expo Go client
+* := sandbox -- for -- trying out Expo quickly
+  * ❌== NOT | LONG-term projects ❌
+  * free | app store
+* == UI -- for the -- Expo Go client
 
 * ways to use
   * install | simulator OR device

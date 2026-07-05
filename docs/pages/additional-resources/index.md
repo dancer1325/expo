@@ -4,21 +4,17 @@ title: Additional resources
 description: A reference of resources that are useful to learn about Expo tooling and services.
 ---
 
-import { TALKS, PODCASTS, LIVE_STREAMS } from '~/public/static/talks';
-import { TalkGridWrapper, TalkGridCell } from '~/ui/components/Home/sections';
-
-The following resources are useful for learning about Expo tooling and services.
-
 ## External resources
 
 ### Expo team communication
 
-- [Blog](https://expo.dev/blog) - Our official blog, where we post release notes every month and other Expo related content at random intervals.
-- [Changelog](https://expo.dev/changelog) - Our official changelog, where we post information about EAS, web dashboard and other Expo services related changes at random intervals.
+* [Blog](https://expo.dev/blog)
+* [Changelog](https://expo.dev/changelog)
 
 ### GitHub
 
-- [expo/expo](https://github.com/expo/expo) - Expo Go, SDK, Docs, and the Expo CLI.
+- [expo/expo](https://github.com/expo/expo) 
+  - == Expo Go + SDK + Docs + Expo CLI
 - [expo/eas-cli](https://github.com/expo/eas-cli) - The fastest way to build, submit, and update Android and iOS apps.
 - [expo/examples](https://github.com/expo/examples) - Integrations and other examples.
 - [expo/config-plugins](https://github.com/expo/config-plugins) - Expo Config Plugins for working with third-party packages.

@@ -1,11 +1,4 @@
 * goal
-  * creating apps -- with -- Expo
-
-* ways to get started
-  * [expo.new](https://expo.new/)
-    * allows
-      * create a project,
-      * set up your development environment,
-      * automatically configure build & update automations,
-      * start developing
-  * see [create-a-project](create-a-project.mdx)
+  * [create a project -- with -- Expo](create-a-project.md)
+  * [set up your development environment](set-up-your-environment.md)
+  * [start developing](start-developing.md)

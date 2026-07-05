@@ -3,22 +3,16 @@ title: Submit to app stores
 description: Learn how to submit your app to Google Play Store and Apple App Store from the command line with EAS Submit.
 ---
 
-import { AppleAppStoreIcon } from '@expo/styleguide-icons/custom/AppleAppStoreIcon';
-import { EasSubmitIcon } from '@expo/styleguide-icons/custom/EasSubmitIcon';
-import { GoogleAppStoreIcon } from '@expo/styleguide-icons/custom/GoogleAppStoreIcon';
+* goal
+  * how to submit -- , via EAS Submit, -- your app | Google Play Store & Apple App Store 
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
-
-**EAS Submit** is a hosted service that allows uploading and submitting app binaries to the app stores using EAS CLI. This guide describes how to submit your app to the Google Play Store and Apple App Store using EAS Submit.
-
-<VideoBoxLink
-  videoId="-KZjr576tuE"
-  title="How to quickly publish to the App Store & Play Store with EAS Submit"
-  description="EAS Submit makes it easy to publish your apps to the App Store and Play Store with a simple command."
-/>
+* **EAS Submit**
+  * == hosted service /
+    * allows
+      * uploading -- , via EAS CLI, -- app binaries | app stores
+      * submitting -- , via EAS CLI, -- app binaries | app stores
+  * [video](https://www.youtube.com/watch?v=-KZjr576tuE)
+    * TODO:
 
 ## Google Play Store
 

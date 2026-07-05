@@ -4,19 +4,24 @@ sidebar_title: Introduction
 description: An introduction to EAS Update which is a hosted service for projects using the expo-updates library.
 ---
 
-import { LayersTwo02Icon } from '@expo/styleguide-icons/outline/LayersTwo02Icon';
+* **EAS Update**
+  * == hosted service /
+    * TODO: serves updates for projects using the [`expo-updates`](/versions/latest/sdk/updates) library.
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-
-**EAS Update** is a hosted service that serves updates for projects using the [`expo-updates`](/versions/latest/sdk/updates) library.
-
-EAS Update makes fixing small bugs and pushing quick fixes a snap in between app store submissions. It accomplishes this by enabling an app to update its own non-native pieces (such as JS, styling, and images) over-the-air.
+TODO:
+EAS Update makes fixing small bugs and pushing quick fixes a snap in between app store submissions
+It accomplishes this by enabling an app to update its own non-native pieces (such as JS, styling, and images) over-the-air.
 
 All apps that include the `expo-updates` library have the ability to receive updates.
 
 - To start using EAS Update, continue to the [Getting Started](/eas-update/getting-started) guide.
 - For a complete tutorial of using EAS Update with other EAS services, refer to the [EAS Tutorial](/tutorial/eas/introduction/).
+
+* allows
+  * Get the latest to
+    every user, instantly
+
+Send fast over-the-air updates to get the latest fixes and improvements to your users fast with Update.
 
 ## JS API for update management
 

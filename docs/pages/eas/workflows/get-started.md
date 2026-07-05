@@ -4,21 +4,27 @@ title: Get started with EAS Workflows
 description: Learn how to use EAS Workflows to automate your development and release processes.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
+* EAS Workflows 
+  * RIGHT now,
+    * in preview
+      * == breaking changes can happen
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-
-> **info** EAS Workflows are currently in preview. We may introduce breaking changes in the coming weeks. Got feedback? Send us an email at workflows@expo.dev.
-
-Builds, submissions, updates, and more are all a part of delivering your app to users. EAS Workflows consist of a sequence of jobs, which help you and your team get things done. With workflows, you can build your project, run end-to-end tests, submit that build to the app stores, and then run custom scripts after the submission is complete. Since each job can have prerequisites and conditionals, you can automate your and your team's release process.
+TODO: 
+Builds, submissions, updates, and more are all a part of delivering your app to users
+* EAS Workflows consist of a sequence of jobs, which help you and your team get things done
+* With workflows, you can build your project, run end-to-end tests, submit that build to the app stores, and then run custom scripts after the submission is complete
+* Since each job can have prerequisites and conditionals, you can automate your and your team's release process.
 
 <Collapsible summary="How do workflows compare to other CI services?">
 
-EAS Workflows are designed to help you and your team release your app. It comes preconfigured with pre-packaged job types that can build, submit, update, run Maestro tests, and more. All job types run on EAS, so you'll only have to manage one set of YAML files, and all the artifacts from your job runs will appear on [expo.dev](https://expo.dev/).
+EAS Workflows are designed to help you and your team release your app
+* It comes preconfigured with pre-packaged job types that can build, submit, update, run Maestro tests, and more
+* All job types run on EAS, so you'll only have to manage one set of YAML files, and all the artifacts from your job runs will appear on [expo.dev](https://expo.dev/).
 
-Other CI services, like CircleCI and GitHub Actions, are more generalized and have the ability to do more than workflows. However, those services also require you to understand more about the implementation of each job. While that is necessary in some cases, workflows help you get common tasks done quickly by pre-packaging the most essential types of jobs for app developers. In addition, workflows are designed to provide you with the fastest possible cloud machine for the task at hand, and we're constantly updating those for you.
+Other CI services, like CircleCI and GitHub Actions, are more generalized and have the ability to do more than workflows
+* However, those services also require you to understand more about the implementation of each job
+* While that is necessary in some cases, workflows help you get common tasks done quickly by pre-packaging the most essential types of jobs for app developers
+* In addition, workflows are designed to provide you with the fastest possible cloud machine for the task at hand, and we're constantly updating those for you.
 
 EAS Workflows are great for operations related to your Expo apps, while other CICD services will provide a better experience for other types of workflows.
 
@@ -46,7 +52,8 @@ Finally, link the project you have locally with EAS:
   <Terminal cmd={['$ npx eas-cli@latest init']} />
 </Collapsible>
 
-Then, create a directory named **.eas/workflows** at the root of your project with a **.yaml** file inside of it. For example: **.eas/workflows/hello-world.yaml**.
+Then, create a directory named **.eas/workflows** at the root of your project with a **.yaml** file inside of it
+* For example: **.eas/workflows/hello-world.yaml**.
 
 ## Write a workflow
 
