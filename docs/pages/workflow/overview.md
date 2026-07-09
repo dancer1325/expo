@@ -10,10 +10,8 @@ description: An overview of the development process of building an Expo app to h
 
 ### What is an "Expo app"?
 
-This is a shorthand term we use for describing a _React Native app that uses Expo tools_
-* An "Expo app" can use a single package from the Expo SDK, or Expo Router, or Expo CLI, or Continuous Native Generation, a combination of them, or any other Expo tools.
-
-We say "Expo app" because _React Native app that uses Expo tools_ is incredibly inconvenient to frequently type and speak out loud.
+* Expo app
+  * == React Native app / uses Expo tools (TODO: package | Expo SDK OR Expo Router OR Expo CLI OR or Continuous Native Generation)
 
 #### Is the development process different for an "Expo app" and a "React Native app that does not use Expo tools"?
 

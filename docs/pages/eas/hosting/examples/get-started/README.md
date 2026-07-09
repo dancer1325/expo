@@ -1,3 +1,8 @@
+# requirements
+## Expo Router web project
+* [here](expoRouterWebProject)
+
+
 # Deploy your first Expo Router and React app
 TODO:
 

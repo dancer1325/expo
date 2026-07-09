@@ -4,14 +4,15 @@ description: Learn about what app.json/app.config.js/app.config.ts files are and
 ---
 
 * goal
-  * app.json/app.config.js/app.config.ts
+  * app.json OR app.config.js OR app.config.ts
     * what are they for?
     * how to customize?
     * how to use them dynamically?
 
 * app config
   * ALLOWED
-    * **app.json**,
+    * **app.json**
+      * default one
     * **app.config.js**,
     * **app.config.ts**
   * uses
