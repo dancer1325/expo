@@ -9,47 +9,35 @@ searchRank: 10
   * == EAS' service /
     * allows
       * quickly deploying your 
-        * web projects / 
+        * web projects | web / 
           * built -- via -- [Expo Router](../../router/introduction.md) & React Native web
         * API routes + server functions + server-side assets
           * Reason:🧠seamlessly integrated -- with the -- Expo CLI🧠
-    * provide
-      * the fastest path FROM `npx create-expo-app` -- to a -- FULLY deployed web app / has API routes + server functions
-
-Deploy your app to the web and host API routes in one command.
-
-Seamlessly integrated with Expo
-Use file-based routing with Expo Router
-Deploy your app to the web in one command
-Host API functions that power your apps effortlessly
-View usage metrics and error rates without additional libraries
 
 ## Quick start
 
 * requirements
   * [install EAS CLI](../../eas/cli.md#installation)
+  * create a static build of your web project -- TODO: link --
+  * export your web project | dist/ 
 
-TODO: 
-To deploy your web app, you need to create a static build of your web project
-* Run the following command to export your web project into a **dist** directory:
+    ```
+    npx expo export --platform web
+    
+    yarn expo export --platform web
+    
+    pnpm expo export --platform web
+    
+    bun expo export --platform web
+    ```
 
-<Terminal
-  cmd={{
-    npm: ['$ npx expo export --platform web'],
-    yarn: ['$ yarn expo export --platform web'],
-    pnpm: ['$ pnpm expo export --platform web'],
-    bun: ['$ bun expo export --platform web'],
-  }}
-/>
-
-To publish your web app, run the following command:
-
-<Terminal cmd={['$ eas deploy']} />
-
-Once your deployment is complete, the EAS CLI will output a preview URL to access your deployed web app.
+* steps
+  * `eas deploy`
+    * 's output: preview URL -- to -- access your deployed web app
 
 ## Why EAS Hosting
 
+TODO:
 Historically, traditional website hosting services were recommended for deploying Expo Router and React apps
 * However, this approach doesn't address the unique challenges of dealing with native apps
 * Here are some key limitations:

@@ -1,14 +1,12 @@
 ## Set up: Android physical device + development build + EAS
 
-<BuildEnvironmentSwitch />
-
 ### Install EAS CLI
 
 * `npm install -g eas-cli`
 
 ### Create an Expo account and login
 
-1. [Sign up](https://expo.dev/signup) for an Expo account.
+1. [Sign up | Expo account](https://expo.dev/signup)
 2. `eas login`
 
 ### Configure your project

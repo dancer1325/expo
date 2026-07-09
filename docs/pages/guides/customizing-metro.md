@@ -5,16 +5,14 @@ maxHeadingDepth: 4
 description: Learn about different Metro bundler configurations that can be customized.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
-
-Expo CLI uses [Metro](https://metrobundler.dev/) during [`npx expo start`](/more/expo-cli/#develop) and [`npx expo export`](/more/expo-cli/#exporting) to bundle your JavaScript code and assets. Metro is built and optimized for React Native and used for large-scale applications such as Facebook and Instagram.
+Expo CLI uses [Metro](https://metrobundler.dev/) during [`npx expo start`](/more/expo-cli/#develop) and [`npx expo export`](/more/expo-cli/#exporting) to bundle your JavaScript code and assets
+* Metro is built and optimized for React Native and used for large-scale applications such as Facebook and Instagram.
 
 ## Customizing
 
-You can customize the Metro bundler by creating a **metro.config.js** file at the root of your project. This file should export a [Metro configuration](https://metrobundler.dev/docs/configuration/) that extends [`expo/metro-config`](https://github.com/expo/expo/tree/main/packages/@expo/metro-config). Import `expo/metro-config` instead of `@expo/metro-config` to ensure version consistency.
+You can customize the Metro bundler by creating a **metro.config.js** file at the root of your project
+* This file should export a [Metro configuration](https://metrobundler.dev/docs/configuration/) that extends [`expo/metro-config`](https://github.com/expo/expo/tree/main/packages/@expo/metro-config)
+* Import `expo/metro-config` instead of `@expo/metro-config` to ensure version consistency.
 
 Run the following command to generate the template file:
 
@@ -34,7 +32,12 @@ See [**metro.config.js** documentation](https://metrobundler.dev/docs/configurat
 
 ## Assets
 
-Metro resolves files as either source code or assets. Source code is JavaScript, TypeScript, JSON, and other files used by your application. [Assets](/develop/user-interface/assets/) are images, fonts, and other files that should not be transformed by Metro. To accommodate large-scale codebases, Metro requires all extensions for both source code and assets to be explicitly defined before starting the bundler. This is done by adding the `resolver.sourceExts` and `resolver.assetExts` options to the Metro configuration. By default, the following extensions are included:
+Metro resolves files as either source code or assets
+* Source code is JavaScript, TypeScript, JSON, and other files used by your application
+* [Assets](/develop/user-interface/assets/) are images, fonts, and other files that should not be transformed by Metro
+* To accommodate large-scale codebases, Metro requires all extensions for both source code and assets to be explicitly defined before starting the bundler
+* This is done by adding the `resolver.sourceExts` and `resolver.assetExts` options to the Metro configuration
+* By default, the following extensions are included:
 
 - [`resolver.assetExts`](https://github.com/facebook/metro/blob/7028b7f51074f9ceef22258a8643d0f90de2388b/packages/metro-config/src/defaults/defaults.js#L15)
 - [`resolver.sourceExts`](https://github.com/facebook/metro/blob/7028b7f51074f9ceef22258a8643d0f90de2388b/packages/metro-config/src/defaults/defaults.js#L53)
@@ -60,7 +63,9 @@ module.exports = config;
 
 ## Aliases
 
-Sometimes you want an import to be redirected to another module or file. This is called an alias. Due to the way Metro bundles for multiple platforms simultaneously, we recommend using a custom resolver to handle aliases.
+Sometimes you want an import to be redirected to another module or file
+* This is called an alias
+* Due to the way Metro bundles for multiple platforms simultaneously, we recommend using a custom resolver to handle aliases.
 
 In the following example, we'll add an alias for `old-module` to `new-module`:
 
@@ -100,7 +105,9 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
 };
 ```
 
-You will see the changes the next time you restart the dev server. Resolutions are never cached and do not need the `--clear` flag to update. If you use a transform-based system like `babel-plugin-module-resolver`, you will need to clear the cache to see changes applied.
+You will see the changes the next time you restart the dev server
+* Resolutions are never cached and do not need the `--clear` flag to update
+* If you use a transform-based system like `babel-plugin-module-resolver`, you will need to clear the cache to see changes applied.
 
 <BoxLink
   title="Customizing Metro resolution"
@@ -113,7 +120,9 @@ You will see the changes the next time you restart the dev server. Resolutions a
 
 From SDK 50, Expo CLI automatically splits bundles based on async imports (web-only).
 
-This technique can be used with Expo Router to automatically split the bundle based on route files in the **app** directory. It will only load the code required for the current route, and defer loading additional JavaScript until the user navigates to different pages. See [Async Routes](/router/reference/async-routes) for more information.
+This technique can be used with Expo Router to automatically split the bundle based on route files in the **app** directory
+* It will only load the code required for the current route, and defer loading additional JavaScript until the user navigates to different pages
+* See [Async Routes](/router/reference/async-routes) for more information.
 
 ## Tree shaking
 
@@ -135,7 +144,9 @@ This technique can be used with Expo Router to automatically split the bundle ba
 
 ## Web support
 
-Expo CLI has support for bundling websites using Metro. This is the same bundler used for native apps, and it is designed to be universal across platforms. It is the recommended bundler for web projects in Expo SDK 50 and greater.
+Expo CLI has support for bundling websites using Metro
+* This is the same bundler used for native apps, and it is designed to be universal across platforms
+* It is the recommended bundler for web projects in Expo SDK 50 and greater.
 
 ### Expo webpack versus Expo Metro
 
@@ -165,19 +176,26 @@ Alternatively, press <kbd>W</kbd> in the Expo CLI terminal UI.
 
 #### Static files
 
-Expo's Metro implementation supports hosting static files from the dev server by putting them in the root **public/** directory. It is similar to many other web frameworks.
+Expo's Metro implementation supports hosting static files from the dev server by putting them in the root **public/** directory
+* It is similar to many other web frameworks.
 
-When exporting with `npx expo export`, the contents of the **public** directory are copied into the **dist/** directory. It means your app can expect to fetch these assets relative to the host URL. The most common example of this is the **public/favicon.ico** which is used by websites to render the tab icon.
+When exporting with `npx expo export`, the contents of the **public** directory are copied into the **dist/** directory
+* It means your app can expect to fetch these assets relative to the host URL
+* The most common example of this is the **public/favicon.ico** which is used by websites to render the tab icon.
 
 You can overwrite the default **index.html** in Metro web by creating a **public/index.html** file in your project.
 
-In the future, this will work universally across platforms with EAS Update hosting. Currently, the feature is web-only based on the static host used for the native app, for example, the legacy Expo service updates do not support this feature.
+In the future, this will work universally across platforms with EAS Update hosting
+* Currently, the feature is web-only based on the static host used for the native app, for example, the legacy Expo service updates do not support this feature.
 
 ## TypeScript
 
-Expo's Metro config supports the `compilerOptions.paths` and `compilerOptions.baseUrl` fields in the project's **tsconfig.json** (or **jsconfig.json**) file. This enables absolute imports and aliases in the project. See [TypeScript](/guides/typescript) guide for more information.
+Expo's Metro config supports the `compilerOptions.paths` and `compilerOptions.baseUrl` fields in the project's **tsconfig.json** (or **jsconfig.json**) file
+* This enables absolute imports and aliases in the project
+* See [TypeScript](/guides/typescript) guide for more information.
 
-This feature requires additional setup in bare projects. See the [Metro setup guide](/versions/latest/config/metro#bare-workflow-setup) for more information.
+This feature requires additional setup in bare projects
+* See the [Metro setup guide](/versions/latest/config/metro#bare-workflow-setup) for more information.
 
 ## CSS
 

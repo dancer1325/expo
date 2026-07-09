@@ -9,7 +9,7 @@ description: A list of common questions and limitations about Expo and related s
 ## What is Expo used for?
 
 * see
-  * [README](/README.md)
+  * [README](../README.md)
   * [core concepts](core-concepts.md)
 
 ## Do companies use Expo?
@@ -38,7 +38,7 @@ description: A list of common questions and limitations about Expo and related s
 ## Expo vs React Native
  
 * see 
-  * [README](/README.md)
+  * [README](../README.md)
   * [what Expo offers](/core-concepts)
 
 ## Do I need to switch from React Native -- to use -- Expo?

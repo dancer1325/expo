@@ -1,16 +1,9 @@
 * goal
   * create a build for your app -- via -- EAS Build
 
-* EAS Build
-  * allows you
-    * build a ready-to-submit binary of your app -- for the -- Google Play Store or Apple App Store
-      * | small app,
-        * builds should take FEW minutes
-        * if you encounter any issues -> reach out | [Discord](https://chat.expo.dev/)
-
 ## Prerequisites
 
-* see [limitations](../build-reference/limitations.md)
+* [limitations](../build-reference/limitations.md)
 * create the React Native project / regardless using `expo`
 
   ```
@@ -140,16 +133,4 @@
     * upload | app store
     * install it -- from -- the app store
   * your Android device/iOS Simulator
-    * click the "Install" button | [your build dashboard](https://expo.dev/accounts/[account]/builds) 
-
-## Next steps
-
-- see
-  - [Configuration with eas.json](/build/eas-json)
-  - [Internal distribution](/build/internal-distribution)
-  - [Updates](/build/updates)
-  - [Automating submissions](/build/automate-submissions)
-  - [Triggering builds from CI](/build/building-on-ci)
-  - [Build webhooks](/eas/webhooks)
-  - [Build server infrastructure](/build-reference/infrastructure)
-  - How the [Android](/build-reference/android-builds) and [iOS](/build-reference/ios-builds) build processes work
+    * click the "Install" button | [your build dashboard](https://expo.dev/accounts/[account]/builds)

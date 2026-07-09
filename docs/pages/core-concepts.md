@@ -46,21 +46,21 @@ description: An overview of Expo tools, features and services.
     * can be used INDEPENDENTLY of each other
   * expo's features vs bare React Native
 
-| Feature                                                                             | With `expo` | Without `expo` (bare React Native) |
-|-------------------------------------------------------------------------------------| ----------- | ---------------------------------- |
-| Develop complex apps **ENTIRELY** in JavaScript.                                    | <YesIcon /> | <NoIcon />                         |
-| Write JSI native modules -- via -- Swift and Kotlin.                                | <YesIcon /> | <NoIcon />                         |
-| Develop apps WITHOUT Xcode or Android Studio.                                       | <YesIcon /> | <NoIcon />                         |
-| Create and share example apps in the browser with [Snack](https://snack.expo.dev/). | <YesIcon /> | <NoIcon />                         |
-| Major upgrades WITHOUT native changes.                                              | <YesIcon /> | <NoIcon />                         |
-| First-class TypeScript support.                                                     | <YesIcon /> | <NoIcon />                         |
-| Install natively compatible libraries from the command line.                        | <YesIcon /> | <NoIcon />                         |
-| Develop performant websites with the same codebase.                                 | <YesIcon /> | <NoIcon />                         |
-| [Tunnel](/more/expo-cli/#tunneling) your dev server to any device.                  | <YesIcon /> | <NoIcon />                         |
+| Feature                                                                              | With `expo` | Without `expo` (bare React Native) |
+|--------------------------------------------------------------------------------------| ----------- | ---------------------------------- |
+| Develop complex apps **ENTIRELY** in JavaScript.                                     | ✅ | ❌                         |
+| Write JSI native modules -- via -- Swift and Kotlin.                                 | ✅ | ❌                         |
+| Develop apps WITHOUT Xcode or Android Studio.                                        | ✅ | ❌                         |
+| Create and share example apps in the browser with [Snack](https://snack.expo.dev/).  | ✅ | ❌                         |
+| Major upgrades WITHOUT native changes.                                               | ✅ | ❌                         |
+| First-class TypeScript support.                                                      | ✅ | ❌                         |
+| Install natively compatible libraries from the command line.                         | ✅ | ❌                         |
+| Develop performant websites with the same codebase.                                  | ✅ | ❌                         |
+| [Tunnel](/more/expo-cli/#tunneling) your dev server to any device.                   | ✅ | ❌                         |
 
 ## Services
 
 * **Expo Application Services (EAS)**
   * see
-    * main [README](/README.md)
+    * main [README](../README.md)
     * [EAS](eas)

@@ -84,7 +84,9 @@ This overlay has capabilities to:
 
 **React Native DevTools** is a modern debugging tool for Expo and React Native apps. It allows you to gain insights into the JavaScript code of your app by accessing the [Console](#interacting-with-the-console), [Sources](#pausing-on-breakpoints), [Network](#inspecting-network-requests-expo-only) (**Expo only**), and [Memory](#inspecting-memory) tabs. It also has **built-in support for React DevTools** such as [Components](#inspecting-components) and [Profiler](#profiling-javascript-performance) tabs. All of these inspectors can be accessed using [dev clients](/more/glossary-of-terms/#dev-clients) or Expo Go.
 
-You can use the React Native DevTools on any app using [Hermes](/guides/using-hermes/). **To open it, start your app and press <kbd>J</kbd> in the terminal where Expo was started**. Once you have opened the React Native DevTools, it will appear as below:
+You can use the React Native DevTools on any app using [Hermes](/guides/using-hermes/)
+* **To open it, start your app and press <kbd>J</kbd> in the terminal where Expo was started**
+* Once you have opened the React Native DevTools, it will appear as below:
 
 <ContentSpotlight
   alt="The React Native DevTools showing one of the files under the Sources tab."
@@ -93,9 +95,12 @@ You can use the React Native DevTools on any app using [Hermes](/guides/using-he
 
 ### Pausing on breakpoints
 
-You can pause your app on specific parts of your code. To do this, set the breakpoint under the Sources tab by clicking the line number or add the `debugger` statement in your code.
+You can pause your app on specific parts of your code
+* To do this, set the breakpoint under the Sources tab by clicking the line number or add the `debugger` statement in your code.
 
-Once your app is executing code that has a breakpoint, it will entirely pause your app. This allows you to inspect all variables and functions in that scope. You can also execute code in the [Console](#interacting-with-the-console) tab as part of your app.
+Once your app is executing code that has a breakpoint, it will entirely pause your app
+* This allows you to inspect all variables and functions in that scope
+* You can also execute code in the [Console](#interacting-with-the-console) tab as part of your app.
 
 <ContentSpotlight
   alt="The React Native DevTools showing one of the files under the Sources tab."
@@ -104,7 +109,8 @@ Once your app is executing code that has a breakpoint, it will entirely pause yo
 
 ### Pausing on exceptions
 
-If your app throws unexpected errors, it can be hard to find the source of the error. You can use React Native DevTools to pause your app and inspect the stack trace and variables the moment it throws an error.
+If your app throws unexpected errors, it can be hard to find the source of the error
+* You can use React Native DevTools to pause your app and inspect the stack trace and variables the moment it throws an error.
 
 <ContentSpotlight
   alt="Enable Pause on exceptions in the right panel of the Sources tab."
@@ -112,11 +118,17 @@ If your app throws unexpected errors, it can be hard to find the source of the e
   className="max-w-[360px]"
 />
 
-> **info** Some errors might be caught by other components in your app, such as Expo Router. In these cases, you can turn on **Pause on caught exceptions**. It will enable you to inspect any thrown error, even when handled properly.
+> **info** Some errors might be caught by other components in your app, such as Expo Router
+* In these cases, you can turn on **Pause on caught exceptions**
+* It will enable you to inspect any thrown error, even when handled properly.
 
 ### Interacting with the console
 
-The **Console** tab gives you access to an interactive terminal, connected directly to your app. You can write any JavaScript inside this terminal to execute snippets of code as if it were part of your app. The code is executed in the global scope by default. But, when using breakpoints from the [Sources](#pausing-on-breakpoints) tab, it executes in the scope of the reached breakpoint. This allows you to invoke methods and access variables throughout your app.
+The **Console** tab gives you access to an interactive terminal, connected directly to your app
+* You can write any JavaScript inside this terminal to execute snippets of code as if it were part of your app
+* The code is executed in the global scope by default
+* But, when using breakpoints from the [Sources](#pausing-on-breakpoints) tab, it executes in the scope of the reached breakpoint
+* This allows you to invoke methods and access variables throughout your app.
 
 <ContentSpotlight
   alt="Use the console with breakpoints to inspect variables and invoke code through your app."
@@ -127,7 +139,9 @@ The **Console** tab gives you access to an interactive terminal, connected direc
 
 > **info** The Network tab in React Native DevTools is only available when you have `expo` installed in your project.
 
-The **Network** tab gives you insights into the network requests made by your app. You can inspect each request and response by clicking on them. This includes `fetch` requests, external loaded media, and in some cases, even requests made by native modules.
+The **Network** tab gives you insights into the network requests made by your app
+* You can inspect each request and response by clicking on them
+* This includes `fetch` requests, external loaded media, and in some cases, even requests made by native modules.
 
 <ContentSpotlight
   alt="Gain insights in the network requests from your app."
@@ -149,7 +163,9 @@ The **Memory** tab allows you to inspect the memory usage and take a heap snapsh
 
 ### Inspecting components
 
-The **Components** tab allows you to inspect the React components in your app. You can view the props, and styles of each component by hovering that component in React Native DevTools. This is a great way to debug your app's UI and understand how your components are structured.
+The **Components** tab allows you to inspect the React components in your app
+* You can view the props, and styles of each component by hovering that component in React Native DevTools
+* This is a great way to debug your app's UI and understand how your components are structured.
 
 <ContentSpotlight
   alt="Inspect a component in React Native DevTools."

@@ -1,13 +1,15 @@
 ## Introduction
 
 * Expo
-  * := platform /
+  * := 💡platform💡 /
     * open-source
-    * == universal runtime + libraries  
+    * == SDK + Router + build & update infrastructure (EAS) + tooling
   * allows
-    * building universal native apps / 
+    * building universal React native apps / 
+      * universal == 1! code base
       * run | Android, iOS, web
       * -- via -- writing React and JavaScript
+      * 👀[OFFICIALLY recommended by React Native](https://reactnative.dev/docs/getting-started)👀
 
 ## 📚 Documentation
 

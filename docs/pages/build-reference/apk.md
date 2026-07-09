@@ -3,9 +3,6 @@ title: Build APKs for Android Emulators and devices
 description: Learn how to configure and install a .apk for Android Emulators and devices when using EAS Build.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
-
 The default file format used when building Android apps with EAS Build is an [Android App Bundle](https://developer.android.com/platform/technology/app-bundle) (AAB/**.aab**). This format is optimized for distribution to the Google Play Store. However, AABs can't be installed directly on your device. To install a build directly to your Android device or emulator, you need to build an [Android Package](https://en.wikipedia.org/wiki/Android_application_package) (APK/**.apk**) instead.
 
 ## Configuring a profile to build APKs
