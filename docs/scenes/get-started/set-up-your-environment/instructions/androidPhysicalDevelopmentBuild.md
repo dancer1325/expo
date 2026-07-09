@@ -1,4 +1,4 @@
-## Set up an Android device -- with a -- development build
+## Set up: Android physical device + development build + EAS
 
 <BuildEnvironmentSwitch />
 

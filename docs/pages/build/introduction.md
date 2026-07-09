@@ -12,6 +12,8 @@ description: EAS Build is a hosted service for building app binaries for your Ex
     * build app binaries -- for your --
       * Expo projects
       * React Native projects
+    * -> ❌NO require❌
+      * install Android Studio OR Xcode
 
 * TODO:
 It makes building your apps for distribution simple and easy to automate by providing defaults that 
@@ -30,18 +32,24 @@ It's the fastest way to get from `npx create-expo-app` or `npx @react-native-com
     * build your app
     * distribute it | Android, iOS, and the web
 
+Compile and sign Android/iOS apps with custom native code in the cloud
+
+Run on your device with development builds
+Test locally with simulator builds
+Share with your team via internal distribution
+Deliver to users with app-store builds
+Secrets and credentials management
+
 ## Quick start
 
-> **info** The `eas` commands below require EAS CLI
-* See [How to install EAS CLI](/eas/cli/#installation) for more information.
+* requirements
+  * [install EAS CLI](../eas/cli.md#installation)
 
-To build your app, run the following command:
-
-<Terminal cmd={['$ eas build --platform all']} />
-
-This command sends your project to EAS Build and produces installable binaries for Android and iOS
-* You can also build for one platform at a time by passing in `--platform android` or `--platform ios` as desired
-* For complete setup instructions, see [Create your first build](/build/setup/).
+* steps to build your app
+  * `eas build --platform all` OR `eas build --platform android` OR `eas build --platform ios` 
+    * what does it make under the hood?
+      * sends your project -- to -- EAS Build
+      * produces installable binaries -- for -- Android & iOS
 
 ## Key features
 

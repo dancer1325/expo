@@ -14,24 +14,34 @@ Automate builds for the app stores, run tests, send updates, and more with CI/CD
 EAS Workflows run in managed cloud environments with pre-packaged job types designed specifically for mobile app development
 * When your EAS project is linked to GitHub, teams can trigger workflows from GitHub events (push, pull request, labels) or schedules (cron), or run them manually via the EAS CLI.
 
+* video
+  * TODO: 
 <VideoBoxLink
   videoId="OJ2u9tQCpr4"
   title="Watch: Get Started with EAS Workflows"
   description="Learn how to automate some of the most common processes that every app development team must tackle: creating development builds, publishing preview updates, and deploying to production."
 />
 
-<br />
+Blazing fast M4 Pro powered workers
+Pre-packaged CI job configurations
+Instant CI jobs, automatic caching, and repacked builds
+Integrations with GitHub and other CI tools
 
 ## Quick start
 
-> **info** The `eas` commands below require EAS CLI
-* See [How to install EAS CLI](/eas/cli/#installation) for more information.
+* requirements
+  * [install EAS CLI](../cli.md#installation)
 
-Workflows are defined as YAML files in the **.eas/workflows/** directory at the root of your project
-* Each file specifies a `name`, optional triggers (`on`), and one or more `jobs` that run in the cloud
-* You can run a workflow with EAS CLI with the following command:
+* Workflows 
+  * == YAML files | root of your project's ".eas/workflows/" /
+    * contain
+      * `name`
+      * triggers (`on`)
+        * OPTIONAL
+      * \>=1 `jobs` / run | cloud
 
-<Terminal cmd={['$ eas workflow:run .eas/workflows/your-workflow.yml']} />
+* steps
+  * `eas workflow:run .eas/workflows/your-workflow.yml`
 
 ## Key features
 

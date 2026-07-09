@@ -1,9 +1,17 @@
 # Developing Expo Go
 
-* := sandbox -- for -- trying out Expo quickly
-  * ❌== NOT | LONG-term projects ❌
-  * free | app store
+* == sandbox /
+  * free
+    * | [app store](https://apps.apple.com/es/app/expo-go/id982107779)
 * == UI -- for the -- Expo Go client
+* work with
+  * Android
+  * iOS
+* use cases
+  * try out Expo quickly
+* ❌NOT use cases❌
+  * LONG-term projects
+  * production-grade projects
 
 * ways to use
   * install | simulator OR device
@@ -16,27 +24,15 @@
     * | developing iOS, ALWAYS open this
       * instead of `Exponent.xcodeproj`
       * Reason: 🧠 workspace ALSO loads the CocoaPods dependencies 🧠
+ 
+## Building Expo Go
 
-## External Contributions
+* requirements
+  * ⚠️macOs⚠️
 
-If you want to contribute to the Expo SDK, use the [Bare Expo app](https://github.com/expo/expo/tree/main/apps/bare-expo) 
-for developing and testing your changes (unless your changes are specific to the Expo Go app).
+### Configuring your environment
 
-Please check with us before putting work into a Pull Request for Expo Go! 
-The best place to talk to us is on Discord at https://chat.expo.dev.
-
-**Disclaimers:**
-
-If you want to build a standalone app that has a custom icon and name, use [EAS Build](https://docs.expo.dev/build/setup/)
-* You're in the wrong place and you shouldn't need to build Expo Go from source.
-
-If you need to make native code changes to your Expo project, such as adding custom native modules, create a [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-* You're in the wrong place and you shouldn't need to build Expo Go from source.
-
-## Configuring your environment
-
-> Note: We support building Expo Go only on macOS.
-
+TODO: 
 - Install [direnv](http://direnv.net/) and [Homebrew](https://brew.sh/).
 - Clone this repo; we recommend cloning it to a directory whose full path does not include any spaces (you should clone all the submodules with `git clone --recurse-submodules`).
 - Run `brew bundle` in the root directory.
@@ -44,7 +40,8 @@ If you need to make native code changes to your Expo project, such as adding cus
 - Run `pnpm setup:native` in the root directory.
 - Run `pnpm build` in the `packages/expo` directory.
 
-## Building Expo Go
+
+### steps
 
 1. Set up React Native
 

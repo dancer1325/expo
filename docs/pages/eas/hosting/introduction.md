@@ -16,6 +16,14 @@ searchRank: 10
     * provide
       * the fastest path FROM `npx create-expo-app` -- to a -- FULLY deployed web app / has API routes + server functions
 
+Deploy your app to the web and host API routes in one command.
+
+Seamlessly integrated with Expo
+Use file-based routing with Expo Router
+Deploy your app to the web in one command
+Host API functions that power your apps effortlessly
+View usage metrics and error rates without additional libraries
+
 ## Quick start
 
 * requirements

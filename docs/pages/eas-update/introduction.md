@@ -23,6 +23,14 @@ All apps that include the `expo-updates` library have the ability to receive upd
 
 Send fast over-the-air updates to get the latest fixes and improvements to your users fast with Update.
 
+Instantly deliver live updates, bug fixes, content changes, beta features, and more...
+Don't wait to ship your next app update
+
+Build developer momentum by shipping work continuously
+Designed for Expo apps & works with pure React Native apps
+Give your users the best experience possible
+Expedite QA with instant OTA pull request previews
+
 ## JS API for update management
 
 <ContentSpotlight

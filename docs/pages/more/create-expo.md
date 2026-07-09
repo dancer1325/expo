@@ -1,9 +1,10 @@
-* `create-expo-app`
-  * == CL tool / p
+* `create-expo-app <PATH> [OPTIONS]`
+  * == CL tool / 
     * allows, about a NEW Expo and React Native project, 
-      * create
-      * set up 
-    * provide various templates / NO need manual configuration
+      * [create](#create-a-new-project)
+      * [set up ](#create-a-new-project)
+        * == configure -- through the -- prompts
+    * [provide various templates / NO need manual configuration](#--template)
 
 ## Create a new project
 
@@ -26,43 +27,46 @@
     ```
 
 * will prompt to enter the app name
-  * see [app config's `name`](/versions/latest/config/app/#name) property
+  * see [app config's `name`](../versions/unversioned/config/app.md) property
 
 ## Options
 
 ### `--yes`
 
 * uses ALL default options
+* ❌NO create a wrapper directory❌
 
 ### `--no-install`
 
-* skips installing npm dependencies or CocoaPods
+* skips installing npm dependencies (== node_modules/) or CocoaPods
 
 ### `--no-agents-md`
 
-Skips generating **AGENTS.md**, **CLAUDE.md**, and **.claude/settings.json**. By default, `create-expo-app` generates these files so AI coding agents (such as Claude Code) have Expo-specific context and the [`expo` skills plugin](https://expo.dev/expo-skills) configured automatically. The generated **AGENTS.md** points to the versioned Expo docs matching your project's SDK version.
+* skips 
+  * generating 
+    * **AGENTS.md**
+    * **CLAUDE.md**
+    * **.claude/settings.json**
+  * AUTOMATIC [`expo` skills plugin](https://expo.dev/expo-skills) configuration
 
 ### `--template`
 
-* select one of the AVAILABLE templates
+| Template                                                                                               | Description                                                                                                                                                    |
+|--------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`default`](https://github.com/expo/expo/tree/main/templates/expo-template-default)                    | Default template <br/> MULTI-screen apps <br/> used tools: Expo CLI, Expo Router library and TypeScript configuration enabled <br/> use case: MOST apps        |
+| [`blank`](https://github.com/expo/expo/tree/main/templates/expo-template-blank)                        | Installs MINIMUM required npm dependencies <br/> NO configure navigation                                                                                       |
+| [`blank-typescript`](https://github.com/expo/expo/tree/main/templates/expo-template-blank-typescript)  | Blank template / TypeScript enabled                                                                                                                            |
+| [`tabs`](https://github.com/expo/expo/tree/main/templates/expo-template-tabs)                          | file-based routing <br/> Expo Router & TypeScript enabled                                                                                                      |
+| [`bare-minimum`](https://github.com/expo/expo/tree/main/templates/expo-template-bare-minimum)          | Blank template / \| setup, generate -- through [`npx expo prebuild`](../workflow/continuous-native-generation) -- NATIVE directories (**android** and **ios**) |
 
-> **info** Looking for more templates? Check out the [`--example`](#--example) option to initialize your project with one of the example apps that demonstrate specific features and integrations.
-
-| Template                                                                                              | Description                                                                                                                                                                           |
-| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`default`](https://github.com/expo/expo/tree/main/templates/expo-template-default)                   | Default template. Designed to build multi-screen apps. Includes recommended tools such as Expo CLI, Expo Router library and TypeScript configuration enabled. Suitable for most apps. |
-| [`blank`](https://github.com/expo/expo/tree/main/templates/expo-template-blank)                       | Installs minimum required npm dependencies without configuring navigation.                                                                                                            |
-| [`blank-typescript`](https://github.com/expo/expo/tree/main/templates/expo-template-blank-typescript) | A Blank template with TypeScript enabled.                                                                                                                                             |
-| [`tabs`](https://github.com/expo/expo/tree/main/templates/expo-template-tabs)                         | Installs and configures file-based routing with Expo Router and TypeScript enabled.                                                                                                   |
-| [`bare-minimum`](https://github.com/expo/expo/tree/main/templates/expo-template-bare-minimum)         | A Blank template with native directories (**android** and **ios**) generated. Runs [`npx expo prebuild`](/workflow/continuous-native-generation) during the setup.                    |
+* if you want ANOTHER -> use [`--example`](#--example)
 
 ### `--example`
 
 * initialize a project -- from -- an [expo/examples](https://github.com/expo/examples)
-  * _Example:_ 
-    * `npx create-expo-app --example` shows an interactive list of available examples to choose from
-    * `npx create-expo-app --example with-router` set up a project / has Expo Router library
-    * `npx create-expo-app --example with-react-navigation` sets up a project similar to the default template, but configured with plain React Navigation library
+  * `npx create-expo-app --example` 
+    * shows the interactive list of AVAILABLE examples / you choose
+  * `npx create-expo-app --example <SOME_EXAMPLE>`
 
 ### `--version`
 
@@ -75,9 +79,13 @@ Skips generating **AGENTS.md**, **CLAUDE.md**, and **.claude/settings.json**. By
 ## Node Package Managers support
 
 * TODO:
-Creating a new project with `create-expo-app` also handles setting up additional configuration needed for a specific Node Package Manager.
+Creating a new project with `create-expo-app` also handles setting up additional configuration
+* needed for a specific Node Package Manager.
 
-**If you are migrating from one package manager to another**, you've to manually carry out the additional configuration in your project. **If you are using [EAS](/eas/)**, you also have to configure your project for any additional required steps manually.
+**If you are migrating from one package manager to another**, you've to manually carry out the
+additional configuration in your project
+**If you are using [EAS](/eas/)**, you also have to configure your project for
+any additional required steps manually.
 
 All the additional steps for each package manager are listed below.
 
@@ -85,7 +93,8 @@ All the additional steps for each package manager are listed below.
 
 #### Local installation
 
-npm is installed as part of Node.js installation. See [Node.js documentation](https://nodejs.org/en/download/package-manager) for installation instructions.
+npm is installed as part of Node.js installation. See [Node.js documentation](https://nodejs.org/en/download/package-manager) for 
+installation instructions.
 
 #### EAS installation
 
@@ -95,7 +104,8 @@ Supported by default if the project directory contains **package-lock.json**.
 
 #### Local installation
 
-Yarn 1 (Classic) is usually installed as a global dependency of npm. See [Yarn 1 documentation](https://classic.yarnpkg.com/en/docs/getting-started) for installation instructions.
+Yarn 1 (Classic) is usually installed as a global dependency of npm
+See [Yarn 1 documentation](https://classic.yarnpkg.com/en/docs/getting-started) for installation instructions.
 
 #### EAS installation
 
@@ -107,7 +117,8 @@ Supported by default if the project directory contains **yarn.lock**.
 
 See [Yarn documentation](https://yarnpkg.com/getting-started/install) for installation instructions.
 
-Yarn 2+ handles package management differently than Yarn 1. One of the core changes in Yarn 2+ is the [Plug'n'Play (PnP)](https://yarnpkg.com/features/pnp) node linking model that does not work with React Native.
+Yarn 2+ handles package management differently than Yarn 1
+* One of the core changes in Yarn 2+ is the [Plug'n'Play (PnP)](https://yarnpkg.com/features/pnp) node linking model that does not work with React Native.
 
 By default, a project created with `create-expo-app` and Yarn 2+ uses [`nodeLinker`](https://yarnpkg.com/features/linkers#nodelinker-node-modules) with its value set to `node-modules` to install dependencies.
 
@@ -117,7 +128,8 @@ nodeLinker: node-modules
 
 #### EAS installation
 
-Yarn Modern on EAS requires enabling [Corepack](https://github.com/nodejs/corepack) for the build. Set [`corepack`](/eas/json/#corepack) to `true` in your build profile in **eas.json**:
+Yarn Modern on EAS requires enabling [Corepack](https://github.com/nodejs/corepack) for the build
+* Set [`corepack`](/eas/json/#corepack) to `true` in your build profile in **eas.json**:
 
 ```json eas.json
 {
@@ -129,7 +141,8 @@ Yarn Modern on EAS requires enabling [Corepack](https://github.com/nodejs/corepa
 }
 ```
 
-Then, pin the Yarn version in your project's **package.json** using the [`packageManager`](https://nodejs.org/api/packages.html#packagemanager) field. Running `yarn set version <version>` locally will update this field for you:
+Then, pin the Yarn version in your project's **package.json** using the [`packageManager`](https://nodejs.org/api/packages.html#packagemanager) field
+* Running `yarn set version <version>` locally will update this field for you:
 
 ```json package.json
 {
@@ -143,7 +156,8 @@ After adding both of the above configurations, Corepack automatically downloads 
 
 #### Local installation
 
-Requires installing Node.js. See [pnpm documentation](https://pnpm.io/installation) for installation instructions.
+Requires installing Node.js
+* See [pnpm documentation](https://pnpm.io/installation) for installation instructions.
 
 By default, a project created with `create-expo-app` and pnpm uses [`nodeLinker`](https://pnpm.io/settings#nodelinker) with its value set to `hoisted` to install dependencies.
 
