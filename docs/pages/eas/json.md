@@ -34,6 +34,7 @@
       }
     }
     ```
+    * == 3 build profiles 
 
 ### Common properties for native platforms
 

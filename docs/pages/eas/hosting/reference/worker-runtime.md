@@ -4,21 +4,31 @@ title: EAS Hosting worker runtime
 description: Learn about EAS Hosting worker runtime and Node.js compatibility.
 ---
 
-import { YesIcon, NoIcon, AlertIcon } from '~/ui/components/DocIcons';
+* [EAS Hosting introduction](../introduction.md)
 
-EAS Hosting is built on [Cloudflare Workers](https://developers.cloudflare.com/workers/), a modern and powerful platform for serverless APIs that's been built for seamless scalability, high reliability, and exceptional performance globally.
-
-The Cloudflare Workers runtime runs on the V8 JavaScript engine, the same powering JavaScript in Node.js and Chromium. However, its runtime has a few key differences from what you might be used to in traditional serverless Node.js deployments.
-
-Instead of each request running in a full JavaScript process, Workers are designed to run them in small V8 isolates, a feature of the V8 runtime. Think of them as micro-containers in a single JavaScript process.
-
-For more information on how Workers work, see [Cloudflare Workers](https://developers.cloudflare.com/workers/reference/how-workers-works/) documentation.
+* [Cloudflare Workers](https://developers.cloudflare.com/workers/)
+  * == platform for serverless APIs / 
+    * modern
+    * powerful
+    * 's goal
+      * seamless scalability
+      * high reliability
+      * exceptional performance globally
+  * 's runtime
+    * runs | V8 JavaScript engine 
+      * (== used -- by -- Node.js & Chromium) 
+    * vs traditional serverless Node.js deployments
+      * Workers / DIFFERENT SMALL ISOLATED V8   vs   FULL JavaScript process / EACH request
+        * == micro-containers | 1! JavaScript process
 
 ## Node.js compatibility
 
-Cloudflare is part of [Winter TC](https://wintertc.org/), is more similar to the JavaScript environments in browsers and service workers rather than in Node.js. Restrictions like these provide a leaner runtime than Node.js, which is still familiar. This common runtime is a minimal standard supported by many JavaScript runtime these days.
+Cloudflare is part of [Winter TC](https://wintertc.org/), is more similar to the JavaScript environments in browsers and service workers rather than in Node.js
+* Restrictions like these provide a leaner runtime than Node.js, which is still familiar
+* This common runtime is a minimal standard supported by many JavaScript runtime these days.
 
-This means, many Node.js APIs that you might be used to or some dependencies you utilize, aren't directly available in the EAS Hosting runtime. To ease this transition, as not all dependencies will have first-class support for Web APIs yet, Node.js compatibility modules exist and can be used in your API routes.
+This means, many Node.js APIs that you might be used to or some dependencies you utilize, aren't directly available in the EAS Hosting runtime
+* To ease this transition, as not all dependencies will have first-class support for Web APIs yet, Node.js compatibility modules exist and can be used in your API routes.
 
 | Node.js built-in module    | Supported     | Implementation notes                                                               |
 | -------------------------- | ------------- | ---------------------------------------------------------------------------------- |
@@ -63,7 +73,8 @@ This means, many Node.js APIs that you might be used to or some dependencies you
 These modules generally provide a lower-accuracy polyfill or approximation of their Node.js counterparts.
 For example, the `fs`, `http`, and `https` modules have additional restrictions in place and are Node.js compatibility layers, which aren't equivalent to running them in a Node.js process.
 
-Any of the above listed Node.js modules can be used in API routes or dependencies of your API routes as usual and will use appropriate compatibility modules. However, some of these modules may not provide any practical functionality and only exist to shim APIs to prevent runtime crashes.
+Any of the above listed Node.js modules can be used in API routes or dependencies of your API routes as usual and will use appropriate compatibility modules
+* However, some of these modules may not provide any practical functionality and only exist to shim APIs to prevent runtime crashes.
 
 Any modules that aren't mentioned here are unavailable or unsupported, and your code and none of your dependencies should rely on them being provided.
 

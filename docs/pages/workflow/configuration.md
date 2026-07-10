@@ -30,15 +30,9 @@ description: Learn about what app.json/app.config.js/app.config.ts files are and
     }
     ```
 
-  * 👀if it has a top-level `expo: {}` object -> it's used rather than root object & ALL other keys will be ignored 👀
-    * see [here](../versions/unversioned/config/app.mdx)
-
-## Properties
-
-* app name, icon, splash screen, deep linking scheme, API keys to use 
-* see [app config reference](../versions/unversioned/config/app.mdx)
-
-* if you use Visual Studio Code -> install the [Expo Tools](https://marketplace.visualstudio.com/items?itemName=expo.vscode-expo-tools)
+  * [schema](../versions/unversioned/config/app.md)
+    * ⚠️if it has a top-level [`expo: {}` object](../versions/unversioned/config/app.md) -> it's used rather than root object & ALL other keys will be ignored ⚠️
+  * if you use Visual Studio Code -> install the [Expo Tools](https://marketplace.visualstudio.com/items?itemName=expo.vscode-expo-tools)
 
 ## Reading configuration values | your app
 
@@ -121,55 +115,38 @@ module.exports = ({ config }) => {
 };
 ```
 
-### Switching configuration based on the environment
+### how to switch configuration -- based on the -- environment?
 
-It's common to have some different configuration in development, staging, and production environments, or to swap out configuration entirely to white label an app. 
-To accomplish this, you can use **app.config.js** along with environment variables.
+* recommendation
+  * use "app.config.js" + environment variables
 
-```js app.config.js
-module.exports = () => {
-  if (process.env.MY_ENVIRONMENT === 'production') {
-    return {
-      /* your production config */
-    };
-  } else {
-    return {
-      /* your development config */
-    };
-  }
-};
-```
+* steps
+  * `MY_ENVIRONMENT=production eas update`
 
-To use this configuration with Expo CLI commands, set the environment variable either for specific commands or in your shell profile.
-To set environment variables for specific commands, prefix the command with the variables and values as shown in the example:
+### -- by -- using "app.config.ts"
 
-<Terminal cmd={['$ MY_ENVIRONMENT=production eas update']} />
+* steps
+  * create "app.config.ts" / contains 
 
-This is not anything unique to Expo CLI. On Windows you can approximate the above command with:
+  ```ts app.config.ts
+  import { ExpoConfig, ConfigContext } from 'expo/config';
+  
+  export default ({ config }: ConfigContext): ExpoConfig => ({
+    ...config,
+    slug: 'my-app',
+    name: 'My App',
+  });
+  ```
 
-<Terminal cmd={['$ npx cross-env MY_ENVIRONMENT=production eas update']} />
-
-Or you can use any other mechanism that you are comfortable with for environment variables.
-
-### Using TypeScript for configuration: app.config.ts instead of app.config.js
-
-You can use autocomplete and doc-blocks with an Expo config in TypeScript. Create an **app.config.ts** with the following contents:
-
-```ts app.config.ts
-import { ExpoConfig, ConfigContext } from 'expo/config';
-
-export default ({ config }: ConfigContext): ExpoConfig => ({
-  ...config,
-  slug: 'my-app',
-  name: 'My App',
-});
-```
-
-To import other TypeScript files into **app.config.ts** or customize the language features, we recommend using [`ts-node`](/guides/typescript/#appconfigjs). `ts-node` also enables using `import` syntax in any file imported by **app.config.ts**. This means you can write local [config plugins](/config-plugins/introduction/) in TypeScript with full language features.
+TODO: 
+To import other TypeScript files into **app.config.ts** or customize the language features, 
+we recommend using [`ts-node`](/guides/typescript/#appconfigjs). `ts-node` also enables using `import` syntax in any file imported by **app.config.ts**
+* This means you can write local [config plugins](/config-plugins/introduction/) in TypeScript with full language features.
 
 ### Configuration resolution rules
 
-There are two different types of configs: static (**app.config.json**, **app.json**), and dynamic (**app.config.js**, **app.config.ts**). Static configs can be automatically updated with CLI tools, whereas dynamic configs must be manually updated by the developer.
+There are two different types of configs: static (**app.config.json**, **app.json**), and dynamic (**app.config.js**, **app.config.ts**)
+* Static configs can be automatically updated with CLI tools, whereas dynamic configs must be manually updated by the developer.
 
 1. The static config is read if **app.config.json** exists (falls back to **app.json**). If no static config exists, then default values are inferred from the **package.json** and your dependencies.
 2. The dynamic config is read if either **app.config.ts** or **app.config.js** exist. If both exist, then the TypeScript config is used.

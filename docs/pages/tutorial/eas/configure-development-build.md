@@ -5,26 +5,19 @@ description: Learn how to configure a development build for a project using EAS 
 hasVideoLink: true
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { CODE } from '~/ui/components/Text';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
-In this chapter, we'll set up and configure a development build with EAS for our example app.
+* goal
+  * | OUR example app,
+    * set up & configure a development build -- with -- EAS 
 
-<VideoBoxLink
-  videoId="uQCE9zl3dXU"
-  title="Watch: How to configure a development build"
-  description="Learn how to install expo-dev-client, configure build profiles in eas.json, and create your first development build with EAS Build."
-/>
+* [video](https://www.youtube.com/watch?v=uQCE9zl3dXU)
+  * TODO: 
 
 ---
 
 ## Understanding development builds
 
+TODO: 
 Let's start by learning about what are development builds and why we need them.
 
 A [development build](/develop/development-builds/introduction/) is a debug version of our project. It is optimized for quick iterations when creating an app. It contains the [`expo-dev-client`](/versions/latest/sdk/dev-client/) library, which offers a robust and complete development environment. This setup allows us to integrate any native library or change code inside the [native directories](/workflow/overview/#android-and-ios-native-projects) as required.

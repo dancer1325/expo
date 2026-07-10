@@ -59,12 +59,16 @@ Stable features are ready for use in any application. You can rely on them follo
 
 ## Deprecated
 
-Deprecated features are those that are no longer recommended for use and will be removed in future releases. We provide deprecation warnings to give developers time to transition away from these features.
+* == 
+  * NO longer recommended -- for -- use
+  * | future releases, will be removed
 
-**What to expect:**
+* **What to expect:**
+  * NO 
+    * NEW features
+    * improvements
+  * | future major releases, removal 
 
-- Warnings in documentation and code when using deprecated features
-- No new features or improvements will be made
-- Removal in future major releases
-
-When you encounter a deprecated feature, we recommend planning to migrate to the suggested alternatives as soon as possible to ensure your projects remain up-to-date and maintainable.
+* recommendation
+  * AS SOON AS POSSIBLE,
+    * migrate -- to the -- suggested alternatives

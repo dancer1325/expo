@@ -41,7 +41,7 @@
   eas build:configure
   ```
   * see 
-    * [build configuration process reference](../build-reference/build-configuration.mdx)
+    * [build configuration process reference](../build-reference/build-configuration.md)
     * [app code / -- depend on -- environment variables](../build-reference/variables)
     * [project | monorepo](../build-reference/build-with-monorepos)
     * [if you use private npm packages -> add your npm token](../build-reference/private-npm-packages)

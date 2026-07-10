@@ -15,13 +15,11 @@ TODO:
 TODO:
 ### requirements: locate | root of your project
 TODO:
-### 👀top-level `expo: {}` object -> used rather than root object👀
+### schema
+* [here](../../../versions/unversioned/config/app.md)
+#### ⚠️if it has a top-level `expo: {}` object -> used rather than root object⚠️
 TODO:
 
-## Properties
-TODO:
-### app name, icon, splash screen, deep linking scheme, API keys
-TODO:
 
 ## Reading configuration values | your app
 TODO:
@@ -40,7 +38,6 @@ TODO:
 TODO:
 
 ## Dynamic configuration
-TODO:
 ### use app.config.js or app.config.ts
 TODO:
 ### properties
@@ -59,9 +56,12 @@ TODO:
 TODO:
 ### export a function -- to access and modify incoming config values
 TODO:
-### Switching configuration based on the environment
-TODO:
-### Using TypeScript for configuration: app.config.ts instead of app.config.js
+### how to switch configuration -- based on the -- environment?
+* [here](appConfigAppConfigJS/app.config.js)
+* `MY_ENVIRONMENT=production eas update`
+  * TODO: check
+### -- by -- using "app.config.ts"
+* [here](appConfigAppConfigTS)
 TODO:
 ### Configuration resolution rules
 TODO:

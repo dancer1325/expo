@@ -3,98 +3,83 @@ title: Autolinking
 description: Learn how to use Expo Autolinking to automatically link native dependencies in your Expo project.
 ---
 
-import { APIBox } from '~/components/plugins/APIBox';
-import { CodeBlocksTable } from '~/components/plugins/CodeBlocksTable';
-import { Terminal } from '~/ui/components/Snippet';
+* | install a third-party library | Expo & React Native,
+  * PREVIOUS to autolinking,
+    * you had to install & configure MANUALLY | 3 DIFFERENT package managers (npm/yarn + CocoaPods + Gradle/Maven)
+  * RIGHT NOW -- thanks to -- autolinking
+    * you ONLY install the package | "package.json"
 
-Usually, when you're developing a native mobile app and want to install a third-party library, you're asked to add the dependency to the manifest files of your package managers (**build.gradle** on Android, **Podfile** for CocoaPods on iOS, **Package.swift** for SwiftPM on iOS).
-In Expo and React Native, you already do that with your **package.json** file by installing the package from the [npm](https://www.npmjs.com) registry. Since most of the React Native libraries come with some native (platform-specific) code,
-installing a library will require configuring even up to three different package managers!
-
-Expo Autolinking is a mechanism that automates this process and reduces the library installation process to the minimum — usually just installing the package from `npm` and re-running `pod install`.
-The core implementation can be found in the [`expo-modules-autolinking`](https://github.com/expo/expo/tree/main/packages/expo-modules-autolinking) package and is divided into three parts:
-
-1. common JavaScript CLI tool with the module resolution algorithm
-2. code that integrates with the Gradle build system for Android platform
-3. Ruby script that integrates with CocoaPods for iOS platform
+* Expo Autolinking
+  * == mechanism / 💡reduces the library installation process💡
+    * steps
+      * you 
+        * install the NPM package
+        * re-run `pod install`
+  * [source code](../../../packages/expo-modules-autolinking) 
 
 ## CLI commands
 
-<APIBox>
-
 ### `search`
 
-Searching is the first phase of resolving the Expo modules installed in a project. Its implementation is shared between all platforms. It finds all modules marked as Expo modules and determines which version is of the highest precedence (in case of duplicates).
-
-<Terminal cmd={['$ npx expo-modules-autolinking search']} />
-
-The above command returns an object in JSON format with modules that have been found as dependencies:
-
-```json
-{
-  "expo-random": {
-    "path": "/absolute/path/to/node_modules/expo-random",
-    "version": "13.0.0",
-    "config": {
-      // Contents of `expo-module.config.json`
-      "platforms": ["ios", "android"],
-      "ios": { "modules": ["RandomModule"] },
-      "android": { "modules": ["expo.modules.random.RandomModule"] }
-    },
-    "duplicates": [] // An array of other revisions (with lower precedence) of the same module
-  }
-  // more modules...
-}
+* Searching
+  * == FIRST phase of resolving the Expo modules / installed | project
+    * find ALL modules / 
+      * marked -- as -- Expo modules
+      * if there are duplicates -> determine the highest precedence version 
+      * 's output
+        * ".json"
+  * its implementation is shared BETWEEN A platforms
+    
+```bash
+npx expo-modules-autolinking search
+---
+yarn dlx expo-modules-autolinking search
+---
+pnpm dlx expo-modules-autolinking search
+---
+bunx expo-modules-autolinking search
 ```
-
-</APIBox>
-<APIBox>
 
 ### `resolve`
 
-Resolving is the second phase based on the results from the `search` command. It resolves each search result to an object with more (platform-specific) details, such as the path to the podspec or **build.gradle** files and module classes to link.
+* Resolving
+  * == second phase -- based on the -- `search` command's results /
+    * resolves EACH search result -- to an -- object / has MORE (platform-specific) details
+  * 's output
+    * object / 
+      * JSON format
+      * contain "modules"
 
-<Terminal cmd={['$ npx expo-modules-autolinking resolve --platform <apple|android>']} />
-
-For example, with the `--platform apple` option it returns an object in JSON format with an array of modules and resolved details for the platform:
-
-```json
-{
-  "modules": [
-    {
-      "packageName": "expo-random",
-      "packageVersion": "13.0.0",
-      "pods": [
-        {
-          "podName": "ExpoRandom",
-          "podspecDir": "/absolute/path/to/node_modules/expo-random/ios"
-        }
-      ],
-      "swiftModuleNames": ["ExpoRandom"],
-      "modules": ["RandomModule"],
-      "appDelegateSubscribers": [],
-      "reactDelegateHandlers": [],
-      "debugOnly": false
-    }
-    // more modules...
-  ]
-}
-```
-
-</APIBox>
-<APIBox>
+  ```bash
+  npx expo-modules-autolinking resolve --platform <apple|android>
+  ---
+  yarn dlx expo-modules-autolinking resolve --platform <apple|android>
+  ---
+  pnpm dlx expo-modules-autolinking resolve --platform <apple|android>
+  ---
+  bunx expo-modules-autolinking resolve --platform <apple|android>
+  ```
 
 ### `verify`
 
-Verifies the search results by checking whether there are no duplicate packages, otherwise an appropriate warning is shown.
+* Verifies the search results
+  * by checking whether there are NO DUPLICATE packages
+    * ⚠️OTHERWISE, an appropriate warning is shown⚠️
 
-<Terminal cmd={['$ npx expo-modules-autolinking verify']} />
-
-</APIBox>
+      ```bash
+      npx expo-modules-autolinking verify
+      ---
+      yarn dlx expo-modules-autolinking verify
+      ---
+      pnpm dlx expo-modules-autolinking verify
+      ---
+      bunx expo-modules-autolinking verify
+      ```
 
 ## Configuration
 
-The behavior of the module resolution can be customized using some configuration options. These options can be defined in three different places, from the lowest to the highest precedence:
+The behavior of the module resolution can be customized using some configuration options
+* These options can be defined in three different places, from the lowest to the highest precedence:
 
 - `expo.autolinking` config object in application's **package.json**
 - per platform overrides with `expo.autolinking.ios` and `expo.autolinking.android` objects
@@ -127,7 +112,8 @@ When used with the CLI, you can pass the search paths as command arguments like 
 
 ### `exclude`
 
-A list of package names to exclude from autolinking. These packages will not be autolinked even if they are found in the search paths.
+A list of package names to exclude from autolinking
+* These packages will not be autolinked even if they are found in the search paths.
 For example, you may want not to link some packages that you don't use on the specific platform to reduce the binary size.
 The following config in **package.json** will exclude `expo-random` from autolinking on Android:
 
@@ -143,7 +129,8 @@ The following config in **package.json** will exclude `expo-random` from autolin
 }
 ```
 
-Note that the `exclude` option is for excluding the autolinking of Expo packages. To exclude the autolinking for any other packages, create **react-native.config.js** at the root directory of your project and apply the configuration as shown in the example below:
+Note that the `exclude` option is for excluding the autolinking of Expo packages
+* To exclude the autolinking for any other packages, create **react-native.config.js** at the root directory of your project and apply the configuration as shown in the example below:
 
 ```js react-native.config.js
 module.exports = {
@@ -162,7 +149,8 @@ module.exports = {
 
 ### `flags`
 
-CocoaPods flags to pass to each autolinked pod. `inhibit_warnings` is likely the only flag most developers want to use, to inhibit Xcode warnings produced when compiling the autolinked modules.
+CocoaPods flags to pass to each autolinked pod
+* `inhibit_warnings` is likely the only flag most developers want to use, to inhibit Xcode warnings produced when compiling the autolinked modules.
 You can refer to the [CocoaPods Podfile documentation](https://guides.cocoapods.org/syntax/podfile.html#pod) for available flags.
 
 <CodeBlocksTable tabs={['Podfile', 'package.json']}>
@@ -197,7 +185,8 @@ use_expo_modules!({
 
 ### How to set up the autolinking in my app?
 
-All projects created with the `npx create-expo-app` command are already configured to use Expo Autolinking. If your project was created using a different tool, see [Installing Expo modules](/bare/installing-expo-modules) to make sure your project includes all necessary changes.
+All projects created with the `npx create-expo-app` command are already configured to use Expo Autolinking
+* If your project was created using a different tool, see [Installing Expo modules](/bare/installing-expo-modules) to make sure your project includes all necessary changes.
 
 ### What do I need to have in my module to make it autolinkable?
 

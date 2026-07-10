@@ -6,9 +6,5 @@ maxHeadingDepth: 5
 
 * [configuration -- with -- app config](../../../workflow/configuration.md)
 
-## Properties
-
-* properties / AVAILABLE | app config's `"expo"` key
-
-TODO: 
-<AppConfigSchemaTable schema={schema} />
+* "app.json"'s `.expo` key
+  * ⭐️[schema](../../../../public/static/schemas/unversioned/app-config-schema.json)⭐️

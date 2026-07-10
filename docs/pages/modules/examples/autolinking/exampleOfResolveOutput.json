@@ -1,0 +1,20 @@
+{
+  "modules": [
+    {
+      "packageName": "expo-random",
+      "packageVersion": "13.0.0",
+      "pods": [
+        {
+          "podName": "ExpoRandom",
+          "podspecDir": "/absolute/path/to/node_modules/expo-random/ios"
+        }
+      ],
+      "swiftModuleNames": ["ExpoRandom"],
+      "modules": ["RandomModule"],
+      "appDelegateSubscribers": [],
+      "reactDelegateHandlers": [],
+      "debugOnly": false
+    }
+    // more modules...
+  ]
+}

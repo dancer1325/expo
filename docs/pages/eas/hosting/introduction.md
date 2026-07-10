@@ -37,38 +37,35 @@ searchRank: 10
 
 ## Why EAS Hosting
 
-TODO:
-Historically, traditional website hosting services were recommended for deploying Expo Router and React apps
-* However, this approach doesn't address the unique challenges of dealing with native apps
-* Here are some key limitations:
-
-- **Version synchronization**: During the app store publishing process, you may need to deploy new versions of your servers.
-
-- **Request routing complexity**: Different versions of your native app may require routing to specific server versions
-* This can create additional complexity when handling requests.
-
-- **Platform-specific analysis**: When running native apps, you need enhanced observability for platform-specific metrics.
+* traditional website hosting services
+  * Historically
+    * recommended -- for -- deploying Expo Router & React apps
+  * ⚠️key limitations⚠️
+    * **Version synchronization**
+      * During the app store publishing process, you may need to deploy new versions of your servers.
+    * **Request routing complexity**
+      * Different versions of your native app may require routing to specific server versions
+      * This can create additional complexity when handling requests.
+    * **Platform-specific analysis**: When running native apps, you need enhanced observability for platform-specific metrics.
 
 EAS Hosting addresses these limitations by providing a unified deployment experience across all platforms.
 
-## When to use EAS Hosting
+## use cases
 
 | Scenario                                                                                                                                                | Recommendation |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| Deploy a web build without setting up a separate hosting provider                                                                                       | <YesIcon />    |
-| Use API routes or server functions in your Expo Router app                                                                                              | <YesIcon />    |
-| Maintain consistent deployment workflows across Android, iOS, and web                                                                                   | <YesIcon />    |
-| Automate deployments using [EAS Workflows](/eas/hosting/workflows/)                                                                                     | <YesIcon />    |
-| Built-in monitoring for server-side code crashes, logs, and requests                                                                                    | <YesIcon />    |
-| Mobile-only project with no web component                                                                                                               | <NoIcon />     |
-| Full Node.js runtime compatibility (EAS Hosting uses [Cloudflare Workers runtime](/eas/hosting/reference/worker-runtime/) with partial Node.js support) | <NoIcon />     |
-| Already have established web infrastructure that meets your needs                                                                                       | <NoIcon />     |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- |----------------|
+| Deploy a web build without setting up a separate hosting provider                                                                                       | ✅              |
+| Use API routes or server functions in your Expo Router app                                                                                              | ✅              |
+| Maintain consistent deployment workflows across Android, iOS, and web                                                                                   | ✅              |
+| Automate deployments using [EAS Workflows](/eas/hosting/workflows/)                                                                                     | ✅              |
+| Built-in monitoring for server-side code crashes, logs, and requests                                                                                    | ✅              |
+| Mobile-only project with no web component                                                                                                               | ❌              |
+| Full Node.js runtime compatibility (EAS Hosting uses [Cloudflare Workers runtime](/eas/hosting/reference/worker-runtime/) with partial Node.js support) | ❌              |
+| Already have established web infrastructure that meets your needs                                                                                       | ❌              |
 
 ## Frequently asked questions (FAQ)
 
-<FAQ>
-
-<Collapsible summary="What web output modes can I use with EAS Hosting?">
+### What web output modes can I use with EAS Hosting?
 
 EAS Hosting supports all three output modes configured in your app config's `expo.web.output`:
 
@@ -76,42 +73,33 @@ EAS Hosting supports all three output modes configured in your app config's `exp
 - `static`: Exports your Expo app to a [statically generated web app](/router/web/static-rendering/)
 - `server`: Supports [server functions](/guides/server-components/#react-server-functions) and [API routes](/router/web/api-routes/) as well as static pages
 
-</Collapsible>
-
-<Collapsible summary="Can I use API routes with EAS Hosting?">
+### Can I use API routes with EAS Hosting?
 
 EAS Hosting fully supports [API routes](/router/web/api-routes/) (files ending with **+api.ts**) when using the `server` output mode
 * You can monitor crashes, logs, and requests from your API routes in the [EAS dashboard](/eas/hosting/api-routes/).
 
-</Collapsible>
+### What runtime does EAS Hosting use?
 
-<Collapsible summary="What runtime does EAS Hosting use?">
+* EAS Hosting
+  * 💡is built | [Cloudflare Workers](https://developers.cloudflare.com/workers/)💡
+    * == runs | V8 JS engine 
+      * ❌!=FULL Node.js processes❌
+      * [Node.js compatible modules](reference/worker-runtime.md)
 
-EAS Hosting is built on [Cloudflare Workers](https://developers.cloudflare.com/workers/), which runs on the V8 JavaScript engine
-* It uses V8 isolates instead of full Node.js processes
-* Node.js compatibility modules are available but with some limitations
-* See the [worker runtime reference](/eas/hosting/reference/worker-runtime/) for the full list of supported modules.
-
-</Collapsible>
-
-<Collapsible summary="Can I set up a custom domain for my production deployment?">
+### Can I set up a custom domain for my production deployment?
 
 [Custom domains](/eas/hosting/custom-domain/) are available on paid plans
 * Each project can have one custom domain assigned to the production deployment
 * Both apex domains and subdomains are supported.
 
-</Collapsible>
-
-<Collapsible summary="How can I create deployment aliases?">
+### How can I create deployment aliases?
 
 EAS Hosting deployments are immutable
 * Each deployment gets a unique preview URL
 * You can create [aliases](/eas/hosting/deployments-and-aliases/) to assign custom names to deployments (such as `staging` or `production`)
 * Since deployments are immutable, you can instantly roll back by reassigning an alias to a previous deployment ID using `eas deploy:alias --prod --id=<deploymentId>`.
 
-</Collapsible>
-
-<Collapsible summary="What monitoring capabilities are available in EAS Hosting?">
+### What monitoring capabilities are available in EAS Hosting?
 
 EAS Hosting provides built-in monitoring in the [EAS dashboard](/eas/hosting/api-routes/):
 
@@ -119,17 +107,13 @@ EAS Hosting provides built-in monitoring in the [EAS dashboard](/eas/hosting/api
 - **Logs**: All `console.log`, `console.info`, and `console.error` output from API routes
 - **Requests**: Request metadata including status, browser, region, and duration
 
-</Collapsible>
-
-<Collapsible summary="How can I configure caching in EAS Hosting?">
+### How can I configure caching in EAS Hosting?
 
 API routes can return `Cache-Control` directives that EAS Hosting uses to cache responses on its global CDN (Content Delivery Network)
 * Static assets are cached with a default browser cache time of 3600 seconds
 * See the [Caching](/eas/hosting/reference/caching/) reference for details.
 
-</Collapsible>
-
-<Collapsible summary="Can I use EAS Hosting with EAS Workflows?">
+### Can I use EAS Hosting with EAS Workflows?
 
 EAS Hosting integrates with [EAS Workflows](/eas/workflows/get-started/) using the `deploy` job type
 * You can add a deploy job to your workflow configuration
@@ -155,10 +139,6 @@ jobs:
 ```
 
 For more information, see the [Web deployments with EAS Workflows](/eas/hosting/workflows/).
-
-</Collapsible>
-
-</FAQ>
 
 ## Get started
 

@@ -1,0 +1,14 @@
+{
+  "expo-random": {
+    "path": "/absolute/path/to/node_modules/expo-random",
+    "version": "13.0.0",
+    "config": {
+      // Contents of `expo-module.config.json`
+      "platforms": ["ios", "android"],
+      "ios": { "modules": ["RandomModule"] },
+      "android": { "modules": ["expo.modules.random.RandomModule"] }
+    },
+    "duplicates": [] // An array of other revisions (with lower precedence) of the same module
+  }
+  // more modules...
+}
