@@ -1,0 +1,21 @@
+name: Build with different profiles
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  build_android_development:
+    name: Build Android Development
+    type: build
+    params:
+      platform: android
+      profile: development
+
+  build_android_production:
+    name: Build Android Production
+    type: build
+    params:
+      platform: android
+      profile: production
+

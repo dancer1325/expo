@@ -1,0 +1,15 @@
+name: Register iOS device and notify Slack
+
+jobs:
+  register_device:
+    type: apple-device-registration-request
+    params:
+      apple_team_identifier: XX33YYZ44Z
+  notify_slack:
+    needs: [register_device]
+    type: slack
+    environment: production
+    params:
+      webhook_url: ${{ env.SLACK_WEBHOOK_URL }}
+      message: 'Registered device ${{ needs.register_device.outputs.identifier }} (${{ needs.register_device.outputs.model }})'
+

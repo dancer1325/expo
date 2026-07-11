@@ -1,0 +1,17 @@
+name: Build with environment variables
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  build_android:
+    name: Build Android
+    type: build
+    env:
+      APP_ENV: production
+      API_URL: https://api.example.com
+    params:
+      platform: android
+      profile: production
+

@@ -14,14 +14,20 @@ description: EAS Build is a hosted service for building app binaries for your Ex
         * Expo projects
         * React Native projects
         * native projects
-      * if you want -> ALSO can sign the app
-        * -> ready to publish | Google Play Store or Apple App Store
+      * if you want -> 
+        * ALSO can sign the app
+          * -> ready to publish | Google Play Store or Apple App Store
+        * can be [auto-submitted | app stores -- via -- `--auto-submit` + EAS Submit](automate-submissions)
       * | consistent environments
+      * -- based on -- [build profiles](eas-json.md#build-profiles)
     * makes easier
       * sharing builds -- thanks to -- [internal distribution](internal-distribution.md) 
     * -> ❌NO require❌
       * install Android Studio OR Xcode
-  * integrated -- with -- [EAS Submit](../submit)
+  * integrated -- with -- 
+    * [EAS Submit](../submit)
+    * [EAS Workflows](../eas/workflows/get-started)
+    * [CI pipelines](building-on-ci)
   * FIRST-class support -- for -- [`expo-updates` library](updates.md)
 
 ## Quick start
@@ -39,13 +45,8 @@ description: EAS Build is a hosted service for building app binaries for your Ex
 
 TODO: 
 
-- Automatically provision and manage app signing credentials or use your own
-- Share [internal distribution](/build/internal-distribution/) builds with a URL
-- Automate builds with [build profiles](/build/eas-json/#build-profiles) in **eas.json** (named sets of build settings) and integrations with [EAS Workflows](/eas/workflows/get-started/) or [CI pipelines](/build/building-on-ci/)
-- Auto-submit successful builds to app stores via [`--auto-submit`](/build/automate-submissions/) and EAS Submit
-- First-class [`expo-updates` integration](/build/updates/) with per-profile channels and [runtime version](/eas-update/runtime-versions/) guidance
 - Reuse [development builds](/develop/development-builds/introduction/) across your team
-* When two team members run `eas build:dev` and the project fingerprint matches, the existing build is downloaded from EAS instead of creating a new one
+  * When two team members run `eas build:dev` and the project fingerprint matches, the existing build is downloaded from EAS instead of creating a new one
 - Faster builds via [dependency caching and custom cache paths](/build-reference/caching/)
 - Install builds and updates on devices with [Expo Orbit](https://expo.dev/orbit)
 

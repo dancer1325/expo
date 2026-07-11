@@ -1,0 +1,12 @@
+name: Get Simulator Build
+
+jobs:
+  get_build:
+    name: Get Simulator Build
+    type: get-build
+    params:
+      platform: ios
+      simulator: true
+      profile: development
+      wait_for_in_progress: true
+

@@ -1,0 +1,17 @@
+jobs:
+  web_preview:
+    name: Deploy Web Preview
+    type: deploy
+
+  require_approval:
+    name: Deploy Web to Production?
+    needs: [web_preview]
+    type: require-approval
+
+  web_production:
+    name: Deploy Web Production
+    needs: [require_approval]
+    type: deploy
+    params:
+      prod: true
+

@@ -1,0 +1,10 @@
+name: Basic Fingerprint
+
+jobs:
+  fingerprint:
+    name: Calculate Fingerprint
+    type: fingerprint
+    # @info Match your build profile's environment #
+    environment: production
+    # @end #
+

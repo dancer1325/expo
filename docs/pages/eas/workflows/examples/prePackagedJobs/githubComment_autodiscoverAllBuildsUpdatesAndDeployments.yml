@@ -1,0 +1,14 @@
+name: PR Auto Comment
+
+on:
+  pull_request: {}
+
+jobs:
+  # ...
+
+  comment_on_pr:
+    name: Post Results to PR
+    after: [build_ios, build_android, publish_update, deploy]
+    type: github-comment
+    # No params needed - auto-discovers all builds, updates, and deployments
+

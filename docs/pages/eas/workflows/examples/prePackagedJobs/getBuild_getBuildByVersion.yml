@@ -1,0 +1,12 @@
+name: Get Build by Version
+
+jobs:
+  get_build:
+    name: Get Specific Version Build
+    type: get-build
+    params:
+      platform: android
+      app_identifier: com.example.app
+      app_version: 1.0.0
+      app_build_version: 42
+

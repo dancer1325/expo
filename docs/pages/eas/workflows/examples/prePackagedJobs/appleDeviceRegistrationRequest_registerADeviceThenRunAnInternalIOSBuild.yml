@@ -1,0 +1,15 @@
+name: Register device and build iOS internal
+
+jobs:
+  register_device:
+    type: apple-device-registration-request
+    params:
+      apple_team_identifier: ABCDE12345
+  build_ios:
+    needs: [register_device]
+    type: build
+    params:
+      platform: ios
+      profile: preview
+      refresh_ad_hoc_provisioning_profile: true
+

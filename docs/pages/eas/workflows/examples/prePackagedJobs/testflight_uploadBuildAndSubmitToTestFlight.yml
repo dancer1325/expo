@@ -1,0 +1,13 @@
+jobs:
+  testflight_distribution:
+    type: testflight
+    runs_on: string # optional - see https://docs.expo.dev/build-reference/infrastructure/ for available options
+    params:
+      build_id: string # required
+      profile: string # optional - default: production
+      internal_groups: string[] # optional
+      external_groups: string[] # optional
+      changelog: string # optional
+      submit_beta_review: boolean # optional
+      wait_processing_timeout_seconds: number # optional - default: 1800 (30 minutes)
+

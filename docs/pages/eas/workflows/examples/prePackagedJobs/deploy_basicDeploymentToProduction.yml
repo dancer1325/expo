@@ -1,0 +1,9 @@
+name: Basic Deployment
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    type: deploy
+    params:
+      prod: true
+

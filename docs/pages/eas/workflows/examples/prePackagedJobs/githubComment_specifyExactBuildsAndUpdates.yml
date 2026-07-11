@@ -1,0 +1,20 @@
+name: PR Specific Builds
+
+on:
+  pull_request: {}
+
+jobs:
+  # ...
+
+  comment_update:
+    name: Post Update to PR
+    after: [build_ios, build_android, publish_update]
+    type: github-comment
+    params:
+      message: 'Testing builds ready for QA review'
+      build_ids:
+        - ${{ after.build_ios.outputs.build_id }}
+        - ${{ after.build_android.outputs.build_id }}
+      update_group_ids:
+        - ${{ after.publish_update.outputs.first_update_group_id }}
+

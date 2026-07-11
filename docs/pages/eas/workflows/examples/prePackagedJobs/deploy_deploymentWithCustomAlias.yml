@@ -1,0 +1,10 @@
+name: Deployment with Alias
+
+jobs:
+  deploy:
+    name: Deploy with Alias
+    type: deploy
+    params:
+      alias: my-custom-alias
+      prod: true
+

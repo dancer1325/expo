@@ -7,16 +7,14 @@ description: Learn how to use EAS Workflows to automate your development and rel
 * EAS Workflows 
   * RIGHT now,
     * in preview
-      * == breaking changes can happen
+      * == breaking changes cana happen
+
+* [video](https://www.youtube.com/watch?v=OJ2u9tQCpr4)
+  * TODO:
+
+### EAS workflows vs other CI services?
 
 TODO: 
-Builds, submissions, updates, and more are all a part of delivering your app to users
-* EAS Workflows consist of a sequence of jobs, which help you and your team get things done
-* With workflows, you can build your project, run end-to-end tests, submit that build to the app stores, and then run custom scripts after the submission is complete
-* Since each job can have prerequisites and conditionals, you can automate your and your team's release process.
-
-<Collapsible summary="How do workflows compare to other CI services?">
-
 EAS Workflows are designed to help you and your team release your app
 * It comes preconfigured with pre-packaged job types that can build, submit, update, run Maestro tests, and more
 * All job types run on EAS, so you'll only have to manage one set of YAML files, and all the artifacts from your job runs will appear on [expo.dev](https://expo.dev/).
@@ -28,29 +26,29 @@ Other CI services, like CircleCI and GitHub Actions, are more generalized and ha
 
 EAS Workflows are great for operations related to your Expo apps, while other CICD services will provide a better experience for other types of workflows.
 
-</Collapsible>
-
 ## Set up your project
 
 If you haven't already, you'll need to create a project and sync it with EAS:
 
-<Collapsible summary="Create a project and sync it with EAS">
-  You can create a new project with the following command:
+### Create a project and sync it with EAS
 
-{' '}
+You can create a new project with the following command:
 
-<Terminal cmd={['$ npx create-expo-app@latest']} />
+```bash
+npx create-expo-app@latest
+```
 
 Once you've created the project, login with your account:
 
-{' '}
-
-<Terminal cmd={['$ npx eas-cli@latest login']} />
+```bash
+npx eas-cli@latest login
+```
 
 Finally, link the project you have locally with EAS:
 
-  <Terminal cmd={['$ npx eas-cli@latest init']} />
-</Collapsible>
+```bash
+npx eas-cli@latest init
+```
 
 Then, create a directory named **.eas/workflows** at the root of your project with a **.yaml** file inside of it
 * For example: **.eas/workflows/hello-world.yaml**.

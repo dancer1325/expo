@@ -1,0 +1,40 @@
+name: Rich Build Notification
+
+jobs:
+  build_android:
+    name: Build Android
+    type: build
+    params:
+      platform: android
+      profile: production
+
+  notify_build:
+    name: Notify Build Status
+    needs: [build_android]
+    type: slack
+    environment: production
+    params:
+      webhook_url: ${{ env.SLACK_WEBHOOK_URL }}
+      payload:
+        blocks:
+          - type: header
+            text:
+              type: plain_text
+              text: 'Build Completed'
+          - type: section
+            fields:
+              - type: mrkdwn
+                text: "*App:*\n${{ needs.build_android.outputs.app_identifier }}"
+              - type: mrkdwn
+                text: "*Version:*\n${{ needs.build_android.outputs.app_version }}"
+          - type: section
+            fields:
+              - type: mrkdwn
+                text: "*Build ID:*\n${{ needs.build_android.outputs.build_id }}"
+              - type: mrkdwn
+                text: "*Platform:*\n${{ needs.build_android.outputs.platform }}"
+          - type: section
+            text:
+              type: mrkdwn
+              text: 'Distribution: ${{ needs.build_android.outputs.distribution }}'
+

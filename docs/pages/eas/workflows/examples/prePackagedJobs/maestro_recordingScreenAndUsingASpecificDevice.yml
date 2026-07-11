@@ -1,0 +1,13 @@
+name: Pixel E2E Test
+
+jobs:
+  test:
+    name: Run Maestro Tests
+    type: maestro
+    runs_on: linux-large-nested-virtualization
+    params:
+      build_id: ${{ needs.build_android_emulator.outputs.build_id }}
+      device_identifier: 'pixel_6'
+      record_screen: true
+      android_system_image_package: 'system-images;android-35;default;x86_64'
+

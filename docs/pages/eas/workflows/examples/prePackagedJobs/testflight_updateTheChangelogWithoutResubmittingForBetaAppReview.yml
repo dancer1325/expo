@@ -1,0 +1,23 @@
+name: Update TestFlight changelog
+
+on:
+  workflow_dispatch:
+    inputs:
+      asc_build_id:
+        type: string
+        required: true
+        description: The App Store Connect build ID to update.
+      changelog:
+        type: string
+        required: true
+        description: The new "What to Test" notes.
+
+jobs:
+  update_changelog:
+    name: Update changelog
+    type: testflight
+    params:
+      asc_build_id: ${{ inputs.asc_build_id }}
+      changelog: ${{ inputs.changelog }}
+      submit_beta_review: false
+

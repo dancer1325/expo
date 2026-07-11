@@ -1,0 +1,15 @@
+name: Maestro Hooks
+
+jobs:
+  test:
+    name: Run Maestro Tests
+    type: maestro
+    environment: preview
+    params:
+      build_id: ${{ needs.build_ios_simulator.outputs.build_id }}
+      flow_path: ./maestro_tests
+    hooks:
+      before_maestro_tests:
+        - name: Generate Maestro flows
+          run: npx tsx scripts/generate-maestro-tests.ts
+

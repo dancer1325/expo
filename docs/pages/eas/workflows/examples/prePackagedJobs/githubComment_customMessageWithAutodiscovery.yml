@@ -1,0 +1,16 @@
+name: PR Custom Message
+
+on:
+  pull_request: {}
+
+jobs:
+  # ...
+
+  comment_on_pr:
+    name: Post Build to PR
+    after: [build_ios, build_android, publish_update, deploy]
+    type: github-comment
+    params:
+      message: '🎉 Preview builds are ready! Please test these changes before approving the PR.'
+      # build_ids, update_group_ids, and deployment_ids are undefined, so auto-discovery is enabled
+

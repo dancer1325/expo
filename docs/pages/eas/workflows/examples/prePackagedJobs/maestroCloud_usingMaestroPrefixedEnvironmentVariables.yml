@@ -1,0 +1,13 @@
+name: Basic Maestro Test
+
+jobs:
+  test:
+    name: Run Maestro Tests
+    type: maestro-cloud
+    env:
+      MAESTRO_APP_ID: 'com.yourhost.yourapp'
+    params:
+      build_id: ${{ needs.build_ios_simulator.outputs.build_id }}
+      maestro_project_id: proj_01jw6hxgmdffrbye9fqn0pyzm0
+      flows: ./maestro/flows
+

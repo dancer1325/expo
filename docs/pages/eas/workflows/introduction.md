@@ -7,21 +7,51 @@ hasVideoLink: true
 
 * **EAS Workflows**
   * == EAS' CI/CD service/
-    * TODO: lets teams automate repeated tasks such as building Android and iOS binaries, publishing over-the-air updates, submitting to app stores, running E2E tests with Maestro, and deploying web apps to EAS Hosting.
+    * allow
+      * 👀AUTOMATE REPEATED tasks👀 
+        * _Examples:_ 
+          * build Android and iOS binaries
+          * publishing over-the-air updates
+          * submitting | app stores
+          * running E2E tests -- with -- Maestro
+          * deploying web apps | EAS Hosting
+      * FASTER iteration
+        * == [Fingerprint](pre-packaged-jobs.md#fingerprint) + [Get Build](pre-packaged-jobs.md#get-build) + [Update jobs](pre-packaged-jobs.md#update)
+        * | when it's POSSIBLE, avoid 
+          * redundant native builds
+          * publish OTA (over-the-air) updates 
+      * Slack notification
+        * if workflows run successfully OR fail -> send notifications -- to -- Slack channels
+      * repack
+        * == reuse an EXISTING build's metadata & JS bundle -- to -- create a compatible build faster
+    * run | managed cloud environments 
+      * -- with -- [pre-packaged job types](pre-packaged-jobs.md)
+      * == ❌NO require to manage infrastructure❌
+    * ALL build artifacts + updates + logs appear | EAS dashboard
+    * integrated -- with -- Github
+      * _Example:_ trigger AUTOMATICALLY workflows |
+        * push 
+        * PR
+        * label
+        * ref deletion events / branch & path filtering
+  * if the EAS project is linked to GitHub -> teams can trigger workflows -- from --
+    * GitHub events (push, pull request, labels) OR
+    * schedules (cron) OR
+    * run them MANUALLY -- via the -- EAS CLI
 
-Automate builds for the app stores, run tests, send updates, and more with CI/CD Workflows.
+* workflow
+  * == sequence of jobS /
+    * / EACH job, there are
+      * prerequisites
+      * conditionals
+  * == ".yaml" | root of your project's ".eas/workflows/" /
+    * contain
+      * `name`
+      * triggers (`on`)
+        * OPTIONAL
+      * \>=1 `jobs` / run | cloud
 
-EAS Workflows run in managed cloud environments with pre-packaged job types designed specifically for mobile app development
-* When your EAS project is linked to GitHub, teams can trigger workflows from GitHub events (push, pull request, labels) or schedules (cron), or run them manually via the EAS CLI.
-
-* video
-  * TODO: 
-<VideoBoxLink
-  videoId="OJ2u9tQCpr4"
-  title="Watch: Get Started with EAS Workflows"
-  description="Learn how to automate some of the most common processes that every app development team must tackle: creating development builds, publishing preview updates, and deploying to production."
-/>
-
+TODO: 
 Blazing fast M4 Pro powered workers
 Pre-packaged CI job configurations
 Instant CI jobs, automatic caching, and repacked builds
@@ -31,98 +61,111 @@ Integrations with GitHub and other CI tools
 
 * requirements
   * [install EAS CLI](../cli.md#installation)
-
-* Workflows 
-  * == YAML files | root of your project's ".eas/workflows/" /
-    * contain
-      * `name`
-      * triggers (`on`)
-        * OPTIONAL
-      * \>=1 `jobs` / run | cloud
-
+  
 * steps
   * `eas workflow:run .eas/workflows/your-workflow.yml`
-
-## Key features
-
-- **Pre-packaged for React Native/Expo**: Comes with ready-to-use job types (`build`, `submit`, `update`, `maestro`, `deploy`, and more) that abstract away implementation complexity
-- **No infrastructure to manage**: Runs on EAS with macOS and Linux workers, so you don't need to maintain CI servers or configure Android Studio/Xcode
-- **Unified artifact management**: All build artifacts, updates, and logs appear on EAS dashboard
-- **GitHub integration**: Trigger workflows automatically on push, pull request, label, or ref deletion events with branch and path filtering
-- **Faster iteration**: Combine Fingerprint, Get Build, and Update jobs to avoid redundant native builds and publish OTA (over-the-air) updates when possible
-- **E2E testing built-in**: Run Maestro tests on Android emulators and iOS simulators directly in workflows
-- **Slack notifications**: Send notifications to Slack channels when workflows run successfully or fail
-- **Repack**: Reuse an existing build's metadata and JavaScript bundle to create a compatible build faster
 
 ## Workflow trigger types
 
 ### Push workflows
 
-Run when commits are pushed to matching branches or tags. Supports branch, tag, and path filtering with glob patterns.
+* trigger
+  * | push commits -- to -- matching branches OR tags
+* support -- with -- glob patterns
+  * branch
+  * tag
+  * path filtering 
 
 ### Ref delete workflows
 
-Run when GitHub branches or tags are deleted. Supports branch and tag filtering with glob patterns. Useful for cleaning up EAS Update branches that share names with Git branches.
-
-See [`on.ref_delete` syntax reference](/eas/workflows/syntax/#onref_delete).
+* | delete GitHub branches OR tags
+* support -- with -- glob patterns
+  * branch
+  * tag
+  * path filtering
+* uses
+  * clean up EAS Update branches / share names -- with -- Git branches
+* [`on.ref_delete` syntax](syntax.md#onref_delete)
 
 ### Pull request workflows
 
-Run when pull requests are opened, updated, or labeled. Useful for preview builds and automated testing before merge.
+* trigger
+  * | open PR
+  * | update PR
+  * | label PR
+* uses
+  * BEFORE merge, 
+    * preview builds
+    * automated testing 
 
 ### Scheduled workflows
 
-Run on a cron schedule (for example, nightly builds or weekly regression tests). Scheduled workflows run on the default branch only.
+* ONLY run | 
+  * default branch
+  * cron schedule 
+    * _Example:_ nightly builds OR weekly regression tests
 
-### Manual workflows
+### MANUAL workflows
 
-Run on-demand using `eas workflow:run` command. Supports parameterized inputs for flexible execution.
+* run on-demand | use `eas workflow:run`
+* support
+  * parameterized inputs
+    * Reason:🧠-- for -- flexible execution🧠
 
 ### App Store Connect workflows
 
-Run when selected App Store Connect events occur (for example app version state changes, build upload states, external beta states, or beta feedback events).
+* run | occur selected App Store Connect events
+  * _Example:_ change the 
+    * app version state
+    * build upload states
+    * external beta states
+    * beta feedback events
 
-To use App Store Connect triggers, configure an App Store Connect connection in the EAS dashboard: **[Project settings > General > Connections](https://expo.dev/accounts/[account]/projects/[project]/settings)**.
+* steps to use App Store Connect | EAS dashboard
+  * [Project settings > General > Connections](https://expo.dev/accounts/[account]/projects/[project]/settings)
 
-See [`on.app_store_connect` syntax reference](/eas/workflows/syntax/#onapp_store_connect) for configuration details and supported values.
+* [`on.app_store_connect` syntax](syntax.md#onapp_store_connect)
 
-## When to use EAS Workflows
+## use case
 
-| Scenario                                                                           | Recommendation |
-| ---------------------------------------------------------------------------------- | -------------- |
-| Automate Android and iOS builds for your Expo and React Native apps                | <YesIcon />    |
-| Submit builds to App Store and Google Play automatically                           | <YesIcon />    |
-| Publish over-the-air updates on every commit or merge                              | <YesIcon />    |
-| Run E2E tests with Maestro as part of CI                                           | <YesIcon />    |
-| Trigger builds and updates from GitHub push or pull request events                 | <YesIcon />    |
-| Deploy web apps to EAS Hosting                                                     | <YesIcon />    |
-| Use fingerprint-based logic to skip redundant native builds                        | <YesIcon />    |
-| CI/CD without managing your own infrastructure or macOS machines                   | <YesIcon />    |
-| Highly customized pipelines with non-EAS services (such as Docker, custom runners) | <NoIcon />     |
-| Matrix builds with multiple configuration variations in parallel                   | <NoIcon />     |
-| CI/CD for non-React Native projects                                                | <NoIcon />     |
+| Scenario                                                                              | Recommendation        |
+|---------------------------------------------------------------------------------------|-----------------------|
+| Automate Android & iOS builds -- for -- your Expo & React Native apps                 | ✅                     |
+| Submit builds AUTOMATICALLY \| App Store & Google Play                                | ✅                     |
+| Publish over-the-air updates \| every commit OR merge                                 | ✅    |
+| Run E2E tests with Maestro -- as part of -- CI                                        | ✅                     |
+| Trigger builds & updates -- from -- GitHub push OR PR events                          | ✅                     |
+| Deploy web apps \| EAS Hosting                                                        | ✅                     |
+| Use fingerprint-based logic -- to -- skip redundant native builds                     | ✅                     |
+| CI/CD WITHOUT managing your OWN infrastructure OR macOS machines                      | ✅                     |
+| Highly customized pipelines with non-EAS services (_Example:_ Docker, custom runners) | ❌                     |
+| Matrix builds -- with -- MULTIPLE configuration variations \| parallel                | ❌                     |
+| CI/CD for non-React Native projects                                                   | ❌                     |
 
 ## Frequently asked questions (FAQ)
 
-<FAQ>
+### vs CI services?
 
-<Collapsible summary="How do workflows compare to other CI services?" open>
+* All job types run on EAS, so you'll only have to manage one set of YAML files, and all the artifacts 
+from your job runs will appear on [expo.dev](https://expo.dev/).
 
-EAS Workflows are designed to help you and your team release your app. It comes preconfigured with pre-packaged job types that can build, submit, update, run Maestro tests, and more. All job types run on EAS, so you'll only have to manage one set of YAML files, and all the artifacts from your job runs will appear on [expo.dev](https://expo.dev/).
+Other CI services, like CircleCI and GitHub Actions, are more generalized and have the ability to do more than workflows
+* However, those services also require you to understand more about the implementation of each job
+* While that is necessary in some cases, workflows help you get common tasks done quickly by pre-packaging 
+the most essential types of jobs for app developers
+* In addition, workflows are designed to provide you with the fastest possible cloud machine for the task at hand, and
+we're constantly updating those for you.
 
-Other CI services, like CircleCI and GitHub Actions, are more generalized and have the ability to do more than workflows. However, those services also require you to understand more about the implementation of each job. While that is necessary in some cases, workflows help you get common tasks done quickly by pre-packaging the most essential types of jobs for app developers. In addition, workflows are designed to provide you with the fastest possible cloud machine for the task at hand, and we're constantly updating those for you.
+EAS Workflows are great for operations related to your Expo apps, while other CI/CD services will provide a better experience 
+for other types of workflows.
 
-EAS Workflows are great for operations related to your Expo apps, while other CI/CD services will provide a better experience for other types of workflows.
+### Can I trigger a workflow without GitHub?
 
-</Collapsible>
+* Yes
+* Any workflow can be run manually using `eas workflow:run` regardless of the `on` trigger configuration
+* You can also use scheduled triggers with cron syntax.
 
-<Collapsible summary="Can I trigger a workflow without GitHub?">
-
-Yes. Any workflow can be run manually using `eas workflow:run` regardless of the `on` trigger configuration. You can also use scheduled triggers with cron syntax.
-
-</Collapsible>
-
-<Collapsible summary="What cloud machines do workflows run on?">
+### What cloud machines do workflows run on?
 
 Workflows run on EAS's managed infrastructure:
 
@@ -130,85 +173,39 @@ Workflows run on EAS's managed infrastructure:
 - **Linux with nested virtualization** for Android emulators: `linux-medium-nested-virtualization` or `linux-large-nested-virtualization`
 - **macOS workers** for iOS builds and simulators: `macos-medium` (5 cores, 20 GB RAM) or `macos-large` (10 cores, 40 GB RAM)
 
-</Collapsible>
+### Can workflows run jobs in parallel?
 
-<Collapsible summary="Can workflows run jobs in parallel?">
+* Yes
+* Jobs without dependencies run in parallel by default.
 
-Yes. Jobs without dependencies run in parallel by default.
+Use `needs` to specify that a job should wait for another job to succeed, or 
+`after` to wait for a job to complete regardless of success or failure.
 
-Use `needs` to specify that a job should wait for another job to succeed, or `after` to wait for a job to complete regardless of success or failure.
+### Can I use environment variables in workflows?
 
-</Collapsible>
+* Yes
+* Workflows support [EAS environment variables](/eas/environment-variables/) and inline `env` values
+* Environment variables can be referenced using `${{ env.VARIABLE_NAME }}` syntax.
 
-<Collapsible summary="Can I use environment variables in workflows?">
+### What are the current limitations?
 
-Yes. Workflows support [EAS environment variables](/eas/environment-variables/) and inline `env` values. Environment variables can be referenced using `${{ env.VARIABLE_NAME }}` syntax.
+No shared workflow configurations (each workflow must be defined independently), and no matrix builds 
+(cannot run multiple variations with different configurations in parallel)
+* See [Limitations](/eas/workflows/limitations) for more details and updates.
 
-</Collapsible>
+### Can I run custom scripts in a workflow?
 
-<Collapsible summary="What are the current limitations?">
+* Yes
+* [Custom jobs](/eas/workflows/syntax/#custom-jobs) with `steps` let you run shell commands, 
+use built-in functions like `eas/checkout` and `eas/install_node_modules`, and
+set outputs for downstream jobs.
 
-No shared workflow configurations (each workflow must be defined independently), and no matrix builds (cannot run multiple variations with different configurations in parallel). See [Limitations](/eas/workflows/limitations) for more details and updates.
+### Does EAS Workflows work -- with -- EXISTING React Native projects?
 
-</Collapsible>
-
-<Collapsible summary="Can I run custom scripts in a workflow?">
-
-Yes. [Custom jobs](/eas/workflows/syntax/#custom-jobs) with `steps` let you run shell commands, use built-in functions like `eas/checkout` and `eas/install_node_modules`, and set outputs for downstream jobs.
-
-</Collapsible>
-
-<Collapsible summary="Does EAS Workflows work with existing React Native projects?">
-
-Yes. EAS Workflows works with both [CNG (Continuous Native Generation)](/workflow/continuous-native-generation/) and [existing React Native projects](/bare/overview), as long as the project is configured for EAS Build.
-
-</Collapsible>
-
-<Collapsible summary="Considering EAS Workflows? Share the following slide in your next team meeting">
-Share the following slide in your next team meeting to discuss what EAS Workflows are and how they can help your team:
-
-<DownloadSlide
-  title="EAS Workflows CI/CD sync slide"
-  description="Learn the benefits of using EAS Workflows to automate your CI/CD processes."
-  imageUrl="/static/images/eas-workflows/eas-worfklows-slide.png"
-/>
-</Collapsible>
-
-</FAQ>
-
-## Get started
-
-<BoxLink
-  title="Create your first workflow"
-  description="Learn how to create and run your first workflow."
-  href="/eas/workflows/get-started"
-  Icon={Dataflow03Icon}
-/>
-
-<BoxLink
-  title="Pre-packaged jobs"
-  description="Use ready-to-use jobs to build, submit, update, test, and deploy your app."
-  href="/eas/workflows/pre-packaged-jobs"
-  Icon={Dataflow03Icon}
-/>
-
-<BoxLink
-  title="Workflow syntax reference"
-  description="Learn about the YAML syntax for defining workflows."
-  href="/eas/workflows/syntax"
-  Icon={Dataflow03Icon}
-/>
-
-<BoxLink
-  title="Example workflows"
-  description="See common workflows for development builds, preview updates, and production deployments."
-  href="/eas/workflows/examples/introduction"
-  Icon={Dataflow03Icon}
-/>
-
-<BoxLink
-  title="Workflows insights"
-  description="Track run counts, success rates, and trends for your workflows over time."
-  href="/eas-insights/workflows/"
-  Icon={Dataflow03Icon}
-/>
+* Yes
+* EAS Workflows 
+  * ⚠️requirements to use | project⚠️
+    * configure -- for -- EAS Build
+  * works -- with --
+    * [CNG](../../workflow/continuous-native-generation.md)
+    * [EXISTING React Native projects](../../bare/overview)  

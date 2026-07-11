@@ -1,0 +1,21 @@
+name: Platform-specific Updates
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  update_android:
+    name: Update Android
+    type: update
+    params:
+      platform: android
+      channel: production
+
+  update_ios:
+    name: Update iOS
+    type: update
+    params:
+      platform: ios
+      channel: production
+

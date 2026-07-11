@@ -1,0 +1,13 @@
+name: Deploy
+
+on:
+  push:
+    branches: ['*']
+
+jobs:
+  deploy:
+    name: Deploy
+    type: deploy
+    params:
+      prod: ${{ github.ref_name == 'main' }}
+

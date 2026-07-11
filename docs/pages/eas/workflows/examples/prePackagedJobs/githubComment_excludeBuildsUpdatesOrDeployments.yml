@@ -1,0 +1,18 @@
+name: PR Updates Only
+
+on:
+  pull_request: {}
+
+jobs:
+  # ...
+
+  comment_updates_only:
+    name: Post Updates Only
+    after: [publish_update]
+    type: github-comment
+    params:
+      message: 'New update available for testing!'
+      build_ids: [] # Empty array excludes all builds
+      deployment_ids: [] # Empty array excludes all deployments
+      # update_group_ids undefined = auto-discover updates
+

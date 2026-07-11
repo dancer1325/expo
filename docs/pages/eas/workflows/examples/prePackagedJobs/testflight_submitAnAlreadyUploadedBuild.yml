@@ -1,0 +1,10 @@
+jobs:
+  testflight_distribution:
+    type: testflight
+    params:
+      asc_build_id: string # required
+      internal_groups: string[]
+      external_groups: string[]
+      changelog: string
+      submit_beta_review: boolean
+

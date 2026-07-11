@@ -1,0 +1,13 @@
+name: Fingerprint with Environment Variables
+
+jobs:
+  fingerprint:
+    name: Calculate Fingerprint
+    type: fingerprint
+    environment: production
+    # Resulting environment will be a union of the "production" environment and the inline environment variables.
+    # `env` variables override environment variables of the same name from the "production" environment.
+    env:
+      APP_VARIANT: staging
+      API_URL: https://api.staging.example.com
+

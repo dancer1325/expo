@@ -1,0 +1,30 @@
+jobs:
+  build_ios:
+    name: Build iOS
+    type: build
+    params:
+      platform: ios
+      profile: production
+
+  submit:
+    name: Submit to App Store
+    type: submit
+    needs: [build_ios]
+    params:
+      build_id: ${{ needs.build_ios.outputs.build_id }}
+      profile: production
+
+  next_steps:
+    name: Next Steps
+    needs: [submit]
+    type: doc
+    params:
+      md: |
+        # To do next
+
+        Your app has just been sent to [App Store Connect](https://appstoreconnect.apple.com/apps).
+
+        1. Download the app from TestFlight.
+        2. Test the app a bunch.
+        3. Submit the app for review.
+

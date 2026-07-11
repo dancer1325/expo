@@ -1,0 +1,14 @@
+name: Branch-based Updates
+
+on:
+  push:
+    branches: ['main', 'staging']
+
+jobs:
+  update_branch:
+    name: Update Branch
+    type: update
+    params:
+      branch: ${{ github.ref_name }}
+      message: 'Update for branch: ${{ github.ref_name }}'
+

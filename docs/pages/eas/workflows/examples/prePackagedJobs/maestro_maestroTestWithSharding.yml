@@ -1,0 +1,14 @@
+name: Sharded Maestro Test
+
+jobs:
+  test:
+    name: Run Sharded Maestro Tests
+    type: maestro
+    environment: preview
+    runs_on: linux-large-nested-virtualization
+    params:
+      build_id: ${{ needs.build_android_emulator.outputs.build_id }}
+      flow_path: ./maestro/flows
+      shards: 3
+      retries: 2
+
