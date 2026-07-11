@@ -1,0 +1,27 @@
+{
+  "cli": {
+    "version": /* @info Required EAS CLI version range. */"SEMVER_RANGE"/* @end */,
+    "requireCommit": /* @info If true, ensures that all changes are committed before a build. Defaults to false. */boolean/* @end */
+  },
+  "build": {
+    // EAS Build configuration
+    /* @hide ... */ /* @end */
+  }
+  "submit": {
+    /* @info any arbitrary name - used as an identifier */"SUBMIT_PROFILE_NAME_1"/* @end */: {
+      "android": {
+        /* @info Android-specific configuration */...ANDROID_OPTIONS/* @end */
+      },
+      "ios": {
+        /* @info iOS-specific configuration */...IOS_OPTIONS/* @end */
+      }
+    },
+    /* @info any arbitrary name - used as an identifier */"SUBMIT_PROFILE_NAME_2"/* @end */: {
+      "extends": "SUBMIT_PROFILE_NAME_1",
+      "android": {
+        /* @info Android-specific configuration */...ANDROID_OPTIONS/* @end */
+      }
+    },
+    /* @hide ... */ /* @end */
+  }
+}

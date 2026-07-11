@@ -5,7 +5,7 @@
 
 * **eas.json**
   * == EAS configuration file
-    * -- for -- CLI & services
+    * -- for -- EAS CLI & EAS services
       * generated | run [`eas build:configure` command](../build/setup.md#configure-the-project) for the FIRST time | your project
       * located | root of your project
     * ⭐️[schema](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)⭐️
@@ -17,7 +17,7 @@
 * [introduction](../build/introduction)
 * `.build` key
   * == EAS Build configuration
-  * AVAILABLE properties
+  * ⭐️[schema](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)'s `Build`⭐️
   * default one
 
     ```json eas.json
@@ -38,27 +38,32 @@
 
 ### Common properties for native platforms
 
-* TODO:
-<EasJsonPropertiesTable schema={commonSchema} />
+* `.build` key
+  * ⭐️[schema](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)'s `Build`⭐️
 
 ### Android-specific options
 
-<EasJsonPropertiesTable schema={androidSchema} />
+* `.build[*].android` key
+  * ⭐️[schema](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)'s `BuildProfileAndroid`⭐️
+
 
 ### iOS-specific options
 
-<EasJsonPropertiesTable schema={iosSchema} />
+* `.build[*].ios` key
+  * ⭐️[schema](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)'s `BuildProfileIos`⭐️
 
 ## EAS Submit
 
 * [introduction](../submit/introduction)
-* `submit` key
-  * AVAILABLE properties
+* `.submit` key
+  * ⭐️[schema](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)'s `Submit`⭐️
 
 ### Android-specific options
 
-<EasJsonPropertiesTable schema={submitAndroidSchema} />
+* `.submit[*].android` key
+⭐️[schema](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)'s `SubmitProfileAndroid`⭐️
 
 ### iOS-specific options
 
-<EasJsonPropertiesTable schema={submitIosSchema} />
+* `.submit[*].ios` key
+⭐️[schema](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)'s `SubmitProfileIos`⭐️

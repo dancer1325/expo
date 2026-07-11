@@ -16,6 +16,7 @@ description: EAS Build is a hosted service for building app binaries for your Ex
         * native projects
       * if you want -> ALSO can sign the app
         * -> ready to publish | Google Play Store or Apple App Store
+      * | consistent environments
     * makes easier
       * sharing builds -- thanks to -- [internal distribution](internal-distribution.md) 
     * -> ❌NO require❌
@@ -37,7 +38,7 @@ description: EAS Build is a hosted service for building app binaries for your Ex
 ## Key features
 
 TODO: 
-- Cloud builds for Android and iOS with consistent environments
+
 - Automatically provision and manage app signing credentials or use your own
 - Share [internal distribution](/build/internal-distribution/) builds with a URL
 - Automate builds with [build profiles](/build/eas-json/#build-profiles) in **eas.json** (named sets of build settings) and integrations with [EAS Workflows](/eas/workflows/get-started/) or [CI pipelines](/build/building-on-ci/)
@@ -119,47 +120,3 @@ EAS Build supports [builds from GitHub](/build/building-from-github/) and [build
 
 Android builds run on Linux runners hosted in Google Cloud Platform, and iOS builds run on macOS runners hosted in Expo's macOS cloud
 * See [Build server infrastructure](/build-reference/infrastructure/).
-
-## Get started
-
-<BoxLink
-  title="Create your first build"
-  description="It should only take a few minutes in total to get up and running for iOS and/or Android."
-  href="/build/setup"
-  Icon={Cube01Icon}
-/>
-
-<BoxLink
-  title="Share your apps with internal testers"
-  description="EAS Build can help share preview builds of your app with a single URL."
-  href="/build/internal-distribution"
-  Icon={Cube01Icon}
-/>
-
-<BoxLink
-  title="Automate submissions"
-  description="Learn how EAS Build can take your successful builds and handle uploading them to app stores automatically."
-  href="/build/automate-submissions"
-  Icon={Cube01Icon}
-/>
-
-<BoxLink
-  title="App version management"
-  description="Automate version bumps so you never have to think about them again."
-  href="/build-reference/app-versions"
-  Icon={Cube01Icon}
-/>
-
-<BoxLink
-  title="Run builds locally or on your own infrastructure"
-  description="EAS Build is a hosted service, and it can also run on your own machine, for example, to debug or to comply with company security policies."
-  href="/build-reference/local-builds"
-  Icon={Cube01Icon}
-/>
-
-<BoxLink
-  title="Limitations"
-  description="EAS Build is new and rapidly evolving, so we recommend getting familiar with the current limitations."
-  href="/build-reference/limitations"
-  Icon={Cube01Icon}
-/>

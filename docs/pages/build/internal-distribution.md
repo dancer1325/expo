@@ -3,25 +3,35 @@ title: Internal distribution
 description: Learn how EAS Build provides shareable URLs for your builds with your team for internal distribution.
 ---
 
-* Setting up an internal distribution build only takes a few minutes with EAS Build and 
-provides a streamlined way to share your app with your team and other testers for feedback
-* It does this by providing a URL that allows them to install the app directly to their device
-* If you are not sure yet if you want to use this approach and want to learn about all of the options available 
-for distributing your app internally, refer to the [overview of distribution apps for review](/review/overview/) guide.
+* goal
+  * how to share your builds -- via -- EAS Build
+
+* internal distribution build
+  * == EAS's feature /
+    * set it up in few minutes
+    * allow
+      * share your app -- , through generated URL, with -- your team & other testers /
+        * install the app
+          * | Android, 
+            * -- as -- installable APK
+          * | iOS, 
+            * -- as -- ad hoc provisioned app 
+
+* 👀[ways to distribute the app internally](../review/overview.md)👀
 
 ## Using internal distribution
 
+TODO: 
 To configure a build profile for internal distribution, set `"distribution": "internal"` on it
-* When you set this configuration, it has the following effects on the build profile:
-
-- **Android**: The default behavior for the `gradleCommand` will change to generate an APK instead of an AAB
-* If you have specified a custom `gradleCommand`, then make sure that it [produces an APK](/build-reference/apk/#configuring-a-profile-to-build-apks), or it won't be directly installable on an Android device
-* Additionally, EAS Build will generate a new Android keystore for signing the APK, or it will use an existing one if the package name is the same as your [development build](/develop/development-builds/introduction/).
-- **iOS**: Builds using this profile will use either [ad hoc or enterprise provisioning](#overview-of-distribution-mechanisms)
-* When using ad hoc provisioning, EAS Build will generate a provisioning profile containing an allow-list of device UDIDs, and only those devices in the list at build time will be able to install it
-* You can add a device by running `eas device:create` and creating a new build.
-- By default, internal distribution build URLs are available to anybody with the URL, and each is identified by a 32 character UUID
-* If you would like to require sign-in to an authorized Expo account to access these builds, you can disable the **Unauthenticated access to internal builds** option in your [project settings](https://expo.dev/accounts/[account]/projects/[project]/settings).
+* -> | build profile
+  - **Android**: The default behavior for the `gradleCommand` will change to generate an APK instead of an AAB
+    * If you have specified a custom `gradleCommand`, then make sure that it [produces an APK](/build-reference/apk/#configuring-a-profile-to-build-apks), or it won't be directly installable on an Android device
+    * Additionally, EAS Build will generate a new Android keystore for signing the APK, or it will use an existing one if the package name is the same as your [development build](/develop/development-builds/introduction/).
+  - **iOS**: Builds using this profile will use either [ad hoc or enterprise provisioning](#overview-of-distribution-mechanisms)
+    * When using ad hoc provisioning, EAS Build will generate a provisioning profile containing an allow-list of device UDIDs, and only those devices in the list at build time will be able to install it
+    * You can add a device by running `eas device:create` and creating a new build.
+  - By default, internal distribution build URLs are available to anybody with the URL, and each is identified by a 32 character UUID
+    * If you would like to require sign-in to an authorized Expo account to access these builds, you can disable the **Unauthenticated access to internal builds** option in your [project settings](https://expo.dev/accounts/[account]/projects/[project]/settings).
 
 See the tutorial on Internal distribution with EAS Build below for more information on how to configure, create, and install a build:
 
@@ -110,15 +120,13 @@ Devices added via the website URL/QR code will default to displaying their UDID 
 
 The following are the different mechanisms for distributing your app to devices supported by internal distribution.
 
-<Collapsible summary="Android: Build and distribute an APK">
+### Android: Build and distribute an APK
 
 To share your app to Android devices, you must build an APK (Android application package file) of your project
 * APKs can be installed directly to an Android device over USB, by downloading the file over the web or through an email or chat app, once the user accepts the security warning for installing an app that has not gone through Play Store review
 * AAB (Android app bundle) binaries of your app must be distributed through the Play Store.
 
-</Collapsible>
-
-<Collapsible summary="iOS: Ad Hoc distribution">
+### iOS: Ad Hoc distribution
 
 Apple offers [ad hoc provisioning profiles](https://help.apple.com/xcode/mac/current/#/dev7ccaf4d3c) to distribute your app to test devices once they have been registered
 to your Apple Developer account
@@ -130,14 +138,10 @@ You will need to know the UDID (Unique Device Identifier) of each device that wi
 Setting up Ad Hoc certificates correctly can be intimidating if you haven't done it before and tedious even if you have
 * If you're using [EAS Build](#internal-distribution-with-eas-build), which is optimized for Expo and React Native projects, we'll handle the time-consuming parts of setting up Ad Hoc credentials for you.
 
-</Collapsible>
-
-<Collapsible summary="iOS: Enterprise distribution">
+### iOS: Enterprise distribution
 
 If your app is only intended for internal use by employees of a large organization and cannot be distributed through the App Store, you should use Enterprise distribution
 * Unlike with Ad Hoc Distribution, the number of devices that can install your app is unlimited, and you do not need to manage each device's UDID
 * Often these apps will be distributed to end users through a mobile device management (MDM) solution
 * Enterprise Distribution requires membership in the [Apple Developer Enterprise Program](https://developer.apple.com/programs/enterprise/)
 * Organizations joining the Enterprise Program must meet additional requirements beyond what is required for App Store distribution.
-
-</Collapsible>
