@@ -11,11 +11,9 @@ platforms: ['android', 'ios', 'tvos']
   * == library / 
     * enables creating a development build
     * includes useful development tools
-      * [support for network debugging](../../../debugging/tools.mdx/#inspecting-network-requests)
-      * [support for launching updates](../../../eas-update/expo-dev-client.mdx) (_Example:_ [PR previews](../../../develop/development-builds/development-workflows.mdx#pr-previews))
+      * [support for network debugging](../../../debugging/tools.md#inspecting-network-requests-expo-only)
+      * [support for launching updates](../../../eas-update/expo-dev-client.mdx) (_Example:_ [PR previews](../../../develop/development-builds/development-workflows.md#pr-previews))
       * default in-app development tools UI / provided by React Native -- are replaced with -- [in-app UI](../../../debugging/tools.md/#developer-menu)
-
-* 💡[development builds](/develop/development-builds/introduction/) := debug builds / include `expo-dev-client` 💡 
 
 ## Installation
 
@@ -25,7 +23,8 @@ platforms: ['android', 'ios', 'tvos']
 If you are installing this in an [existing React Native app](/bare/overview/), start by installing [`expo`](/bare/installing-expo-modules/) in your project.
 Then, follow the instructions from [Install `expo-dev-client` in an existing React Native project](/bare/install-dev-builds-in-bare/).
 
-When you create a build with EAS Build, set `developmentClient` to `true` on a build profile in your **eas.json**. Without it, EAS Build produces a standalone build with no development tools. For example:
+* When you create a build with EAS Build, set `developmentClient` to `true` on a build profile in your **eas.json**
+Without it, EAS Build produces a standalone build with no development tools. For example:
 
 ```json eas.json
 {
@@ -40,13 +39,15 @@ When you create a build with EAS Build, set `developmentClient` to `true` on a b
 }
 ```
 
-For more information, see the [`developmentClient` property in the eas.json reference](/eas/json/#developmentclient).
+* [`developmentClient` property | "eas.json"](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)
 
 
-## Configuration in app.json/app.config.js
+## configuration | "app.json" OR "app.config.js"
 
-You can configure development client launcher using its built-in [config plugin](/config-plugins/introduction/) if you use config plugins in your project ([EAS Build](/build/introduction) or `npx expo run:[android|ios]`).
-The plugin allows you to configure various properties that cannot be set at runtime and require building a new app binary to take effect.
+You can configure development client launcher using its built-in [config plugin](../config-plugins/introduction/) 
+if you use config plugins in your project ([EAS Build](/build/introduction) or `npx expo run:[android|ios]`).
+The plugin allows you to configure various properties that cannot be set at runtime and 
+require building a new app binary to take effect.
 
 <ConfigPluginExample>
 

@@ -7,8 +7,6 @@ sidebar_title: Introduction
 * goal
   * config plugin
 
-## What is a config plugin
-
 * Config plugin
   * == automatic setup or system for 
     * extending the [app config](../workflow/configuration)
@@ -30,7 +28,7 @@ sidebar_title: Introduction
         * == generate **android/** and **ios/** directories
         * 👀if you MANUALLY modify them -> they can NO longer be safely regenerated WITHOUT potentially overwriting manual modifications 👀
 
-## Use a config plugin
+## how to use a config plugin?
 
 * come -- from -- Node.js modules
   * -> installation == install COMMON packages | your project

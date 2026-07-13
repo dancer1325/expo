@@ -54,9 +54,9 @@ description: Learn about what app.json/app.config.js/app.config.ts files are and
 
 ## Dynamic configuration
 
-* use **app.config.js** or **app.config.ts**
+* == 💡use **app.config.js** or **app.config.ts**💡
 * properties
-  - Comments, variables, and single quotes.
+  - TODO: Comments, variables, and single quotes.
   - ESM import syntax (== `import` keyword)
     - requirements
       - use [TypeScript with `ts-node`](../guides/typescript.mdx#appconfigjs)  

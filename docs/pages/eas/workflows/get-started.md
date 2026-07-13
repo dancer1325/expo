@@ -114,32 +114,3 @@ Alternatively, you can trigger a workflow manually by running the following comm
 <Terminal cmd={['$ npx eas-cli@latest workflow:run .eas/workflows/<your-workflow-file>.yaml']} />
 
 Once you do, you can see your workflow running on your project's [workflows page](https://expo.dev/accounts/[account]/projects/[projectName]/workflows).
-
-## Building blocks
-
-Learn more about the building blocks of workflows:
-
-<BoxLink
-  title="Triggers"
-  description="Learn how to trigger workflows."
-  href="/eas-workflows/triggers"
-  Icon={BookOpen02Icon}
-/>
-<BoxLink
-  title="Jobs"
-  description="Learn which pre-packaged and custom jobs you can run with EAS Workflows."
-  href="/eas-workflows/jobs"
-  Icon={BookOpen02Icon}
-/>
-<BoxLink
-  title="Control flow"
-  description="Learn how to control the flow of your workflows with conditions that run certain jobs based on the result of previous jobs."
-  href="/eas-workflows/control-flow"
-  Icon={BookOpen02Icon}
-/>
-<BoxLink
-  title="Variables"
-  description="Learn how to use variables in your workflows."
-  href="/eas-workflows/variables"
-  Icon={BookOpen02Icon}
-/>

@@ -61,9 +61,9 @@
 ### Android-specific options
 
 * `.submit[*].android` key
-⭐️[schema](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)'s `SubmitProfileAndroid`⭐️
+  * ⭐️[schema](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)'s `SubmitProfileAndroid`⭐️
 
 ### iOS-specific options
 
 * `.submit[*].ios` key
-⭐️[schema](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)'s `SubmitProfileIos`⭐️
+  * ⭐️[schema](https://github.com/dancer1325/eas-cli/blob/main/packages/eas-json/schema/eas.schema.json)'s `SubmitProfileIos`⭐️

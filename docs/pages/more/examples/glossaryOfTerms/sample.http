@@ -1,0 +1,24 @@
+### 1. Development server
+### 1.1 GET manifest
+GET http://localhost:8081
+
+### 1.2 for Expo Go
+GET http://localhost:8081/
+expo-platform: ios
+Accept: multipart/mixed
+
+### 1.3 classic
+GET http://localhost:8081/
+expo-platform: android
+Accept: application/expo+json
+
+
+### 1.4 manifest
+# curl -H "expo-platform: ios" http://localhost:8081/manifest
+GET http://localhost:8081/manifest
+expo-platform: ios
+
+### 1.5
+GET http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true
+
+###

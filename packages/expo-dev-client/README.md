@@ -8,7 +8,7 @@
 </p>
 
 * `expo-dev-client`
-  * 👀adds VARIOUS development tools -- to -- your debug builds 👀
+  * 👀adds VARIOUS development tools | your debug builds 👀
     * configurable launcher UI /
       * allows
         * launching updates (_Example:_ from [PR previews](https://docs.expo.dev/develop/development-builds/development-workflows#pr-previews))

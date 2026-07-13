@@ -5,8 +5,7 @@
   * := CL tool / 
     * 👀primary interface between a developer -- & -- OTHER Expo tools 👀
 
-* `expo` package
-  * see [coreConcepts](../core-concepts.md)
+* [`expo` package](../core-concepts.md)
 
 ## Highlights
 

@@ -8,7 +8,13 @@ searchPosition: 999
 
 ## Introduction
 
-This is the specification for Expo Updates, a protocol for delivering updates to Expo apps running on multiple platforms.
+* goal
+  * Expo Updates specification
+
+* Expo Updates
+  * == protocol /
+    * deliver updates -- to -- Expo apps
+    * run | >1 platforms
 
 ### Conformance
 
@@ -20,20 +26,24 @@ A conforming implementation of this protocol MAY provide additional functionalit
 
 ### Overview
 
-Conforming servers and client libraries MUST follow the HTTP spec as described in [RFC 7231](https://tools.ietf.org/html/rfc7231) as well as the more precise guidance described in this spec.
+* _update_ 
+  * == [_manifest_](#manifest-body) + assets / referenced | manifest
 
-- An _update_ is defined as a [_manifest_](#manifest-body) together with the assets referenced inside the manifest.
-- A [_directive_](#directive-body) is defined as a message from the server that instructs clients to perform an action.
+* [_directive_](#directive-body) 
+  * == server's message /
+    * instructs clients -- to -- perform an action
 
-Expo Updates is a protocol for assembling and delivering updates and directives to clients.
+* audience
+  * EAS
+  * organizations / wish to manage their OWN update server / satisfy internal requirements
 
-The primary audiences of this spec are Expo Application Services and organizations that wish to manage their own update server to satisfy internal requirements.
+## Expo Updates Client
 
-## Client
+* [source code](../../../packages/expo-updates)
 
-> See the [reference client library](https://github.com/expo/expo/tree/main/packages/expo-updates).
-
-An app running a conformant Expo Updates client library MUST load the most recent _update_ saved in the client library's update database, possibly after filtering by the contents of the update's manifest [_metadata_](#manifest-body).
+TODO:
+An app running a conformant Expo Updates client library MUST load the most recent _update_ saved | client library's update database
+possibly after filtering by the contents of the update's manifest [_metadata_](#manifest-body).
 
 The following describes how a conformant Expo Updates client library MUST retrieve a new update from a conformant server:
 

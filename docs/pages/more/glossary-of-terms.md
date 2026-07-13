@@ -62,12 +62,10 @@ Expo projects should extend the default Babel preset [`babel-preset-expo`](https
 
 * ⚠️[Deprecated](../more/release-statuses.md#deprecated)⚠️
 * ❌NO separation BETWEEN "managed" & "bare" workflows❌
-  * == ALL projects use the SAME architecture -- based on -- Continuous Native Generation (CNG)
-* if you need native access -> run `npx expo prebuild` -> generate native directories
 
 * := approach / native projects (**android/** and **ios/**) are
   * versioned | Git
-  * maintained manually
+  * maintained MANUALLY
 * uses
   * "bare" React Native apps / you MANUALLY make changes | native projects
     * pros
@@ -77,7 +75,8 @@ Expo projects should extend the default Babel preset [`babel-preset-expo`](https
 * != approach / use [app config & prebuild](../workflow/continuous-native-generation.md)
   * -> native projects are
     * NOT versioned
-    * generated on demand -- via -- `npx expo prebuild`, which is the [recommended approach](../workflow/continuous-native-generation.md#prebuild)
+    * generated on demand -- via -- [`npx expo prebuild`](../workflow/continuous-native-generation.md#prebuild)
+    * ALL projects use -- , based on Continuous Native Generation (CNG), -- the SAME architecture 
 
 ### Bun
 
@@ -167,7 +166,7 @@ Config [modifiers](#config-mods) that apply unstable changes to a native project
 * := server / started locally
   * -- via -- `npx expo start` from [Expo CLI](#expo-cli)
   * typically hosted | `http://localhost:8081`
-  * hosts a [manifest](#expo-manifest) | `/` 
+  * hosts a [manifest](#expo-manifest) | `/`
     * used by the client -- to request, from the bundler, the -- JS bundle 
 
 ### Expo Application Services (EAS)
@@ -328,10 +327,11 @@ A collection of [npm](#npm) packages containing [native modules](#native-module)
 * [Learn more](/bare/installing-expo-modules/).
 - All packages are [open source](https://github.com/expo/expo/tree/main/packages) and can be freely customized.
 
-### Expo start
+### Expo start -- `npx expo start` --
 
-Refers to the command `npx expo start` from [Expo CLI](#expo-cli)
-* This command is used to start a local [development server](#development-server) that a [client](#expo-client) connects to interact with the [Metro bundler](#metro-bundler).
+* == command / 
+  * start a local [development server](#development-server) /
+    * [client](#expo-client) connects it -- to interact with the -- [Metro bundler](#metro-bundler)
 
 ### Fabric
 
@@ -403,15 +403,17 @@ Formerly Facebook, Meta is the group that develops [React Native](#react-native)
 
 ### Metro bundler
 
-The bundler used for converting JavaScript files and assets into a format that runs on a [native runtime](#native-runtime)
-* This bundler is maintained by [Meta](#meta) and used for React Native (including web) apps
-* For more information, see [Metro documentation](https://metrobundler.dev/).
+* == bundler /
+  * convert JS files & assets -- into a -- format / runs | [native runtime](#native-runtime)
+  * [MORE](https://metrobundler.dev/)
 
 ### Metro config
 
-The **metro.config.js** file used to configure [Metro bundler](#metro-bundler)
-* This should extend the package `@expo/metro-config` when using [Expo CLI](#expo-cli)
-* For more information, see [Customizing Metro](/guides/customizing-metro).
+* == "metro.config.js" /
+  * uses
+    * configure [Metro bundler](#metro-bundler)
+  * | use [Expo CLI](#expo-cli), extend the package "@expo/metro-config" 
+  * [how to customize Metro](../guides/customizing-metro)
 
 ### Monorepo
 

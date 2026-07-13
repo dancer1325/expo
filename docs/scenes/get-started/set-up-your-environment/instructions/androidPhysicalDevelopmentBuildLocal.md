@@ -1,18 +1,17 @@
-## Set up an Android device -- with a -- development build
-
-<BuildEnvironmentSwitch />
-
-<AndroidStudioEnvironmentInstructions />
-
-<AndroidStudioInstructions />
+# Set up: Android device + development build
 
 ## Running your app | Android device
 
 ### Install expo-dev-client
 
-* `npx expo install expo-dev-client`
+```
+npx expo install expo-dev-client
+yarn expo install expo-dev-client
+pnpm expo install expo-dev-client
+bun expo install expo-dev-client
+```
 
-### Enable debugging over USB | your device
+### Enable debugging | USB | your device
 
 * allows
   * installing your app
@@ -20,7 +19,7 @@
   * **Settings** > **About phone** > **Software information** > enable "Developer options"
   * **Settings** > **Developer options** > enable "USB debugging
 
-### Plug in your device via USB
+### Plug in your device -- via -- USB
 
 * plug in your Android device -- via USB, to your -- computer
 * `adb devices` | your terminal
@@ -29,6 +28,13 @@
 
 ### Run your app
 
-* `npx expo run:android`
-  * build your app & run a development server
-    * if you want to skip running development server -> run `npx expo start` | next page ❓
+```bash
+npx expo run:android
+yarn expo run:android 
+pnpm expo run:android
+bun expo run:android
+```
+
+* build your app & run a development server
+
+* if you want to skip running development server -> run `npx expo start` OR `yarn expo start` OR `pnpm expo start` OR `bun expo start`  

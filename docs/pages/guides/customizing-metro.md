@@ -5,36 +5,36 @@ maxHeadingDepth: 4
 description: Learn about different Metro bundler configurations that can be customized.
 ---
 
-Expo CLI uses [Metro](https://metrobundler.dev/) during [`npx expo start`](/more/expo-cli/#develop) and [`npx expo export`](/more/expo-cli/#exporting) to bundle your JavaScript code and assets
-* Metro is built and optimized for React Native and used for large-scale applications such as Facebook and Instagram.
+* [Metro](https://metrobundler.dev/)
+  * uses
+    * by [`npx expo start`](../more/expo-cli.md#develop) & [`npx expo export`](../more/expo-cli.md#exporting) -- to -- bundle your JS code & assets
+  * use cases
+    * large-scale applications
+      * _Examples:_ Facebook and Instagram
+  * built & optimized -- for -- React Native 
 
 ## Customizing
 
-You can customize the Metro bundler by creating a **metro.config.js** file at the root of your project
-* This file should export a [Metro configuration](https://metrobundler.dev/docs/configuration/) that extends [`expo/metro-config`](https://github.com/expo/expo/tree/main/packages/@expo/metro-config)
-* Import `expo/metro-config` instead of `@expo/metro-config` to ensure version consistency.
+* steps
+  * | root of your project, create a "metro.config.js" /  
+    * should export a [Metro configuration](https://metrobundler.dev/docs/configuration/) / extends [`expo/metro-config`](../../../packages/@expo/metro-config)
+      * ❌NOT import `@expo/metro-config`❌ 
+        * Reason:🧠ensure version consistency🧠
+    * ways to create the skeleton
+      * MANUALLY
+      * `npx expo customize metro.config.js`
 
-Run the following command to generate the template file:
-
-<Terminal cmd={['$ npx expo customize metro.config.js']} />
-
-The **metro.config.js** file looks as below:
-
-```js metro.config.js
-const { getDefaultConfig } = require('expo/metro-config');
-
-const config = getDefaultConfig(__dirname);
-
-module.exports = config;
-```
-
-See [**metro.config.js** documentation](https://metrobundler.dev/docs/configuration/) for more information.
+* ["metro.config.js" documentation](https://metrobundler.dev/docs/configuration/)
 
 ## Assets
 
-Metro resolves files as either source code or assets
-* Source code is JavaScript, TypeScript, JSON, and other files used by your application
-* [Assets](/develop/user-interface/assets/) are images, fonts, and other files that should not be transformed by Metro
+* Metro
+  * resolves files 
+    * source code
+      * == files / used -- by -- your application
+        * _Examples:_ JS, TS, JSON, ...
+    * [assets](../develop/user-interface/assets) 
+  * [Assets](/) are images, fonts, and other files that should not be transformed by Metro
 * To accommodate large-scale codebases, Metro requires all extensions for both source code and assets to be explicitly defined before starting the bundler
 * This is done by adding the `resolver.sourceExts` and `resolver.assetExts` options to the Metro configuration
 * By default, the following extensions are included:

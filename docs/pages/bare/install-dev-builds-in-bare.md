@@ -4,121 +4,88 @@ sidebar_title: Install expo-dev-client
 description: Learn how to install and configure expo-dev-client in your existing React Native project.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
+* goal
+  * how to install & configure `expo-dev-client`
 
-The following guide explains how to install and configure `expo-dev-client` in an existing React Native project.
+### | create a NEW project
 
-<Collapsible summary="Do you need to create a new project?">
+```bash
+npx create-expo-app -e with-dev-client
+---
+yarn create expo-app -e with-dev-client
+---
+pnpm create expo-app -e with-dev-client
+---
+bun create expo -e with-dev-client
+```
 
-If you're starting with a new project, create it using the `with-dev-client` template:
+### | project / use CNG
 
-<Terminal
-  cmd={{
-    npm: ['$ npx create-expo-app -e with-dev-client'],
-    yarn: ['$ yarn create expo-app -e with-dev-client'],
-    pnpm: ['$ pnpm create expo-app -e with-dev-client'],
-    bun: ['$ bun create expo -e with-dev-client'],
-  }}
-/>
+* [here](../develop/development-builds/create-a-build)
 
-</Collapsible>
+### | existing React Native project / WITHOUT CNG
 
-<Collapsible summary="Do you use Continuous Native Generation (CNG) in your project?">
+* requirements
+  * install & configure the expo package
 
-To use `expo-dev-client` in a project that uses [CNG](/workflow/continuous-native-generation/), see [Create a development build](/develop/development-builds/create-a-build/).
+#### 1. Install expo-dev-client
 
-</Collapsible>
+```bash
+npx expo install expo-dev-client
+---
+yarn expo install expo-dev-client
+---
+pnpm expo install expo-dev-client
+---
+bun expo install expo-dev-client
+```
 
-<Prerequisites>
-  <Requirement title="Install and configure the expo package">
-    If you created your project with `npx @react-native-community/cli@latest init` and do not have
-    any other Expo libraries installed, you will need to [install Expo
-    modules](/bare/installing-expo-modules) before proceeding.
-  </Requirement>
-</Prerequisites>
+* if your project has an "ios/" -> run
 
-<Step label="1">
+  ```bash
+  npx pod-install
+  ---
+  yarn dlx pod-install
+  ---
+  pnpm dlx pod-install
+  ---
+  bunx pod-install
+  ```
 
-## Install expo-dev-client
+#### 2. Configure deep links
 
-Add the `expo-dev-client` library to your **package.json**:
+* deep link
+  * uses
+    * Expo CLI use it -- to -- launch your project
+  * use cases
+    * [you want to launch preview updates -- via -- `expo-dev-client`](../eas-update/getting-started)
+    * you have NOT configured your app's `scheme` / support deep linking -> use [`uri-scheme` library](https://www.npmjs.com/package/uri-scheme)
 
-<Terminal
-  cmd={{
-    npm: ['$ npx expo install expo-dev-client'],
-    yarn: ['$ yarn expo install expo-dev-client'],
-    pnpm: ['$ pnpm expo install expo-dev-client'],
-    bun: ['$ bun expo install expo-dev-client'],
-  }}
-/>
+    ```bash
+    # List your project's schemes
+    npx uri-scheme list
+    # Add a scheme to your project
+    npx uri-scheme add your-scheme
+    ---
+    # List your project's schemes
+    yarn dlx uri-scheme list
+    # Add a scheme to your project
+    yarn dlx uri-scheme add your-scheme
+    ---
+    # List your project's schemes
+    pnpm dlx uri-scheme list
+    # Add a scheme to your project
+    pnpm dlx uri-scheme add your-scheme
+    ---
+    # List your project's schemes
+    bunx uri-scheme list
+    # Add a scheme to your project
+    bunx uri-scheme add your-scheme
+    ```
 
-If your project has an **ios** directory on disk, run the following command to fully install the native code for `expo-dev-client`:
+#### 3. Build & install the app
 
-<Terminal
-  cmd={{
-    npm: ['$ npx pod-install'],
-    yarn: ['$ yarn dlx pod-install'],
-    pnpm: ['$ pnpm dlx pod-install'],
-    bun: ['$ bunx pod-install'],
-  }}
-/>
-
-If your project doesn't have an **ios** directory, you can skip this step.
-
-</Step>
-
-<Step label="2">
-
-## Configure deep links
-
-Expo CLI uses a deep link to launch your project, and it's also useful if you use plan to [use `expo-dev-client` for launching preview updates](/eas-update/getting-started/) if you have added a custom deep link scheme to your project.
-
-If you haven't configured a `scheme` for your app yet to support deep linking, then use `uri-scheme` library to do this for you.
-
-<Terminal
-  cmd={{
-    npm: [
-      "# List your project's schemes",
-      '$ npx uri-scheme list',
-      '',
-      '# Add a scheme to your project',
-      '$ npx uri-scheme add your-scheme',
-    ],
-    yarn: [
-      "# List your project's schemes",
-      '$ yarn dlx uri-scheme list',
-      '',
-      '# Add a scheme to your project',
-      '$ yarn dlx uri-scheme add your-scheme',
-    ],
-    pnpm: [
-      "# List your project's schemes",
-      '$ pnpm dlx uri-scheme list',
-      '',
-      '# Add a scheme to your project',
-      '$ pnpm dlx uri-scheme add your-scheme',
-    ],
-    bun: [
-      "# List your project's schemes",
-      '$ bunx uri-scheme list',
-      '',
-      '# Add a scheme to your project',
-      '$ bunx uri-scheme add your-scheme',
-    ],
-  }}
-/>
-
-For more information, see the [`uri-scheme` library](https://www.npmjs.com/package/uri-scheme).
-
-</Step>
-
-<Step label="3">
-
-## Build and install the app
-
-Create a debug build of your app using the tools of your choice. For example, you can do this [locally with Expo CLI](/guides/local-app-development/) or [in the cloud with EAS Build](/develop/development-builds/create-a-build/).
-
-</Step>
+* == create a debug build of your app -- via -- your chosen tools
+  * _Examples:_
+    * [locally -- via -- Expo CLI](../guides/local-app-development.md)
+    * [| cloud, -- via -- EAS Build](../develop/development-builds/create-a-build)

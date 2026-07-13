@@ -4,13 +4,13 @@
 
 ## Android
 
-| Device   | Mode              | Build Environment  | Instructions                                                                                    |
-|----------|-------------------|--------------------|-------------------------------------------------------------------------------------------------|
-| Physical | Expo Go           | —                  | [androidPhysicalExpoGo](instructions/androidPhysicalExpoGo.md)                                  |
-| Physical | Development Build | EAS (cloud)        | [androidPhysicalDevelopmentBuild](instructions/androidPhysicalDevelopmentBuild.md)              |
-| Physical | Development Build | Local              | [androidPhysicalDevelopmentBuildLocal](instructions/androidPhysicalDevelopmentBuildLocal.md)    |
-| Emulator | Expo Go           | —                  | [androidSimulatedExpoGo](instructions/androidSimulatedExpoGo.mdx)                               |
-| Emulator | Development Build | EAS (cloud)        | [androidSimulatedDevelopmentBuild](instructions/androidSimulatedDevelopmentBuild.mdx)           |
+| Device   | Mode              | Build Environment  | Instructions                                                                                   |
+|----------|-------------------|--------------------|------------------------------------------------------------------------------------------------|
+| Physical | Expo Go           | —                  | [androidPhysicalExpoGo](instructions/androidPhysicalExpoGo.md)                                 |
+| Physical | Development Build | EAS (cloud)        | [androidPhysicalDevelopmentBuild](instructions/androidPhysicalDevelopmentBuild.md)             |
+| Physical | Development Build | Local              | [androidPhysicalDevelopmentBuildLocal](instructions/androidPhysicalDevelopmentBuildLocal.md)   |
+| Emulator | Expo Go           | —                  | [androidSimulatedExpoGo](instructions/androidSimulatedExpoGo.md)                               |
+| Emulator | Development Build | EAS (cloud)        | [androidSimulatedDevelopmentBuild](instructions/androidSimulatedDevelopmentBuild.mdx)          |
 | Emulator | Development Build | Local              | [androidSimulatedDevelopmentBuildLocal](instructions/androidSimulatedDevelopmentBuildLocal.mdx) |
 
 ## iOS

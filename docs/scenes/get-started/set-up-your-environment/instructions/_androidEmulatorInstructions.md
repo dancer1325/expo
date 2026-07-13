@@ -1,6 +1,3 @@
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Step } from '~/ui/components/Step';
-
 ## Set up an emulator
 
 * | Android Studio main screen,
