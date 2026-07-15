@@ -6,14 +6,18 @@ packageName: 'expo-auth-session'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ConfigReactNative } from '~/ui/components/ConfigSection';
-import { Terminal } from '~/ui/components/Snippet';
+* `AuthSession`
+  * enables
+    * | your app, web browser-based authentication 
+      * _Example:_ browser-based OAuth flows
+      * -- by using -- [WebBrowser](webbrowser.md) & [Crypto](crypto.md)
+      * [guide](../../../guides/authentication)
 
-`AuthSession` enables web browser-based authentication (for example, browser-based OAuth flows) in your app by utilizing [WebBrowser](webbrowser.mdx) and [Crypto](crypto.mdx). For implementation details, refer to this reference, and for usage, see the [Authentication](/guides/authentication/) guide.
-
-> **Note:** `AuthSession` enables general-purpose OAuth and OpenID Connect browser-based auth workflows. Where available, we recommend using a library supplied by your identity provider, as it will handle implementation details specific to that provider. For example, use [`@react-native-google-signin/google-signin`](/guides/google-authentication/) for Google authentication and [`react-native-fbsdk-next`](/guides/facebook-authentication/) for Facebook. For more information, see [Authentication](/develop/authentication/) overview.
+TODO:
+> **Note:** `AuthSession` enables general-purpose OAuth and OpenID Connect browser-based auth workflows
+* Where available, we recommend using a library supplied by your identity provider, as it will handle implementation details specific to that provider
+* For example, use [`@react-native-google-signin/google-signin`](/guides/google-authentication/) for Google authentication and [`react-native-fbsdk-next`](/guides/facebook-authentication/) for Facebook
+* For more information, see [Authentication](/develop/authentication/) overview.
 
 ## Installation
 
@@ -25,7 +29,8 @@ import { Terminal } from '~/ui/components/Snippet';
 
 <ConfigReactNative>
 
-To use this library, you need to set up deep linking in your app by setting up a `scheme`. Use the [`uri-scheme` CLI][n-uri-scheme] utility to easily add, remove, list, and open your URIs.
+To use this library, you need to set up deep linking in your app by setting up a `scheme`
+* Use the [`uri-scheme` CLI][n-uri-scheme] utility to easily add, remove, list, and open your URIs.
 
 For example, to make your native app handle `mycoolredirect://`, run:
 
@@ -60,7 +65,8 @@ You can test it to ensure it works like this:
 }
 ```
 
-To be able to deep link back into your app, you will need to set a `scheme` in your project's app config, and then build your standalone app (it can't be updated with an update). If you do not include a scheme, the authentication flow will complete, but it will be unable to pass the information back into your application and the user will have to manually exit the authentication modal (resulting in a canceled event).
+To be able to deep link back into your app, you will need to set a `scheme` in your project's app config, and then build your standalone app (it can't be updated with an update)
+* If you do not include a scheme, the authentication flow will complete, but it will be unable to pass the information back into your application and the user will have to manually exit the authentication modal (resulting in a canceled event).
 
 ## Guides
 
@@ -71,8 +77,12 @@ To be able to deep link back into your app, you will need to set a `scheme` in y
 The typical flow for browser-based authentication in mobile apps is as follows:
 
 - **Initiation**: the user presses a sign in button
-- **Open web browser**: the app opens up a web browser to the authentication provider sign in page. The url that is opened for the sign in page usually includes information to identify the app, and a URL to redirect to on success. _Note: the web browser should share cookies with your system web browser so that users do not need to sign in again if they are already authenticated on the system browser — Expo's [WebBrowser](webbrowser.mdx) API takes care of this._
-- **Authentication provider redirects**: upon successful authentication, the authentication provider should redirect back to the application by redirecting to URL provided by the app in the query parameters on the sign in page ([read more about how linking works in mobile apps](/linking/overview/)), _provided that the URL is in the allowlist of allowed redirect URLs_. Allowlisting redirect URLs is important to prevent malicious actors from pretending to be your application. The redirect includes data in the URL (such as user id and token), either in the location hash, query parameters, or both.
+- **Open web browser**: the app opens up a web browser to the authentication provider sign in page
+* The url that is opened for the sign in page usually includes information to identify the app, and a URL to redirect to on success
+* _Note: the web browser should share cookies with your system web browser so that users do not need to sign in again if they are already authenticated on the system browser — Expo's [WebBrowser](webbrowser.mdx) API takes care of this._
+- **Authentication provider redirects**: upon successful authentication, the authentication provider should redirect back to the application by redirecting to URL provided by the app in the query parameters on the sign in page ([read more about how linking works in mobile apps](/linking/overview/)), _provided that the URL is in the allowlist of allowed redirect URLs_
+* Allowlisting redirect URLs is important to prevent malicious actors from pretending to be your application
+* The redirect includes data in the URL (such as user id and token), either in the location hash, query parameters, or both.
 - **App handles redirect**: the redirect is handled by the app and data is parsed from the redirect URL.
 
 ## Security considerations
@@ -91,10 +101,13 @@ import * as AuthSession from 'expo-auth-session';
 
 ### Filtering out AuthSession events in Linking handlers
 
-There are many reasons why you might want to handle inbound links into your app, such as push notifications or just regular deep linking (you can read more about this in the [Linking](/linking/overview/)); authentication redirects are only one type of deep link, and `AuthSession` handles these particular links for you. In your own `Linking.addEventListener` handlers, you can filter out deep links that are handled by `AuthSession` by checking if the URL includes the `+expo-auth-session` string — if it does, you can ignore it. This works because `AuthSession` adds `+expo-auth-session` to the default `returnUrl`; however, if you provide your own `returnUrl`, you may want to consider adding a similar identifier to enable you to filter out `AuthSession` events from other handlers.
+There are many reasons why you might want to handle inbound links into your app, such as push notifications or just regular deep linking (you can read more about this in the [Linking](/linking/overview/)); authentication redirects are only one type of deep link, and `AuthSession` handles these particular links for you
+* In your own `Linking.addEventListener` handlers, you can filter out deep links that are handled by `AuthSession` by checking if the URL includes the `+expo-auth-session` string — if it does, you can ignore it
+* This works because `AuthSession` adds `+expo-auth-session` to the default `returnUrl`; however, if you provide your own `returnUrl`, you may want to consider adding a similar identifier to enable you to filter out `AuthSession` events from other handlers.
 
 ### With React Navigation
 
-If you are using deep linking with React Navigation, filtering through `Linking.addEventListener` will not be sufficient because deep linking is [handled differently](https://reactnavigation.org/docs/configuring-links/#advanced-cases). Instead, to filter these events, add a custom `getStateFromPath` function to your linking configuration, and then filter by URL in the same way as described above.
+If you are using deep linking with React Navigation, filtering through `Linking.addEventListener` will not be sufficient because deep linking is [handled differently](https://reactnavigation.org/docs/configuring-links/#advanced-cases)
+* Instead, to filter these events, add a custom `getStateFromPath` function to your linking configuration, and then filter by URL in the same way as described above.
 
 [n-uri-scheme]: https://www.npmjs.com/package/uri-scheme

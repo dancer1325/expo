@@ -4,63 +4,31 @@ description: Learn about the file-based routing convention used by Expo Router.
 sidebar_title: Create pages
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
-import { Tabs, Tab } from '~/ui/components/Tabs';
-
-When a file is created in the **app** directory, it automatically becomes a route in the app. For example, the following files will create the following routes:
-
-<FileTree
-  files={[
-    ['app/index.tsx', "matches '/'"],
-    ['app/home.tsx', "matches '/home'"],
-    ['app/[user].tsx', "matches dynamic paths like '/expo' or '/evanbacon'"],
-    ['app/settings/index.tsx', "matches '/settings'"],
-  ]}
-/>
+* 💡| create a file | "app/",
+  * it AUTOMATICALLY becomes a route | app💡
 
 ## Pages
 
-Pages are defined by exporting a React component as the default value from a file in the **app** directory. The file they are exported from must use one of the `.js`, `.jsx`, `.tsx`, `.ts` extensions.
-
-For example, create the **app** directory in your project and then create a file **index.tsx** inside it. Then, add the following snippet:
-
-<Tabs>
-
-<Tab label="Universal">
-
-    Render text on any platform with the `<Text>` component from React Native.
-
-    ```tsx app/index.tsx
-    import { Text } from 'react-native';
-
-    export default function Page() {
-      return <Text>Top-level page</Text>;
-    }
-    ```
-
-</Tab>
-
-<Tab label="Web-only">
-
-    Alternatively, you can write web-only React components such as `<div>`, `<p>`, and so on. However, these won't render on native platforms.
-
-    ```tsx app/index.tsx
-    export default function Page() {
-      return <p>Top-level page</p>;
-    }
-    ```
-
-</Tab>
-
-</Tabs>
-
-The above example matches the `/` route in the app and the browser. Files named **index** match the parent directory and do not add a path segment. For example, **app/settings/index.tsx** matches `/settings` in the app.
+* steps to define a page
+  * | "app/<SUBFOLDER_NAME>/<FILE_NAME>.<ALLOWED_EXTENSION>", 
+    * export a React component -- as the -- default value from a file /
+      * ALLOWED extensions
+        * ".js"
+        * ".jsx"
+        * ".tsx"
+        * ".ts"
+    * 👀if <FILE_NAME> == index -> `/<SUBFOLDER_NAME>` route | app & browser👀
+      * == ❌NOT add a path segment❌
+      * _Example:_ "app/settings/index.tsx" -> `/settings` | app
 
 ## Platform specific extensions
 
-> **warning** Platform-specific extensions were added in Expo Router `3.5.x`. If you are using an older version of the library, follow instructions from [Platform-specific modules](/router/advanced/platform-specific-modules).
+TODO: 
+> **warning** Platform-specific extensions were added in Expo Router `3.5.x`
+* If you are using an older version of the library, follow instructions from [Platform-specific modules](/router/advanced/platform-specific-modules).
 
-Metro bundler's platform-specific extensions (for example, **.ios.tsx** or **.native.tsx**) are supported in the **app** directory only if a **non-platform version** also exists. This ensures that routes are universal across platforms for deep linking.
+Metro bundler's platform-specific extensions (for example, **.ios.tsx** or **.native.tsx**) are supported in the **app** directory only if a **non-platform version** also exists
+* This ensures that routes are universal across platforms for deep linking.
 
 Consider the following project structure:
 
@@ -91,9 +59,11 @@ Dynamic routes match any unmatched path at a given segment level.
 | **app/blog/[slug].tsx**    | `/blog/123`          |
 | **app/blog/[...rest].tsx** | `/blog/123/settings` |
 
-Routes with higher specificity will be matched before a dynamic route. For example, `/blog/bacon` will match **blog/bacon.tsx** before **blog/[id].tsx**.
+Routes with higher specificity will be matched before a dynamic route
+* For example, `/blog/bacon` will match **blog/bacon.tsx** before **blog/[id].tsx**.
 
-Multiple slugs can be matched in a single route by using the rest syntax (`...`). For example, **app/blog/[...id].tsx** matches `/blog/123/settings`.
+Multiple slugs can be matched in a single route by using the rest syntax (`...`)
+* For example, **app/blog/[...id].tsx** matches `/blog/123/settings`.
 
 Dynamic segments are accessible as [route parameters](/router/reference/url-parameters) in the page component.
 
@@ -115,7 +85,8 @@ export default function Page() {
 
 ## Non-route files
 
-Every file and sub-directory inside the **app** directory is either a `_layout` file or a route in your app. Other files, such as components, hooks, utilities, and so on, cannot be placed in the **app** directory because they are neither screens nor layout files.
+Every file and sub-directory inside the **app** directory is either a `_layout` file or a route in your app
+* Other files, such as components, hooks, utilities, and so on, cannot be placed in the **app** directory because they are neither screens nor layout files.
 
 <FileTree
   files={[
@@ -126,11 +97,17 @@ Every file and sub-directory inside the **app** directory is either a `_layout` 
   ]}
 />
 
-The above example uses [shared routes](/router/advanced/shared-routes) for the `/profile` route inside two sub-directories. If you want to create a non-route file (for example, **ProfileImageComponent.tsx**), finding the correct sub-directory to place this file creates a dilemma since there are two route directories. This is "why" Expo Router does not allow non-route files to exist with route files inside the **app** directory because it leads to an unstructured project.
+The above example uses [shared routes](/router/advanced/shared-routes) for the `/profile` route inside two sub-directories
+* If you want to create a non-route file (for example, **ProfileImageComponent.tsx**), finding the correct sub-directory to place this file creates a dilemma since there are two route directories
+* This is "why" Expo Router does not allow non-route files to exist with route files inside the **app** directory because it leads to an unstructured project.
 
 ### Recommended structure
 
-Expo Router recommends sorting components and hooks by "feature" and routes by "navigation pattern". While the two concepts can overlap, there are enough differences to structure them differently. Additionally, routes will inevitably change. However, components generally stay within the same feature set. Keeping routes separate will simplify your refactors.
+Expo Router recommends sorting components and hooks by "feature" and routes by "navigation pattern"
+* While the two concepts can overlap, there are enough differences to structure them differently
+* Additionally, routes will inevitably change
+* However, components generally stay within the same feature set
+* Keeping routes separate will simplify your refactors.
 
 <FileTree
   files={[
@@ -144,14 +121,21 @@ Expo Router recommends sorting components and hooks by "feature" and routes by "
   ]}
 />
 
-In the above example, both `/sign-in` and `/sign-out` are authentication routes and share components from the **components/authentication** file. However, the `/profile/[user]` route is complex and renders components that belong to the authentication, profile, and task features. If you place your components within the **app** directory, it's not obvious where these components belong. By separating components from routes, you create an organized hierarchy with the philosophy that a route is a collection of reusable components, and a component does not belong to an individual route.
+In the above example, both `/sign-in` and `/sign-out` are authentication routes and share components from the **components/authentication** file
+* However, the `/profile/[user]` route is complex and renders components that belong to the authentication, profile, and task features
+* If you place your components within the **app** directory, it's not obvious where these components belong
+* By separating components from routes, you create an organized hierarchy with the philosophy that a route is a collection of reusable components, and a component does not belong to an individual route.
 
-Another project optimization is to utilize [path aliases](/guides/typescript/#path-aliases-optional). They keep your routes project structure agnostic, as imports within your routes no longer depend on the **app** directory structure. This avoids large `import` statement changes when adding new directories (such as new groups) and prevents lengthy `import` paths.
+Another project optimization is to utilize [path aliases](/guides/typescript/#path-aliases-optional)
+* They keep your routes project structure agnostic, as imports within your routes no longer depend on the **app** directory structure
+* This avoids large `import` statement changes when adding new directories (such as new groups) and prevents lengthy `import` paths.
 
 ### Reserved keywords
 
-Expo Router is built on top of [React Navigation](https://reactnavigation.org/), which imposes certain restrictions on the naming of screen parameters. As a result, the following words cannot be used as dynamic route parameters in Expo Router:
-
-- `screen`
-- `params`
-- `key`
+* Reserved keywords
+  * ❌NOT uses❌
+    * dynamic route parameters | Expo Router
+      * `screen`
+      * `params`
+      * `key`
+      * Reason: 🧠Expo Router is built | [React Navigation](https://reactnavigation.org/)🧠

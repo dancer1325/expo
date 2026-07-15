@@ -4,19 +4,25 @@ description: Learn how to make screens inaccessible to client-side navigation.
 hasVideoLink: true
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
+* [video](https://www.youtube.com/watch?v=zHZjJDTTHJg)
+  * TODO:
 
-<VideoBoxLink
-  videoId="zHZjJDTTHJg"
-  title="Watch: Using protected routes"
-  description="Restrict screen access based on authentication state using protected routes in Expo Router."
-/>
+* Protected screens
+  * ⚠️requirements⚠️
+    * Expo Router v5
+  * allow you to
+    * if users are 
+      * ❌NOT authenticated -> can NOT access certain routes❌
+      * SUDDENLY log out -> will be redirected -- to the --
+        * anchor route OR
+        * first available screen | stack
+  * use cases
+    * client-side navigation
+  * 👀vs redirects👀
+    * MORE powerful
+    * LESS MANUAL configuration
 
-## Overview
-
-Protected screens allow you to prevent users from accessing certain routes using client-side navigation. If a user tries to navigate to a protected screen, or if a screen becomes protected while it is active, they will be redirected to the anchor route (usually the index screen) or the first available screen in the stack.
-
+TODO: 
 <FileTree
   files={[
     'src/app/_layout.tsx',
@@ -44,13 +50,16 @@ export function AppLayout() {
       <Stack.Protected guard={isLoggedIn}>
         <Stack.Screen name="private" />
       </Stack.Protected>
-      {/* Expo Router includes all routes by default. Adding Stack.Protected creates exceptions for these screens. */}
+      {/* Expo Router includes all routes by default
+* Adding Stack.Protected creates exceptions for these screens
+* */}
     </Stack>
   );
 }
 ```
 
-In this example, the `/private` route is inaccessible because the `guard` is false. When a user attempts to access `/private`, they are redirected to the anchor route, which is the **index** screen.
+In this example, the `/private` route is inaccessible because the `guard` is false
+* When a user attempts to access `/private`, they are redirected to the anchor route, which is the **index** screen.
 
 Additionally, if the user is on `/private/page` and the `guard` condition changes to **false**, they will be redirected automatically.
 
@@ -60,7 +69,8 @@ When a screen's **guard** is changed from **true** to **false**, all of its hist
 
 In Expo Router, a screen can **only exist in one active route group at a time**.
 
-You should only declare a screen only once, in the most appropriate group or stack. If a screen's availability depends on logic, wrap it in a conditional group instead of duplicating the screen.
+You should only declare a screen only once, in the most appropriate group or stack
+* If a screen's availability depends on logic, wrap it in a conditional group instead of duplicating the screen.
 
 ```tsx src/app/_layout.tsx
 import { Stack } from 'expo-router';
@@ -110,7 +120,7 @@ In this case:
 - `/private` is only protected if the user is logged in and is an admin.
 - `/about` is protected to any logged-in user.
 
-## Falling back to a specific screen
+## Falling back -- to a -- specific screen
 
 You can configure the navigator to fall back to a specific screen if access is denied.
 
@@ -179,4 +189,7 @@ export default function TabLayout() {
 
 ## Static rendering considerations
 
-Protected screens are evaluated on the client side only. During static site generation, no HTML files are created for protected routes. However, if users know the URLs of these routes, they can still request the corresponding HTML or JavaScript files directly. Protected screens are not a replacement for server-side authentication or access control.
+Protected screens are evaluated on the client side only
+* During static site generation, no HTML files are created for protected routes
+* However, if users know the URLs of these routes, they can still request the corresponding HTML or JavaScript files directly
+* Protected screens are not a replacement for server-side authentication or access control.

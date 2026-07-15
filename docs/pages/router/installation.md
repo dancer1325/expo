@@ -6,42 +6,36 @@ searchRank: 6
 ---
 
 * goal
-  * add Expo Router  
-    * from scratch
-    * | EXISTING project
+  * | EXISTING project, 
+    * add Expo Router
 
-## Quick start
-
-* `npx create-expo-app@latest`
-  * create a new Expo app / Expo Router library ALREADY installed and configured
-* `npx expo start`
-  * start the project
-
-## Manual installation
-
-* requirements
-  * Expo project / PREVIOUSLY created WITHOUT Expo Router library installed
-
-### Prerequisites
-
-* see [set up for running an Expo app](../get-started/create-a-project)
+## steps
 
 ### Install dependencies
 
-TODO: rest of commands
-* | 
-  * Expo SDK v50+
-    * `npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar'`
-  * Expo SDK v49-
-    * `npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar react-native-gesture-handler`
+* | Expo SDK v49-
 
-      '$ yarn expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar',
-      ],
-      pnpm: [
-      '$ pnpm expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar',
-      ],
-      bun: [
-      '$ bun expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar',
+  ```bash
+  npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar react-native-gesture-handler
+  ---
+  yarn expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar react-native-gesture-handler
+  ---
+  pnpm expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar react-native-gesture-handler
+  ---
+  bun expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar react-native-gesture-handler
+  ```
+
+* | Expo SDK v50+
+
+  ```bash
+  npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar
+  ---
+  yarn expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar
+  ---
+  pnpm expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar
+  ---
+  bun expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar
+  ```
 
 ### Setup entry point
 
@@ -52,10 +46,12 @@ TODO: rest of commands
       "main": "expo-router/entry"
     }
     ```
-  * -> [app/_layout.js](advanced/root-layout.md) is initial client file
+  * -> [app/_layout.js](advanced/root-layout.md) 
+    * == INITIAL client file
 
-
-You can create a custom entry point in your Expo Router project to initialize and load side-effects before your app loads the root layout (**src/app/\_layout.tsx**). Below are some of the common cases for a custom entry point:
+TODO: 
+You can create a custom entry point in your Expo Router project to initialize and load side-effects before your app loads the root layout (**src/app/\_layout.tsx**)
+Below are some of the common cases for a custom entry point:
 
 - Initializing global services like analytics, error reporting, and so on.
 - Setting up polyfills
@@ -65,7 +61,8 @@ You can create a custom entry point in your Expo Router project to initialize an
 
    <FileTree files={['src/app/_layout.tsx', 'index.js', 'package.json', 'Other project files']} />
 
-2. Import or add your custom configuration to the file. Then, import `expo-router/entry` to register the app entry. Remember to always import it last to ensure all configurations are properly set up before the app renders.
+2. Import or add your custom configuration to the file. Then, import `expo-router/entry` to register the app entry
+Remember to always import it last to ensure all configurations are properly set up before the app renders.
 
    ```js index.js
    // Import side effects first and services
@@ -101,14 +98,15 @@ Add a deep linking `scheme` and enable [typed routes](/router/reference/typed-ro
 
 If you are developing your app for web, install the following dependencies:
 
-<Terminal
-  cmd={{
-    npm: ['$ npx expo install react-native-web react-dom'],
-    yarn: ['$ yarn expo install react-native-web react-dom'],
-    pnpm: ['$ pnpm expo install react-native-web react-dom'],
-    bun: ['$ bun expo install react-native-web react-dom'],
-  }}
-/>
+```bash
+npx expo install react-native-web react-dom
+---
+yarn expo install react-native-web react-dom
+---
+pnpm expo install react-native-web react-dom
+---
+bun expo install react-native-web react-dom
+```
 
 Then, enable [Metro web](/guides/customizing-metro/#adding-web-support-to-metro) support by adding the following to your [app config](/workflow/configuration/):
 
@@ -168,14 +166,15 @@ The `@/*` alias maps to the **src** directory in the above example.
 
 After updating the configuration, run the following command to clear the bundler cache:
 
-<Terminal
-  cmd={{
-    npm: ['$ npx expo start --clear'],
-    yarn: ['$ yarn expo start --clear'],
-    pnpm: ['$ pnpm expo start --clear'],
-    bun: ['$ bun expo start --clear'],
-  }}
-/>
+```bash
+npx expo start --clear
+---
+yarn expo start --clear
+---
+pnpm expo start --clear
+---
+bun expo start --clear
+```
 
 </Step>
 
