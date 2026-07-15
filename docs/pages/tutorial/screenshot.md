@@ -4,12 +4,6 @@ description: In this tutorial, learn how to capture a screenshot using a third-p
 hasVideoLink: true
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { CODE } from '~/ui/components/Text';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 In this chapter, we'll learn how to take a screenshot using a third-party library and save it on the device's media library. We'll use [`react-native-view-shot`](https://github.com/gre/react-native-view-shot) to take a screenshot and [`expo-media-library`](/versions/v54.0.0/sdk/media-library/) to save an image on device's media library.
 
@@ -52,8 +46,6 @@ Add the following code snippet inside the **src/app/(tabs)/index.tsx**:
 
 {/* prettier-ignore */}
 ```tsx src/app/(tabs)/index.tsx
-import { /* @tutinfo */useEffect/* @end */, useState } from 'react';
-import * as ImagePicker from 'expo-image-picker';
 
 // ...rest of the code remains same
 
@@ -87,7 +79,6 @@ We'll use `react-native-view-shot` to allow the user to take a screenshot within
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx|collapseHeight=440
-import { useState, /* @tutinfo Import `useRef` hook from `react`. */useRef/* @end */ } from 'react';
 /* @tutinfo Import `captureRef` from `react-native-view-shot`. */import { captureRef } from 'react-native-view-shot';/* @end */
 
 export default function Index() {
@@ -125,21 +116,9 @@ Inside **app/(tabs)/index.tsx**, update the `onSaveImageAsync()` function with t
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx|collapseHeight=440
-import * as ImagePicker from 'expo-image-picker';
 /* @tutinfo Import `MediaLibrary` from `expo-media-library`. */import * as MediaLibrary from 'expo-media-library';/* @end */
-import { useEffect, useRef, useState } from 'react';
-import { ImageSourcePropType, StyleSheet, View } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { captureRef } from 'react-native-view-shot';
 
-import Button from '@/components/Button';
-import CircleButton from '@/components/CircleButton';
-import EmojiList from '@/components/EmojiList';
-import EmojiPicker from '@/components/EmojiPicker';
-import IconButton from '@/components/IconButton';
-import ImageViewer from '@/components/ImageViewer';
 
-import EmojiSticker from '@/components/EmojiSticker';
 
 const PlaceholderImage = require('@/assets/images/background-image.png');
 

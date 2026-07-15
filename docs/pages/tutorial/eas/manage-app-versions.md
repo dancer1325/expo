@@ -5,10 +5,6 @@ description: Learn about developer-facing and user-facing app versions and how E
 hasVideoLink: true
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Terminal } from '~/ui/components/Snippet';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 In this chapter, we'll learn how EAS Build automatically manages the developer-facing app version for Android and iOS. Learning about it will be useful before we dive into production build in the next two chapters.
 

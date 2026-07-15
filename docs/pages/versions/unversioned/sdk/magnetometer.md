@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-sensors.png'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `Magnetometer` from `expo-sensors` provides access to the device magnetometer sensor(s) to respond to and measure the changes in the magnetic field measured in microtesla (`μT`).
 
@@ -24,9 +21,6 @@ You can access the calibrated values with `Magnetometer` and uncalibrated raw va
 <SnackInline label='Magnetometer' dependencies={['expo-sensors']}>
 
 ```jsx
-import { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Magnetometer } from 'expo-sensors';
 
 export default function Compass() {
   const [{ x, y, z }, setData] = useState({
@@ -112,7 +106,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import { Magnetometer, MagnetometerUncalibrated } from 'expo-sensors';
 ```
 
 <APISection packageName="expo-magnetometer" />

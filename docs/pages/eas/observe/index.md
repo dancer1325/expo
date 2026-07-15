@@ -2,6 +2,5 @@
 title: EAS Observe
 ---
 
-import Redirect from '~/components/plugins/Redirect';
 
 <Redirect path="/eas/observe/introduction" />

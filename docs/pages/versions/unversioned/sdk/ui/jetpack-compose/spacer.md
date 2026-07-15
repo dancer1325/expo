@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Spacer`](../universal/spacer) — it renders the appropriate native component per platform.
 
@@ -33,8 +30,6 @@ Expo UI Spacer matches the official Jetpack Compose [Spacer](https://developer.a
 Use the `weight()` modifier to make the spacer fill available space proportionally within a `Row` or `Column`.
 
 ```tsx SpacerWeightExample.tsx
-import { Host, Row, Spacer, Text } from '@expo/ui/jetpack-compose';
-import { fillMaxWidth, weight } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function SpacerWeightExample() {
   return (
@@ -54,8 +49,6 @@ export default function SpacerWeightExample() {
 Use a `height` or `width` modifier to create a spacer with a fixed dimension.
 
 ```tsx SpacerFixedSizeExample.tsx
-import { Host, Column, Spacer, Text } from '@expo/ui/jetpack-compose';
-import { height } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function SpacerFixedSizeExample() {
   return (
@@ -73,7 +66,6 @@ export default function SpacerFixedSizeExample() {
 ## API
 
 ```tsx
-import { Spacer } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/spacer" apiName="Spacer" />

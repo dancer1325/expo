@@ -5,12 +5,7 @@ description: Reference guide for the EAS Workflows configuration file syntax.
 maxHeadingDepth: 5
 ---
 
-import { GithubIcon } from '@expo/styleguide-icons/custom/GithubIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { YesIcon, NoIcon } from '~/ui/components/DocIcons';
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
 
 A workflow is a configurable automated process made up of one or more jobs. You must create a YAML file to define your workflow configuration.
 

@@ -4,7 +4,6 @@ hideFromSearch: true
 description: Learn how to send notifications with FCM and APNs.
 ---
 
-import { DiffBlock } from '~/ui/components/Snippet';
 
 You may need finer-grained control over your notifications, in which case communicating directly with FCM and APNs may be necessary. The Expo platform does not lock you into using Expo Application Services, and the `expo-notifications` API is push-service agnostic.
 
@@ -42,7 +41,6 @@ FCM requires an Oauth 2.0 access token, which must be obtained via one of the me
 For testing purposes, you can use the Google Auth Library and your private key file obtained above, to obtain a short lived token for a single notification, as in this Node example adapted from Firebase documentation:
 
 ```ts
-import { JWT } from 'google-auth-library';
 
 function getAccessTokenAsync(
   key: string // Contents of your FCM private key file

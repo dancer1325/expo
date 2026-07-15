@@ -5,10 +5,6 @@ description: Learn about the process of triggering builds from a GitHub reposito
 hasVideoLink: true
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Step } from '~/ui/components/Step';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 [Expo GitHub App](/build/building-from-github/) automatically triggers builds from our GitHub projects with EAS. We can trigger builds for any build profile based on our development team's preferences. It also allows triggering builds for `git` push committed directly to a repository or a pull request.
 

@@ -3,7 +3,6 @@ title: Using Vexo
 description: A guide on installing and configuring Vexo for real-time user analytics.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 [Vexo](https://www.vexo.co/) provides real-time user analytics for your Expo application, helping you understand how users interact with your app, identify friction points, and improve engagement.
 

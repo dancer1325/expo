@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 `Picker` is a single-selection input. You can use `<Picker.Item label value />` children to declare options so that the parent `Picker` reads them and renders a platform-appropriate dropdown or rotor.
 
@@ -22,8 +20,6 @@ The universal `Picker` is independent of [`@expo/ui/community/picker`](../drop-i
 ### Menu appearance (default)
 
 ```tsx PickerMenuExample.tsx
-import { useState } from 'react';
-import { Host, Row, Picker, Spacer, Text } from '@expo/ui';
 
 const FLAVOURS = [
   { label: 'Vanilla', value: 'vanilla' },
@@ -55,8 +51,6 @@ export default function PickerMenuExample() {
 `appearance="wheel"` renders an inline scrollable rotor on iOS. On Android and web, this falls back to the platform's default dropdown (Material 3 doesn't ship a wheel-style picker).
 
 ```tsx PickerWheelExample.tsx
-import { useState } from 'react';
-import { Host, Column, Picker } from '@expo/ui';
 
 const FLAVOURS = [
   { label: 'Vanilla', value: 'vanilla' },
@@ -84,7 +78,6 @@ export default function PickerWheelExample() {
 ## API
 
 ```tsx
-import { Picker } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/picker" apiName="Picker" />

@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For a cross-platform list with pull-to-refresh, see [`List`](../universal/list) — built on top of `PullToRefreshBox` on Android.
 
@@ -33,8 +30,6 @@ Expo UI PullToRefreshBox matches the official Jetpack Compose [PullToRefreshBox]
 Wrap scrollable content in a `PullToRefreshBox` to add pull-to-refresh behavior.
 
 ```tsx BasicPullToRefresh.tsx
-import { useState, useCallback } from 'react';
-import { Host, PullToRefreshBox, LazyColumn, ListItem } from '@expo/ui/jetpack-compose';
 
 export default function BasicPullToRefresh() {
   const [refreshing, setRefreshing] = useState(false);
@@ -77,8 +72,6 @@ export default function BasicPullToRefresh() {
 Use the `indicator` prop to customize the spinner and container colors.
 
 ```tsx CustomIndicatorColors.tsx
-import { useState, useCallback } from 'react';
-import { Host, PullToRefreshBox, LazyColumn, ListItem } from '@expo/ui/jetpack-compose';
 
 export default function CustomIndicatorColors() {
   const [refreshing, setRefreshing] = useState(false);
@@ -116,7 +109,6 @@ export default function CustomIndicatorColors() {
 ## API
 
 ```tsx
-import { PullToRefreshBox } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/pulltorefreshbox" apiName="PullToRefreshBox" />

@@ -5,9 +5,7 @@ hideTOC: true
 description: An overview of how you can integrate Expo tools into existing native apps ("brownfield" apps).
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 An existing native app that was built using another technology, whose main entry point is _not_ a React Native view, is commonly referred to as a "brownfield" app. For example, if your app was built using UIKit and Swift, and you want to use React Native for a single screen then that is considered an "existing native app" and "brownfield".
 

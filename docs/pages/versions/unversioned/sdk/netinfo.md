@@ -7,10 +7,7 @@ platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 inExpoGo: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
 
 `@react-native-community/netinfo` allows you to get information about connection type and connection quality.
 
@@ -23,7 +20,6 @@ import { BoxLink } from '~/ui/components/BoxLink';
 To import this library, use:
 
 ```js
-import NetInfo from '@react-native-community/netinfo';
 ```
 
 If you want to grab information about the network connection just once, you can use:

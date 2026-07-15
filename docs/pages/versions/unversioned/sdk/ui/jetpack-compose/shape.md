@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Shape matches the official Jetpack Compose [Shapes](https://developer.android.com/develop/ui/compose/graphics/draw/shapes) API and provides a set of sub-components for drawing geometric shapes such as stars, circles, rectangles, pills, and polygons.
 
@@ -31,8 +28,6 @@ Expo UI Shape matches the official Jetpack Compose [Shapes](https://developer.an
 Render common shapes using the `Shape` sub-components.
 
 ```tsx BasicShapesExample.tsx
-import { Host, Shape, Row } from '@expo/ui/jetpack-compose';
-import { size } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function BasicShapesExample() {
   return (
@@ -53,8 +48,6 @@ export default function BasicShapesExample() {
 Use `cornerRounding` and `smoothing` to customize the appearance of shapes.
 
 ```tsx RoundedShapesExample.tsx
-import { Host, Shape, Row } from '@expo/ui/jetpack-compose';
-import { size } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function RoundedShapesExample() {
   return (
@@ -82,8 +75,6 @@ export default function RoundedShapesExample() {
 Use `verticesCount` and `innerRadius` to control the shape geometry.
 
 ```tsx PolygonShapesExample.tsx
-import { Host, Shape, Row } from '@expo/ui/jetpack-compose';
-import { size } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function PolygonShapesExample() {
   return (
@@ -117,7 +108,6 @@ export default function PolygonShapesExample() {
 ## API
 
 ```tsx
-import { Shape } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/shape" apiName="Shape" />

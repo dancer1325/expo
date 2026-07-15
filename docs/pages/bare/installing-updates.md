@@ -4,9 +4,6 @@ sidebar_title: Install expo-updates
 description: Learn how to install and configure expo-updates in your existing React Native project.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal, DiffBlock } from '~/ui/components/Snippet';
 
 `expo-updates` is a library that enables your app to manage remote updates to your application code. It communicates with the configured remote update service to get information about available updates. This guide explains how to set up an existing React Native project for use with [EAS Update](/eas-update/introduction), a hosted remote update service that includes tools to simplify installation and configuration of the `expo-updates` library.
 

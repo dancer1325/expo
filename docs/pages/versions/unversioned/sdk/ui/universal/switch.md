@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A controlled toggle. Pair [`value`](#value) with [`onValueChange`](#onvaluechange) to manage state from React.
 
@@ -20,8 +18,6 @@ A controlled toggle. Pair [`value`](#value) with [`onValueChange`](#onvaluechang
 ### Basic switch
 
 ```tsx SwitchExample.tsx
-import { useState } from 'react';
-import { Host, Switch } from '@expo/ui';
 
 export default function SwitchExample() {
   const [enabled, setEnabled] = useState(false);
@@ -39,8 +35,6 @@ export default function SwitchExample() {
 When `label` is provided, the switch is rendered alongside its text in a labeled row.
 
 ```tsx LabeledSwitchExample.tsx
-import { useState } from 'react';
-import { Host, Switch } from '@expo/ui';
 
 export default function LabeledSwitchExample() {
   const [notifications, setNotifications] = useState(true);
@@ -56,7 +50,6 @@ export default function LabeledSwitchExample() {
 ## API
 
 ```tsx
-import { Switch } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/switch" apiName="Switch" />

@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-mail-composer.png'
 platforms: ['android', 'ios*', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 `expo-mail-composer` allows you to compose and send emails quickly and easily using the OS UI. This module can't be used on iOS Simulators since you can't sign into a mail account on them.
 
@@ -22,7 +19,6 @@ import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 ## API
 
 ```js
-import * as MailComposer from 'expo-mail-composer';
 ```
 
 <APISection packageName="expo-mail-composer" apiName="MailComposer" />

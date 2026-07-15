@@ -5,7 +5,6 @@ sidebar_title: Core concepts
 searchRank: 10
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
 
 Before diving into how to construct your app's navigation tree with Expo Router, let's first understand the core concepts that make up the foundation of file-based routing in Expo Router, and how an Expo Router project might differ in structure from other React Native projects.
 

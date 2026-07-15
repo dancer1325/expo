@@ -7,9 +7,6 @@ exampleName: 'with-widgets'
 platforms: ['ios']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ConfigPluginExample, ConfigPluginProperties } from '~/ui/components/ConfigSection';
 
 > **important** This library is not available in the Expo Go app — use [development builds](/develop/development-builds/introduction) to try it out.
 
@@ -215,8 +212,6 @@ Because of this isolation, code inside a `'widget'`-marked component is limited:
 All data a widget needs must come in through its props (set with `updateSnapshot`, `updateTimeline`, or a Live Activity's `start` and `update`) and the `environment` argument. To use images, write them to [`widgetsDirectory`](#sharing-images-with-widgetsdirectory) from your app and reference them by path.
 
 ```tsx
-import { Text } from '@expo/ui/swift-ui';
-import { createWidget, type WidgetEnvironment } from 'expo-widgets';
 
 // Declared at module scope — not included in the widget bundle.
 const CITY_NAMES: Record<string, string> = { sf: 'San Francisco' };
@@ -239,9 +234,6 @@ Move `CITY_NAMES` inside `CityWidget` (or pass the resolved value through props)
 Start by creating a widget using the `createWidget` function and pass the widget component marked with the `'widget'` directive. The component receives your widget props as the first argument and a `WidgetEnvironment` object as the second.
 
 ```tsx
-import { Text, VStack } from '@expo/ui/swift-ui';
-import { font, foregroundStyle } from '@expo/ui/swift-ui/modifiers';
-import { createWidget, type WidgetEnvironment } from 'expo-widgets';
 
 type MyWidgetProps = {
   count: number;
@@ -272,7 +264,6 @@ An effective way to update a widget is to use the `updateSnapshot` method. This 
 The example below continues from [Creating a widget](#prerequisite-creating-a-widget).
 
 ```tsx
-import MyWidget from './MyWidget';
 
 // Update the widget
 MyWidget.updateSnapshot({ count: 5 });
@@ -285,7 +276,6 @@ Use the `updateTimeline` method to schedule widget updates at a specific time. T
 The example below continues from [Creating a widget](#prerequisite-creating-a-widget).
 
 ```tsx
-import MyWidget from './MyWidget';
 
 MyWidget.updateTimeline([
   { date: new Date(), props: { count: 1 } },
@@ -300,7 +290,6 @@ MyWidget.updateTimeline([
 Use `getTimeline` to read the entries currently scheduled for a widget, including past and future entries.
 
 ```tsx
-import MyWidget from './MyWidget';
 
 const entries = await MyWidget.getTimeline();
 // [{ date: Date, props: { count: number } }, ...]
@@ -311,7 +300,6 @@ const entries = await MyWidget.getTimeline();
 Use `reload` to force the system to refresh a widget's content and timeline immediately, for example after the underlying data changes.
 
 ```tsx
-import MyWidget from './MyWidget';
 
 MyWidget.reload();
 ```
@@ -321,8 +309,6 @@ MyWidget.reload();
 Use the `environment` argument to adapt the layout to the current widget size and rendering context.
 
 ```tsx
-import { HStack, Text, VStack } from '@expo/ui/swift-ui';
-import { createWidget, type WidgetEnvironment } from 'expo-widgets';
 
 type WeatherWidgetProps = {
   temperature: number;
@@ -383,8 +369,6 @@ Beyond `widgetFamily` and `date`, the `environment` object describes how and whe
 Widgets can include interactive controls such as `Button`. The value a button's `onPress` callback returns becomes the widget's new props. The runtime persists it and reloads the widget on device, with no running app process required. This is the primary way to make a widget update itself in response to a tap. Interactive widgets require iOS 17 or later.
 
 ```tsx CounterWidget.tsx
-import { Button, Text, VStack } from '@expo/ui/swift-ui';
-import { createWidget } from 'expo-widgets';
 
 type CounterProps = {
   count: number;
@@ -406,7 +390,6 @@ export default createWidget('CounterWidget', CounterWidget, { count: 0 });
 To also keep your running app in sync with widget interactions, give the control a `target` identifier (as above) and listen for taps with `addUserInteractionListener`. The listener receives the widget's `name` as `source` and the control's `target`. Unlike `onPress`, it only fires while the app process is alive, so use it to mirror interactions into app state, not as the widget's update mechanism.
 
 ```tsx App.tsx
-import { addUserInteractionListener } from 'expo-widgets';
 
 const subscription = addUserInteractionListener(event => {
   if (event.source === 'CounterWidget' && event.target === 'increment') {
@@ -424,7 +407,6 @@ subscription.remove();
 A widget can't access files inside your app's sandbox, so to display an image in a widget you must place it in the shared app group container. `widgetsDirectory` is a `file://` URL string pointing to a directory that both your app and its widgets can read. Write the image there from your app, then reference it by path in the widget.
 
 ```tsx
-import { widgetsDirectory } from 'expo-widgets';
 
 // `widgetsDirectory` is a file:// URL to a directory shared with your widgets.
 console.log(widgetsDirectory);
@@ -437,8 +419,6 @@ console.log(widgetsDirectory);
 When you add an [`ios.configuration`](#configuration-in-app-config) to a widget, users can long-press the widget and edit its parameters. The values they choose are delivered to your widget through `environment.configuration`. Type the configuration by passing a second type argument to `createWidget` (and `WidgetEnvironment`). Configurable widgets require iOS 17 or later.
 
 ```tsx
-import { Text, VStack } from '@expo/ui/swift-ui';
-import { createWidget, type WidgetEnvironment } from 'expo-widgets';
 
 type WeatherProps = {
   temperature: number;
@@ -475,9 +455,6 @@ Live Activity layouts must be created once using `createLiveActivity` and marked
 > **important** `createLiveActivity` registers a Live Activity entirely at runtime, and the library's built-in Live Activity target renders it. Do **not** add a `widgets[]` entry for it in the [app config](#configuration-in-app-config). The `widgets[]` array is only for home screen and Lock Screen widgets, and an entry without `supportedFamilies` generates an invalid widget target that fails to build. The `name` you pass to `createLiveActivity` only has to match this `createLiveActivity` call, not an app-config widget.
 
 ```tsx
-import { Image, Text, VStack } from '@expo/ui/swift-ui';
-import { font, foregroundStyle, padding } from '@expo/ui/swift-ui/modifiers';
-import { createLiveActivity, type LiveActivityEnvironment } from 'expo-widgets';
 
 type DeliveryActivityProps = {
   etaMinutes: number;
@@ -538,8 +515,6 @@ The `environment` object also exposes `isLuminanceReduced`, `isActivityFullscree
 The example below continues from [Creating a Live Activity](#prerequisite-creating-a-live-activity).
 
 ```tsx
-import { Button, View } from 'react-native';
-import DeliveryActivity from './DeliveryActivity';
 
 function App() {
   const startDeliveryTracking = () => {
@@ -570,7 +545,6 @@ The optional second argument is a URL associated with the Live Activity. When th
 The example below continues from [Starting a Live Activity](#starting-a-live-activity).
 
 ```tsx
-import { LiveActivity } from 'expo-widgets';
 
 function updateDelivery(instance: LiveActivity<DeliveryActivityProps>) {
   instance.update({
@@ -585,7 +559,6 @@ function updateDelivery(instance: LiveActivity<DeliveryActivityProps>) {
 A Live Activity can outlive the app process that started it. Use `getInstances` on the factory to retrieve the activities of that type that are currently active, for example to update or end them after your app relaunches.
 
 ```tsx
-import DeliveryActivity from './DeliveryActivity';
 
 const activeInstances = DeliveryActivity.getInstances();
 
@@ -599,7 +572,6 @@ for (const instance of activeInstances) {
 Use `end` to finish a Live Activity. You can choose the dismissal policy, optionally provide a final content state, and pass a `contentDate` so the system can ignore stale updates.
 
 ```tsx
-import { after, type LiveActivity } from 'expo-widgets';
 
 async function completeDelivery(instance: LiveActivity<DeliveryActivityProps>) {
   await instance.end(
@@ -623,8 +595,6 @@ When `enablePushNotifications` is `true`, you can update Live Activities remotel
 - Use `instance.getPushToken()` or `instance.addPushTokenListener()` to obtain the token for a specific running Live Activity, which lets your server send updates to that activity.
 
 ```tsx
-import { addPushToStartTokenListener } from 'expo-widgets';
-import DeliveryActivity from './DeliveryActivity';
 
 const pushToStartSubscription = addPushToStartTokenListener(event => {
   console.log('Push-to-start token:', event.activityPushToStartToken);
@@ -713,7 +683,6 @@ For the exact payload shape and headers, follow Apple's [Starting and updating L
 
 {/* prettier-ignore */}
 ```tsx
-import { createWidget, createLiveActivity } from 'expo-widgets';
 ```
 
 <APISection packageName="expo-widgets" />

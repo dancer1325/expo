@@ -4,9 +4,6 @@ sidebar_title: Serve bundle diffs
 description: Enable your project to accept bundle diffs when available.
 ---
 
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 > **important** Bundle diffing is in [**beta**](/more/release-statuses/#beta) and may have limitations. See [Current limitations](#current-limitations) for details.
 

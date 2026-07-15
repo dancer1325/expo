@@ -4,14 +4,7 @@ description: Learn how to create server endpoints with Expo Router.
 hasVideoLink: true
 ---
 
-import { Cloud01Icon } from '@expo/styleguide-icons/outline/Cloud01Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tab, Tabs } from '~/ui/components/Tabs';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 Expo Router enables you to write secure server code for all platforms, right in your **src/app** directory.
 
@@ -93,7 +86,6 @@ You can make a network request to the route to access the data. Run the followin
 You can also make a request from the client code:
 
 ```tsx src/app/index.tsx
-import { Button } from 'react-native';
 
 async function fetchHello() {
   const response = await fetch('/hello');
@@ -226,7 +218,6 @@ Using `expo-server` is not limited to API routes and it can be used in any other
 You can abort a request and instead return an error `Response` by throwing a [`StatusError`](/versions/latest/sdk/server/#statuserror). This is a special `Error` instance that will be replaced with an HTTP response replacing the error itself.
 
 ```ts src/app/blog/[post]+api.ts
-import { StatusError } from 'expo-server';
 
 export async function GET(request: Request, { post }: Record<string, string>) {
   if (!post) {
@@ -243,7 +234,6 @@ When composing your own server utilities and helpers, the `StatusError` is a mor
 This can be restrictive, and isn't suitable for all cases. Sometimes it might be beneficial to instead `throw` a `Response` object, which interrupts your logic as well, but replaces the resolved `Response` from your API route directly, without a `StatusError` wrapper. For example, this can be used to create redirect responses.
 
 ```ts src/app/blog/[post]+api.ts
-import { StatusError } from 'expo-server';
 
 export async function GET(request: Request, { post }: Record<string, string>) {
   if (!post) {
@@ -262,7 +252,6 @@ Helper functions from `expo-server` return values that are scoped to the current
 A common value that you may need to access is the request's origin URL. The origin URL, typically transmitted on a request's `Origin` header, represents the URL that a user used to access your API route. This may differ from any internal deployment URL that your server sees when the request is being proxied. You can use `expo-server`'s [`origin()`](/versions/latest/sdk/server/#origin) helper method to access this value.
 
 ```ts src/app/help+api.ts
-import { origin } from 'expo-server';
 
 export async function GET(request: Request) {
   const target = new URL('/help', origin() ?? request.url);
@@ -273,7 +262,6 @@ export async function GET(request: Request) {
 Most runtimes that you deploy your server code to have a concept of environments, to differentiate between production or staging deployments. You can use `expo-server`'s [`environment()`](/versions/latest/sdk/server/#environment) helper to get an environment name. This value will differ depending on how you're running your server code.
 
 ```ts src/app/env+api.ts
-import { environment } from 'expo-server';
 
 export async function GET(request: Request) {
   const env = environment();
@@ -306,7 +294,6 @@ In the above example, an `await`-ed function call delays the rest of the API rou
 Instead, you can use `expo-server`'s [`runTask()`](/versions/latest/sdk/server/#runtaskfn) helper function to run concurrent tasks. This is equivalent to the [`waitUntil()`](https://developer.mozilla.org/en-US/docs/Web/API/ExtendableEvent/waitUntil) method that you see in service worker code or other serverless runtimes.
 
 ```ts src/app/tasks+api.ts
-import { runTask } from 'expo-server';
 
 export async function GET(request: Request) {
   // This will NOT delay the response:
@@ -326,7 +313,6 @@ However, sometimes you may want to delay a task until after the API route has re
 You can use `expo-server`'s [`deferTask()`](/versions/latest/sdk/server/#defertaskfn) helper function to schedule tasks to run after a `Response` has been resolved by your API route.
 
 ```ts src/app/tasks+api.ts
-import { deferTask } from 'expo-server';
 
 export async function GET(request: Request) {
   // This will run after this entire function resolves:
@@ -346,7 +332,6 @@ When structuring and splitting server logic into separate helper functions and f
 For example, you may need to add metadata in [server middleware](/router/web/middleware/) to a `Response` before your API route code is running.
 
 ```ts src/app/+middleware.ts
-import { setResponseHeaders } from 'expo-server';
 
 export default function middleware(request: Request) {
   // Rate limiters typically add a `Retry-After` header
@@ -357,7 +342,6 @@ export default function middleware(request: Request) {
 In the above example, a `Retry-After` header is added to a future `Response` that an API route may be creating. This can also be extended for authentication and cookies.
 
 ```ts src/app/+middleware.ts
-import { setResponseHeaders } from 'expo-server';
 
 export default function middleware(request: Request) {
   // Append cookie to future response
@@ -634,7 +618,6 @@ Export the website for production:
 Write a server entry file that serves the static files and delegates requests to the server routes:
 
 ```ts server.ts
-import { createRequestHandler } from 'expo-server/adapter/bun';
 
 const CLIENT_BUILD_DIR = `${process.cwd()}/dist/client`;
 const SERVER_BUILD_DIR = `${process.cwd()}/dist/server`;
@@ -770,8 +753,6 @@ Start the server with `node` command:
 Create a server entry file. All requests will be delegated through this middleware. The exact file location is important.
 
 ```ts netlify/functions/server.ts
-import path from 'node:path';
-import { createRequestHandler } from 'expo-server/adapter/netlify';
 
 export default createRequestHandler({
   /* @info Points to the root `dist/` (output) directory */

@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 > **info** For cross-platform usage, see the universal [`Host`](../universal/host) — it renders the appropriate native component per platform.
 
@@ -28,7 +26,6 @@ Use `matchContents` to let the `Host` automatically size itself to fit its Swift
 > **Note:** `matchContents` only works correctly with components that have an intrinsic size or an explicit [`frame`](modifiers/#frameparams) (for example, `Button`, `Toggle`, `Text`). Flexible-width components like `Slider` and linear `ProgressView` expand to fill available space and have no intrinsic width, using `matchContents` with them will result in near-zero width. For those components, either apply a [`frame`](modifiers/#frameparams) modifier on the component to give it an explicit width, or use explicit sizing with `style` on the `Host` instead (for example, `style={{ flex: 1 }}` or `style={{ width: 300 }}`).
 
 ```tsx MatchContentsExample.tsx
-import { Button, Host } from '@expo/ui/swift-ui';
 
 export default function MatchContentsExample() {
   return (
@@ -47,7 +44,6 @@ export default function MatchContentsExample() {
 > **Note:** Do not use `matchContents` on the same axis as a scroll container (`ScrollView`, `List`, `Form`, `LazyHStack`, `LazyVStack`). `matchContents` resolves to SwiftUI's `.fixedSize`, which sizes the scroll container to its content. It also leaves nothing past the viewport to scroll into, so scrolling silently stops working. Use `matchContents={{ vertical: true }}` together with `style={{ width: '100%' }}` (or any finite width on the scroll axis).
 
 ```tsx ScrollViewMatchContents.tsx
-import { Host, HStack, ScrollView, Text } from '@expo/ui/swift-ui';
 
 export default function ScrollViewMatchContents() {
   return (
@@ -69,7 +65,6 @@ export default function ScrollViewMatchContents() {
 Use `style` to set explicit sizes on the `Host`, such as filling the available space with `flex: 1`.
 
 ```tsx ExplicitSizingExample.tsx
-import { Button, Host, VStack, Text } from '@expo/ui/swift-ui';
 
 export default function ExplicitSizingExample() {
   return (
@@ -93,9 +88,6 @@ export default function ExplicitSizingExample() {
 Use `ignoreSafeArea="keyboard"` when React Native is already handling keyboard avoidance (for example, with `react-native-keyboard-controller`), to prevent the SwiftUI host from applying its own keyboard inset.
 
 ```tsx IgnoreKeyboardExample.tsx
-import { Host, TextField } from '@expo/ui/swift-ui';
-import { KeyboardProvider, KeyboardStickyView } from 'react-native-keyboard-controller';
-import { View } from 'react-native';
 
 export default function IgnoreKeyboardExample() {
   return (
@@ -125,7 +117,6 @@ export default function IgnoreKeyboardExample() {
 Use `ignoreSafeArea="all"` when you want SwiftUI content to extend behind the status bar, useful for full-screen overlays or backgrounds.
 
 ```tsx IgnoreAllSafeAreasExample.tsx
-import { Host, Text, VStack } from '@expo/ui/swift-ui';
 
 export default function IgnoreAllSafeAreasExample() {
   return (
@@ -143,7 +134,6 @@ export default function IgnoreAllSafeAreasExample() {
 ## API
 
 ```tsx
-import { Host } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/host" apiName="Host" />

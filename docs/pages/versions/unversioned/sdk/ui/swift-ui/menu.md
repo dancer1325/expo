@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Menu matches the official SwiftUI [Menu API](https://developer.apple.com/documentation/swiftui/menu) and supports styling via the [`buttonStyle`](modifiers/#buttonstylestyle) modifier. Menu opens on a single tap. For long-press interactions, use [`ContextMenu`](contextmenu) instead.
 
@@ -31,7 +28,6 @@ Expo UI Menu matches the official SwiftUI [Menu API](https://developer.apple.com
 ### Simple text label
 
 ```tsx SimpleMenuExample.tsx
-import { Host, Menu, Button } from '@expo/ui/swift-ui';
 
 export default function SimpleMenuExample() {
   return (
@@ -49,7 +45,6 @@ export default function SimpleMenuExample() {
 ### Text label with SF Symbol
 
 ```tsx MenuWithIconExample.tsx
-import { Host, Menu, Button, Divider } from '@expo/ui/swift-ui';
 
 export default function MenuWithIconExample() {
   return (
@@ -75,8 +70,6 @@ export default function MenuWithIconExample() {
 You can pass a React node as the label for custom styling.
 
 ```tsx CustomLabelMenuExample.tsx
-import { Host, Menu, Button, Text } from '@expo/ui/swift-ui';
-import { foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function CustomLabelMenuExample() {
   return (
@@ -95,8 +88,6 @@ export default function CustomLabelMenuExample() {
 You can use a React Native view (such as `Pressable`) as the menu's label by wrapping it in [`RNHostView`](rnhostview).
 
 ```tsx RNLabelMenuExample.tsx
-import { Host, Menu, Button, RNHostView } from '@expo/ui/swift-ui';
-import { Pressable, Text } from 'react-native';
 
 export default function RNLabelMenuExample() {
   return (
@@ -130,7 +121,6 @@ export default function RNLabelMenuExample() {
 Menus can be nested to create submenus.
 
 ```tsx NestedMenuExample.tsx
-import { Host, Menu, Button } from '@expo/ui/swift-ui';
 
 export default function NestedMenuExample() {
   return (
@@ -153,7 +143,6 @@ export default function NestedMenuExample() {
 When `onPrimaryAction` is provided, a single tap triggers the primary action while a long-press shows the menu.
 
 ```tsx PrimaryActionMenuExample.tsx
-import { Host, Menu, Button } from '@expo/ui/swift-ui';
 
 export default function PrimaryActionMenuExample() {
   return (
@@ -176,8 +165,6 @@ export default function PrimaryActionMenuExample() {
 You can use the `buttonStyle` modifier to change the appearance of the menu trigger.
 
 ```tsx StyledMenuExample.tsx
-import { Host, Menu, Button } from '@expo/ui/swift-ui';
-import { buttonStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function StyledMenuExample() {
   return (
@@ -198,8 +185,6 @@ To create a menu with the iOS Liquid Glass appearance, use `buttonStyle('glass')
 > **Important:** Do not apply the `glassEffect()` modifier to the Menu's label view to achieve a glass look. This causes a visual artifact where a rectangular halo briefly appears behind the trigger when the menu is dismissed. Always use `buttonStyle` instead, which correctly integrates with the Menu's dismiss animation.
 
 ```tsx GlassMenuExample.tsx
-import { Host, Menu, Button } from '@expo/ui/swift-ui';
-import { buttonStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function GlassMenuExample() {
   return (
@@ -216,8 +201,6 @@ export default function GlassMenuExample() {
 For a more prominent glass effect, use `glassProminent`:
 
 ```tsx GlassProminentMenuExample.tsx
-import { Host, Menu, Button } from '@expo/ui/swift-ui';
-import { buttonStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function GlassProminentMenuExample() {
   return (
@@ -243,7 +226,6 @@ export default function GlassProminentMenuExample() {
 Use a [`ControlGroup`](controlgroup) inside a menu to render a horizontal row of icon buttons, similar to the quick actions row in Apple Music or Safari menus.
 
 ```tsx MenuWithControlGroupExample.tsx
-import { Host, Menu, ControlGroup, Button, Section, Divider } from '@expo/ui/swift-ui';
 
 export default function MenuWithControlGroupExample() {
   return (
@@ -287,8 +269,6 @@ export default function MenuWithControlGroupExample() {
 Use the [`disabled(true)`](modifiers/#disableddisabled) modifier on a menu `Button` to render it greyed-out and non-interactive. The button still appears in the menu but won't fire `onPress`.
 
 ```tsx DisabledMenuItemExample.tsx
-import { Host, Menu, Button } from '@expo/ui/swift-ui';
-import { disabled } from '@expo/ui/swift-ui/modifiers';
 
 export default function DisabledMenuItemExample() {
   return (
@@ -312,8 +292,6 @@ export default function DisabledMenuItemExample() {
 A SwiftUI [`Toggle`](toggle) placed inside a `Menu` automatically renders as a row with a leading SF Symbol (when `systemImage` is set) and a trailing checkmark when `isOn` is `true`. Use this pattern instead of inventing a custom checkmark item.
 
 ```tsx CheckmarkMenuItemExample.tsx
-import { Host, Menu, Button, Toggle } from '@expo/ui/swift-ui';
-import { useState } from 'react';
 
 export default function CheckmarkMenuItemExample() {
   const [showCompleted, setShowCompleted] = useState(true);
@@ -346,8 +324,6 @@ export default function CheckmarkMenuItemExample() {
 Use the `labelStyle('iconOnly')` modifier to display only the icon without the label text. The `label` prop should still be provided for accessibility purposes.
 
 ```tsx IconOnlyMenuExample.tsx
-import { Host, Menu, Button } from '@expo/ui/swift-ui';
-import { labelStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function IconOnlyMenuExample() {
   return (
@@ -365,7 +341,6 @@ export default function IconOnlyMenuExample() {
 ## API
 
 ```tsx
-import { Menu } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/menu" apiName="Menu" />

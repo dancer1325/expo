@@ -3,8 +3,6 @@ title: qr.expo.dev
 description: Reference for the QR code generator at qr.expo.dev.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { YesIcon, NoIcon } from '~/ui/components/DocIcons';
 
 qr.expo.dev is a cloud function that generates Expo-branded QR codes. This function creates QR codes for [EAS Update](/eas-update/introduction/), which are used to preview updates in [development builds](/develop/development-builds/introduction/) and Expo Go.
 

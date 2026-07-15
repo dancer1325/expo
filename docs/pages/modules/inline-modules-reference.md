@@ -3,7 +3,6 @@ title: Inline modules reference
 description: A reference of Expo inline modules.
 ---
 
-import { PaddedAPIBox } from '~/components/plugins/PaddedAPIBox';
 
 > **warning** Inline modules are [experimental](/more/release-statuses/#experimental) and available in Expo SDK 56 and later. The API is subject to breaking changes.
 

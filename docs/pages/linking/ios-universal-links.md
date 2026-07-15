@@ -3,9 +3,6 @@ title: iOS Universal Links
 description: Learn how to configure iOS Universal Links to open your Expo app from a standard web URL.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 To configure iOS Universal Links for your app, you need to set up the **two-way association** to verify your website and native app.
 
@@ -175,7 +172,6 @@ If you're having trouble setting up the banner, run the following command to aut
 If you're building a [statically rendered website with Expo Router](/router/reference/static-rendering), then add the HTML tag to the `<head>` component in your [**app/+html.js** file](/router/reference/static-rendering#root-html).
 
 ```tsx app/+html.tsx
-import { type PropsWithChildren } from "react";
 
 export default function Root({ children }: PropsWithChildren) {
   return (

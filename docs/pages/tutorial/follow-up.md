@@ -3,7 +3,6 @@ title: Learning resources
 description: Explore a curated list of resources to learn about Expo and React Native.
 ---
 
-import { A } from '~/ui/components/Text';
 
 Now that the example app is done, let's learn more about the technologies we used to build it.
 

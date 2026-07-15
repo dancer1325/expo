@@ -5,8 +5,6 @@ sidebar_title: Settings
 hideTOC: true
 ---
 
-import { PaddedAPIBox } from '~/components/plugins/PaddedAPIBox';
-import { FileTree } from '~/ui/components/FileTree';
 
 > **warning** **Warning:** `unstable_settings` currently do not work with [async routes](/router/web/async-routes/) (development-only). This is why the feature is designated _unstable_.
 
@@ -17,7 +15,6 @@ When deep linking to a route, you may want to provide a user with a "back" butto
 <FileTree files={['src/app/_layout.tsx', 'src/app/index.tsx', 'src/app/other.tsx']} />
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export const unstable_settings = {
   // Ensure any route can link back to `/`

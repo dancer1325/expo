@@ -7,7 +7,6 @@ packageName: 'expo-router'
 platforms: ['android', 'ios']
 ---
 
-import APISection from '~/components/plugins/APISection';
 
 The Color API provides access to platform-specific native colors.
 
@@ -16,8 +15,6 @@ The Color API provides access to platform-specific native colors.
 ## Usage
 
 ```tsx
-import { Color } from 'expo-router';
-import { Text, View, useColorScheme } from 'react-native';
 
 export default function MyComponent() {
   useColorScheme();
@@ -32,7 +29,6 @@ export default function MyComponent() {
 ## API
 
 ```js
-import { Color } from 'expo-router';
 ```
 
 <APISection packageName="expo-router/color" apiName="Color" />

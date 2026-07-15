@@ -5,12 +5,6 @@ description: Learn how to configure a development build for Android devices and 
 hasVideoLink: true
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 In this chapter, we'll create a development build that can run on Android with EAS Build.
 

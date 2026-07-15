@@ -5,7 +5,6 @@ description: Learn how to switch modules based on the platform in Expo Router.
 
 > **warning** Platform specific extensions were added in Expo Router `3.5.0`. Follow this guide only if you are using an older version of Expo Router.
 
-import { FileTree } from '~/ui/components/FileTree';
 
 While building your app, you may want to show specific content based on the current platform. Platform-specific modules can make the experience more native to a given platform. The following sections describe the ways you can achieve this with Expo Router.
 
@@ -14,8 +13,6 @@ While building your app, you may want to show specific content based on the curr
 You can use the [`Platform`](https://reactnative.dev/docs/platform-specific-code#platform-module) module from React Native to detect the current platform and render the appropriate content based on the result. For example, you can render a `Tabs` layout on native and a custom layout on the web.
 
 ```tsx app/_layout.tsx
-import { Platform } from 'react-native';
-import { Link, Slot, Tabs } from 'expo-router';
 
 export default function Layout() {
   if (Platform.OS === 'web') {

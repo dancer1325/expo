@@ -6,9 +6,6 @@ packageName: 'expo-live-photo'
 platforms: ['ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 ## Installation
 
@@ -21,10 +18,6 @@ Here's a simple example of `expo-live-photo` usage combined with `expo-image-pic
 <SnackInline label='LivePhoto' dependencies={['expo-live-photo', 'expo-image-picker', 'react', 'react-native']}>
 
 ```tsx
-import * as ImagePicker from 'expo-image-picker';
-import { LivePhotoAsset, LivePhotoView, LivePhotoViewType } from 'expo-live-photo';
-import { useRef, useState } from 'react';
-import { View, StyleSheet, Text, Button } from 'react-native';
 
 export default function LivePhotoScreen() {
   const viewRef = useRef<LivePhotoViewType>(null);
@@ -106,7 +99,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import { LivePhotoView } from 'expo-live-photo';
 ```
 
 <APISection packageName="expo-live-photo" apiName="LivePhoto" />

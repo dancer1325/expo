@@ -4,7 +4,6 @@ sidebar_title: Testing
 description: Learn how to create integration tests for your app when using Expo Router.
 ---
 
-import { APIBox } from '~/components/plugins/APIBox';
 
 Expo Router relies on your file system, which can present challenges when setting up mocks for integration tests. Expo Router's submodule, `expo-router/testing-library`, is a set of testing utilities built on top of the popular [`@testing-library/react-native`](https://callstack.github.io/react-native-testing-library/) and allows you to quickly create in-memory Expo Router apps that are pre-configured for testing.
 
@@ -31,7 +30,6 @@ Before you proceed, ensure you have set up `jest-expo` according to the [Unit te
 `renderRouter` can provide inline-mocking of a file system by passing an object to this function as the first parameter. The keys of the object are the mock filesystem paths. **Do not use leading relative (`./`) or absolute (`/`) notation when defining these paths and exclude file extension.**
 
 ```tsx app.test.tsx
-import { renderRouter, screen } from 'expo-router/testing-library';
 
 it('my-test', async () => {
   const MockComponent = jest.fn(() => <View />);
@@ -60,7 +58,6 @@ it('my-test', async () => {
 Providing an array of strings to `renderRouter` will create an inline mock filesystem with `null` components (`{ default: () => null }`). This is useful for testing scenarios where you do not need to test the output of a route.
 
 ```tsx app.test.tsx
-import { renderRouter, screen } from 'expo-router/testing-library';
 
 it('my-test', async () => {
   renderRouter(['index', 'directory/a', '(group)/b'], {

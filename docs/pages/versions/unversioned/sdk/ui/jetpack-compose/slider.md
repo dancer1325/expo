@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Slider`](../universal/slider) — it renders the appropriate native component per platform.
 
@@ -31,8 +28,6 @@ Expo UI Slider matches the official Jetpack Compose [Slider API](https://develop
 ### Basic slider
 
 ```tsx BasicSliderExample.tsx
-import { useState } from 'react';
-import { Host, Slider } from '@expo/ui/jetpack-compose';
 
 export default function BasicSliderExample() {
   const [value, setValue] = useState(0.5);
@@ -50,8 +45,6 @@ export default function BasicSliderExample() {
 Use the `min` and `max` props to define the slider's value range.
 
 ```tsx CustomRangeSliderExample.tsx
-import { useState } from 'react';
-import { Host, Slider } from '@expo/ui/jetpack-compose';
 
 export default function CustomRangeSliderExample() {
   const [value, setValue] = useState(50);
@@ -69,8 +62,6 @@ export default function CustomRangeSliderExample() {
 Use the `steps` prop to define discrete increments. Set `steps` to `0` for continuous values.
 
 ```tsx SteppedSliderExample.tsx
-import { useState } from 'react';
-import { Host, Slider } from '@expo/ui/jetpack-compose';
 
 export default function SteppedSliderExample() {
   const [value, setValue] = useState(0);
@@ -88,8 +79,6 @@ export default function SteppedSliderExample() {
 Use the `colors` prop to override the default Material3 colors for the slider's thumb, track, and tick marks.
 
 ```tsx CustomColorsSliderExample.tsx
-import { useState } from 'react';
-import { Host, Slider } from '@expo/ui/jetpack-compose';
 
 export default function CustomColorsSliderExample() {
   const [value, setValue] = useState(0.5);
@@ -115,9 +104,6 @@ export default function CustomColorsSliderExample() {
 Use both `Slider.Thumb` and `Slider.Track` slots for a fully custom slider appearance.
 
 ```tsx FullyCustomSliderExample.tsx
-import { useState } from 'react';
-import { Host, Slider, Shape, Row, Box } from '@expo/ui/jetpack-compose';
-import {
   fillMaxWidth,
   height,
   weight,
@@ -159,7 +145,6 @@ export default function FullyCustomSliderExample() {
 ## API
 
 ```tsx
-import { Slider } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/slider" apiName="Slider" />

@@ -4,8 +4,6 @@ sidebar_title: Manage branches and channels
 description: Learn how to link a branch to a channel and publish updates with EAS CLI.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 EAS Update works by linking _branches_ to _channels_. Channels are specified at build time and exist inside a build's native code. Branches are an ordered list of updates, similar to a Git branch, which is an ordered list of commits. With EAS Update, we can link any channel to any branch, allowing us to make different updates available to different builds.
 

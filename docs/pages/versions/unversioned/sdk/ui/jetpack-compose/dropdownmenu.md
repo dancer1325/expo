@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI DropdownMenu matches the official Jetpack Compose [Menu API](https://developer.android.com/develop/ui/compose/components/menu) and displays a dropdown menu when a trigger element is pressed.
 
@@ -29,7 +26,6 @@ Expo UI DropdownMenu matches the official Jetpack Compose [Menu API](https://dev
 ### Basic dropdown menu
 
 ```tsx BasicDropdownMenuExample.tsx
-import {
   Host,
   DropdownMenu,
   DropdownMenuItem,
@@ -37,7 +33,6 @@ import {
   Text,
   Icon,
 } from '@expo/ui/jetpack-compose';
-import { useState } from 'react';
 
 const homeIcon = require('./assets/home.xml');
 
@@ -74,15 +69,12 @@ export default function BasicDropdownMenuExample() {
 You can use a React Native view (such as `Pressable`) as the dropdown's trigger by wrapping it in [`RNHostView`](rnhostview).
 
 ```tsx RNTriggerDropdownMenuExample.tsx
-import {
   Host,
   DropdownMenu,
   DropdownMenuItem,
   Text as ComposeText,
   RNHostView,
 } from '@expo/ui/jetpack-compose';
-import { useState } from 'react';
-import { Pressable, Text } from 'react-native';
 
 export default function RNTriggerDropdownMenuExample() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -127,9 +119,6 @@ export default function RNTriggerDropdownMenuExample() {
 Jetpack Compose has no dedicated long-press menu primitive — you compose one from a [`combinedClickable`](./modifiers.mdx) modifier on the trigger view plus the existing controlled `DropdownMenu`. The menu anchors to the trigger automatically.
 
 ```tsx LongPressDropdownMenuExample.tsx
-import { Host, DropdownMenu, DropdownMenuItem, Text } from '@expo/ui/jetpack-compose';
-import { background, combinedClickable } from '@expo/ui/jetpack-compose/modifiers';
-import { useState } from 'react';
 
 export default function LongPressDropdownMenuExample() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -171,7 +160,6 @@ export default function LongPressDropdownMenuExample() {
 ## API
 
 ```tsx
-import { DropdownMenu } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/dropdownmenu" apiName="DropdownMenu" />

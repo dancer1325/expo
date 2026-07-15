@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI provides [`HorizontalDivider`](<https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary#HorizontalDivider(androidx.compose.ui.Modifier,androidx.compose.ui.unit.Dp,androidx.compose.ui.graphics.Color)>) and [`VerticalDivider`](<https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary#VerticalDivider(androidx.compose.ui.Modifier,androidx.compose.ui.unit.Dp,androidx.compose.ui.graphics.Color)>) matching the official Jetpack Compose Divider API.
 
@@ -31,7 +28,6 @@ Expo UI provides [`HorizontalDivider`](<https://developer.android.com/reference/
 A thin horizontal line to visually separate content in lists and layouts.
 
 ```tsx HorizontalDividerExample.tsx
-import { Host, HorizontalDivider, Column, Text } from '@expo/ui/jetpack-compose';
 
 export default function HorizontalDividerExample() {
   return (
@@ -51,8 +47,6 @@ export default function HorizontalDividerExample() {
 Both `HorizontalDivider` and `VerticalDivider` accept `thickness` and `color` props. Use `StyleSheet.hairlineWidth` for a single-pixel line, or set a custom thickness and color.
 
 ```tsx CustomDividerExample.tsx
-import { Host, HorizontalDivider, Column, Text } from '@expo/ui/jetpack-compose';
-import { StyleSheet } from 'react-native';
 
 export default function CustomDividerExample() {
   return (
@@ -74,8 +68,6 @@ export default function CustomDividerExample() {
 A vertical line to separate items side by side in a row layout.
 
 ```tsx VerticalDividerExample.tsx
-import { Host, VerticalDivider, Row, Text } from '@expo/ui/jetpack-compose';
-import { height } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function VerticalDividerExample() {
   return (
@@ -93,7 +85,6 @@ export default function VerticalDividerExample() {
 ## API
 
 ```tsx
-import { HorizontalDivider, VerticalDivider } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/divider" apiName="Divider" />

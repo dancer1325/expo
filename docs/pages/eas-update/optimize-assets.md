@@ -4,8 +4,6 @@ sidebar_title: Optimize assets
 description: Learn how EAS Update downloads assets and how to optimize them for download size.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 > **info** The new [asset selection feature](/eas-update/asset-selection) can greatly reduce the total number and size of downloaded assets.
 

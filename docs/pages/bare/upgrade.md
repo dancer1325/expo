@@ -3,7 +3,6 @@ title: Native project upgrade helper
 description: View file-by-file diffs of all the changes you need to make to your native projects to upgrade them to the next Expo SDK version.
 ---
 
-import { TemplateBareMinimumDiffViewer } from '~/ui/components/TemplateBareMinimumDiffViewer';
 
 If you manage your native projects (**android** and **ios** directories), to [upgrade to the latest Expo SDK](/workflow/upgrading-expo-sdk-walkthrough/), you have to make changes to your native projects. It can be a complex process to find which native file changes and what to update in which file.
 

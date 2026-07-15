@@ -3,9 +3,7 @@ title: Automate submissions
 description: Learn how to enable automatic submissions with EAS Build.
 ---
 
-import { EasMetadataIcon } from '@expo/styleguide-icons/custom/EasMetadataIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 Many mobile deployment processes eventually evolve to the point where the app is automatically submitted to the respective store once an appropriate build is completed. This saves developers from having to wait around for the build to complete, avoids a bit of manual work, and eliminates the need to coordinate providing app store credentials to the team.
 

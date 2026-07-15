@@ -3,9 +3,6 @@ title: Web modals
 description: Learn how to implement and customize the behavior of a modal in your web app using Expo Router.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { FileTree } from '~/ui/components/FileTree';
 
 > **important** Web modals are in [alpha](/more/release-statuses/#alpha) and available in SDK 54 and later. To use this feature, you must set the `EXPO_UNSTABLE_WEB_MODAL=1` environment variable in your project.
 
@@ -24,7 +21,6 @@ Consider the following navigation tree, which includes a stack navigator defined
 In the layout file (**src/app/\_layout.tsx**), the modal screen component is added to the Stack navigator:
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export const unstable_settings = {
   anchor: 'index',
@@ -49,7 +45,6 @@ export default function Layout() {
 The **modal.tsx** is used to display the contents of a modal:
 
 ```tsx src/app/modal.tsx
-import { Text, View } from 'react-native';
 
 export default function Modal() {
   return <View style={{ flex: 1, padding: 16 }}>{/* Modal content goes here */}</View>;
@@ -59,8 +54,6 @@ export default function Modal() {
 Now, to open the modal from **index.tsx**, you can use `router.push('/modal')` in your index route:
 
 ```tsx src/app/index.tsx
-import { router } from 'expo-router';
-import { Pressable, Text, View, StyleSheet } from 'react-native';
 
 export default function Home() {
   return (
@@ -214,7 +207,6 @@ webModalStyle: {
 To create a full screen modal for content that covers maximum space, you can use `webModalStyle` property in your modal route's `Stack.Screen` options:
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export const unstable_settings = {
   anchor: 'index',
@@ -247,7 +239,6 @@ Here's the result of the above example:
 When running your web app on mobile devices, you can set `sheetAllowedDetents` to `fitToContents` or a custom value if you want to avoid showing a full screen modal:
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export const unstable_settings = {
   anchor: 'index',
@@ -285,7 +276,6 @@ The modal appears as a sheet on a mobile device:
 For smaller interactions, you can create a compact modal that fits its content:
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export const unstable_settings = {
   anchor: 'index',
@@ -326,7 +316,6 @@ Here's the result of the above example:
 You can set the `presentation` option to `transparentModal` when you want to display an overlay that should maintain the visual context of the underlying screen:
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export const unstable_settings = {
   anchor: 'index',
@@ -358,7 +347,6 @@ Here's the result of the above example:
 You customize the corner radius using `sheetCornerRadius`:
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export const unstable_settings = {
   anchor: 'index',
@@ -395,7 +383,6 @@ Here's the result of the above example:
 You can use `sheetAllowedDetents` to define the height at which the modal can rest:
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export const unstable_settings = {
   anchor: 'index',
@@ -457,7 +444,6 @@ You can achieve the above web modal behavior by using the [`transparentModal`](h
 Modify your project's root layout (**src/app/\_layout.tsx**) to add an `options` object to the modal route:
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 /* @info `unstable_settings` can be set in any stack's `_layout.tsx` file. It is used to define the initial route name for the stack, which ensures that users have a consistent starting point, especially when deep linking. */
 export const unstable_settings = {
@@ -496,9 +482,6 @@ Style the overlay and modal content in **modal.tsx** as shown below:
 
 {/* prettier-ignore */}
 ```tsx src/app/modal.tsx|collapseHeight=250
-import { Link } from 'expo-router';
-import { Pressable, StyleSheet, Text } from 'react-native';
-import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
 
 export default function Modal() {
   return (

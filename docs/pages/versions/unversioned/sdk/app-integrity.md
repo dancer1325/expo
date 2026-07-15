@@ -8,8 +8,6 @@ platforms: ['android', 'ios', 'expo-go']
 isAlpha: true
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 > **important** **This library is currently in [alpha](/more/release-statuses/#alpha) and will frequently experience breaking changes.**
 
@@ -39,7 +37,6 @@ Refer to the [Play Integrity setup guide](https://developer.android.com/google/p
 You need to prepare the integrity token provider before you make integrity check requests. You can do this when your app launches or in the background before the integrity check is needed.
 
 ```js
-import * as AppIntegrity from '@expo/app-integrity';
 
 const cloudProjectNumber = 'your-cloud-project-number';
 await AppIntegrity.prepareIntegrityTokenProviderAsync(cloudProjectNumber);
@@ -91,7 +88,6 @@ For verification logic on your server, see [Validating apps that connect to your
 Not all devices can use the App Attest service, so it's important to have your app run a compatibility check before accessing the service. If the user's app doesn't pass the compatibility check, gracefully bypass the service. You can check for availability by reading the `isSupported` property.
 
 ```js
-import * as AppIntegrity from '@expo/app-integrity';
 
 if (AppIntegrity.isSupported) {
   // Perform key generation and attestation.
@@ -172,7 +168,6 @@ The keys that you generate remain valid through regular app updates, but don't s
 ## API
 
 ```js
-import * as AppIntegrity from '@expo/app-integrity';
 ```
 
 <APISection packageName="expo-app-integrity" apiName="AppIntegrity" />

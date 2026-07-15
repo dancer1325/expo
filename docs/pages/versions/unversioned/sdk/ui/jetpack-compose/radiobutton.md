@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 A radio button component for selecting a single option from a set. Maps to the official Jetpack Compose [RadioButton](https://developer.android.com/develop/ui/compose/components/radio-button) API.
 
@@ -31,8 +28,6 @@ A radio button component for selecting a single option from a set. Maps to the o
 A standalone radio button with an `onClick` handler.
 
 ```tsx BasicRadioButton.tsx
-import { useState } from 'react';
-import { Host, RadioButton } from '@expo/ui/jetpack-compose';
 
 export default function BasicRadioButton() {
   const [selected, setSelected] = useState(false);
@@ -54,9 +49,6 @@ The recommended pattern for a radio group follows the [Compose accessibility gui
 - Pass no `onClick` to the `RadioButton` itself, the row handles the interaction. This provides a larger touch target.
 
 ```tsx RadioGroup.tsx
-import { useState } from 'react';
-import { Host, Column, Row, RadioButton, Text } from '@expo/ui/jetpack-compose';
-import {
   selectable,
   selectableGroup,
   fillMaxWidth,
@@ -94,7 +86,6 @@ export default function RadioGroup() {
 ## API
 
 ```tsx
-import { RadioButton } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/radiobutton" apiName="RadioButton" />

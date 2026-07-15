@@ -7,11 +7,6 @@ platforms: ['android', 'ios', 'expo-go']
 isAlpha: true
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ConfigReactNative } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
-import { PlatformTags } from '~/ui/components/Tag/PlatformTags';
 
 > **important** **This library is currently in [alpha](/more/release-statuses/#alpha) and will frequently experience breaking changes.**
 
@@ -61,9 +56,6 @@ For existing React Native projects, add the entitlement to your project's **ios/
 <SnackInline label="Age Range Usage" dependencies={['expo-age-range']} platforms={['android', 'ios']}>
 
 ```tsx
-import * as AgeRange from 'expo-age-range';
-import { useState } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
 
 export default function App() {
   const [result, setResult] = useState<AgeRange.AgeRangeResponse | { error: string } | null>(null);
@@ -116,7 +108,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```ts
-import * as AgeRange from 'expo-age-range';
 ```
 
 <APISection packageName="expo-age-range" apiName="AgeRange" />

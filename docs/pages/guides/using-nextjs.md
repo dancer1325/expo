@@ -4,9 +4,6 @@ sidebar_title: Using Next.js
 description: A guide for integrating Next.js with Expo for the web.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 > **warning** Using Next.js is not an official part of Expo's universal app development workflow.
 
@@ -132,9 +129,6 @@ module.exports = nextConfig;
 The package `react-native-web` builds on the assumption of reset CSS styles. Here's how you reset styles in Next.js using the **pages** directory.
 
 ```jsx pages/_document.js
-import { Children } from 'react';
-import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { AppRegistry } from 'react-native';
 
 // Follows the setup for react-native-web:
 // https://necolas.github.io/react-native-web/docs/setup/#root-element
@@ -192,7 +186,6 @@ export default class MyDocument extends Document {
 ```
 
 ```jsx pages/_app.js
-import Head from 'next/head';
 
 export default function App({ Component, pageProps }) {
   return (

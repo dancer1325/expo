@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI provides four toggle button components that match the official Jetpack Compose Toggle Button API: [`ToggleButton`](https://kotlinlang.org/api/compose-multiplatform/material3/androidx.compose.material3/-toggle-button.html), [`IconToggleButton`](https://kotlinlang.org/api/compose-multiplatform/material3/androidx.compose.material3/-icon-toggle-button.html), [`FilledIconToggleButton`](https://kotlinlang.org/api/compose-multiplatform/material3/androidx.compose.material3/-filled-icon-toggle-button.html), and [`OutlinedIconToggleButton`](https://kotlinlang.org/api/compose-multiplatform/material3/androidx.compose.material3/-outlined-icon-toggle-button.html).
 
@@ -31,8 +28,6 @@ Expo UI provides four toggle button components that match the official Jetpack C
 A toggle button with text and icon content.
 
 ```tsx BasicToggleButtonExample.tsx
-import { useState } from 'react';
-import { Host, ToggleButton, Text } from '@expo/ui/jetpack-compose';
 
 export default function BasicToggleButtonExample() {
   const [checked, setChecked] = useState(false);
@@ -52,8 +47,6 @@ export default function BasicToggleButtonExample() {
 Use different icon toggle button components to convey varying levels of emphasis.
 
 ```tsx IconToggleButtonVariantsExample.tsx
-import { useState } from 'react';
-import {
   Host,
   IconToggleButton,
   FilledIconToggleButton,
@@ -92,8 +85,6 @@ export default function IconToggleButtonVariantsExample() {
 Override checked and unchecked colors using the `colors` prop.
 
 ```tsx CustomColorsToggleButtonExample.tsx
-import { useState } from 'react';
-import { Host, ToggleButton, Text } from '@expo/ui/jetpack-compose';
 
 export default function CustomColorsToggleButtonExample() {
   const [checked, setChecked] = useState(true);
@@ -119,7 +110,6 @@ export default function CustomColorsToggleButtonExample() {
 ### Disabled toggle button
 
 ```tsx DisabledToggleButtonExample.tsx
-import { Host, ToggleButton, Text } from '@expo/ui/jetpack-compose';
 
 export default function DisabledToggleButtonExample() {
   return (
@@ -135,7 +125,6 @@ export default function DisabledToggleButtonExample() {
 ## API
 
 ```tsx
-import {
   ToggleButton,
   IconToggleButton,
   FilledIconToggleButton,

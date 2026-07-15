@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Text`](../universal/text) — it renders the appropriate native component per platform.
 
@@ -31,7 +28,6 @@ Expo UI Text matches the official Jetpack Compose [Text styling](https://develop
 ### Basic text
 
 ```tsx BasicTextExample.tsx
-import { Host, Text } from '@expo/ui/jetpack-compose';
 
 export default function BasicTextExample() {
   return (
@@ -47,8 +43,6 @@ export default function BasicTextExample() {
 Use the `style` prop with `typography` to apply Material 3 typography presets.
 
 ```tsx TypographyExample.tsx
-import { Host, Text, Column } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function TypographyExample() {
   return (
@@ -69,8 +63,6 @@ export default function TypographyExample() {
 Control text truncation with `maxLines` and `overflow`.
 
 ```tsx TextOverflowExample.tsx
-import { Host, Text } from '@expo/ui/jetpack-compose';
-import { width } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function TextOverflowExample() {
   return (
@@ -89,8 +81,6 @@ export default function TextOverflowExample() {
 Apply custom text styles including font weight, style, size, and decoration.
 
 ```tsx StyledTextExample.tsx
-import { Host, Text, Column } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function StyledTextExample() {
   return (
@@ -114,8 +104,6 @@ export default function StyledTextExample() {
 Nest `<Text>` components to apply inline styles to parts of a sentence. Child spans inherit styles from their parent. For example, a bold parent with an italic child renders the child as bold and italic.
 
 ```tsx NestedTextExample.tsx
-import { Host, Text, Column } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function NestedTextExample() {
   return (
@@ -160,8 +148,6 @@ export default function NestedTextExample() {
 Use fonts loaded via [`expo-font`](/versions/latest/sdk/font/) by passing the font family name to `style.fontFamily`.
 
 ```tsx CustomFontExample.tsx
-import { Host, Text, Column } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function CustomFontExample() {
   return (
@@ -179,7 +165,6 @@ export default function CustomFontExample() {
 ## API
 
 ```tsx
-import { Text } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/text" apiName="Text" />

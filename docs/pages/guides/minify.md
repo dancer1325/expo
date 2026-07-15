@@ -4,8 +4,6 @@ sidebar_title: Minification
 description: Learn about customizing the JavaScript minification process in Expo CLI with Metro bundler.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 Minification is an optimization build step. It removes unnecessary characters such as collapses whitespace, removes comments, and shortens static operations, from the source code. This process reduces the final size and improves load times.
 

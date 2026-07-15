@@ -7,10 +7,6 @@ platforms: ['android', 'ios', 'expo-go']
 inExpoGo: true
 ---
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 > **important** [`expo-maps`](./maps) is an Expo-built alternative to `react-native-maps`, powered by Google Maps on Android and Apple Maps on iOS.
 
@@ -29,9 +25,6 @@ See full documentation at [`react-native-maps/react-native-maps`](https://github
 <SnackInline label='MapView' dependencies={['react-native-maps']}>
 
 ```jsx
-import React from 'react';
-import MapView from 'react-native-maps';
-import { StyleSheet, View } from 'react-native';
 
 export default function App() {
   return (

@@ -3,10 +3,7 @@ title: Using push notifications
 description: Learn about push notification services that are compatible with Expo and React Native apps.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { NotificationBoxIcon } from '@expo/styleguide-icons/outline/NotificationBoxIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 Expo apps can work with any notification service or any of the notification capabilities offered by the Android and iOS operating systems. Even if a package doesn't yet exist for a feature, native code can be written to access it via the [Expo Modules API](/modules/overview/), and native project configurations can be automated using [config plugins](/config-plugins/introduction/). The following options provide purpose-built Expo integrations, including config plugins where necessary, for implementing push notifications in your app:
 

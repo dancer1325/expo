@@ -4,7 +4,6 @@ description: An overview of data and privacy protection policies that Expo offer
 hideTOC: true
 ---
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 At Expo, our team's aim is to provide developers with tools and services that enable them to create robust and high-quality apps. Our focus is not on gathering huge amounts of data. We only collect a minimal amount of data that aids us in making informed decisions about our products and services. Our ultimate goal is to provide excellent user experiences.
 

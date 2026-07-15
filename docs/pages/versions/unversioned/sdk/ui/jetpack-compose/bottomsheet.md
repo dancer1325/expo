@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`BottomSheet`](../universal/bottomsheet) — it renders the appropriate native component per platform.
 
@@ -33,10 +30,6 @@ Expo UI ModalBottomSheet matches the official Jetpack Compose [Bottom Sheet API]
 Use `ref.hide()` to programmatically dismiss the sheet with an animation before unmounting it.
 
 ```tsx BasicBottomSheetExample.tsx
-import { useRef, useState } from 'react';
-import { Host, ModalBottomSheet, Button, Column, Text } from '@expo/ui/jetpack-compose';
-import type { ModalBottomSheetRef } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function BasicBottomSheetExample() {
   const [visible, setVisible] = useState(false);
@@ -73,10 +66,6 @@ export default function BasicBottomSheetExample() {
 When `skipPartiallyExpanded` is set, the sheet opens directly in the fully expanded state instead of stopping at the half-height position first.
 
 ```tsx SkipPartiallyExpandedExample.tsx
-import { useRef, useState } from 'react';
-import { Host, ModalBottomSheet, Button, Column, Text } from '@expo/ui/jetpack-compose';
-import type { ModalBottomSheetRef } from '@expo/ui/jetpack-compose';
-import { paddingAll, height } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function SkipPartiallyExpandedExample() {
   const [visible, setVisible] = useState(false);
@@ -116,10 +105,6 @@ export default function SkipPartiallyExpandedExample() {
 When `initialFullyExpanded` is `true`, the sheet opens directly in the fully expanded state on first composition while leaving the partial state reachable. Unlike `skipPartiallyExpanded`, the user can still drag down to the partial state. The `partialExpand()` method also continues to work.
 
 ```tsx InitialFullyExpandedExample.tsx
-import { useRef, useState } from 'react';
-import { Host, ModalBottomSheet, Button, Column, Text } from '@expo/ui/jetpack-compose';
-import type { ModalBottomSheetRef } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function InitialFullyExpandedExample() {
   const [visible, setVisible] = useState(false);
@@ -162,10 +147,6 @@ export default function InitialFullyExpandedExample() {
 Use `containerColor`, `contentColor`, and `scrimColor` to customize the sheet's appearance.
 
 ```tsx CustomColorsExample.tsx
-import { useRef, useState } from 'react';
-import { Host, ModalBottomSheet, Button, Column, Text } from '@expo/ui/jetpack-compose';
-import type { ModalBottomSheetRef } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function CustomColorsExample() {
   const [visible, setVisible] = useState(false);
@@ -207,10 +188,6 @@ export default function CustomColorsExample() {
 Use `ModalBottomSheet.DragHandle` slot to provide a custom drag handle, or set `showDragHandle={false}` to hide it entirely.
 
 ```tsx CustomDragHandleExample.tsx
-import { useRef, useState } from 'react';
-import { Host, ModalBottomSheet, Button, Column, Box, Text } from '@expo/ui/jetpack-compose';
-import type { ModalBottomSheetRef } from '@expo/ui/jetpack-compose';
-import {
   background,
   clip,
   fillMaxWidth,
@@ -258,11 +235,6 @@ export default function CustomDragHandleExample() {
 Use `RNHostView` to embed interactive React Native views inside a Compose bottom sheet. This lets you mix Compose layout with RN components like `Pressable` and `Text`.
 
 ```tsx RNContentBottomSheetExample.tsx
-import { useRef, useState } from 'react';
-import { Host, ModalBottomSheet, Button, Column, RNHostView, Text } from '@expo/ui/jetpack-compose';
-import type { ModalBottomSheetRef } from '@expo/ui/jetpack-compose';
-import { padding } from '@expo/ui/jetpack-compose/modifiers';
-import { Pressable, Text as RNText, View } from 'react-native';
 
 export default function RNContentBottomSheetExample() {
   const [visible, setVisible] = useState(false);
@@ -315,11 +287,6 @@ export default function RNContentBottomSheetExample() {
 Use `RNHostView` without `matchContents` to let the RN view fill the remaining space inside the sheet. Combine with a fixed `height` modifier on the parent `Column` to control the sheet size.
 
 ```tsx FlexRNContentExample.tsx
-import { useRef, useState } from 'react';
-import { Host, ModalBottomSheet, Button, Column, RNHostView, Text } from '@expo/ui/jetpack-compose';
-import type { ModalBottomSheetRef } from '@expo/ui/jetpack-compose';
-import { height, padding } from '@expo/ui/jetpack-compose/modifiers';
-import { Text as RNText, View } from 'react-native';
 
 export default function FlexRNContentExample() {
   const [visible, setVisible] = useState(false);
@@ -368,10 +335,6 @@ export default function FlexRNContentExample() {
 Nest a scrollable React Native list such as `FlatList`, `ScrollView`, or a high-performance list like [FlashList](https://shopify.github.io/flash-list/) or [Legend List](https://github.com/LegendApp/legend-list) inside the sheet with `RNHostView`. Set `nestedScrollEnabled` on the scrollable so it scrolls its own content first. Once it reaches the top edge, the remaining drag moves the sheet. Without `nestedScrollEnabled` the list consumes the gesture and the sheet stays put.
 
 ```tsx ScrollableContentBottomSheetExample.tsx
-import { useState } from 'react';
-import { Host, ModalBottomSheet, Button, Column, RNHostView, Text } from '@expo/ui/jetpack-compose';
-import { fillMaxHeight, padding } from '@expo/ui/jetpack-compose/modifiers';
-import { FlatList, Text as RNText } from 'react-native';
 
 const DATA = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}`);
 
@@ -408,10 +371,6 @@ export default function ScrollableContentBottomSheetExample() {
 Combine `properties`, `sheetGesturesEnabled` to create a sheet that can only be closed programmatically.
 
 ```tsx NonDismissibleExample.tsx
-import { useRef, useState } from 'react';
-import { Host, ModalBottomSheet, Button, Column, Text } from '@expo/ui/jetpack-compose';
-import type { ModalBottomSheetRef } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function NonDismissibleExample() {
   const [visible, setVisible] = useState(false);
@@ -453,7 +412,6 @@ export default function NonDismissibleExample() {
 ## API
 
 ```tsx
-import { ModalBottomSheet } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/bottomsheet" apiName="BottomSheet" />

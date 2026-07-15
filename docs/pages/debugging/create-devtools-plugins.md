@@ -3,9 +3,6 @@ title: Create a dev tools plugin
 description: Learn how to create a dev tools plugin to enhance your development experience.
 ---
 
-import { PaddedAPIBox } from '~/components/plugins/PaddedAPIBox';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 > **info** **Tip:** Check out the [Expo DevTools Plugins](https://github.com/expo/dev-plugins) for complete examples.
 
@@ -79,8 +76,6 @@ client?.sendMessage('ping', { from: 'web' });
 Edit the Expo app inside the **webui** directory to customize the user interface that displays diagnostic information from your app or triggers test scenarios:
 
 ```tsx webui/App.tsx
-import { useDevToolsPluginClient, type EventSubscription } from 'expo/devtools';
-import { useEffect } from 'react';
 
 export default function App() {
   const client = useDevToolsPluginClient('my-devtools-plugin');
@@ -106,7 +101,6 @@ export default function App() {
 Edit the hook in the **src** directory to customize what diagnostic information is sent to the plugin or how the app should respond to any messages from the web user interface:
 
 ```tsx src/useMyDevToolsPlugin.ts
-import { useDevToolsPluginClient } from 'expo/devtools';
 
 export function useMyDevToolsPlugin() {
   const client = useDevToolsPluginClient('my-devtools-plugin');
@@ -178,8 +172,6 @@ This command will build the hook code into the **build** directory, and the web 
 Import the plugin's hook into your app's root component and call it to connect your app to the plugin:
 
 ```jsx App.js
-import { useMyDevToolsPlugin } from 'my-devtools-plugin';
-import { Button } from 'react-native';
 
 export default function App() {
   const { sendPing } = useMyDevToolsPlugin();

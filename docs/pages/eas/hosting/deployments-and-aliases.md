@@ -4,7 +4,6 @@ title: Assign aliases and promote to production
 description: Learn about deployment URLs and how to set up aliases.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 ## Deployments
 

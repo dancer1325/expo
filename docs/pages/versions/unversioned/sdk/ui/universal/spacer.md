@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A layout spacer that produces empty space between siblings inside a [`Row`](row) or [`Column`](column). Use [`size`](#size) for a fixed gap, or [`flexible`](#flexible) to fill the remaining main-axis space.
 
@@ -20,7 +18,6 @@ A layout spacer that produces empty space between siblings inside a [`Row`](row)
 ### Fixed-size spacer
 
 ```tsx FixedSpacerExample.tsx
-import { Host, Column, Text, Spacer } from '@expo/ui';
 
 export default function FixedSpacerExample() {
   return (
@@ -40,7 +37,6 @@ export default function FixedSpacerExample() {
 A flexible spacer fills the remaining space along its parent's main axis, pushing the surrounding content to opposite ends.
 
 ```tsx FlexibleSpacerExample.tsx
-import { Host, Row, Text, Spacer } from '@expo/ui';
 
 export default function FlexibleSpacerExample() {
   return (
@@ -58,7 +54,6 @@ export default function FlexibleSpacerExample() {
 ## API
 
 ```tsx
-import { Spacer } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/spacer" apiName="Spacer" />

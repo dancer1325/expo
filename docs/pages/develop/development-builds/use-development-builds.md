@@ -4,8 +4,6 @@ description: Learn how to use development builds for a project.
 sidebar_title: Use a build
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 Usually, creating a new native build from scratch takes long enough that you'll be tempted to switch tasks and lose your focus. However, with the development build installed on your device or an emulator/simulator, you won't have to wait for the native build process until you [change the underlying native code](#rebuild-a-development-build) that powers your app.
 
@@ -14,7 +12,6 @@ Usually, creating a new native build from scratch takes long enough that you'll 
 Certain types of errors can provide more helpful error messages than the ones that ship by default with React Native. To turn this feature on, you need to import `expo-dev-client` at the top of the **App.&lbrace;js|tsx&rbrace;** or [**app/\_layout.tsx**](/router/advanced/root-layout/).
 
 ```js App.js
-import 'expo-dev-client';
 ```
 
 > This will only affect the application in which you make this change. If you want to load multiple projects from a single development app, you'll need to add this import statement to each project.

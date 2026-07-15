@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A modal sheet that slides up from the bottom of the screen. The sheet's visibility is controlled — toggle [`isPresented`](#ispresented) from React state and dismiss it from [`onDismiss`](#ondismiss) (called when the user swipes down or taps the overlay).
 
@@ -22,8 +20,6 @@ A modal sheet that slides up from the bottom of the screen. The sheet's visibili
 ### Basic bottom sheet
 
 ```tsx BottomSheetExample.tsx
-import { useState } from 'react';
-import { Host, Column, Button, BottomSheet, Text } from '@expo/ui';
 
 export default function BottomSheetExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -48,8 +44,6 @@ export default function BottomSheetExample() {
 Pass [`showDragIndicator={false}`](#showdragindicator) for sheets without a handle.
 
 ```tsx BottomSheetNoIndicatorExample.tsx
-import { useState } from 'react';
-import { Host, Button, BottomSheet, Text } from '@expo/ui';
 
 export default function BottomSheetNoIndicatorExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -75,8 +69,6 @@ Pass [`snapPoints`](#snappoints) to let the user drag the sheet between multiple
 When sheet content can be taller than the smallest snap point, wrap it in a `ScrollView` so the overflow scrolls correctly.
 
 ```tsx BottomSheetSnapPointsExample.tsx
-import { useState } from 'react';
-import { Host, BottomSheet, Button, Column, ScrollView, Text } from '@expo/ui';
 
 export default function BottomSheetSnapPointsExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -107,9 +99,6 @@ export default function BottomSheetSnapPointsExample() {
 The bottom sheet supports a React Native list such as `FlatList` (or a high-performance list like [FlashList](https://shopify.github.io/flash-list/) or [Legend List](https://github.com/LegendApp/legend-list)) as a child when wrapped in [`RNHostView`](rnhostview). [`snapPoints`](#snappoints) sizes the sheet, and the list scrolls within that height. With `nestedScrollEnabled`, the list scrolls its own content first; once it reaches the top edge, the remaining drag moves the sheet.
 
 ```tsx BottomSheetScrollableExample.tsx
-import { useState } from 'react';
-import { FlatList, Text } from 'react-native';
-import { Host, BottomSheet, Button, RNHostView } from '@expo/ui';
 
 const DATA = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}`);
 
@@ -141,7 +130,6 @@ export default function BottomSheetScrollableExample() {
 ## API
 
 ```tsx
-import { BottomSheet } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/bottomsheet" apiName="BottomSheet" />

@@ -4,7 +4,6 @@ sidebar_title: Payment history, invoices, and receipts
 description: Learn how to view your account's payment history, download invoices and receipts, and request a refund for a charge.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 **Receipts** in the EAS dashboard provide information about an account's payment history and access to invoices and receipts. It also provides information on payment dates, payment status, and the total amount for that payment. You can also request a refund for a charge if you believe it has been made in error.
 

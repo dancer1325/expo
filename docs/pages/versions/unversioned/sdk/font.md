@@ -7,14 +7,10 @@ iconUrl: '/static/images/packages/expo-font.png'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-font` allows loading fonts from the web and using them in React Native components. See more detailed usage information in the [Fonts](/develop/user-interface/fonts/) guide.
 
@@ -101,8 +97,6 @@ If you don't want to use the [config plugin](#configuration-in-app-config), you 
 ```tsx
 /* @info Import useFonts hook from 'expo-font'. */ import { useFonts } from 'expo-font'; /* @end */
 /* @info Also, import SplashScreen so that when the fonts are not loaded, we can continue to show SplashScreen. */ import * as SplashScreen from 'expo-splash-screen'; /* @end */
-import { useEffect } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
 
 /* @info This prevents SplashScreen from auto hiding while the fonts are loaded. */
 SplashScreen.preventAutoHideAsync();
@@ -148,7 +142,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as Font from 'expo-font';
 ```
 
 <APISection packageName="expo-font" />

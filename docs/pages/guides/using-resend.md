@@ -3,10 +3,6 @@ title: Using Resend
 description: Learn how to integrate Resend in your Expo and React Native app to programmatically send emails with Expo Router's API Routes.
 ---
 
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 [Resend](https://resend.com/) is an email API platform designed for developers. It allows you to send, receive, and manage emails programmatically through an API. You can use it to send transactional emails for use cases like newsletters, marketing emails, and more. The API also allows you to set up webhooks for email events, manage domains for deliverability, and receive emails via webhooks.
 
@@ -86,7 +82,6 @@ To enable using API Routes in your Expo project, you need to set the web.output 
 Then, [create an API route](/router/web/api-routes/#create-an-api-route) to handle email submissions. Inside the **src/app** directory, create a new file called **api/audience+api.ts**. The `+api.ts` extension is used by Expo Router to identify the file as an API Route. To test the integration, you can add the minimal code below to send an email to a recipient using Resend SDK:
 
 ```tsx src/app/api/audience+api.ts
-import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -138,8 +133,6 @@ Note that only variables prefixed with `EXPO_PUBLIC_` can be used in the fronten
 The following example code shows a simple form to collect email addresses from app users. In a real-world scenario, you would want to add validation and error handling to the form. For example, the following code is added to the **src/app/index.tsx** file:
 
 ```tsx src/app/index.tsx
-import { useRef, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 export default function Index() {
   const [email, setEmail] = useState('');

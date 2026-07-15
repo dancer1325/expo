@@ -5,11 +5,7 @@ description: An overview of how to use Expo Application Services (EAS) environme
 searchRank: 8
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 This guide explains how to use Environment Variables in Expo Application Services (EAS): Build, Updates, Workflows, and Hosting. For general information on how environment variables work with the Expo framework, refer to [Environment variables in Expo](/guides/environment-variables).
 

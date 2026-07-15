@@ -8,20 +8,11 @@ platforms: ['android', 'ios', 'web', 'expo-go']
 searchRank: 8
 ---
 
-import { GithubIcon } from '@expo/styleguide-icons/custom/GithubIcon';
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions, IOSPermissions } from '~/components/plugins/permissions';
-import { BoxLink } from '~/ui/components/BoxLink';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { SnackInline } from '~/ui/components/Snippet';
-import { PlatformTags } from '~/ui/components/Tag/PlatformTags';
 
 `expo-image-picker` provides access to the system's UI for selecting images and videos from the phone's library or taking a photo with the camera.
 
@@ -159,9 +150,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 <SnackInline label='Image Picker' dependencies={['expo-image-picker']}>
 
 ```tsx
-import { useState } from 'react';
-import { Alert, Button, Image, View, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 
 export default function ImagePickerExample() {
   const [image, setImage] = useState<string | null>(null);
@@ -269,7 +257,6 @@ See [Using Firebase](/guides/using-firebase/) guide to set up your project corre
 ## API
 
 ```js
-import * as ImagePicker from 'expo-image-picker';
 ```
 
 <APISection packageName="expo-image-picker" apiName="ImagePicker" />

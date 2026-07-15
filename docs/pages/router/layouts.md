@@ -22,7 +22,6 @@ description: Learn how to define shared UI elements such as tab bars and headers
 
 TODO: 
 ```tsx app/home/_layout.tsx
-import { Slot } from 'expo-router';
 
 export default function HomeLayout() {
   return <Slot />;
@@ -33,7 +32,6 @@ From the above example, **Slot** will render the current child route, think of t
 * This component can be wrapped with other components to create a layout.
 
 ```tsx app/home/_layout.tsx
-import { Slot } from 'expo-router';
 
 export default function HomeLayout() {
   return (
@@ -51,7 +49,6 @@ export default function HomeLayout() {
 <FileTree files={['app/_layout.tsx', 'app/home/_layout.tsx', 'app/home/index.tsx']} />
 
 ```tsx app/_layout.tsx
-import { Tabs } from 'expo-router';
 
 export default function Layout() {
   return <Tabs />;
@@ -59,7 +56,6 @@ export default function Layout() {
 ```
 
 ```tsx app/home/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function Layout() {
   return <Stack />;
@@ -98,7 +94,6 @@ One of the best advantages to React Native is being able to use native UI compon
 * To change between truly-native layouts on certain platforms and custom layouts on others, see [Platform-specific modules](/router/advanced/platform-specific-modules).
 
 ```tsx app/home/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function HomeLayout() {
   return (

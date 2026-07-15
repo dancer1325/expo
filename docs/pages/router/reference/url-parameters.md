@@ -4,9 +4,6 @@ description: Learn how to access and modify route and search parameters in your 
 sidebar_title: URL parameters
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 URL parameters include both **route parameters** and **search parameters**. Expo Router provides hooks for accessing and modifying these parameters.
 
@@ -133,8 +130,6 @@ Pressing "Visit james" has a similar effect:
 Both the `useLocalSearchParams` and `useGlobalSearchParams` can be statically typed using a generic. The following is an example for the `user` route parameter:
 
 ```tsx app/[user].tsx
-import { Text } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
 
 export default function Route() {
   const { user } = useLocalSearchParams<{ user: string }>();
@@ -158,8 +153,6 @@ const { user, query } = useLocalSearchParams<{ user: string; query?: string }>()
 When used with the rest syntax (`...`), route parameters are returned as a string array:
 
 ```tsx app/[...everything].tsx
-import { Text } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
 
 export default function Route() {
   const { everything } = useLocalSearchParams<{
@@ -180,8 +173,6 @@ Any search parameters will continue to be returned as individual strings:
 
 {/* prettier-ignore */}
 ```tsx app/[...everything].tsx
-import { Text } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
 
 export default function Route() {
   const { everything } = useLocalSearchParams<{
@@ -209,9 +200,6 @@ URL parameters can be updated using the **router.setParams** function from the i
 The following example uses a `<TextInput>` to update the search parameter **q**:
 
 ```tsx app/search.tsx
-import { useLocalSearchParams, router } from 'expo-router';
-import { useState } from 'react';
-import { TextInput, View } from 'react-native';
 
 export default function Page() {
   const params = useLocalSearchParams<{ query?: string }>();
@@ -244,8 +232,6 @@ export default function Page() {
 Here is an example using an `onPress` event to update the route parameter **user**:
 
 ```tsx app/[user].tsx
-import { useLocalSearchParams, router } from 'expo-router';
-import { Text } from 'react-native';
 
 export default function User() {
   const params = useLocalSearchParams<{ user: string }>();
@@ -278,7 +264,6 @@ Route parameters are used to match a route, while search parameters are used to 
 When the `app/[user]` route is matched, the `user` parameter is passed to the component and never a nullish value. Both search and route parameters can be used together and are accessible with the `useLocalSearchParams` and `useGlobalSearchParams` hooks:
 
 ```tsx app/[user].tsx
-import { useLocalSearchParams } from 'expo-router';
 
 export default function User() {
   const {
@@ -301,8 +286,6 @@ export default function User() {
 Whenever a route parameter is changed, the component will re-mount.
 
 ```tsx app/[user].tsx
-import { Text } from 'react-native';
-import { router, useLocalSearchParams, Link } from 'expo-router';
 
 export default function User() {
   // All three of these will change the route parameter `user`, and add a new user page.
@@ -325,7 +308,6 @@ TODO: REMOVE COMMENT WHEN https://github.com/expo/expo/pull/30268 IS PUBLISHED
 URL parameters that are present multiple times will be grouped together as an array.
 
 ```tsx app/hash.tsx
-import { router, useLocalSearchParams } from 'expo-router';
 
 export default function Route() {
   // If the current URL is `/route?myParam=1&myParam=2
@@ -342,8 +324,6 @@ The URL [hash](https://developer.mozilla.org/en-US/docs/Web/API/URL/hash) is a s
 
 {/* prettier-ignore */}
 ```tsx app/hash.tsx
-import { Text } from 'react-native';
-import { router, useLocalSearchParams, Link } from 'expo-router';
 
 export default function User() {
   // Access the hash

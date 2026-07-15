@@ -3,7 +3,6 @@ title: Error recovery
 description: Learn how to take advantage of using built-in error recovery when using expo-updates library.
 ---
 
-import { Tab, Tabs } from '~/ui/components/Tabs';
 
 Apps using `expo-updates` can take advantage of built-in error recovery behavior as an extra safeguard against accidentally publishing broken updates.
 

@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Icon`](../universal/icon) — it renders the appropriate native component per platform.
 
@@ -31,7 +28,6 @@ Expo UI Image displays SF Symbols using the SwiftUI [Image API](https://develope
 ### Basic SF Symbol
 
 ```tsx BasicImageExample.tsx
-import { Host, Image } from '@expo/ui/swift-ui';
 
 export default function BasicImageExample() {
   return (
@@ -47,7 +43,6 @@ export default function BasicImageExample() {
 Use the `assetName` prop to display a custom SF Symbol imported into the app asset catalog as a symbol set.
 
 ```tsx CustomImageExample.tsx
-import { Host, Image } from '@expo/ui/swift-ui';
 
 export default function CustomImageExample() {
   return (
@@ -61,7 +56,6 @@ export default function CustomImageExample() {
 ### With size and color
 
 ```tsx ImageSizeColorExample.tsx
-import { Host, HStack, Image } from '@expo/ui/swift-ui';
 
 export default function ImageSizeColorExample() {
   return (
@@ -81,7 +75,6 @@ export default function ImageSizeColorExample() {
 Some SF Symbols alter their appearance based on a variable value. Use the `variableValue` prop with a value between 0.0 and 1.0 to control the rendered symbol. Requires iOS 16.0+ and SF Symbols 4.0+.
 
 ```tsx ImageVariableExample.tsx
-import { Host, HStack, Image } from '@expo/ui/swift-ui';
 
 export default function ImageVariableExample() {
   return (
@@ -101,8 +94,6 @@ export default function ImageVariableExample() {
 Apply an SF Symbol effect to animate the symbol by passing a [`symbolEffect`](modifiers/#symboleffecteffect-args) modifier from `@expo/ui/swift-ui/modifiers`. This effect runs continuously by default. You can also pass `value` for a discrete trigger that fires once per change, or `isActive` for a boolean toggle that runs the effect while `true`. Requires iOS 17.0 and later.
 
 ```tsx ImageSymbolEffectExample.tsx
-import { Host, Image } from '@expo/ui/swift-ui';
-import { symbolEffect } from '@expo/ui/swift-ui/modifiers';
 
 export default function ImageSymbolEffectExample() {
   return (
@@ -127,9 +118,6 @@ export default function ImageSymbolEffectExample() {
 The following example uses `value` to play `bounce` on each button press. Write to `state.value` from a worklet (or via [`scheduleOnUI`](https://docs.swmansion.com/react-native-worklets/docs/threading/scheduleOnUI)) to trigger the effect.
 
 ```tsx ImageSymbolEffectValueExample.tsx
-import { Button, Host, Image, useNativeState, VStack } from '@expo/ui/swift-ui';
-import { symbolEffect } from '@expo/ui/swift-ui/modifiers';
-import { scheduleOnUI } from 'react-native-worklets';
 
 export default function ImageSymbolEffectValueExample() {
   const trigger = useNativeState(0);
@@ -161,8 +149,6 @@ export default function ImageSymbolEffectValueExample() {
 The following example uses `isActive` to toggle a continuous `breathe` animation.
 
 ```tsx ImageSymbolEffectIsActiveExample.tsx
-import { Host, Image, SyncToggle, useNativeState, VStack } from '@expo/ui/swift-ui';
-import { symbolEffect } from '@expo/ui/swift-ui/modifiers';
 
 export default function ImageSymbolEffectIsActiveExample() {
   const isActive = useNativeState(true);
@@ -186,7 +172,6 @@ export default function ImageSymbolEffectIsActiveExample() {
 ## API
 
 ```tsx
-import { Image } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/image" apiName="Image" />

@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI ConfirmationDialog matches the official SwiftUI [confirmationDialog API](<https://developer.apple.com/documentation/swiftui/view/confirmationdialog(_:ispresented:titlevisibility:actions:message:)>) and presents an action sheet-style dialog with a title, actions, and an optional message.
 
@@ -31,8 +28,6 @@ Expo UI ConfirmationDialog matches the official SwiftUI [confirmationDialog API]
 Use `ConfirmationDialog.Trigger` to define the visible element and `ConfirmationDialog.Actions` to provide the dialog buttons.
 
 ```tsx BasicConfirmationDialogExample.tsx
-import { useState } from 'react';
-import { Host, ConfirmationDialog, Button, Text } from '@expo/ui/swift-ui';
 
 export default function BasicConfirmationDialogExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -62,8 +57,6 @@ export default function BasicConfirmationDialogExample() {
 Use `role="destructive"` on a `Button` inside `ConfirmationDialog.Actions` to style it as a destructive action.
 
 ```tsx DestructiveConfirmationDialogExample.tsx
-import { useState } from 'react';
-import { Host, ConfirmationDialog, Button, Text } from '@expo/ui/swift-ui';
 
 export default function DestructiveConfirmationDialogExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -103,8 +96,6 @@ export default function DestructiveConfirmationDialogExample() {
 Use `ConfirmationDialog.Message` to display a descriptive message below the title, and include multiple action buttons for different choices.
 
 ```tsx MultiActionConfirmationDialogExample.tsx
-import { useState } from 'react';
-import { Host, ConfirmationDialog, Button, Text } from '@expo/ui/swift-ui';
 
 export default function MultiActionConfirmationDialogExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -138,8 +129,6 @@ export default function MultiActionConfirmationDialogExample() {
 Set `titleVisibility="hidden"` to hide the dialog title while still showing the actions and message. You should still provide a `title` for accessibility.
 
 ```tsx HiddenTitleConfirmationDialogExample.tsx
-import { useState } from 'react';
-import { Host, ConfirmationDialog, Button, Text } from '@expo/ui/swift-ui';
 
 export default function HiddenTitleConfirmationDialogExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -170,7 +159,6 @@ export default function HiddenTitleConfirmationDialogExample() {
 ## API
 
 ```tsx
-import { ConfirmationDialog } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/confirmationdialog" apiName="ConfirmationDialog" />

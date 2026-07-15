@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Link matches the official SwiftUI [Link API](https://developer.apple.com/documentation/swiftui/link).
 
@@ -29,7 +26,6 @@ Expo UI Link matches the official SwiftUI [Link API](https://developer.apple.com
 ### Basic link
 
 ```tsx BasicLinkExample.tsx
-import { Host, Link } from '@expo/ui/swift-ui';
 
 export default function BasicLinkExample() {
   return (
@@ -45,7 +41,6 @@ export default function BasicLinkExample() {
 You can pass custom components as `children` for more complex link label content.
 
 ```tsx CustomContentExample.tsx
-import { Host, Link, VStack, Image, Text } from '@expo/ui/swift-ui';
 
 export default function CustomContentExample() {
   return (
@@ -64,7 +59,6 @@ export default function CustomContentExample() {
 ## API
 
 ```tsx
-import { Link } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/link" apiName="Link" />

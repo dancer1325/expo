@@ -4,7 +4,6 @@ title: API Routes
 description: Learn how to inspect requests from API routes on the EAS Hosting dashboard.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** This page is for EAS Hosting specific details about API routes. For general documentation about the topic, see the [API routes](/router/web/api-routes/) documentation under Expo Router.
 

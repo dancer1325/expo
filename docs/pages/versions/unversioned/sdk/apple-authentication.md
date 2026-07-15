@@ -6,10 +6,6 @@ packageName: 'expo-apple-authentication'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ConfigReactNative, ConfigPluginExample } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-apple-authentication` provides Apple authentication for iOS. It does not yet support Android or web.
 
@@ -73,8 +69,6 @@ Also, set `CFBundleAllowMixedLocalizations` to `true` in your **ios/[app]/Info.p
 <SnackInline label="Apple Authentication Usage" dependencies={['expo-apple-authentication']} platforms={['ios']}>
 
 ```jsx
-import * as AppleAuthentication from 'expo-apple-authentication';
-import { View, StyleSheet } from 'react-native';
 
 export default function App() {
   return (
@@ -139,7 +133,6 @@ This process is not specific to Expo.
 ## API
 
 ```js
-import * as AppleAuthentication from 'expo-apple-authentication';
 ```
 
 <APISection packageName="expo-apple-authentication" apiName="AppleAuthentication" />

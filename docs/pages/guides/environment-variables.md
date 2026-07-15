@@ -4,8 +4,6 @@ sidebar_title: Environment variables
 description: Learn how to use environment variables in an Expo project.
 ---
 
-import { YesIcon, NoIcon } from '~/ui/components/DocIcons';
-import { Terminal } from '~/ui/components/Snippet';
 
 Environment variables are key-value pairs configured outside your source code that allow your app to behave differently depending on the environment. For example, you can enable or disable certain features when building a test version of your app, or switch to a different API endpoint when building for production.
 
@@ -23,7 +21,6 @@ EXPO_PUBLIC_API_KEY=abc123
 Now you can use environment variables directly in your source code:
 
 ```tsx
-import { Button } from 'react-native';
 
 function Post() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;

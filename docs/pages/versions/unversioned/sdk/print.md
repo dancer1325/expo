@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-print.png'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-print` provides an API for Android and iOS (AirPrint) printing functionality.
 
@@ -22,10 +19,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Print usage' dependencies={['expo-print', 'expo-sharing']}>
 
 ```jsx
-import { useState } from 'react';
-import { View, StyleSheet, Button, Platform, Text } from 'react-native';
-import * as Print from 'expo-print';
-import { shareAsync } from 'expo-sharing';
 
 const html = `
 <html>
@@ -108,7 +101,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as Print from 'expo-print';
 ```
 
 <APISection packageName="expo-print" apiName="Print" />
@@ -118,10 +110,6 @@ import * as Print from 'expo-print';
 On iOS, printing from HTML source doesn't support local asset URLs (due to `WKWebView` limitations). Instead, images need to be converted to base64 and inlined into the HTML.
 
 ```tsx Example
-import { Asset } from 'expo-asset';
-import { useImageManipulator } from 'expo-image-manipulator';
-import { printAsync } from 'expo-print';
-import { useEffect } from 'react';
 
 const IMAGE = Asset.fromModule(require('@/assets/images/icon.png'));
 

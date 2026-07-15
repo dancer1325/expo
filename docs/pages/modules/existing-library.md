@@ -3,9 +3,6 @@ title: Integrate in an existing library
 description: Learn how to integrate Expo Modules API into an existing React Native library.
 ---
 
-import { CodeBlocksTable } from '~/components/plugins/CodeBlocksTable';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Step } from '~/ui/components/Step';
 
 There are cases where you may want to integrate the Expo Modules API into an existing React Native library. For example, it might be useful to incrementally rewrite your library or to take advantage of [Android lifecycle listeners](/modules/android-lifecycle-listeners/) and [iOS AppDelegate subscribers](/modules/appdelegate-subscribers/) to automatically set up the library.
 
@@ -86,8 +83,6 @@ Create Kotlin and Swift files from the templates below:
 ```kotlin
 package my.module.package
 
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
 
 class MyModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -97,7 +92,6 @@ class MyModule : Module() {
 ```
 
 ```swift
-import ExpoModulesCore
 
 public class MyModule: Module {
   public func definition() -> ModuleDefinition {
@@ -129,7 +123,6 @@ If you already have an example app in your workspace, ensure that the module is 
 These module classes are now accessible from the JavaScript code using the `requireNativeModule` function from the `expo-modules-core` package. We recommend creating a separate file that exports the native module for simplicity.
 
 ```ts MyModule.ts
-import { requireNativeModule } from 'expo-modules-core';
 
 export default requireNativeModule('MyModule');
 ```

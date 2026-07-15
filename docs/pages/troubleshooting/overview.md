@@ -4,15 +4,7 @@ sidebar_title: Overview
 description: An overview of troubleshooting guides for app development with Expo and EAS.
 ---
 
-import { RouterLogo } from '@expo/styleguide';
-import { ActivityIcon } from '@expo/styleguide-icons/outline/ActivityIcon';
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { Cube01Icon } from '@expo/styleguide-icons/outline/Cube01Icon';
-import { LayersTwo02Icon } from '@expo/styleguide-icons/outline/LayersTwo02Icon';
-import { NotificationBoxIcon } from '@expo/styleguide-icons/outline/NotificationBoxIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { CODE } from '~/ui/components/Text';
 
 This page lists a collection of various troubleshooting guides for Expo and EAS.
 

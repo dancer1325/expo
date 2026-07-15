@@ -7,11 +7,7 @@ platforms: ['android', 'ios', 'expo-go']
 inExpoGo: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `react-native-keyboard-controller` offers additional functionality beyond the built-in React Native keyboard APIs, providing consistency across Android and iOS with minimal configuration and offering the native feel users expect.
 
@@ -29,8 +25,6 @@ import { SnackInline } from '~/ui/components/Snippet';
   dependencies={['react-native-keyboard-controller']}>
 
 ```tsx
-import { TextInput, View, StyleSheet } from 'react-native';
-import { KeyboardAwareScrollView, KeyboardToolbar } from 'react-native-keyboard-controller';
 
 export default function FormScreen() {
   return (

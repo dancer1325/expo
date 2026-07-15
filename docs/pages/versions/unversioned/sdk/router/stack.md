@@ -7,10 +7,7 @@ packageName: 'expo-router'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import APISection from '~/components/plugins/APISection';
-import { BoxLink } from '~/ui/components/BoxLink';
 
 An Expo Router API that provides Stack navigator, toolbar, and screen components.
 
@@ -19,7 +16,6 @@ An Expo Router API that provides Stack navigator, toolbar, and screen components
 ## Usage
 
 ```tsx
-import { Stack } from 'expo-router';
 
 export default function Layout() {
   return <Stack />;
@@ -38,7 +34,6 @@ For more information about using stack navigator, read the stack layout guide:
 ## API
 
 ```js
-import { Stack } from 'expo-router';
 ```
 
 <APISection packageName="expo-router/stack" apiName="Stack" />

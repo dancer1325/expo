@@ -3,13 +3,7 @@ title: App stores best practices
 description: Learn about the best practices when submitting an app to the app stores.
 ---
 
-import { AppleAppStoreIcon } from '@expo/styleguide-icons/custom/AppleAppStoreIcon';
-import { BuildIcon } from '@expo/styleguide-icons/custom/BuildIcon';
-import { EasMetadataIcon } from '@expo/styleguide-icons/custom/EasMetadataIcon';
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { CodeSquare01Icon } from '@expo/styleguide-icons/outline/CodeSquare01Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 This guide offers best practices for submitting your app to the app stores. To learn how to generate native binaries for submission, see [Create your first build](/build/setup/).
 

@@ -6,11 +6,7 @@ packageName: 'expo-server'
 platforms: ['server']
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
 
 `expo-server` is a server-side API and runtime library for Expo Router. It provides helpers you can use in your Expo Router API routes or other server code, and contains adapters to run Expo Router server exports.
 
@@ -34,7 +30,6 @@ To use `expo-server` in your project, you need to configure your Expo Router pro
 ### Accessing request metadata
 
 ```ts
-import { origin, environment } from 'expo-server';
 
 export async function GET() {
   return Response.json({
@@ -48,7 +43,6 @@ export async function GET() {
 ### Scheduling tasks
 
 ```ts
-import { runTask, deferTask } from 'expo-server';
 
 export async function GET() {
   runTask(async () => {
@@ -88,8 +82,6 @@ To learn how to host API routes on different third-party services, follow the in
 By convention, all adapters export a `createRequestHandler` function that accepts a parameters object. This accepts a `build` parameter that must be set to the relative path to the `dist/server` output directory that `npx expo export` created. Some adapters may also accept more values to configure the runtime API.
 
 ```ts
-import path from 'node:path';
-import { createRequestHandler } from 'expo-server/adapter/http';
 
 const onRequest = createRequestHandler({
   build: path.join(process.cwd(), 'dist/server'),

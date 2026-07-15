@@ -5,9 +5,6 @@ description: Learn how to use basic debugging techniques to fix an update issue.
 hasVideoLink: true
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 This guide shows how to verify our configuration so that we can find the source of problems like an app not showing a published update. It's important to tell the current state of our app at any given time, so EAS Update was built with this in mind. Once we know which updates are running on which builds, we can make changes so that our apps are in the state we expect.
 

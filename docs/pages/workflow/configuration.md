@@ -86,7 +86,6 @@ module.exports = {
 ```
 
 ```js App.js
-import Constants from 'expo-constants';
 
 Constants.expoConfig.extra.fact === 'kittens are cool';
 ```

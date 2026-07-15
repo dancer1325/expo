@@ -4,13 +4,7 @@ sidebar_title: Create a native view
 description: A tutorial on creating a native view that renders a WebView with Expo Modules API.
 ---
 
-import { Grid01Icon } from '@expo/styleguide-icons/outline/Grid01Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 In this tutorial, you'll build an example module with a native view that renders a WebView. For Android, you'll use the [`WebView`](https://developer.android.com/reference/android/webkit/WebView) component, and for iOS, [`WKWebView`](https://developer.apple.com/documentation/webkit/wkwebview). Web support can be implemented using an [`iframe`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe) and is left as an exercise for you.
 
@@ -46,8 +40,6 @@ Locate the following files and replace them with the provided minimal boilerplat
 ```kotlin android/src/main/java/expo/modules/webview/ExpoWebViewModule.kt
 package expo.modules.webview
 
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
 
 class ExpoWebViewModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -59,7 +51,6 @@ class ExpoWebViewModule : Module() {
 ```
 
 ```swift ios/ExpoWebViewModule.swift
-import ExpoModulesCore
 
 public class ExpoWebViewModule: Module {
   public func definition() -> ModuleDefinition {
@@ -71,9 +62,6 @@ public class ExpoWebViewModule: Module {
 ```
 
 ```tsx src/ExpoWebView.tsx
-import { ViewProps } from 'react-native';
-import { requireNativeViewManager } from 'expo-modules-core';
-import * as React from 'react';
 
 export type Props = ViewProps;
 
@@ -89,7 +77,6 @@ export { default as WebView, Props as WebViewProps } from './ExpoWebView';
 ```
 
 ```ts example/App.tsx
-import { WebView } from 'expo-web-view';
 
 export default function App() {
   return <WebView style={{ flex: 1, backgroundColor: 'purple' }} />;
@@ -142,11 +129,6 @@ On Android, use `LayoutParams` to set the WebView's layout to match the `ExpoWeb
 ```kotlin android/src/main/java/expo/modules/webview/ExpoWebView.kt
 package expo.modules.webview
 
-import android.content.Context
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import expo.modules.kotlin.AppContext
-import expo.modules.kotlin.views.ExpoView
 
 class ExpoWebView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
   internal val webView = WebView(context).also {
@@ -164,8 +146,6 @@ class ExpoWebView(context: Context, appContext: AppContext) : ExpoView(context, 
 On iOS, set `clipsToBounds` to `true` and ensure the WebView's `frame` matches the bounds of `ExpoWebView` in `layoutSubviews`. The `init` method is called when the view is created, and `layoutSubviews` is called when the layout changes.
 
 ```swift ios/ExpoWebView.swift
-import ExpoModulesCore
-import WebKit
 
 class ExpoWebView: ExpoView {
   let webView = WKWebView()
@@ -218,9 +198,6 @@ Use the [Prop definition component](/modules/module-api/#prop) to define the pro
 ```kotlin android/src/main/java/expo/modules/webview/ExpoWebViewModule.kt
 package expo.modules.webview
 
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
-import java.net.URL
 
 class ExpoWebViewModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -238,7 +215,6 @@ class ExpoWebViewModule : Module() {
 ### iOS module
 
 ```swift ios/ExpoWebViewModule.swift
-import ExpoModulesCore
 
 public class ExpoWebViewModule: Module {
   public func definition() -> ModuleDefinition {
@@ -261,9 +237,6 @@ public class ExpoWebViewModule: Module {
 Next, add the `url` prop to the `Props` type.
 
 ```tsx src/ExpoWebView.tsx
-import { ViewProps } from 'react-native';
-import { requireNativeViewManager } from 'expo-modules-core';
-import * as React from 'react';
 
 export type Props = {
   url?: string;
@@ -281,7 +254,6 @@ export default function ExpoWebView(props: Props) {
 Finally, pass a `URL` to your `WebView` component in the example app.
 
 ```tsx example/App.tsx
-import { WebView } from 'expo-web-view';
 
 export default function App() {
   return <WebView style={{ flex: 1 }} url="https://expo.dev" />;
@@ -317,12 +289,6 @@ On Android, override the `onPageFinished` function. Then, call the `onLoad` even
 ```kotlin android/src/main/java/expo/modules/webview/ExpoWebView.kt
 package expo.modules.webview
 
-import android.content.Context
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import expo.modules.kotlin.AppContext
-import expo.modules.kotlin.viewevent.EventDispatcher
-import expo.modules.kotlin.views.ExpoView
 
 class ExpoWebView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
   private val onLoad by EventDispatcher()
@@ -349,9 +315,6 @@ Indicate in `ExpoWebViewModule` that the `View` has an `onLoad` event.
 ```kotlin android/src/main/java/expo/modules/webview/ExpoWebViewModule.kt
 package expo.modules.webview
 
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
-import java.net.URL
 
 class ExpoWebViewModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -373,8 +336,6 @@ class ExpoWebViewModule : Module() {
 On iOS, implement `webView(_:didFinish:)` and make `ExpoWebView` extend `WKNavigationDelegate`. Then, call `onLoad` from that delegate method.
 
 ```swift ios/ExpoWebView.swift
-import ExpoModulesCore
-import WebKit
 
 class ExpoWebView: ExpoView, WKNavigationDelegate {
   let webView = WKWebView()
@@ -404,7 +365,6 @@ class ExpoWebView: ExpoView, WKNavigationDelegate {
 Indicate in `ExpoWebViewModule` that the `View` has an `onLoad` event.
 
 ```swift ios/ExpoWebViewModule.swift
-import ExpoModulesCore
 
 public class ExpoWebViewModule: Module {
   public func definition() -> ModuleDefinition {
@@ -429,9 +389,6 @@ public class ExpoWebViewModule: Module {
 Event payloads are included within the `nativeEvent` property of the event. To access the `url` from the `onLoad` event, read `event.nativeEvent.url`.
 
 ```tsx src/ExpoWebView.tsx
-import { ViewProps } from 'react-native';
-import { requireNativeViewManager } from 'expo-modules-core';
-import * as React from 'react';
 
 export type OnLoadEvent = {
   url: string;
@@ -454,7 +411,6 @@ export default function ExpoWebView(props: Props) {
 Update the example app to show an alert when the page has loaded. Copy the following code, then rebuild and run your app, and you'll see the alert!
 
 ```tsx example/App.tsx
-import { WebView } from 'expo-web-view';
 
 export default function App() {
   return (
@@ -478,9 +434,6 @@ Now that you have a WebView, build a web browser UI around it. Try rebuilding a 
 <Collapsible summary="example/App.tsx">
 
 ```tsx App.tsx
-import { useState } from 'react';
-import { ActivityIndicator, Platform, Text, TextInput, View } from 'react-native';
-import { WebView } from 'expo-web-view';
 
 export default function App() {
   const [inputUrl, setInputUrl] = useState('https://docs.expo.dev/modules/');

@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-speech.png'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-speech` provides an API that allows you to utilize Text-to-speech functionality in your app.
 
@@ -24,8 +21,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Speech' dependencies={['expo-speech']}>
 
 ```jsx
-import { View, StyleSheet, Button } from 'react-native';
-import * as Speech from 'expo-speech';
 
 export default function App() {
   const speak = () => {
@@ -55,7 +50,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as Speech from 'expo-speech';
 ```
 
 <APISection packageName="expo-speech" apiName="Speech" />

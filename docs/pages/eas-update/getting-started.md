@@ -4,12 +4,7 @@ title: Get started with EAS Update
 description: Learn how to get started with the setup required to configure and use EAS Update in your project.
 ---
 
-import { LayersTwo02Icon } from '@expo/styleguide-icons/outline/LayersTwo02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { DiffBlock, Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 Setting up EAS Update allows you to push critical bug fixes and improvements that your users need right away. This guide will walk you through the process of setting up EAS Update in a new or existing project.
 

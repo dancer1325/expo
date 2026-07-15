@@ -3,7 +3,6 @@ title: Troubleshooting
 description: Fixing common issues with Expo Router setup.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 ## Missing files or source maps in React Native DevTools
 
@@ -39,8 +38,6 @@ This can happen when the Babel plugin `expo-router/babel` is not used in the pro
 Alternatively, you can circumvent this issue by creating an **index.js** file in the root of your project with the following contents:
 
 ```jsx index.js
-import { registerRootComponent } from 'expo';
-import { ExpoRoot } from 'expo-router';
 
 // Must be exported or Fast Refresh won't update the context
 export function App() {

@@ -7,11 +7,7 @@ platforms: ['android', 'ios', 'expo-go']
 inExpoGo: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **important** [`@expo/ui` provides a drop-in replacement](./ui/drop-in-replacements/pagerview) for `react-native-pager-view`, powered by Jetpack Compose on Android and SwiftUI on iOS.
 
@@ -26,8 +22,6 @@ import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 ## Example
 
 ```jsx App.js
-import { StyleSheet, View, Text } from 'react-native';
-import PagerView from 'react-native-pager-view';
 
 export default function MyPager() {
   return (

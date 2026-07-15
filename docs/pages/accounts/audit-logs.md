@@ -3,7 +3,6 @@ title: Audit logs
 description: Learn how to track and analyze your account's activities by using the audit logs.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** Audit logs are available for [Enterprise plan](https://expo.dev/pricing) customers.
 

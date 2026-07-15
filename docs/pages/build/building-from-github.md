@@ -4,9 +4,6 @@ sidebar_title: Trigger builds from GitHub App
 description: Learn how to trigger builds on EAS for your app using the Expo GitHub App.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
 
 This guide explains how to trigger builds directly from your GitHub repository using the Expo GitHub App.
 

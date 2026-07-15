@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 `List` provides a virtualized vertical container of rows, typically populated with [`ListItem`](#listitem) children. It provides the platform-native chrome (separators, inset styling, pull-to-refresh). `ListItem` is a tappable row with `leading`/`trailing`/`supportingText` slots.
 
@@ -22,8 +20,6 @@ import { APIInstallSection } from '~/components/plugins/InstallSection';
 ### Basic list
 
 ```tsx ListExample.tsx
-import { useState } from 'react';
-import { Host, List, ListItem, Text } from '@expo/ui';
 
 const ITEMS = [
   { id: 1, name: 'Avocado toast' },
@@ -54,7 +50,6 @@ export default function ListExample() {
 `ListItem` accepts `leading`, `trailing`, and `supportingText` shorthand props for the common case. Pass a `ReactNode` for any of them when richer content is needed.
 
 ```tsx ListItemSlotsExample.tsx
-import { Host, Icon, List, ListItem } from '@expo/ui';
 
 const CHEVRON = Icon.select({
   ios: 'chevron.right',
@@ -85,7 +80,6 @@ export default function ListItemSlotsExample() {
 For full control over slot content, use the compound API: `<ListItem.Leading>`, `<ListItem.Trailing>`, and `<ListItem.Supporting>`. Anything not wrapped in a slot becomes the headline.
 
 ```tsx ListItemCompoundExample.tsx
-import { Host, Icon, List, ListItem, Row, Text } from '@expo/ui';
 
 export default function ListItemCompoundExample() {
   return (
@@ -112,8 +106,6 @@ export default function ListItemCompoundExample() {
 Pass an `async` `onRefresh` handler. The platform-native refresh indicator stays visible until the returned promise settles (resolves or rejects).
 
 ```tsx ListRefreshExample.tsx
-import { useState } from 'react';
-import { Host, List, ListItem } from '@expo/ui';
 
 export default function ListRefreshExample() {
   const [items, setItems] = useState([1, 2, 3]);
@@ -140,7 +132,6 @@ export default function ListRefreshExample() {
 ## API
 
 ```tsx
-import { List, ListItem } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/list" apiName="List" />

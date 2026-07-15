@@ -8,15 +8,10 @@ platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 searchRank: 10
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import {
   ConfigPluginExample,
   ConfigPluginProperties,
   ConfigReactNative,
 } from '~/ui/components/ConfigSection';
-import { YesIcon, NoIcon } from '~/ui/components/DocIcons';
-import { Terminal } from '~/ui/components/Snippet';
 
 `expo-image` is a cross-platform React component that loads and renders images.
 
@@ -95,8 +90,6 @@ You can configure build-time settings for `expo-image` using its [config plugin]
 ## Usage
 
 ```jsx
-import { Image } from 'expo-image';
-import { StyleSheet, View } from 'react-native';
 
 const blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
@@ -136,7 +129,6 @@ Images bundled in Xcode asset catalogs or Android drawable resources can be load
 `source={{ uri: 'app_icon' }}`. Omit the file extension and provide image dimensions manually:
 
 ```tsx
-import { Image } from 'expo-image';
 
 export default function AppIcon() {
   return <Image source={{ uri: 'app_icon' }} style={{ width: 40, height: 40 }} />;
@@ -146,7 +138,6 @@ export default function AppIcon() {
 ## API
 
 ```js
-import { Image } from 'expo-image';
 ```
 
 <APISection packageName="expo-image" apiName="Image" />

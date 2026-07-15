@@ -3,7 +3,6 @@ title: Programmatic access
 description: Learn about types of access tokens and how to use them.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 When setting up CI or writing a script to help manage your projects, we recommend avoiding using your username and password to authenticate. With these credentials, anyone will be able to log in and use your account.
 

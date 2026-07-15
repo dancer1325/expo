@@ -3,8 +3,6 @@ title: App usage
 description: View your app's usage across platforms, app store versions, and time in the App usage tab of EAS Insights.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 > **important** **App usage** is in [preview](/more/release-statuses/#preview) and subject to breaking changes. While in preview, it is free to use.
 

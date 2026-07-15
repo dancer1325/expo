@@ -3,7 +3,6 @@ title: Send notifications with the Expo Push Service
 description: Learn how to call Expo Push Service API to send push notifications from your server.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 The [`expo-notifications`](/versions/latest/sdk/notifications) library provides all the client-side functionality for push notifications. Expo also handles sending push notifications off to FCM and APNs which then send them to particular devices. All you need to do is send a request to Expo Push API with the `ExpoPushToken` you obtain with [`getExpoPushTokenAsync`](/versions/latest/sdk/notifications/#getexpopushtokenasyncoptions).
 

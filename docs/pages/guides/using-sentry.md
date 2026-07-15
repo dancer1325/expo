@@ -5,10 +5,6 @@ description: A guide on installing and configuring Sentry for crash reporting.
 platforms: ['android', 'ios', 'web']
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 [Sentry](https://getsentry.com/) is a crash reporting platform that provides you with **real-time insight into production deployments with info to reproduce and fix crashes**.
 
@@ -92,7 +88,6 @@ Create a new release build of your app and verify that it uploads source maps co
 
 {/* prettier-ignore */}
 ```jsx
-import { Button } from 'react-native';
 
 // Inside some component
 <Button title="Press me" onPress={() => { throw new Error('Hello, again, Sentry!'); }}/>
@@ -148,8 +143,6 @@ Configuring Sentry to tag your scope with information about your update allows y
 Add the following snippet in the global scope as early as possible in your application's lifecycle.
 
 ```js
-import * as Sentry from '@sentry/react-native';
-import * as Updates from 'expo-updates';
 
 const manifest = Updates.manifest;
 const metadata = 'metadata' in manifest ? manifest.metadata : undefined;

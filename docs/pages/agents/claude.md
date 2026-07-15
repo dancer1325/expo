@@ -4,12 +4,7 @@ sidebar_title: Claude Code
 description: Use Claude Code to build, upgrade, debug, and deploy your Expo and React Native projects.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Step } from '~/ui/components/Step';
-import { Terminal } from '~/ui/components/Snippet';
 
 Claude Code is Anthropic's terminal-based AI coding agent. It can understand your entire codebase, propose edits, run terminal commands, and manage git operations. Expo projects created with `create-expo-app` are scaffolded with files for Claude Code through **CLAUDE.md** and **.claude/settings.json**. It can also check EAS and Expo CLI logs, fetch documentation from the Expo Model Context Protocol (MCP) Server, use Expo Skills for best practices, manage your EAS deployment workflow, and more.
 

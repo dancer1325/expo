@@ -6,10 +6,6 @@ packageName: 'expo-checkbox'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-checkbox` provides a basic `boolean` input element for all platforms.
 
@@ -22,9 +18,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Basic Checkbox usage' dependencies={['expo-checkbox']} platforms={['android', 'web']}>
 
 ```tsx
-import { Checkbox } from 'expo-checkbox';
-import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   const [isChecked, setChecked] = useState(false);
@@ -84,7 +77,6 @@ An example of how `expo-checkbox` appears on Android and iOS is shown below:
 ## API
 
 ```js
-import { Checkbox } from 'expo-checkbox';
 ```
 
 <APISection packageName="expo-checkbox" apiName="Checkbox" />

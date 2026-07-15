@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For a cross-platform picker, see [`Picker`](../universal/picker) — built on top of `ExposedDropdownMenuBox` on Android.
 
@@ -33,7 +30,6 @@ Expo UI `ExposedDropdownMenuBox` matches the official Jetpack Compose [`ExposedD
 > The anchor is a read-only `TextField` bound to a [`useNativeState`](usenativestate) observable. Update that observable in each item's `onClick` to reflect the selected value.
 
 ```tsx BasicExposedDropdownMenuBoxExample.tsx
-import {
   DropdownMenuItem,
   ExposedDropdownMenuBox,
   ExposedDropdownMenu,
@@ -42,8 +38,6 @@ import {
   TextField,
   useNativeState,
 } from '@expo/ui/jetpack-compose';
-import { menuAnchor } from '@expo/ui/jetpack-compose/modifiers';
-import { useState } from 'react';
 
 const LANGUAGES = [
   { label: 'Java', value: 'java' },
@@ -82,7 +76,6 @@ export default function BasicExposedDropdownMenuBoxExample() {
 ## API
 
 ```tsx
-import { ExposedDropdownMenuBox } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection

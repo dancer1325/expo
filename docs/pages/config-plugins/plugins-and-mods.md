@@ -3,8 +3,6 @@ title: Plugins and mods
 description: Learn about what are plugins and mods when creating a config plugin.
 ---
 
-import { YesIcon, NoIcon, WarningIcon } from '~/ui/components/DocIcons';
-import { FileTree } from '~/ui/components/FileTree';
 
 Plugins are **synchronous** functions that accept an [`ExpoConfig`](/versions/latest/config/app/) and return a modified [`ExpoConfig`](/versions/latest/config/app/).
 
@@ -119,7 +117,6 @@ const config = {
 withDelta(withFoo(withBar(config, 'input 1'), 'input 2'), 'input 3');
 
 // ✅ Easy to read
-import { withPlugins } from 'expo/config-plugins';
 
 withPlugins(config, [
   [withBar, 'input 1'],
@@ -265,7 +262,6 @@ A mod plugin gets passed a `config` object with additional properties `modResult
 Say you wanted to write a mod to update the Xcode Project's "product name":
 
 ```ts my-config-plugin.ts
-import { ConfigPlugin, withXcodeProject, IOSConfig } from 'expo/config-plugins';
 
 const withCustomProductName: ConfigPlugin<string> = (config, customName) => {
   return withXcodeProject(

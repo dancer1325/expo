@@ -8,12 +8,7 @@ platforms: ['ios', 'tvos', 'expo-go']
 hasVideoLink: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { CODE } from '~/ui/components/Text';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 The SwiftUI components in `@expo/ui/swift-ui` allow you to build fully native iOS interfaces using SwiftUI from React Native.
 
@@ -26,7 +21,6 @@ The SwiftUI components in `@expo/ui/swift-ui` allow you to build fully native iO
 Using a component from `@expo/ui/swift-ui` requires wrapping it in a [`Host`](./host) component. The `Host` is a container for SwiftUI views.
 
 ```tsx
-import { Host, Button } from '@expo/ui/swift-ui';
 
 export function SaveButton() {
   return (

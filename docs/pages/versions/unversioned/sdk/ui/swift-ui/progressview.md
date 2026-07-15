@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI ProgressView matches the official SwiftUI [ProgressView API](https://developer.apple.com/documentation/swiftui/progressview) and supports styling via the [`progressViewStyle`](modifiers/#progressviewstylestyle) modifier.
 
@@ -33,7 +30,6 @@ Expo UI ProgressView matches the official SwiftUI [ProgressView API](https://dev
 When no `value` is provided, the progress view displays an indeterminate indicator (spinner).
 
 ```tsx IndeterminateExample.tsx
-import { Host, ProgressView } from '@expo/ui/swift-ui';
 
 export default function IndeterminateExample() {
   return (
@@ -49,7 +45,6 @@ export default function IndeterminateExample() {
 Provide a `value` between `0` and `1` to show determinate progress.
 
 ```tsx DeterminateExample.tsx
-import { Host, ProgressView } from '@expo/ui/swift-ui';
 
 export default function DeterminateExample() {
   return (
@@ -65,8 +60,6 @@ export default function DeterminateExample() {
 Use the [`progressViewStyle`](modifiers/#progressviewstylestyle) modifier to change the progress view's appearance. Available styles are: `automatic`, `linear`, and `circular`.
 
 ```tsx ProgressViewStylesExample.tsx
-import { Host, ProgressView, VStack } from '@expo/ui/swift-ui';
-import { progressViewStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function ProgressViewStylesExample() {
   return (
@@ -82,7 +75,6 @@ export default function ProgressViewStylesExample() {
 You can pass custom components as `children` to provide a label for the progress view.
 
 ```tsx LabelExample.tsx
-import { Host, ProgressView, Text } from '@expo/ui/swift-ui';
 
 export default function LabelExample() {
   return (
@@ -100,8 +92,6 @@ export default function LabelExample() {
 Use the `tint` modifier to change the progress view's color.
 
 ```tsx TintedExample.tsx
-import { Host, ProgressView } from '@expo/ui/swift-ui';
-import { tint } from '@expo/ui/swift-ui/modifiers';
 
 export default function TintedExample() {
   return (
@@ -119,7 +109,6 @@ Use the `timerInterval` prop to create a progress view that automatically animat
 > **Note:** Timer-based progress is only available on iOS 16+ and tvOS 16+.
 
 ```tsx TimerExample.tsx
-import { Host, ProgressView, Text, VStack } from '@expo/ui/swift-ui';
 
 export default function TimerExample() {
   const startDate = new Date();
@@ -141,7 +130,6 @@ export default function TimerExample() {
 ## API
 
 ```tsx
-import { ProgressView } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/progressview" apiName="ProgressView" />

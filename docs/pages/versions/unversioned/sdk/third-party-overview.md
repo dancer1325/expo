@@ -6,9 +6,7 @@ inExpoGo: true
 hideTOC: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 The Expo Go playground enables students and learners to quickly try out building native Android and iOS apps. It supports a curated list of third-party libraries that are community-driven, provide APIs for common app functionalities, and are tested with each Expo SDK release.
 

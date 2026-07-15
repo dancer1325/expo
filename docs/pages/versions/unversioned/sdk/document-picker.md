@@ -7,14 +7,10 @@ iconUrl: '/static/images/packages/expo-document-picker.png'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 `expo-document-picker` provides access to the system's UI for selecting documents from the available providers on the user's device.
 
@@ -106,7 +102,6 @@ To allow the `expo-file-system` to read the file immediately after it is picked,
 ## API
 
 ```js
-import * as DocumentPicker from 'expo-document-picker';
 ```
 
 <APISection packageName="expo-document-picker" apiName="DocumentPicker" />

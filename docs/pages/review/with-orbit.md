@@ -4,9 +4,6 @@ sidebar_title: Open updates with Orbit
 description: Learn how to open updates with Expo Orbit as part of a review workflow.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
 
 [Expo Orbit](https://expo.dev/orbit) is a macOS, Windows, and Linux app designed to speed up installing and running builds from EAS. It makes running your builds and updates as easy as pressing **Open in Orbit**.
 

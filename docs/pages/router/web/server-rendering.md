@@ -4,12 +4,6 @@ description: Learn how to render Expo Router routes dynamically at request time 
 isAlpha: true
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { YesIcon, NoIcon } from '~/ui/components/DocIcons';
-import { FAQ } from '~/ui/components/FAQ';
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 > **important** Server rendering is in [alpha](/more/release-statuses/#alpha) and is available in SDK 55 and later. It requires a [deployed server](/router/web/api-routes/#deployment) for production use.
 
@@ -109,8 +103,6 @@ The above command starts a local server that renders pages on each request, simu
 With server rendering, dynamic routes are rendered on the fly, and the [`generateStaticParams`](/router/web/static-rendering/#generatestaticparams) export is not needed and should be removed. If your route file exports `generateStaticParams`, those routes will be handled dynamically instead. The route is rendered at request time with the actual parameters from the URL.
 
 ```tsx src/app/blog/[id].tsx
-import { Text } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
 
 export default function Page() {
   const { id } = useLocalSearchParams();
@@ -137,8 +129,6 @@ The [`useServerDocumentContext`](/versions/latest/sdk/router/#useserverdocumentc
 > **info** When creating a custom **+html.tsx** template, you must use all properties returned to you by [`useServerDocumentContext`](/versions/latest/sdk/router/#useserverdocumentcontext). Otherwise, your server-side rendered HTML may appear broken or your app may not function correctly.
 
 ```tsx src/app/+html.tsx
-import { ScrollViewStyleReset, useServerDocumentContext } from 'expo-router/html';
-import type { ReactNode } from 'react';
 
 // This file is web-only and used to configure the root HTML for every
 // web page during server rendering.
@@ -189,9 +179,6 @@ Routes may export a [`generateMetadata`](/versions/latest/sdk/server/#generateme
 Export a [`generateMetadata`](/versions/latest/sdk/server/#generatemetadatafunctionrequest-params) function from your route file and return a [`Metadata`](/versions/latest/sdk/server/#metadata) object. The function receives the incoming request and route parameters, which you can use to generate metadata dynamically:
 
 ```tsx src/app/blog/[id].tsx
-import { Text } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import type { GenerateMetadataFunction } from 'expo-router/server';
 
 export const generateMetadata: GenerateMetadataFunction = async (request, params) => {
   const response = await fetch(`https://api.example.com/posts/${params.id}`);

@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Row`](../universal/row) — it renders the appropriate native component per platform.
 
@@ -31,8 +28,6 @@ Expo UI Row matches the official Jetpack Compose [Row](https://developer.android
 `Row` places children horizontally. Use `horizontalArrangement` and `verticalAlignment` to control spacing and alignment.
 
 ```tsx RowExample.tsx
-import { Host, Row, Text } from '@expo/ui/jetpack-compose';
-import { fillMaxWidth, height } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function RowExample() {
   return (
@@ -53,7 +48,6 @@ export default function RowExample() {
 ## API
 
 ```tsx
-import { Row } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/row" apiName="Row" />

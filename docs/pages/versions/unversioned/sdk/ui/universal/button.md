@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A pressable button that renders consistently across Android, iOS, and web. Supports `filled`, `outlined`, and `text` visual variants.
 
@@ -20,7 +18,6 @@ A pressable button that renders consistently across Android, iOS, and web. Suppo
 ### Basic button
 
 ```tsx BasicButtonExample.tsx
-import { Host, Button } from '@expo/ui';
 
 export default function BasicButtonExample() {
   return (
@@ -36,7 +33,6 @@ export default function BasicButtonExample() {
 Pick a visual variant with the [`variant`](#variant) prop.
 
 ```tsx ButtonVariantsExample.tsx
-import { Host, Column, Button } from '@expo/ui';
 
 export default function ButtonVariantsExample() {
   return (
@@ -56,7 +52,6 @@ export default function ButtonVariantsExample() {
 Pass [`children`](#children) for fully custom button contents. The [`label`](#label) prop is ignored when `children` is provided.
 
 ```tsx CustomButtonExample.tsx
-import { Host, Button, Row, Icon, Text } from '@expo/ui';
 
 export default function CustomButtonExample() {
   return (
@@ -82,7 +77,6 @@ export default function CustomButtonExample() {
 ### Disabled
 
 ```tsx DisabledButtonExample.tsx
-import { Host, Button } from '@expo/ui';
 
 export default function DisabledButtonExample() {
   return (
@@ -96,7 +90,6 @@ export default function DisabledButtonExample() {
 ## API
 
 ```tsx
-import { Button } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/button" apiName="Button" />

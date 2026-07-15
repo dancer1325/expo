@@ -7,11 +7,7 @@ platforms: ['android', 'ios', 'expo-go']
 inExpoGo: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `react-native-webview` provides a `WebView` component that renders web content in a native view.
 
@@ -25,9 +21,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 
 {/* prettier-ignore */}
 ```jsx collapseHeight=310
-import { WebView } from 'react-native-webview';
-import Constants from 'expo-constants';
-import { StyleSheet } from 'react-native';
 
 export default function App() {
   return (
@@ -53,9 +46,6 @@ const styles = StyleSheet.create({
 <SnackInline label="Webview inline HTML" dependencies={["react-native-webview", "expo-constants"]}>
 
 ```jsx collapseHeight=310
-import { WebView } from 'react-native-webview';
-import Constants from 'expo-constants';
-import { StyleSheet } from 'react-native';
 
 export default function App() {
   return (

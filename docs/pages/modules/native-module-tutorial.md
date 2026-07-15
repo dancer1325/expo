@@ -4,12 +4,7 @@ sidebar_title: Create a native module
 description: A tutorial on creating a native module that persists settings with Expo Modules API.
 ---
 
-import { Grid01Icon } from '@expo/styleguide-icons/outline/Grid01Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 In this tutorial, you build a module that stores the user's preferred app theme: dark, light, or system. On Android, use [`SharedPreferences`](https://developer.android.com/reference/android/content/SharedPreferences), and on iOS, use [`UserDefaults`](https://developer.apple.com/documentation/foundation/userdefaults). You can implement web support with [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), but this tutorial does not cover that.
 
@@ -52,7 +47,6 @@ Clean up the default module to start with a clean slate. Delete the view module 
 Locate the following files and replace their contents with the provided minimal boilerplate:
 
 ```swift ios/ExpoSettingsModule.swift
-import ExpoModulesCore
 
 public class ExpoSettingsModule: Module {
   public func definition() -> ModuleDefinition {
@@ -68,8 +62,6 @@ public class ExpoSettingsModule: Module {
 ```kotlin android/src/main/java/expo/modules/settings/ExpoSettingsModule.kt
 package expo.modules.settings
 
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
 
 class ExpoSettingsModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -83,7 +75,6 @@ class ExpoSettingsModule : Module() {
 ```
 
 ```ts src/index.ts
-import ExpoSettingsModule from './ExpoSettingsModule';
 
 export function getTheme(): string {
   return ExpoSettingsModule.getTheme();
@@ -91,8 +82,6 @@ export function getTheme(): string {
 ```
 
 ```tsx example/App.tsx
-import * as Settings from 'expo-settings';
-import { Text, View } from 'react-native';
 
 export default function App() {
   return (
@@ -149,10 +138,6 @@ To set the value, use the `edit()` method of `SharedPreferences` to get an `Edit
 ```kotlin android/src/main/java/expo/modules/settings/ExpoSettingsModule.kt
 package expo.modules.settings
 
-import android.content.Context
-import android.content.SharedPreferences
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
 
 class ExpoSettingsModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -183,7 +168,6 @@ To read the value on iOS, look for a `UserDefaults` string under the key `"theme
 To set the value, use the `set(_:forKey:)` method of `UserDefaults`. Ensure the `setTheme` function accepts a value of type `String`.
 
 ```swift ios/ExpoSettingsModule.swift
-import ExpoModulesCore
 
 public class ExpoSettingsModule: Module {
   public func definition() -> ModuleDefinition {
@@ -205,7 +189,6 @@ public class ExpoSettingsModule: Module {
 Now, call your native modules from TypeScript.
 
 ```ts src/index.ts
-import ExpoSettingsModule from './ExpoSettingsModule';
 
 export function getTheme(): string {
   return ExpoSettingsModule.getTheme();
@@ -221,8 +204,6 @@ export function setTheme(theme: string): void {
 You can now use the Settings API in your example app.
 
 ```tsx example/App.tsx
-import * as Settings from 'expo-settings';
-import { Button, Text, View } from 'react-native';
 
 export default function App() {
   const theme = Settings.getTheme();
@@ -255,11 +236,6 @@ Events payloads are represented as [`Bundle`](https://developer.android.com/refe
 ```kotlin android/src/main/java/expo/modules/settings/ExpoSettingsModule.kt
 package expo.modules.settings
 
-import android.content.Context
-import android.content.SharedPreferences
-import androidx.core.os.bundleOf
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
 
 class ExpoSettingsModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -289,7 +265,6 @@ class ExpoSettingsModule : Module() {
 ### iOS native module
 
 ```swift ios/ExpoSettingsModule.swift
-import ExpoModulesCore
 
 public class ExpoSettingsModule: Module {
   public func definition() -> ModuleDefinition {
@@ -314,8 +289,6 @@ public class ExpoSettingsModule: Module {
 ### TypeScript module
 
 ```ts src/index.ts
-import { EventSubscription } from 'expo-modules-core';
-import ExpoSettingsModule from './ExpoSettingsModule';
 
 export type ThemeChangeEvent = {
   theme: string;
@@ -337,9 +310,6 @@ export function setTheme(theme: string): void {
 ### Example app
 
 ```tsx example/App.tsx
-import * as Settings from 'expo-settings';
-import { useEffect, useState } from 'react';
-import { Button, Text, View } from 'react-native';
 
 export default function App() {
   const [theme, setTheme] = useState<string>(Settings.getTheme());
@@ -377,12 +347,6 @@ It's easy to make mistakes when using the `Settings.setTheme()` API in its curre
 ```kotlin android/src/main/java/expo/modules/settings/ExpoSettingsModule.kt
 package expo.modules.settings
 
-import android.content.Context
-import android.content.SharedPreferences
-import androidx.core.os.bundleOf
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
-import expo.modules.kotlin.types.Enumerable
 
 class ExpoSettingsModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -418,7 +382,6 @@ enum class Theme(val value: String) : Enumerable {
 ### iOS native module
 
 ```swift ios/ExpoSettingsModule.swift
-import ExpoModulesCore
 
 public class ExpoSettingsModule: Module {
   public func definition() -> ModuleDefinition {
@@ -449,9 +412,7 @@ public class ExpoSettingsModule: Module {
 ### TypeScript module
 
 ```ts src/index.ts
-import { EventSubscription } from 'expo-modules-core';
 
-import ExpoSettingsModule from './ExpoSettingsModule';
 
 export type Theme = 'light' | 'dark' | 'system';
 

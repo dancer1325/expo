@@ -4,9 +4,6 @@ sidebar_title: Cache builds remotely
 description: Accelerate local development by caching and reusing builds from a provider.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 Build caching is a feature that speeds up `npx expo run:[android|ios]` by caching builds remotely, based on the project [fingerprint](/versions/latest/sdk/fingerprint/).
 When you run `npx expo run:[android|ios]`, it checks if a build with a matching fingerprint exists, then downloads and launches it rather than compiling it again. Otherwise, the project is compiled as usual and then the resulting binary is uploaded to the remote cache for future runs.
@@ -136,7 +133,6 @@ Start by creating a **provider** directory for writing the provider plugin in Ty
 ### Create a `provider/src/index.ts` file for your plugin
 
 ```ts provider/src/index.ts
-import { type BuildCacheProviderPlugin } from '@expo/config';
 
 const plugin: BuildCacheProviderPlugin = {
   resolveBuildCache: async () => {

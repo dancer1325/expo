@@ -7,10 +7,7 @@ platforms: ['android', 'ios', 'tvos', 'expo-go']
 inExpoGo: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
 
 > **important** [`@expo/ui` provides a drop-in replacement](./ui/drop-in-replacements/maskedview) for `@react-native-masked-view/masked-view`, powered by Jetpack Compose on Android and SwiftUI on iOS.
 

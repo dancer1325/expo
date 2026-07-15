@@ -5,8 +5,6 @@ description: Learn how to use EAS Update independently of other EAS services, su
 hideTOC: true
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
 
 EAS Update works great as a standalone service, so you can use it with or without EAS Build and other EAS services. All of its main features are designed to be agnostic of the build pipeline, and its used in production by large organizations that do not use other EAS services.
 

@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI SearchBar matches the official Jetpack Compose [Search](https://developer.android.com/develop/ui/compose/components/search-bar) API and provides a search input with support for placeholder text and expanded full-screen search.
 
@@ -29,8 +26,6 @@ Expo UI SearchBar matches the official Jetpack Compose [Search](https://develope
 ### Basic search bar
 
 ```tsx BasicSearchBarExample.tsx
-import { useState } from 'react';
-import { Host, SearchBar } from '@expo/ui/jetpack-compose';
 
 export default function BasicSearchBarExample() {
   const [query, setQuery] = useState('');
@@ -48,8 +43,6 @@ export default function BasicSearchBarExample() {
 Use the `SearchBar.Placeholder` sub-component to display hint text when the search field is empty.
 
 ```tsx SearchBarPlaceholderExample.tsx
-import { useState } from 'react';
-import { Host, SearchBar } from '@expo/ui/jetpack-compose';
 
 export default function SearchBarPlaceholderExample() {
   const [query, setQuery] = useState('');
@@ -67,7 +60,6 @@ export default function SearchBarPlaceholderExample() {
 ## API
 
 ```tsx
-import { SearchBar } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/searchbar" apiName="SearchBar" />

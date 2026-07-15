@@ -3,10 +3,6 @@ title: Using Convex
 description: Add a database to your app with Convex.
 ---
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 [Convex](https://www.convex.dev/) is a backend platform for building reactive apps with a realtime database, server functions, file storage, search, scheduling, and type-safe client libraries without the need for cluster management, SQL, or ORMs.
 
@@ -81,8 +77,6 @@ Create a Convex client with the deployment URL that the EAS integration wrote to
 For an Expo Router project, update **src/app/\_layout.tsx**:
 
 ```tsx src/app/_layout.tsx
-import { ConvexProvider, ConvexReactClient } from 'convex/react';
-import { Stack } from 'expo-router';
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
@@ -106,7 +100,6 @@ export default function RootLayout() {
 Add a query function in the **convex** directory:
 
 ```ts convex/tasks.ts
-import { query } from './_generated/server';
 
 export const get = query({
   args: {},
@@ -119,9 +112,6 @@ export const get = query({
 Then call it from your app with `useQuery`:
 
 ```tsx src/app/index.tsx
-import { api } from '@/convex/_generated/api';
-import { useQuery } from 'convex/react';
-import { Text, View } from 'react-native';
 
 export default function Index() {
   const tasks = useQuery(api.tasks.get);

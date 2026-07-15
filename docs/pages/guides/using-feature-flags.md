@@ -4,9 +4,7 @@ sidebar_title: Using feature flags
 description: An overview of feature flag services available in the Expo and React Native ecosystem.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 A feature flag (also known as a _feature gate_) is a mechanism that enables and disables features remotely. They are a safe way to rollout new features to your app users without deploying additional code. You can use them for testing in production, A/B testing, or to ship new app features such as UI elements.
 

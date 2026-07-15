@@ -4,8 +4,6 @@ sidebar_title: DOM components
 description: Learn about rendering React DOM components in Expo native apps using the 'use dom' directive.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
 
 > **info** Available in **SDK 52 and above**.
 
@@ -58,7 +56,6 @@ export default function DOMComponent({ name }: { name: string }) {
 Inside the native component file, import the web component to use it:
 
 ```tsx App.tsx (native)
-import DOMComponent from './my-component.tsx';
 
 export default function App() {
   return (
@@ -100,7 +97,6 @@ export default function DOMComponent({}: { dom: import('expo/dom').DOMProps }) {
 Now you can pass [`WebView` props](https://github.com/react-native-webview/react-native-webview/blob/master/docs/Reference.md) to the DOM component:
 
 ```tsx App.tsx (native)
-import DOMComponent from './my-component';
 
 export default function App() {
   return (
@@ -118,7 +114,6 @@ export default function App() {
 You can send data to the DOM component through serializable props (`number`, `string`, `boolean`, `null`, `undefined`, `Array`, `Object`). For example, inside a native component file, you can pass a prop to the DOM component:
 
 ```tsx App.tsx (native)
-import DOMComponent from './my-component';
 
 export default function App() {
   return <DOMComponent hello={'world'} />;
@@ -142,7 +137,6 @@ Props are sent over an asynchronous bridge so they are not updated synchronously
 You can send type-safe native functions to DOM components by passing asynchronous functions as top-level props to the DOM component:
 
 ```tsx App.tsx (native)
-import DomComponent from './my-component';
 
 export default function App() {
   return (
@@ -184,10 +178,7 @@ Think of these functions like React Server Functions, but instead of residing on
 You can use the `useDOMImperativeHandle` hook inside a DOM component to accept ref calls from the native side. This hook is similar to React's [`useImperativeHandle`](https://react.dev/reference/react/useImperativeHandle) hook, but it does not need a ref object to be passed to it.
 
 ```tsx App.tsx (native)
-import { useRef } from 'react';
-import { Button, View } from 'react-native';
 
-import MyComponent, { type MyRef } from './my-component';
 
 export default function App() {
   const ref = useRef<MyRef>(null);
@@ -209,8 +200,6 @@ export default function App() {
 ```tsx my-component.tsx (web)
 'use dom';
 
-import { useDOMImperativeHandle, type DOMImperativeFactory } from 'expo/dom';
-import { forwardRef, useRef } from 'react';
 
 export interface MyRef extends DOMImperativeFactory {
   focus: () => void;
@@ -264,7 +253,6 @@ Expo also enables WebView inspection and debugging when bundling in development 
 You can create a manual WebView using the `WebView` component from `react-native-webview`. This can be useful for rendering websites from a remote server.
 
 ```tsx App.tsx (native)
-import { WebView } from 'react-native-webview';
 
 export default function App() {
   return <WebView source={{ html: '<h1>Hello, world!</h1>' }} />;
@@ -277,7 +265,6 @@ Expo Router APIs such as `<Link />`, and `useRouter` can be used in DOM componen
 
 ```tsx my-component.tsx (web)
 'use dom';
-import Link from 'expo-router/link';
 
 export default function DOMComponent() {
   return (
@@ -292,8 +279,6 @@ export default function DOMComponent() {
 APIs that synchronously return routing info such as `useLocalSearchParams()`, `useGlobalSearchParams()`, `usePathname()`, `useSegments()`, `useRootNavigation()`, and `useRootNavigationState()` are not automatically supported. Instead, read these values outside of DOM components and supply them as props.
 
 ```tsx App.tsx (native)
-import DOMComponent from './my-component';
-import { usePathname } from 'expo-router';
 
 export default function App() {
   const pathname = usePathname();
@@ -316,7 +301,6 @@ You may want to measure the size of a DOM component and report it back to the na
 You need to use the `dom={{ matchContents: true }}` prop to measure the size of the DOM component automatically and resize the native view coresponsingly:
 
 ```tsx App.tsx (native)
-import DOMComponent from './my-component';
 
 export default function Route() {
   return <DOMComponent dom={{ matchContents: true }} />;
@@ -336,8 +320,6 @@ export default function DOMComponent(_: { dom?: import('expo/dom').DOMProps }) {
 You can also manually measure the size of a DOM component and report it back to the native side using a native action:
 
 ```tsx App.tsx (native)
-import DOMComponent from './my-component';
-import { useState } from 'react';
 
 export default function Route() {
   const [height, setHeight] = useState(270);
@@ -359,7 +341,6 @@ export default function Route() {
 ```tsx my-component.tsx (web)
 'use dom';
 
-import { useEffect } from 'react';
 
 function useSize(callback: (size: [number, number]) => void) {
   useEffect(() => {

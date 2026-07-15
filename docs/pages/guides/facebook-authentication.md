@@ -3,8 +3,6 @@ title: Using Facebook authentication
 description: A guide on using react-native-fbsdk-next library to integrate Facebook authentication in your Expo project.
 ---
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 The [`react-native-fbsdk-next`](https://github.com/thebergamo/react-native-fbsdk-next/) library provides a wrapper around Facebook's Android and iOS SDKs. It allows integrating Facebook authentication into your Expo project and provide access to native components.
 

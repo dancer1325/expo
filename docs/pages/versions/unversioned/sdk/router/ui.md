@@ -7,11 +7,7 @@ packageName: 'expo-router'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import APISection from '~/components/plugins/APISection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ConfigPluginExample } from '~/ui/components/ConfigSection';
 
 `expo-router/ui` is a submodule of `expo-router` library and exports components and hooks to build custom tab layouts, rather than using the default [React Navigation](https://reactnavigation.org/) navigators provided by `expo-router`.
 
@@ -53,7 +49,6 @@ For information about using `expo-router/ui` in Custom tab layouts guide:
 ## API
 
 ```js
-import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
 ```
 
 <APISection packageName="expo-router/ui" apiName="Tabs" />

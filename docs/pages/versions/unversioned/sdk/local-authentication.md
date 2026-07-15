@@ -7,15 +7,10 @@ iconUrl: '/static/images/packages/expo-local-authentication.png'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions, IOSPermissions } from '~/components/plugins/permissions';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { PlatformTags } from '~/ui/components/Tag/PlatformTags';
 
 `expo-local-authentication` allows you to use the Biometric Prompt (Android) or FaceID and TouchID (iOS) to authenticate the user with a fingerprint or face scan.
 
@@ -78,7 +73,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 ## API
 
 ```js
-import * as LocalAuthentication from 'expo-local-authentication';
 ```
 
 <APISection packageName="expo-local-authentication" apiName="LocalAuthentication" />

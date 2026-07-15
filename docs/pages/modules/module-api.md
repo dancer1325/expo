@@ -4,13 +4,6 @@ description: An API reference of Expo modules API.
 sidebar_title: Module API
 ---
 
-import { APIBox } from '~/components/plugins/APIBox';
-import { CodeBlocksTable } from '~/components/plugins/CodeBlocksTable';
-import { APIMethod } from '~/components/plugins/api/APIMethod';
-import { FileTree } from '~/ui/components/FileTree';
-import { PlatformTags } from '~/ui/components/Tag/PlatformTags';
-import { StatusTag } from '~/ui/components/Tag/StatusTag';
-import { A, CALLOUT } from '~/ui/components/Text';
 
 The native modules API is an abstraction layer on top of [JSI](https://reactnative.dev/architecture/glossary#javascript-interfaces-jsi) and other low-level primitives that React Native is built upon. It is built with modern languages (Swift and Kotlin) and provides an easy-to-use and convenient API that is consistent across platforms where possible.
 
@@ -94,7 +87,6 @@ Function("mySyncFunction") { message: String ->
 </CodeBlocksTable>
 
 ```js JavaScript
-import { requireNativeModule } from 'expo-modules-core';
 
 // Assume that we have named the module "MyModule"
 const MyModule = requireNativeModule('MyModule');
@@ -157,7 +149,6 @@ AsyncFunction("myAsyncFunction") { message: String, promise: Promise ->
 </CodeBlocksTable>
 
 ```js JavaScript
-import { requireNativeModule } from 'expo-modules-core';
 
 // Assume that we have named the module "MyModule"
 const MyModule = requireNativeModule('MyModule');
@@ -280,7 +271,6 @@ Property("foo")
 </CodeBlocksTable>
 
 ```js JavaScript
-import { requireNativeModule } from 'expo-modules-core';
 
 // Assume that we have named the module "MyModule"
 const MyModule = requireNativeModule('MyModule');
@@ -1025,7 +1015,6 @@ To subscribe to these events in JavaScript/TypeScript, use [`addListener`](/vers
 Alternatively, you can use [`useEvent`](/versions/latest/sdk/expo/#useeventeventemitter-eventname-initialvalue) or [`useEventListener`](/versions/latest/sdk/expo/#useeventlistenereventemitter-eventname-listener) hooks.
 
 ```ts TypeScript
-import { requireNativeModule, NativeModule } from 'expo';
 
 type ClipboardChangeEvent = {
   contentTypes: string[];
@@ -1113,7 +1102,6 @@ class CameraView(
 To subscribe to these events in JavaScript/TypeScript, you need to pass a function to the native view as shown:
 
 ```ts TypeScript
-import { requireNativeViewManager } from 'expo-modules-core';
 
 const CameraView = requireNativeViewManager('CameraView');
 

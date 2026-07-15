@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 > **info** For cross-platform usage, see the universal [`Host`](../universal/host) — it renders the appropriate native component per platform.
 
@@ -24,7 +22,6 @@ The `Host` component is the bridge between React Native and Jetpack Compose. Eve
 Use the `matchContents` prop to make the `Host` size itself to fit the content. You can pass a boolean or an object to control vertical and horizontal sizing independently.
 
 ```tsx MatchContents.tsx
-import { Host, Button } from '@expo/ui/jetpack-compose';
 
 export default function MatchContents() {
   return (
@@ -40,7 +37,6 @@ export default function MatchContents() {
 The following example crashes:
 
 ```tsx MatchContentsCrash.tsx
-import { Host, LazyRow, Text } from '@expo/ui/jetpack-compose';
 
 export default function MatchContentsCrash() {
   return (
@@ -58,7 +54,6 @@ export default function MatchContentsCrash() {
 Either drop `matchContents` on the scroll axis or give the `Host` a finite size on that axis via `style`:
 
 ```tsx MatchContentsFix.tsx
-import { Host, LazyRow, Text } from '@expo/ui/jetpack-compose';
 
 export default function MatchContentsFix() {
   return (
@@ -78,7 +73,6 @@ export default function MatchContentsFix() {
 Apply standard React Native styles to the `Host` wrapper.
 
 ```tsx HostWithStyle.tsx
-import { Host, Button } from '@expo/ui/jetpack-compose';
 
 export default function HostWithStyle() {
   return (
@@ -92,7 +86,6 @@ export default function HostWithStyle() {
 ## API
 
 ```tsx
-import { Host } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/host" apiName="Host" />

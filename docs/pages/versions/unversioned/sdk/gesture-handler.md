@@ -7,10 +7,7 @@ platforms: ['android', 'ios', 'web', 'expo-go']
 inExpoGo: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
 
 `react-native-gesture-handler` is a library for handling complex gestures. From its README:
 

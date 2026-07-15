@@ -3,7 +3,6 @@ title: babel.config.js
 description: A reference for Babel configuration file.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 Babel is used as the JavaScript compiler to transform modern JavaScript (ES6+) into a version compatible with the JavaScript engine on mobile devices.
 

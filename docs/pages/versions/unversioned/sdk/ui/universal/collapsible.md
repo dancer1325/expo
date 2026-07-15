@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 `Collapsible` is a primitive that shows or hides its content with a tap on a labelled header. Controlled via [`isOpen`](#isopen) and [`onOpenChange`](#onopenchange) — each `Collapsible` manages independent state.
 
@@ -20,8 +18,6 @@ import { APIInstallSection } from '~/components/plugins/InstallSection';
 ### Basic collapsible
 
 ```tsx CollapsibleExample.tsx
-import { useState } from 'react';
-import { Host, Column, Collapsible, Text } from '@expo/ui';
 
 export default function CollapsibleExample() {
   const [open, setOpen] = useState(false);
@@ -45,8 +41,6 @@ export default function CollapsibleExample() {
 Wire each `Collapsible`'s `isOpen` to a shared parent value. The component doesn't enforce exclusivity — composition is up to the consumer.
 
 ```tsx CollapsibleAccordionExample.tsx
-import { useState } from 'react';
-import { Host, Column, Collapsible, Text } from '@expo/ui';
 
 type Section = 'a' | 'b' | 'c' | null;
 
@@ -83,7 +77,6 @@ export default function CollapsibleAccordionExample() {
 ## API
 
 ```tsx
-import { Collapsible } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/collapsible" apiName="Collapsible" />

@@ -7,10 +7,7 @@ packageName: 'expo-router'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import APISection from '~/components/plugins/APISection';
-import { BoxLink } from '~/ui/components/BoxLink';
 
 An Expo Router API that provides components for navigating between routes, including link, redirect, preview, and zoom transitions.
 
@@ -19,7 +16,6 @@ An Expo Router API that provides components for navigating between routes, inclu
 ## Usage
 
 ```tsx
-import { Link } from 'expo-router';
 
 export default function Page() {
   return <Link href="/about">About</Link>;
@@ -38,7 +34,6 @@ For more information about navigating between routes, read the navigation guide:
 ## API
 
 ```js
-import { Link, Redirect } from 'expo-router';
 ```
 
 <APISection packageName="expo-router/link" apiName="Link" />

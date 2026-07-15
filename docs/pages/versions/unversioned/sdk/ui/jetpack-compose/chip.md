@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Chips match the official Jetpack Compose [Chip API](https://developer.android.com/develop/ui/compose/components/chip). Each chip type is a separate component: `AssistChip`, `FilterChip`, `InputChip`, and `SuggestionChip`.
 
@@ -31,7 +28,6 @@ Expo UI Chips match the official Jetpack Compose [Chip API](https://developer.an
 Assist chips help users take actions or start tasks, such as booking a flight or opening a map. They often appear as temporary UI elements in response to user input.
 
 ```tsx AssistChipExample.tsx
-import { Host, AssistChip, Icon, Text } from '@expo/ui/jetpack-compose';
 
 export default function AssistChipExample() {
   return (
@@ -54,8 +50,6 @@ export default function AssistChipExample() {
 Filter chips allow users to refine content from a set of options. They support a selected state and are commonly used in search bars or content filtering.
 
 ```tsx FilterChipExample.tsx
-import { useState } from 'react';
-import { Host, FilterChip, Text } from '@expo/ui/jetpack-compose';
 
 export default function FilterChipExample() {
   const [selected, setSelected] = useState(false);
@@ -77,8 +71,6 @@ export default function FilterChipExample() {
 Input chips represent discrete pieces of information entered by a user, such as tags in a text field. They support avatars, trailing icons, and can be dismissed.
 
 ```tsx InputChipExample.tsx
-import { useState } from 'react';
-import { Host, InputChip, Icon, Text, FlowRow } from '@expo/ui/jetpack-compose';
 
 export default function InputChipExample() {
   const [chips, setChips] = useState(['Work', 'Travel', 'News']);
@@ -110,7 +102,6 @@ export default function InputChipExample() {
 Suggestion chips help narrow a user's intent by presenting dynamically generated suggestions, such as quick-reply options in a chat or search refinements.
 
 ```tsx SuggestionChipExample.tsx
-import { Host, SuggestionChip, Text } from '@expo/ui/jetpack-compose';
 
 export default function SuggestionChipExample() {
   return (
@@ -128,7 +119,6 @@ export default function SuggestionChipExample() {
 ## API
 
 ```tsx
-import { AssistChip, FilterChip, InputChip, SuggestionChip } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/chip" apiName="Chip" />

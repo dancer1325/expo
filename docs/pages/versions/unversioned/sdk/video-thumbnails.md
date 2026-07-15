@@ -7,9 +7,6 @@ platforms: ['android', 'ios', 'tvos', 'expo-go']
 isDeprecated: true
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 > **warning** **[Deprecated](/more/release-statuses/#deprecated):** Video Thumbnails library has been deprecated in favor of [`generateThumbnailsAsync`](video.mdx#generatethumbnailsasynctimes-options) from [`expo-video`](video.mdx). `expo-video-thumbnails` is not receiving patches and will be removed in SDK 56.
 
@@ -24,9 +21,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Video Thumbnails' dependencies={['expo-video-thumbnails']}>
 
 ```jsx
-import { useState } from 'react';
-import { StyleSheet, Button, View, Image, Text } from 'react-native';
-import * as VideoThumbnails from 'expo-video-thumbnails';
 
 export default function App() {
   const [image, setImage] = useState(null);
@@ -73,7 +67,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as VideoThumbnails from 'expo-video-thumbnails';
 ```
 
 <APISection packageName="expo-video-thumbnails" apiName="VideoThumbnails" />

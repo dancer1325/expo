@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 @expo/ui/jetpack-compose exposes the [Material 3 color palette](https://m3.material.io/styles/color/system/overview) used by Jetpack Compose so you can pick a palette source and have every component under a [`<Host>`](./host) theme from it consistently.
 
@@ -28,7 +26,6 @@ The palette source depends on the options you pass:
 [`Host`](./host) accepts `seedColor` and `colorScheme` props directly. This is the recommended way to theme a Compose subtree. Native Compose components under this `Host` render with the seeded palette and any descendant that calls [`useMaterialColors()`](#usematerialcolorsoptions) without arguments receives the same palette from the Host's context.
 
 ```tsx BrandedHostExample.tsx
-import { Button, Host, Text } from '@expo/ui/jetpack-compose';
 
 export default function BrandedHostExample() {
   return (
@@ -46,8 +43,6 @@ export default function BrandedHostExample() {
 Call [`useMaterialColors()`](#usematerialcolorsoptions) without arguments inside a [`<Host>`](./host) to read the Host's current palette. The hook returns a reference-stable [`MaterialColors`](#materialcolors) object and does not cross the native bridge on re-renders.
 
 ```tsx MaterialColorsExample.tsx
-import { Column, Host, Text, useMaterialColors } from '@expo/ui/jetpack-compose';
-import { padding } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function MaterialColorsExample() {
   return (
@@ -73,8 +68,6 @@ function PaletteInspector() {
 Pass arguments to [`useMaterialColors()`](#usematerialcolorsoptions) to compute a palette on demand, even outside a `<Host>`. The `colorScheme` takes `'light'` or `'dark'`, you can omit it to follow the system.
 
 ```tsx UseMaterialColorsExample.tsx
-import { Column, Host, Text, useMaterialColors } from '@expo/ui/jetpack-compose';
-import { padding } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function UseMaterialColorsExample() {
   const dark = useMaterialColors({ colorScheme: 'dark' });
@@ -96,7 +89,6 @@ export default function UseMaterialColorsExample() {
 ### Reading colors outside React components
 
 ```tsx GetMaterialColorsExample.tsx
-import { getMaterialColors, isDynamicColorAvailable } from '@expo/ui/jetpack-compose';
 
 const palette = getMaterialColors({ seedColor: '#8E24AA' });
 console.log('available:', isDynamicColorAvailable, 'primary:', palette.primary);

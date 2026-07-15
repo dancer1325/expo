@@ -7,11 +7,7 @@ platforms: ['android', 'ios', 'expo-go']
 inExpoGo: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **important** [`@expo/ui` provides a drop-in replacement](./ui/drop-in-replacements/datetimepicker) for `@react-native-community/datetimepicker`, powered by Jetpack Compose on Android and SwiftUI on iOS.
 

@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { YesIcon, NoIcon } from '~/ui/components/DocIcons';
 
 A `BottomSheet` component with an API compatible with `@gorhom/bottom-sheet`. It wraps the platform-specific `@expo/ui` primitives: [Jetpack Compose ModalBottomSheet](../jetpack-compose/bottomsheet) on Android and [SwiftUI BottomSheet](../swift-ui/bottomsheet) on iOS. On web, it uses a [vaul](https://github.com/emilkowalski/vaul) drawer.
 
@@ -38,9 +35,6 @@ If you need lower-level control over platform-specific styling, modifiers, or la
 ## Basic usage
 
 ```tsx BottomSheetExample.tsx
-import { useRef } from 'react';
-import { Button, Text, View } from 'react-native';
-import BottomSheet, { BottomSheetView } from '@expo/ui/community/bottom-sheet';
 
 export default function BottomSheetExample() {
   const sheetRef = useRef<BottomSheet>(null);
@@ -74,9 +68,6 @@ export default function BottomSheetExample() {
 Use `BottomSheetModal` when migrating from `@gorhom/bottom-sheet` modal APIs. It starts closed and opens with `present()`.
 
 ```tsx BottomSheetModalExample.tsx
-import { useRef } from 'react';
-import { Button, Text, View } from 'react-native';
-import { BottomSheetModal, BottomSheetView } from '@expo/ui/community/bottom-sheet';
 
 export default function BottomSheetModalExample() {
   const modalRef = useRef<BottomSheetModal>(null);
@@ -101,9 +92,6 @@ export default function BottomSheetModalExample() {
 When `snapPoints` is not provided, the sheet sizes to fit its content by default. Use `BottomSheetView` for the sheet content wrapper.
 
 ```tsx DynamicBottomSheetExample.tsx
-import { useRef } from 'react';
-import { Button, Text, View } from 'react-native';
-import BottomSheet, { BottomSheetView } from '@expo/ui/community/bottom-sheet';
 
 export default function DynamicBottomSheetExample() {
   const sheetRef = useRef<BottomSheet>(null);
@@ -127,9 +115,6 @@ export default function DynamicBottomSheetExample() {
 The bottom sheet supports a React Native `FlatList` or `ScrollView` (or a high-performance list like [FlashList](https://shopify.github.io/flash-list/) or [Legend List](https://github.com/LegendApp/legend-list)) as a child for scrollable content. With `nestedScrollEnabled`, the list scrolls its own content first. Once it reaches the top edge, the remaining drag moves the sheet. `BottomSheetFlatList` and `BottomSheetScrollView` are also exported for `@gorhom/bottom-sheet` compatibility, but they are plain re-exports of the React Native components.
 
 ```tsx BottomSheetScrollableExample.tsx
-import { useRef } from 'react';
-import { Button, FlatList, Text, View } from 'react-native';
-import BottomSheet from '@expo/ui/community/bottom-sheet';
 
 const DATA = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}`);
 
@@ -198,7 +183,6 @@ This difference is intentional. `@gorhom/bottom-sheet` owns the gesture and anim
 ## API
 
 ```tsx
-import BottomSheet from '@expo/ui/community/bottom-sheet';
 ```
 
 <APISection packageName="expo-ui/community/bottom-sheet" apiName="BottomSheet" />

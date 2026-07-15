@@ -3,7 +3,6 @@ title: Errors and warnings
 description: Learn about Redbox errors and stack traces in your Expo project.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 When developing an application using Expo, you'll encounter a **Redbox** error or **Yellowbox** warning. These logging experiences are provided by [LogBox in React Native](https://reactnative.dev/blog/2020/07/06/version-0.63).
 

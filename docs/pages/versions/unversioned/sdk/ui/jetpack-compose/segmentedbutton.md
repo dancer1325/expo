@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Segmented buttons let app users choose from a small set of options displayed side by side in a row. They map to the official Jetpack Compose [Segmented Button](https://developer.android.com/develop/ui/compose/components/segmented-button) API.
 
@@ -36,8 +33,6 @@ There are two container types:
 Use `SingleChoiceSegmentedButtonRow` when only one option can be active at a time. Each `SegmentedButton` takes `selected` and `onClick` props.
 
 ```tsx SingleChoiceExample.tsx
-import { useState } from 'react';
-import {
   Host,
   SingleChoiceSegmentedButtonRow,
   SegmentedButton,
@@ -72,8 +67,6 @@ export default function SingleChoiceExample() {
 Use `MultiChoiceSegmentedButtonRow` when multiple options can be toggled independently. Each `SegmentedButton` takes `checked` and `onCheckedChange` props.
 
 ```tsx MultiChoiceExample.tsx
-import { useState } from 'react';
-import {
   Host,
   MultiChoiceSegmentedButtonRow,
   SegmentedButton,
@@ -114,8 +107,6 @@ export default function MultiChoiceExample() {
 Use the `colors` prop on `SegmentedButton` to customize its appearance across active, inactive, and disabled states.
 
 ```tsx CustomColorsExample.tsx
-import { useState } from 'react';
-import {
   Host,
   SingleChoiceSegmentedButtonRow,
   SegmentedButton,
@@ -152,7 +143,6 @@ export default function CustomColorsExample() {
 ## API
 
 ```tsx
-import {
   SingleChoiceSegmentedButtonRow,
   MultiChoiceSegmentedButtonRow,
   SegmentedButton,

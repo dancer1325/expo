@@ -4,10 +4,6 @@ sidebar_title: Overview
 hideTOC: true
 ---
 
-import { RouterLogo } from '@expo/styleguide';
-import { GraduationHat02DuotoneIcon } from '@expo/styleguide-icons/duotone/GraduationHat02DuotoneIcon';
-import { CodeSquare01Icon } from '@expo/styleguide-icons/outline/CodeSquare01Icon';
-import { CpuChip01Icon } from '@expo/styleguide-icons/outline/CpuChip01Icon';
 
 This section contains information about the development with Expo and Expo Application Services (EAS):
 

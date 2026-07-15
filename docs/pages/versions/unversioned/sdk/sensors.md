@@ -7,12 +7,7 @@ iconUrl: '/static/images/packages/expo-sensors.png'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import { Speedometer04Icon } from '@expo/styleguide-icons/outline/Speedometer04Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions, IOSPermissions } from '~/components/plugins/permissions';
-import { BoxLink } from '~/ui/components/BoxLink';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
@@ -62,9 +57,7 @@ You can configure `expo-sensors` using its built-in [config plugin](/config-plug
 ## API
 
 ```js
-import * as Sensors from 'expo-sensors';
 // OR
-import {
   Accelerometer,
   Barometer,
   DeviceMotion,

@@ -17,7 +17,6 @@ Native apps don't have a server so there are technically no 404s
 * This is done automatically for each app, but you can also customize it.
 
 ```tsx app/+not-found.tsx
-import { Unmatched } from 'expo-router';
 export default Unmatched;
 ```
 
@@ -39,8 +38,6 @@ You can export a nested [`ErrorBoundary`](/versions/latest/sdk/router/#errorboun
 
 {/* prettier-ignore */}
 ```tsx app/home.tsx
-import { View, Text } from 'react-native';
-import { type ErrorBoundaryProps } from 'expo-router';
 
 /* @info */
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {

@@ -4,10 +4,7 @@ description: A list of useful resources to learn more about implementing navigat
 hideTOC: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { Settings02Icon } from '@expo/styleguide-icons/outline/Settings02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 <BoxLink
   title="Use TypeScript"

@@ -55,8 +55,6 @@ This provider uses a mock implementation
 * You can replace it with your own [authentication provider](/guides/authentication/).
 
 ```tsx ctx.tsx
-import { useContext, createContext, type PropsWithChildren } from 'react';
-import { useStorageState } from './useStorageState';
 
 const AuthContext = createContext<{
   signIn: () => void;
@@ -106,9 +104,6 @@ The following code snippet is a basic hook that persists tokens securely on nati
 
 {/* prettier-ignore */}
 ```tsx useStorageState.ts
-import  { useEffect, useCallback, useReducer } from 'react';
-import * as SecureStore from 'expo-secure-store';
-import { Platform } from 'react-native';
 
 type UseStateHook<T> = [[boolean, T | null], (value: T | null) => void];
 
@@ -182,8 +177,6 @@ Use the `SessionProvider` in the root layout to provide the authentication conte
 * Otherwise, a runtime error will be thrown.
 
 ```tsx app/_layout.tsx
-import { Slot } from 'expo-router';
-import { SessionProvider } from '../ctx';
 
 export default function Root() {
   // Set up the auth context and render our layout inside of it.
@@ -203,10 +196,7 @@ Create a nested [layout route](/router/basics/navigation-layouts/) that checks w
 * This layout route redirects users to the sign-in screen if they are not authenticated.
 
 ```tsx app/(app)/_layout.tsx|collapseHeight=400
-import { Text } from 'react-native';
-import { Redirect, Stack } from 'expo-router';
 
-import { useSession } from '../../ctx';
 
 export default function AppLayout() {
   const { session, isLoading } = useSession();
@@ -239,10 +229,7 @@ Create the `/sign-in` screen
 * This lets logged-out users see this screen.
 
 ```tsx app/sign-in.tsx|collapseHeight=480
-import { router } from 'expo-router';
-import { Text, View } from 'react-native';
 
-import { useSession } from '../ctx';
 
 export default function SignIn() {
   const { signIn } = useSession();
@@ -270,9 +257,7 @@ export default function SignIn() {
 Implement an authenticated screen that lets users sign out.
 
 ```tsx app/(app)/index.tsx|collapseHeight=480
-import { Text, View } from 'react-native';
 
-import { useSession } from '../../ctx';
 
 export default function Index() {
   const { signOut } = useSession();
@@ -323,7 +308,6 @@ Another common pattern is to render a sign-in modal over the top of the app
 />
 
 ```tsx app/(app)/_layout.tsx|collapseHeight=480
-import { Stack } from 'expo-router';
 
 export const unstable_settings = {
   anchor: '(root)',

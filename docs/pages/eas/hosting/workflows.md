@@ -3,7 +3,6 @@ title: Web deployments with EAS Workflows
 description: Learn how to automate website and server deployments with EAS Hosting and Workflows.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 EAS Workflows is a great way to automate the React Native CI/CD pipeline for deploying your project's website and API routes to EAS Hosting with pull request (PR) previews and production deployments.
 

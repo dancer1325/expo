@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Column`](../universal/column) — it renders the appropriate native component per platform.
 
@@ -31,8 +28,6 @@ Expo UI Column matches the official Jetpack Compose [Column](https://developer.a
 `Column` places children vertically. Use `verticalArrangement` and `horizontalAlignment` to control spacing and alignment.
 
 ```tsx ColumnExample.tsx
-import { Host, Column, Text } from '@expo/ui/jetpack-compose';
-import { fillMaxWidth, paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function ColumnExample() {
   return (
@@ -53,7 +48,6 @@ export default function ColumnExample() {
 ## API
 
 ```tsx
-import { Column } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/column" apiName="Column" />

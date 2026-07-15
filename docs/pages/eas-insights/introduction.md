@@ -4,7 +4,6 @@ sidebar_title: Introduction
 description: An introduction to EAS Insights, a dashboard that surfaces trends in your app's usage, workflow runs, and Maestro tests.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 **EAS Insights** is a dashboard that surfaces trends across your project so you can see how your app is doing at a glance. Open your project in the EAS dashboard and select [**Insights**](https://expo.dev/accounts/[account]/projects/[project]/insights) from the navigation menu.
 

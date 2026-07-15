@@ -108,9 +108,6 @@ TODO:
 
 {/* prettier-ignore */}
 ```tsx IdentityServer 4 Example
-import { Button, Text, View } from 'react-native';
-import * as AuthSession from 'expo-auth-session';
-import * as WebBrowser from 'expo-web-browser';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -165,11 +162,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx Asgardeo Auth Example
-import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Alert } from 'react-native';
-import * as AuthSession from "expo-auth-session";
-import * as WebBrowser from "expo-web-browser";
-import jwtDecode from "jwt-decode";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -284,15 +276,11 @@ const styles = StyleSheet.create({
 
 {/* prettier-ignore */}
 ```tsx Azure Example
-import { useState } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import {
   exchangeCodeAsync,
   makeRedirectUri,
   useAuthRequest,
   useAutoDiscovery,
 } from 'expo-auth-session';
-import { Button, Text, SafeAreaView } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -397,11 +385,7 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```jsx Auth Code
-import { useEffect } from 'react';
-import { makeRedirectUri, useAuthRequest, useAutoDiscovery } from 'expo-auth-session';
-import { Button } from 'react-native';
 /* @info Import the Beyond Identity Embedded SDK.*/
-import { Embedded } from '@beyondidentity/bi-sdk-react-native';
 /* @end */
 
 export default function App() {
@@ -475,9 +459,7 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```jsx Auth Code
-import { Button } from 'react-native';
 /* @info Import the Beyond Identity Embedded SDK.*/
-import { Embedded } from '@beyondidentity/bi-sdk-react-native';
 /* @end */
 
 export default function App() {
@@ -536,13 +518,10 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```jsx Calendly Auth Example
-import * as WebBrowser from 'expo-web-browser';
-import {
   makeRedirectUri,
   useAuthRequest,
   exchangeCodeAsync,
 } from "expo-auth-session";
-import { useEffect, useState } from "react";
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native, this does nothing
@@ -656,10 +635,6 @@ extraParams: {
 
 {/* prettier-ignore */}
 ```tsx Cognito Auth Example
-import { useState, useMemo, useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { useAuthRequest, exchangeCodeAsync, revokeAsync, ResponseType } from 'expo-auth-session';
-import { Button, Alert } from 'react-native';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -775,15 +750,11 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx Coinbase Auth Example
-import {
   exchangeCodeAsync,
   makeRedirectUri,
   TokenResponse,
   useAuthRequest,
 } from "expo-auth-session";
-import * as WebBrowser from "expo-web-browser";
-import { useEffect, useMemo, useReducer, useRef } from "react";
-import { Button } from "react-native";
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -933,10 +904,6 @@ function useMounted() {
 
 {/* prettier-ignore */}
 ```tsx Descope Auth Example
-import { useState, useEffect } React from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import * as AuthSession from 'expo-auth-session';
-import { Button, View } from 'react-native';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -1051,10 +1018,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx Dropbox Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import { Button, Platform } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -1135,10 +1098,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx Fitbit Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import { Button, Platform } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -1220,10 +1179,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx GitHub Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import { Button } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -1299,10 +1254,6 @@ export default function App() {
 - Learn more here: [imgur.com/oauth2](https://api.imgur.com/oauth2)
 
 ```tsx Imgur Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import { Button, Platform } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -1375,9 +1326,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx Keycloak Auth Example
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest, useAutoDiscovery } from 'expo-auth-session';
-import { Button, Text, View } from 'react-native';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -1433,7 +1381,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```jsx Logto Auth Example
-import { LogtoProvider, useLogto } from "@logto/rn";
 
 // Use `useLogto()` hook to sign in and sign out
 const Content = () => {
@@ -1481,10 +1428,6 @@ const App = () => {
 
 {/* prettier-ignore */}
 ```tsx Okta Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest, useAutoDiscovery } from 'expo-auth-session';
-import { Button, Platform } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -1557,10 +1500,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx Reddit Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import { Button } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -1637,10 +1576,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx Slack Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import { Button } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -1731,10 +1666,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx Spotify Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import { Button } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -1816,10 +1747,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx Strava Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import { Button } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -1909,10 +1836,6 @@ const { accessToken } = await AuthSession.exchangeCodeAsync(
 
 {/* prettier-ignore */}
 ```tsx Strivacity Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import { Button } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web
 * It will ensure that authentication is completed properly
@@ -1985,10 +1908,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx Twitch Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import { Button } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -2071,10 +1990,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx Twitter Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import { Button, Platform } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -2155,10 +2070,6 @@ export default function App() {
 
 {/* prettier-ignore */}
 ```tsx Uber Auth Example
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import { Button } from 'react-native';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -2267,8 +2178,6 @@ On Android you can optionally warm up the web browser before it's used
 
 {/* prettier-ignore */}
 ```tsx
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
 
 function App() {
   useEffect(() => {
@@ -2301,9 +2210,6 @@ Because there was no secure way to do this to store client secrets in your app b
 
 {/* prettier-ignore */}
 ```tsx
-import { useEffect } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest, ResponseType } from 'expo-auth-session';
 
 /* @info <strong>Web only:</strong> This method should be invoked on the page that the auth popup gets redirected to on web, it'll ensure that authentication is completed properly
 * On native this does nothing
@@ -2359,7 +2265,6 @@ You can store your authentication results and rehydrate them later to avoid havi
 
 {/* prettier-ignore */}
 ```tsx
-import * as SecureStore from 'expo-secure-store';
 
 const MY_SECURE_AUTH_STATE_KEY = 'MySecureAuthStateKey';
 

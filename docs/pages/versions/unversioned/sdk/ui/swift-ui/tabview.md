@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI TabView matches the official SwiftUI [TabView API](https://developer.apple.com/documentation/swiftui/tabview) and switches between styles via the [`tabViewStyle`](modifiers/#tabviewstyleconfig) modifier.
 
@@ -35,8 +32,6 @@ Each page is a `<TabView.Tab>` child, identified by a `value` prop. `TabView` do
 Use `tabViewStyle({ type: 'page' })` for a horizontal pager with optional dot indicators. Pass `defaultSelection` to start the pager on a specific page without controlling it from React.
 
 ```tsx PagerExample.tsx
-import { Host, Spacer, TabView, Text, VStack } from '@expo/ui/swift-ui';
-import {
   background,
   font,
   foregroundStyle,
@@ -83,9 +78,6 @@ function Page({ label, color }: { label: string; color: string }) {
 Pass `selection` and `onSelectionChange` to drive the active tab from React state. Each `<TabView.Tab>`'s `value` is matched against `selection`. Add the [`animation`](modifiers/#animationanimation-value) modifier to animate transitions when `selection` changes from JS.
 
 ```tsx ControlledTabViewExample.tsx
-import { useState } from 'react';
-import { Button, Host, Spacer, TabView, Text, VStack } from '@expo/ui/swift-ui';
-import {
   animation,
   Animation,
   background,
@@ -147,8 +139,6 @@ function Page({ label, color }: { label: string; color: string }) {
 Use the [`indexViewStyle`](modifiers/#indexviewstyleconfig) modifier together with `tabViewStyle({ type: 'page' })` to control the dot indicators. Set `indexDisplayMode` to `'always'`, `'never'`, or `'automatic'`, and `backgroundDisplayMode` to render a translucent pill behind the dots.
 
 ```tsx PageIndicatorExample.tsx
-import { Host, Spacer, TabView, Text, VStack } from '@expo/ui/swift-ui';
-import {
   background,
   font,
   foregroundStyle,
@@ -203,9 +193,6 @@ Use `tabViewStyle({ type: 'automatic' })` for the SwiftUI default tab bar. Each 
 > **Note:** For routed bottom-tab navigation across full-screen routes, use [`expo-router/unstable-native-tabs`](/router/advanced/native-tabs/) instead.
 
 ```tsx BottomTabsExample.tsx
-import { useState } from 'react';
-import { Host, Spacer, TabView, Text, VStack } from '@expo/ui/swift-ui';
-import {
   background,
   badge,
   font,
@@ -255,7 +242,6 @@ function Page({ label, color }: { label: string; color: string }) {
 ## API
 
 ```tsx
-import { TabView } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/tabview" apiName="TabView" />

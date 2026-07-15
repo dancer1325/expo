@@ -4,11 +4,7 @@ sidebar_title: Overview
 description: An overview of the APIs and utilities provided by Expo to develop native modules.
 ---
 
-import { Grid01Icon } from '@expo/styleguide-icons/outline/Grid01Icon';
-import { Settings01Icon } from '@expo/styleguide-icons/outline/Settings01Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
 
 ## What is the Expo Modules API
 

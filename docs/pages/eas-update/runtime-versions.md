@@ -4,7 +4,6 @@ sidebar_title: Runtime versions
 description: Learn about different runtime version policies and how they may suit your project.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Runtime versions are a property that guarantees compatibility between a build's native code and an update. When a project is made into a build, the build will contain some native code that cannot be changed with an update. Therefore, an update must be compatible with a build's native code to run on the build.
 

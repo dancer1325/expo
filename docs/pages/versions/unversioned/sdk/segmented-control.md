@@ -7,10 +7,7 @@ platforms: ['android', 'ios', 'web', 'expo-go']
 inExpoGo: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
 
 > **important** [`@expo/ui` provides a drop-in replacement](./ui/drop-in-replacements/segmentedcontrol) for `@react-native-segmented-control/segmented-control`, powered by Jetpack Compose on Android and SwiftUI on iOS.
 

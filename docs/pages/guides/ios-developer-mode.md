@@ -3,9 +3,6 @@ title: iOS Developer Mode
 description: Learn how to enable iOS Developer Mode setting on iOS 16 and above to run internal distribution builds and local development builds.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Step } from '~/ui/components/Step';
 
 > This does not apply to builds signed using enterprise provisioning or to any builds installed on an iOS Simulator.
 

@@ -5,10 +5,6 @@ description: Learn how to publish preview updates with EAS Workflows.
 hideTOC: true
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 Once you've made changes to your project, you can share a preview of your changes with your team by publishing a [preview update](/review/share-previews-with-your-team/). This is useful when you want to review changes with your team without pulling the latest changes and running them locally.
 

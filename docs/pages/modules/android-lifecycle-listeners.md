@@ -3,8 +3,6 @@ title: Android lifecycle listeners
 description: Learn about the mechanism that allows your library to hook into Android Activity and Application functions using Expo modules API.
 ---
 
-import { Step } from '~/ui/components/Step';
-import { Tab, Tabs } from '~/ui/components/Tabs';
 
 To respond to certain Android system events relevant to an app, such as inbound links and configuration changes, it is necessary to override the corresponding lifecycle callbacks in **MainActivity.java** and/or **MainApplication.java**.
 
@@ -39,9 +37,6 @@ To create a `ReactActivityLifecycleListener`, you should implement `createReactA
 // android/src/main/java/expo/modules/mylib/MyLibPackage.kt
 package expo.modules.mylib
 
-import android.content.Context
-import expo.modules.core.interfaces.Package
-import expo.modules.core.interfaces.ReactActivityLifecycleListener
 
 class MyLibPackage : Package {
   override fun createReactActivityLifecycleListeners(activityContext: Context): List<ReactActivityLifecycleListener> {
@@ -58,12 +53,7 @@ class MyLibPackage : Package {
 // android/src/main/java/expo/modules/mylib/MyLibPackage.java
 package expo.modules.mylib;
 
-import android.content.Context;
-import expo.modules.core.interfaces.Package;
-import expo.modules.core.interfaces.ReactActivityLifecycleListener;
 
-import java.util.Collections;
-import java.util.List;
 
 public class MyLibPackage implements Package {
   @Override
@@ -87,9 +77,6 @@ public class MyLibPackage implements Package {
 // android/src/main/java/expo/modules/mylib/MyLibReactActivityLifecycleListener.kt
 package expo.modules.mylib
 
-import android.app.Activity
-import android.os.Bundle
-import expo.modules.core.interfaces.ReactActivityLifecycleListener
 
 class MyLibReactActivityLifecycleListener : ReactActivityLifecycleListener {
   override fun onCreate(activity: Activity, savedInstanceState: Bundle?) {
@@ -107,10 +94,7 @@ class MyLibReactActivityLifecycleListener : ReactActivityLifecycleListener {
 // android/src/main/java/expo/modules/mylib/MyLibReactActivityLifecycleListener.java
 package expo.modules.mylib;
 
-import android.app.Activity;
-import android.os.Bundle;
 
-import expo.modules.core.interfaces.ReactActivityLifecycleListener;
 
 public class MyLibReactActivityLifecycleListener implements ReactActivityLifecycleListener {
   @Override
@@ -135,10 +119,6 @@ You can also override other lifecycle methods. The example below shows how to ov
 // android/src/main/java/expo/modules/mylib/MyLibReactActivityLifecycleListener.kt
 package expo.modules.mylib
 
-import android.app.Activity
-import android.content.Intent
-import android.os.Bundle
-import expo.modules.core.interfaces.ReactActivityLifecycleListener
 
 class MyLibReactActivityLifecycleListener : ReactActivityLifecycleListener {
   override fun onCreate(activity: Activity?, savedInstanceState: Bundle?) {
@@ -198,11 +178,6 @@ class MyLibReactActivityLifecycleListener : ReactActivityLifecycleListener {
 // android/src/main/java/expo/modules/mylib/MyLibReactActivityLifecycleListener.java
 package expo.modules.mylib;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import expo.modules.core.interfaces.ReactActivityLifecycleListener;
 
 public class MyLibReactActivityLifecycleListener implements ReactActivityLifecycleListener {
   @Override
@@ -292,9 +267,6 @@ Start by creating a module class that registers your lifecycle listener:
 // android/src/main/java/expo/modules/deeplinkhandler/DeepLinkHandlerPackage.kt
 package expo.modules.deeplinkhandler
 
-import android.content.Context
-import expo.modules.core.interfaces.Package
-import expo.modules.core.interfaces.ReactActivityLifecycleListener
 
 class DeepLinkHandlerPackage : Package {
   override fun createReactActivityLifecycleListeners(activityContext: Context?): List<ReactActivityLifecycleListener> {
@@ -311,11 +283,6 @@ class DeepLinkHandlerPackage : Package {
 // android/src/main/java/expo/modules/deeplinkhandler/DeepLinkHandlerPackage.java
 package expo.modules.deeplinkhandler;
 
-import android.content.Context;
-import expo.modules.core.interfaces.Package;
-import expo.modules.core.interfaces.ReactActivityLifecycleListener;
-import java.util.Collections;
-import java.util.List;
 
 public class DeepLinkHandlerPackage implements Package {
   @Override
@@ -345,11 +312,6 @@ Create a lifecycle listener that captures deep links and notifies the module obs
 // android/src/main/java/expo/modules/deeplinkhandler/DeepLinkHandlerActivityLifecycleListener.kt
 package expo.modules.deeplinkhandler
 
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
-import expo.modules.core.interfaces.ReactActivityLifecycleListener
 
 class DeepLinkHandlerActivityLifecycleListener : ReactActivityLifecycleListener {
   override fun onCreate(activity: Activity?, savedInstanceState: Bundle?) {
@@ -384,11 +346,6 @@ class DeepLinkHandlerActivityLifecycleListener : ReactActivityLifecycleListener 
 // android/src/main/java/expo/modules/deeplinkhandler/DeepLinkHandlerActivityLifecycleListener.java
 package expo.modules.deeplinkhandler;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import expo.modules.core.interfaces.ReactActivityLifecycleListener;
 
 public class DeepLinkHandlerActivityLifecycleListener implements ReactActivityLifecycleListener {
   @Override
@@ -439,11 +396,6 @@ Create a module that maintains observers and sends events to JavaScript:
 // android/src/main/java/expo/modules/deeplinkhandler/DeepLinkHandlerModule.kt
 package expo.modules.deeplinkhandler
 
-import android.net.Uri
-import androidx.core.os.bundleOf
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
-import java.lang.ref.WeakReference
 
 class DeepLinkHandlerModule : Module() {
   companion object {
@@ -494,14 +446,6 @@ class DeepLinkHandlerModule : Module() {
 // android/src/main/java/expo/modules/deeplinkhandler/DeepLinkHandlerModule.java
 package expo.modules.deeplinkhandler;
 
-import android.net.Uri;
-import androidx.core.os.Bundle;
-import expo.modules.kotlin.modules.Module;
-import expo.modules.kotlin.modules.ModuleDefinition;
-import java.lang.ref.WeakReference;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Consumer;
 
 public class DeepLinkHandlerModule extends Module {
   public static Uri initialUrl = null;
@@ -553,7 +497,6 @@ public class DeepLinkHandlerModule extends Module {
 Define a TypeScript interface for your module to bridge the Android lifecycle events to JavaScript:
 
 ```ts DeepLinkHandler.ts
-import { requireNativeModule, NativeModule } from 'expo-modules-core';
 
 export type DeepLinkEvent = {
   url: string;
@@ -577,8 +520,6 @@ export default DeepLinkHandler;
 Create a React hook for an easy access to the deep link events:
 
 ```tsx useDeepLinkHandler.ts
-import { useEffect, useState } from 'react';
-import DeepLinkHandler, { DeepLinkEvent } from './DeepLinkHandler';
 
 export function useDeepLinkHandler(): {
   initialUrl: string | null;
@@ -607,8 +548,6 @@ export function useDeepLinkHandler(): {
 Use it in your React component:
 
 ```tsx App.tsx
-import { Text, View, StyleSheet } from 'react-native';
-import { useDeepLinkHandler } from './useDeepLinkHandler';
 
 export function App() {
   const { initialUrl, url, event } = useDeepLinkHandler();
@@ -679,9 +618,6 @@ To create an `ApplicationLifecycleListener`, you should implement `createApplica
 // android/src/main/java/expo/modules/mylib/MyLibPackage.kt
 package expo.modules.mylib
 
-import android.content.Context
-import expo.modules.core.interfaces.ApplicationLifecycleListener
-import expo.modules.core.interfaces.Package
 
 class MyLibPackage : Package {
   override fun createApplicationLifecycleListeners(context: Context): List<ApplicationLifecycleListener> {
@@ -696,13 +632,8 @@ class MyLibPackage : Package {
 
 ```java
 // android/src/main/java/expo/modules/mylib/MyLibPackage.java
-import android.content.Context;
 
-import java.util.Collections;
-import java.util.List;
 
-import expo.modules.core.interfaces.ApplicationLifecycleListener;
-import expo.modules.core.interfaces.Package;
 
 public class MyLibPackage implements Package {
   @Override
@@ -726,8 +657,6 @@ public class MyLibPackage implements Package {
 // android/src/main/java/expo/modules/mylib/MyLibApplicationLifecycleListener.kt
 package expo.modules.mylib
 
-import android.app.Application
-import expo.modules.core.interfaces.ApplicationLifecycleListener
 
 class MyLibApplicationLifecycleListener : ApplicationLifecycleListener {
   override fun onCreate(application: Application) {
@@ -745,9 +674,7 @@ class MyLibApplicationLifecycleListener : ApplicationLifecycleListener {
 // android/src/main/java/expo/modules/mylib/MyLibApplicationLifecycleListener.java
 package expo.modules.mylib;
 
-import android.app.Application;
 
-import expo.modules.core.interfaces.ApplicationLifecycleListener;
 
 public class MyLibApplicationLifecycleListener implements ApplicationLifecycleListener {
   @Override

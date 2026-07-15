@@ -4,13 +4,6 @@ description: In this chapter, learn how to add navigation to the Expo app.
 hasVideoLink: true
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { FileTree } from '~/ui/components/FileTree';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Step } from '~/ui/components/Step';
-import { CODE } from '~/ui/components/Text';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 In this chapter, we'll learn Expo Router's fundamentals to create stack navigation and a bottom tab bar with two tabs.
 
@@ -39,7 +32,6 @@ Expo Router is a file-based routing framework for React Native and web apps. It 
 Let's create a new file named **about.tsx** inside the **app** directory. It displays the screen name when the user navigates to the `/about` route.
 
 ```tsx app/about.tsx|collapseHeight=300
-import { Text, View, StyleSheet } from 'react-native';
 
 export default function AboutScreen() {
   return (
@@ -69,7 +61,6 @@ Inside **app/\_layout.tsx**:
 
 {/* prettier-ignore */}
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function RootLayout() {
   return (
@@ -103,7 +94,6 @@ We'll use Expo Router's `Link` component to navigate from the `/index` route to 
 
 {/* prettier-ignore */}
 ```tsx app/index.tsx|collapseHeight=300
-import { Text, View, StyleSheet } from 'react-native';
 /* @tutinfo Import `Link` component from `expo-router`. */ import { Link } from 'expo-router'; /* @end */
 
 export default function Index() {
@@ -157,8 +147,6 @@ When a route doesn't exist, we can use a `+not-found` route to display a fallbac
 
 {/* prettier-ignore */}
 ```tsx app/+not-found.tsx
-import { View, StyleSheet } from 'react-native';
-import { Link, Stack } from 'expo-router';
 
 export default function NotFoundScreen() {
   return (
@@ -234,7 +222,6 @@ Update the Root layout file to add a `(tabs)` route:
 
 {/* prettier-ignore */}
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function RootLayout() {
   return (
@@ -251,7 +238,6 @@ Inside **(tabs)/\_layout.tsx**, add a `Tabs` component to define the bottom tab 
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/_layout.tsx
-import { Tabs } from 'expo-router';
 
 export default function TabLayout() {
   return (
@@ -289,9 +275,7 @@ Modify the **(tabs)/\_layout.tsx** file to add tab bar icons:
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/_layout.tsx
-import { Tabs } from 'expo-router';
 /* @tutinfo Import `Ionicons` icon set.*/
-import Ionicons from '@expo/vector-icons/Ionicons';
 /* @end */
 
 export default function TabLayout() {

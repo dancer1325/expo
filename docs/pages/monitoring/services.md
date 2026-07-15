@@ -3,15 +3,7 @@ title: Monitoring services
 description: Learn how to monitor the usage of your Expo and React Native app after its release.
 ---
 
-import { LogrocketIcon } from '@expo/styleguide-icons/custom/LogrocketIcon';
-import { PosthogIcon } from '@expo/styleguide-icons/custom/PosthogIcon';
-import { SentryIcon } from '@expo/styleguide-icons/custom/SentryIcon';
-import { ActivityIcon } from '@expo/styleguide-icons/outline/ActivityIcon';
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { DataIcon } from '@expo/styleguide-icons/outline/DataIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Once your app is released, you can track anonymized usage data to give you insights on how users use your app. This data includes which updates are in use, when users experience bugs, how the app performs in production, and more.
 

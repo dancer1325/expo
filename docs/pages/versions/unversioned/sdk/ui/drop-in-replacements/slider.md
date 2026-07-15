@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A `Slider` component with an API compatible with [`@react-native-community/slider`](https://www.npmjs.com/package/@react-native-community/slider). It uses a Material 3 `Slider` on Android, a SwiftUI `Slider` on iOS, and a native `<input type="range">` element on web.
 
@@ -31,9 +29,6 @@ If you need lower-level control, use those primitives directly.
 ## Basic usage
 
 ```tsx SliderExample.tsx
-import { useState } from 'react';
-import { Text, View } from 'react-native';
-import Slider from '@expo/ui/community/slider';
 
 export default function SliderExample() {
   const [value, setValue] = useState(0.5);
@@ -50,7 +45,6 @@ export default function SliderExample() {
 ## API
 
 ```tsx
-import Slider from '@expo/ui/community/slider';
 ```
 
 <APISection packageName="expo-ui/community/slider" apiName="Slider" />

@@ -3,9 +3,6 @@ title: Top-level src directory
 description: Learn how to use a top-level src directory in your Expo Router project.
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 Projects created with the [default template](/get-started/create-a-project/) on SDK 55 and later already include a top-level **src** directory that contains the **app**, **components**, **constants**, and **hooks** directories. No extra configuration is needed.
 

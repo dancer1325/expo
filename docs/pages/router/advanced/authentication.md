@@ -7,13 +7,7 @@ hasVideoLink: true
 
 > **info** For the previous version of this guide (SDK 52 and earlier), see [Authentication (redirects)](/router/advanced/authentication-rewrites/).
 
-import { Lock01Icon } from '@expo/styleguide-icons/outline/Lock01Icon';
-import { LockUnlocked01Icon } from '@expo/styleguide-icons/outline/LockUnlocked01Icon';
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { FileTree } from '~/ui/components/FileTree';
-import { Step } from '~/ui/components/Step';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 With Expo Router, all routes are always defined and accessible. You can use runtime logic to redirect users away from specific screens depending on whether they are authenticated. There are two different techniques for authenticating users within routes. This guide provides an example that demonstrates the functionality of standard native apps.
 
@@ -49,9 +43,7 @@ To follow the above example, set up a [React Context provider](https://react.dev
 This provider uses a mock implementation. You can replace it with your own [authentication provider](/guides/authentication/).
 
 ```tsx src/ctx.tsx
-import { use, createContext, type PropsWithChildren } from 'react';
 
-import { useStorageState } from './useStorageState';
 
 const AuthContext = createContext<{
   signIn: () => void;
@@ -96,9 +88,6 @@ The following code snippet is a basic hook that persists tokens securely on nati
 
 {/* prettier-ignore */}
 ```tsx src/useStorageState.ts
-import  { useEffect, useCallback, useReducer } from 'react';
-import * as SecureStore from 'expo-secure-store';
-import { Platform } from 'react-native';
 
 type UseStateHook<T> = [[boolean, T | null], (value: T | null) => void];
 
@@ -174,8 +163,6 @@ export function useStorageState(key: string): UseStateHook<string> {
 Create a **SplashScreenController** to manage the splash screen. Authentication loading is asynchronous, so keep the splash screen visible until authentication loads.
 
 ```tsx src/splash.tsx
-import { SplashScreen } from 'expo-router';
-import { useSession } from './ctx';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -197,10 +184,7 @@ export function SplashScreenController() {
 Add the `SessionProvider` to your root layout. This gives your entire app access to the authentication context. Ensure the `SplashScreenController` is inside the `SessionProvider`.
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
-import { SessionProvider } from '@/ctx';
-import { SplashScreenController } from '@/splash';
 
 export default function Root() {
   // Set up the auth context and render your layout inside of it.
@@ -225,10 +209,7 @@ function RootNavigator() {
 Create the `/sign-in` screen. This screen toggles authentication using `signIn()`. Since this screen is outside the `(app)` group, the group's layout and authentication check do not run when rendering this screen. This lets logged-out users access this screen.
 
 ```tsx src/app/sign-in.tsx|collapseHeight=480
-import { router } from 'expo-router';
-import { Text, View } from 'react-native';
 
-import { useSession } from '@/ctx';
 
 export default function SignIn() {
   const { signIn } = useSession();
@@ -255,7 +236,6 @@ Now modify the `RootNavigator` to protect routes based on your `SessionProvider`
 
 ```tsx src/app/_layout.tsx|collapseHeight=400
 // All import statements remain the same except you need to import `useSession` from your `ctx.tsx` file.
-import { SessionProvider, useSession } from '@/ctx';
 
 // All of the above code remains unchanged. Update the `RootNavigator` to protect routes based on your `SessionProvider` below.
 
@@ -283,9 +263,7 @@ function RootNavigator() {
 Implement an authenticated screen that lets users sign out.
 
 ```tsx src/app/(app)/index.tsx|collapseHeight=480
-import { Text, View } from 'react-native';
 
-import { useSession } from '@/ctx';
 
 export default function Index() {
   const { signOut } = useSession();
@@ -310,7 +288,6 @@ export default function Index() {
 Create the **src/app/(app)/\_layout.tsx**:
 
 ```tsx src/app/(app)/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function AppLayout() {
   // This renders the navigation stack for all authenticated app routes.
@@ -342,7 +319,6 @@ Another common pattern is to render a sign-in modal over the top of the app. Thi
 />
 
 ```tsx src/app/(app)/_layout.tsx|collapseHeight=480
-import { Stack } from 'expo-router';
 
 export const unstable_settings = {
   initialRouteName: '(root)',

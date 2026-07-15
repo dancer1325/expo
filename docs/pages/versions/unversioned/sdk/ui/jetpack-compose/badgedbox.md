@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI BadgedBox matches the official Jetpack Compose [`BadgedBox`](https://developer.android.com/develop/ui/compose/components/badges) API. It overlays a badge on top of content such as an icon.
 
@@ -29,7 +26,6 @@ Expo UI BadgedBox matches the official Jetpack Compose [`BadgedBox`](https://dev
 ### Icon with badge count
 
 ```tsx IconWithBadge.tsx
-import { Host, Badge, BadgedBox, Icon, Text } from '@expo/ui/jetpack-compose';
 
 // Replace with your own vector drawable asset
 const mailIcon = require('./assets/mail.xml');
@@ -53,8 +49,6 @@ export default function IconWithBadge() {
 ### Interactive counter
 
 ```tsx InteractiveBadge.tsx
-import { useState } from 'react';
-import { Host, Badge, BadgedBox, Icon, Button, Text, Column } from '@expo/ui/jetpack-compose';
 
 // Replace with your own vector drawable asset
 const cartIcon = require('./assets/cart.xml');
@@ -87,7 +81,6 @@ export default function InteractiveBadge() {
 ## API
 
 ```tsx
-import { BadgedBox } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/badgedbox" apiName="BadgedBox" />

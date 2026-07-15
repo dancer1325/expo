@@ -5,10 +5,7 @@ description: A reference of configuration options for custom builds with EAS Bui
 maxHeadingDepth: 5
 ---
 
-import { GithubIcon } from '@expo/styleguide-icons/custom/GithubIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
 
 Creating custom builds for EAS Build helps customize the build process for your project.
 

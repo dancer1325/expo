@@ -7,15 +7,10 @@ iconUrl: '/static/images/packages/expo-av.png'
 platforms: ['android', 'ios', 'web', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import {
   ConfigPluginExample,
   ConfigPluginProperties,
   ConfigReactNative,
 } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
-import { PlatformTags } from '~/ui/components/Tag/PlatformTags';
 
 `expo-audio` is a cross-platform audio library for accessing the native audio capabilities of the device.
 
@@ -96,8 +91,6 @@ You can configure `expo-audio` using its built-in [config plugin](/config-plugin
 >
 
 ```jsx
-import { View, StyleSheet, Button } from 'react-native';
-import { useAudioPlayer } from 'expo-audio';
 
 const audioSource = require('./assets/Hello.mp3');
 
@@ -135,9 +128,6 @@ const styles = StyleSheet.create({
 <SnackInline label='Recording sounds' dependencies={['expo-audio', 'expo-asset']}>
 
 ```jsx
-import { useState, useEffect } from 'react';
-import { View, StyleSheet, Button } from 'react-native';
-import {
   useAudioRecorder,
   AudioModule,
   RecordingPresets,
@@ -235,9 +225,6 @@ After configuring your app with the config plugin, you need to:
 2. **Enable lock screen controls** (required on Android for sustained background playback)
 
 ```jsx
-import { View, Button } from 'react-native';
-import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
-import { useEffect } from 'react';
 
 export default function AudioPlayerScreen() {
   const audioSource = require('./assets/audio.mp3');
@@ -385,7 +372,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 After configuring your app, enable background recording at runtime using [`setAudioModeAsync`](#audiosetaudiomodeasyncmode):
 
 ```jsx
-import { setAudioModeAsync, useAudioRecorder, RecordingPresets } from 'expo-audio';
 
 await setAudioModeAsync({
   playsInSilentMode: true,
@@ -414,7 +400,6 @@ In most cases, use the [`useAudioPlayer`](#useaudioplayersource-options) hook to
 In those cases, use the [`createAudioPlayer`](#audiocreateaudioplayersource-options) function. You need to be aware of the risks that come with this approach, as it is your responsibility to call the [`release()`](../sdk/expo/#release) method when the player is no longer needed. If not handled properly, this approach may lead to memory leaks.
 
 ```tsx
-import { createAudioPlayer } from 'expo-audio';
 const player = createAudioPlayer(audioSource);
 ```
 
@@ -427,7 +412,6 @@ const player = createAudioPlayer(audioSource);
 ## API
 
 ```js
-import { useAudioPlayer, useAudioRecorder } from 'expo-audio';
 ```
 
 <APISection packageName="expo-audio" apiName="Audio" />

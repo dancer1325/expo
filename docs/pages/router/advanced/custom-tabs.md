@@ -4,8 +4,6 @@ description: Learn how to use headless tab components to create custom tab layou
 sidebar_title: Custom tabs
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { FileTree } from '~/ui/components/FileTree';
 
 > **warning** Experimentally available in SDK 52 and above. For the React Navigation styled tabs layout that are commonly used in native apps, see [Tabs](/router/advanced/tabs/).
 
@@ -25,7 +23,6 @@ There are four components offered by `expo-router/ui` to create custom tab layou
 A bare minimum structure of a custom tab layout would consist of a `TabList` (containing `TabTrigger` components for each tab) and a`TabSlot`, all within the `Tabs` component), as shown here:
 
 ```tsx app/(tabs)/_layout.tsx|collapseHeight=440
-import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
 
 // Defining the layout of the custom tab navigator
 export function Layout() {
@@ -196,10 +193,6 @@ The `TabList` is both the configuration and default appearance of the `Tabs`, bu
 `TabTrigger` will forward an `isFocused` prop, so you can create a separate tab button component that reacts to focused status.
 
 ```tsx TabButton.tsx
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { TabTriggerSlotProps } from 'expo-router/ui';
-import { ComponentProps, Ref, forwardRef } from 'react';
-import { Text, Pressable, View } from 'react-native';
 
 type Icon = ComponentProps<typeof FontAwesome>['name'];
 

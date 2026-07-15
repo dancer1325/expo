@@ -3,12 +3,6 @@ title: Expo push notifications setup
 description: Learn how to set up push notifications, get credentials for development and production, and send a testing push notification.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { NotificationsVideo } from '~/ui/components/NotificationsVideo';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tab, Tabs } from '~/ui/components/Tabs';
 
 To utilize Expo push notification service, you must configure your app by installing a set of libraries, implement functions to handle notifications, and set up credentials for Android and iOS.
 
@@ -56,11 +50,6 @@ Run the following command to install the `expo-notifications`, `expo-device` and
 The code below shows a working example of how to register for, send, and receive push notifications in a React Native app. Copy and paste it into your project:
 
 ```tsx App.tsx
-import { useState, useEffect, useRef } from 'react';
-import { Text, View, Button, Platform } from 'react-native';
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
 
 /* @info This handler determines how your app handles notifications that come in while the app is foregrounded. */
 Notifications.setNotificationHandler({

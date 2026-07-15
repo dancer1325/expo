@@ -11,7 +11,6 @@ Configure EAS Observe at runtime to fit your app's build setup, environment, and
 Use the `configure()` method to control how EAS Observe behaves at runtime:
 
 ```tsx
-import { Observe } from 'expo-observe';
 
 Observe.configure({
   environment: 'production',
@@ -33,7 +32,6 @@ Events are automatically dispatched when the app moves to the background. On And
 To flush events manually (for example, during testing or to ensure events are sent before a specific point), call `dispatchEvents()`:
 
 ```tsx
-import { Observe } from 'expo-observe';
 
 await Observe.dispatchEvents();
 ```
@@ -43,7 +41,6 @@ await Observe.dispatchEvents();
 By default, every installation dispatches its metrics. For high-volume apps, you can sample a fraction of installations by setting `sampleRate` to a value between `0` and `1`:
 
 ```tsx
-import { Observe } from 'expo-observe';
 
 // Dispatch metrics from ~25% of installations.
 Observe.configure({
@@ -64,7 +61,6 @@ A few details worth knowing:
 By default, metrics collected from debug builds are not dispatched. To dispatch them anyway (for example, while testing your EAS Observe integration), set `dispatchInDebug` to `true` when calling `configure()`:
 
 ```tsx
-import { Observe } from 'expo-observe';
 
 Observe.configure({
   dispatchInDebug: true,

@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Gauge matches the official SwiftUI [Gauge API](https://developer.apple.com/documentation/swiftui/gauge) and supports styling via the [`gaugeStyle`](modifiers/#gaugestylestyle) modifier.
 
@@ -29,7 +26,6 @@ Expo UI Gauge matches the official SwiftUI [Gauge API](https://developer.apple.c
 ### Basic gauge
 
 ```tsx BasicGaugeExample.tsx
-import { Host, Gauge } from '@expo/ui/swift-ui';
 
 export default function BasicGaugeExample() {
   return (
@@ -45,7 +41,6 @@ export default function BasicGaugeExample() {
 You can pass custom components as `children` to provide a label for the gauge.
 
 ```tsx LabelExample.tsx
-import { Host, Gauge, Text } from '@expo/ui/swift-ui';
 
 export default function LabelExample() {
   return (
@@ -63,7 +58,6 @@ export default function LabelExample() {
 Use the `currentValueLabel`, `minimumValueLabel`, and `maximumValueLabel` props to display value information.
 
 ```tsx ValueLabelsExample.tsx
-import { Host, Gauge, Text } from '@expo/ui/swift-ui';
 
 export default function ValueLabelsExample() {
   return (
@@ -87,8 +81,6 @@ export default function ValueLabelsExample() {
 Use the `gaugeStyle` modifier to change the gauge's appearance. Available styles are: `automatic`, `circular`, `circularCapacity`, `linear`, and `linearCapacity`.
 
 ```tsx GaugeStylesExample.tsx
-import { Host, Gauge, Text, VStack } from '@expo/ui/swift-ui';
-import { gaugeStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function GaugeStylesExample() {
   return (
@@ -117,8 +109,6 @@ export default function GaugeStylesExample() {
 Use the `tint` modifier to change the gauge's color.
 
 ```tsx TintedGaugeExample.tsx
-import { Host, Gauge, VStack } from '@expo/ui/swift-ui';
-import { gaugeStyle, tint } from '@expo/ui/swift-ui/modifiers';
 
 export default function TintedGaugeExample() {
   return (
@@ -135,7 +125,6 @@ export default function TintedGaugeExample() {
 ## API
 
 ```tsx
-import { Gauge } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/gauge" apiName="Gauge" />

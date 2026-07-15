@@ -3,7 +3,6 @@ title: View logs
 description: Learn how to view logs when using Expo CLI, native logs in Android Studio and Xcode, and system logs.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 Logging information in a React Native app works similarly to in a web browser. You can use `console.log`, `console.warn` and `console.error`. However, at times, you might want to dive deep to get more useful information about what's happening in your app. For that, you can use **native logs** and **system logs**.
 

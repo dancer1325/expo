@@ -6,15 +6,10 @@ packageName: 'expo-calendar'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions, IOSPermissions } from '~/components/plugins/permissions';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 > **important** The `legacy` version of Calendar API is included in the `expo-calendar` library. It can be used alongside the class-based `expo-calendar` API, which is exposed from root. To use the legacy API, import it from `expo-calendar/legacy`.
 
@@ -93,9 +88,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 <SnackInline label='Basic Calendar usage' dependencies={['expo-calendar']}>
 
 ```jsx
-import { useEffect } from 'react';
-import { StyleSheet, View, Text, Button, Platform } from 'react-native';
-import * as Calendar from 'expo-calendar/legacy';
 
 export default function App() {
   useEffect(() => {
@@ -155,7 +147,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as Calendar from 'expo-calendar/legacy';
 ```
 
 <APISection

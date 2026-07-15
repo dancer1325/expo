@@ -4,11 +4,7 @@ sidebar_title: Shared objects
 description: Learn how to use a shared object from the Expo Modules API.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { CodeBlocksTable } from '~/components/plugins/CodeBlocksTable';
-import { PaddedAPIBox } from '~/components/plugins/PaddedAPIBox';
-import { BoxLink } from '~/ui/components/BoxLink';
 
 Shared objects let you expose long-lived native instances from Android and iOS to your app's JavaScript/TypeScript without giving control of their lifecycle. They can be used to keep heavy state objects, such as a decoded bitmap, alive across React components, rather than spinning up a new native instance every time a component mounts.
 
@@ -55,12 +51,6 @@ The example creates a simple image manipulation module that loads an image from 
 In Android, you create a shared object from `SharedObject` class provided by `expo.modules.kotlin.sharedobjects.SharedObject`. This class manages the decoded bitmap and exposes methods to manipulate it. The implementation keeps only the current image in memory and applies transforms in place, so you allocate a new bitmap only when a transformation like rotation or flip produces one:
 
 ```kotlin
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
-import expo.modules.kotlin.sharedobjects.SharedObject
 
 class ImageRef : SharedRef<Bitmap>()
 
@@ -95,10 +85,6 @@ When the result of this class is passed to another module, the `render` method r
 The module definition exposes an async function to create the context and a class definition to bind methods. The Expo Modules API uses a declarative syntax where you specify the module name, functions to create instances, and a class definition that maps methods to the shared object:
 
 ```kotlin
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
 
 class SimpleImageModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -126,8 +112,6 @@ In the above example, `createContextAsync` function decodes the bitmap from the 
 In iOS, you create a shared object by inheriting from `SharedObject` class provided by `ExpoModulesCore`. This class manages the decoded bitmap and exposes methods to manipulate it. The implementation keeps only the current image in memory and applies transforms in place:
 
 ```swift
-import ExpoModulesCore
-import UIKit
 
 final class ImageRef: SharedRef<UIImage> {}
 
@@ -198,13 +182,7 @@ In the above example, the `createContextAsync` is an asynchronous function becau
 You can now use the shared object in your app's JavaScript/TypeScript code to load the image from the path, create a context of the loaded image, chain in-memory transforms, render to get a shared reference, and then pass that reference to an `Image` component:
 
 ```tsx
-import { useState } from 'react';
-import { Button } from 'react-native';
-import { Image } from 'expo-image';
-import type { SharedRef } from 'expo';
-import SimpleImageModule from 'simple-image-module'; // The native custom module
 
-import { pickImageAsync } from './pickImage'; // The custom TypeScript function
 
 export function SharedImageExample() {
   const [context, setContext] = useState(null);
@@ -245,7 +223,6 @@ In the above example, the React component only consumes the native image transfo
 The JavaScript API picks an image using `ImagePicker`, which returns a standard file URI. This URI is handed to a custom native module to create a shared object in `SharedImageExample()`:
 
 ```tsx
-import * as ImagePicker from 'expo-image-picker';
 
 export async function pickImageAsync() {
   const result = await ImagePicker.launchImageLibraryAsync({

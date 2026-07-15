@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`BottomSheet`](../universal/bottomsheet) — it renders the appropriate native component per platform.
 
@@ -33,8 +30,6 @@ Expo UI BottomSheet matches the official SwiftUI [sheet API](<https://developer.
 ### Basic bottom sheet
 
 ```tsx BasicBottomSheetExample.tsx
-import { useState } from 'react';
-import { Host, BottomSheet, Button, Text, VStack } from '@expo/ui/swift-ui';
 
 export default function BasicBottomSheetExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -57,8 +52,6 @@ export default function BasicBottomSheetExample() {
 Use the [`fitToContents`](#fittocontents) prop to automatically size the sheet to fit its content.
 
 ```tsx BottomSheetFitsContentExample.tsx
-import { useState } from 'react';
-import { Host, BottomSheet, Button, Text, VStack } from '@expo/ui/swift-ui';
 
 export default function BottomSheetFitsContentExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -89,9 +82,6 @@ Use the [`presentationDetents`](modifiers/#presentationdetentsdetents-options) m
 - `{ height: number }`: Fixed height in points
 
 ```tsx BottomSheetWithDetentsExample.tsx
-import { useState } from 'react';
-import { Host, BottomSheet, Button, Group, Text, VStack } from '@expo/ui/swift-ui';
-import { presentationDetents } from '@expo/ui/swift-ui/modifiers';
 
 export default function BottomSheetWithDetentsExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -119,14 +109,10 @@ export default function BottomSheetWithDetentsExample() {
 Pass `selection` and `onSelectionChange` options to [`presentationDetents`](modifiers/#presentationdetentsdetents-options) to programmatically control which detent the sheet snaps to.
 
 ```tsx BottomSheetWithDetentSelectionExample.tsx
-import { useState } from 'react';
-import { Host, BottomSheet, Button, List, Section, Text, VStack, Group } from '@expo/ui/swift-ui';
-import {
   presentationDetents,
   presentationDragIndicator,
   foregroundStyle,
 } from '@expo/ui/swift-ui/modifiers';
-import type { PresentationDetent } from '@expo/ui/swift-ui/modifiers';
 
 export default function BottomSheetWithDetentSelectionExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -178,9 +164,6 @@ export default function BottomSheetWithDetentSelectionExample() {
 Use the [`presentationBackgroundInteraction`](modifiers/#presentationbackgroundinteractioninteraction) modifier to allow interactions with content behind the sheet.
 
 ```tsx BottomSheetWithBackgroundInteractionExample.tsx
-import { useState } from 'react';
-import { Host, BottomSheet, Button, Group, Text, VStack } from '@expo/ui/swift-ui';
-import {
   presentationDetents,
   presentationBackgroundInteraction,
 } from '@expo/ui/swift-ui/modifiers';
@@ -212,9 +195,6 @@ export default function BottomSheetWithBackgroundInteractionExample() {
 Use the [`interactiveDismissDisabled`](modifiers/#interactivedismissdisabledisdisabled) modifier to prevent users from dismissing the sheet by swiping.
 
 ```tsx NonDismissibleBottomSheetExample.tsx
-import { useState } from 'react';
-import { Host, BottomSheet, Button, Group, Text, VStack } from '@expo/ui/swift-ui';
-import { interactiveDismissDisabled } from '@expo/ui/swift-ui/modifiers';
 
 export default function NonDismissibleBottomSheetExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -242,10 +222,6 @@ export default function NonDismissibleBottomSheetExample() {
 Use `RNHostView` to embed React Native components inside the bottom sheet. Set `matchContents` to automatically size the host view to fit its content.
 
 ```tsx BottomSheetWithRNContentExample.tsx
-import { useState } from 'react';
-import { Pressable, Text as RNText, View } from 'react-native';
-import { Host, BottomSheet, Button, Group, RNHostView, VStack } from '@expo/ui/swift-ui';
-import { presentationDragIndicator } from '@expo/ui/swift-ui/modifiers';
 
 export default function BottomSheetWithRNContentExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -299,10 +275,6 @@ export default function BottomSheetWithRNContentExample() {
 When using React Native content with `flex: 1`, omit the `matchContents` prop on `RNHostView` and use [`presentationDetents`](modifiers/#presentationdetentsdetents-options) to control the sheet height.
 
 ```tsx BottomSheetWithFlexRNContentExample.tsx
-import { useState } from 'react';
-import { Text as RNText, View } from 'react-native';
-import { Host, BottomSheet, Button, Group, RNHostView, VStack } from '@expo/ui/swift-ui';
-import { presentationDetents, presentationDragIndicator } from '@expo/ui/swift-ui/modifiers';
 
 export default function BottomSheetWithFlexRNContentExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -340,10 +312,6 @@ export default function BottomSheetWithFlexRNContentExample() {
 Nest a scrollable React Native list such as `FlatList`, `ScrollView`, or a high-performance list like [FlashList](https://shopify.github.io/flash-list/) or [Legend List](https://github.com/LegendApp/legend-list) inside the sheet with `RNHostView`. Size the sheet with [`presentationDetents`](modifiers/#presentationdetentsdetents-options) and the list scrolls within that height.
 
 ```tsx BottomSheetWithScrollableContentExample.tsx
-import { useState } from 'react';
-import { FlatList, Text as RNText, View } from 'react-native';
-import { Host, BottomSheet, Button, Group, RNHostView, VStack } from '@expo/ui/swift-ui';
-import { presentationDetents, presentationDragIndicator } from '@expo/ui/swift-ui/modifiers';
 
 const DATA = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}`);
 
@@ -380,7 +348,6 @@ export default function BottomSheetWithScrollableContentExample() {
 ## API
 
 ```tsx
-import { BottomSheet } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/bottomsheet" apiName="BottomSheet" />

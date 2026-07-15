@@ -4,17 +4,7 @@ description: In this chapter, learn how to create a new Expo project.
 hasVideoLink: true
 ---
 
-import { Download03Icon } from '@expo/styleguide-icons/outline/Download03Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { CODE } from '~/ui/components/Text';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 In this chapter, let's learn how to create a new Expo project and how to get it running.
 
@@ -201,7 +191,6 @@ Let's modify **app/index.tsx** screen:
 
 {/* prettier-ignore */}
 ```tsx app/index.tsx|collapseHeight=340
-import { Text, View, /* @tutinfo Import `StyleSheet` to define styles. */ StyleSheet/* @end */ } from 'react-native';
 
 export default function Index() {
   return (

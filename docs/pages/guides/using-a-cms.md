@@ -5,9 +5,7 @@ hideTOC: true
 description: An overview of Content Management Systems (CMS) available in the Expo and React Native ecosystem.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 A **Content Management System (CMS)** is a platform that allows you to create, manage, and organize digital content such as blog posts, images, and product information without the need to write custom backend code. Using a CMS can save you significant development time and enable non-technical users (such as editors and marketers) to update app content easily through a user-friendly interface.
 

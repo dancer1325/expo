@@ -4,7 +4,6 @@ sidebar_title: Deploy updates
 description: Learn a simple but powerful process for safely deploying updates to your users.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
 
 When you have an app with multiple binary versions in production (this is common &mdash; users do not always stay up to date with your latest store release), it's important to understand what code is running on which versions and to be able to specifically target a particular version with a hotfix.
 

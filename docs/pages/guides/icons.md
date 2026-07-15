@@ -3,8 +3,6 @@ title: Expo Vector Icons
 description: Learn how to use various types of icons in your Expo app, including react native vector icons, custom icon fonts, icon images, and icon buttons.
 ---
 
-import { SnackInline } from '~/ui/components/Snippet';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 Not every app needs to use emojis for icons. You can use a popular icon set through an icon font such as FontAwesome, Glyphicons, or Ionicons, or choose PNGs from [The Noun Project](https://thenounproject.com/). This guide explains various ways to use icons in your Expo app.
 
@@ -17,8 +15,6 @@ The component loads the `Ionicons` font and renders a checkmark icon in the foll
 <SnackInline label='Vector icons' dependencies={['@expo/vector-icons']}>
 
 ```jsx collapseHeight=350
-import { View, StyleSheet } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function App() {
   return (
@@ -56,7 +52,6 @@ The `createIconSet` method returns a custom font based on the `glyphMap` where t
 In the example below, the `glyphMap` object is defined and then passed as the first argument to the `createIconSet` method. The second argument `fontFamily` is the name of the font (not the filename). Optionally, you can pass the third argument for Android support, which is the custom font file name.
 
 ```jsx createIconSet example
-import createIconSet from '@expo/vector-icons/createIconSet';
 
 const glyphMap = { 'icon-name': 1234, test: '∆' };
 const CustomIcon = createIconSet(glyphMap, 'fontFamily', 'custom-icon-font.ttf');
@@ -82,10 +77,6 @@ dependencies={['@expo/vector-icons', 'expo-font']}>
 
 {/* prettier-ignore */}
 ```jsx
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useFonts } from 'expo-font';
-import createIconSetFromIcoMoon from '@expo/vector-icons/createIconSetFromIcoMoon';
 
 /* @info */
 const Icon = createIconSetFromIcoMoon(
@@ -135,10 +126,8 @@ It follows a similar configuration as `createIconSetFromIcoMoon` as shown in the
 
 ```js Fontello Icons
 // Import the createIconSetFromFontello method
-import createIconSetFromFontello from '@expo/vector-icons/createIconSetFromFontello';
 
 // Import the config file
-import fontelloConfig from './config.json';
 
 // Both the font name and files exported from Fontello are most likely called "fontello".
 // Ensure this is the `fontname.ttf` and not the file path.
@@ -161,8 +150,6 @@ You can use the `Image` component from [Expo Image](/versions/latest/sdk/image/)
   }}>
 
 ```jsx collapseHeight=440
-import { Image } from 'expo-image';
-import { View, StyleSheet } from 'react-native';
 
 export default function App() {
   return (
@@ -194,7 +181,6 @@ const styles = StyleSheet.create({
   }}>
 
 ```jsx
-import { Image, View, StyleSheet } from 'react-native';
 
 export default function App() {
   return (
@@ -230,9 +216,6 @@ In the example below, a login button uses the `FontAwesome` icon set. Notice tha
 <SnackInline label='Icon Button Component' dependencies={['@expo/vector-icons']}>
 
 ```jsx
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function App() {
   const loginWithFacebook = () => {

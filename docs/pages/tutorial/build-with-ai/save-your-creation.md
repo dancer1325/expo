@@ -3,9 +3,6 @@ title: Save your creation
 description: In this chapter, direct your AI agent to save the decorated photo to your phone, and optionally make it work in the browser too.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Step } from '~/ui/components/Step';
 
 In this chapter, you'll add the final core feature: saving the photo, sticker and all, to your phone's photo library.
 

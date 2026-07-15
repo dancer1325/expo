@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A component for displaying text. Adapts to the platform color scheme (light/dark) by default and exposes a focused subset of typography knobs through [`textStyle`](#textstyle).
 
@@ -20,7 +18,6 @@ A component for displaying text. Adapts to the platform color scheme (light/dark
 ### Basic text
 
 ```tsx TextExample.tsx
-import { Host, Text } from '@expo/ui';
 
 export default function TextExample() {
   return (
@@ -36,7 +33,6 @@ export default function TextExample() {
 Use [`textStyle`](#textstyle) for typography-specific properties (font size, weight, alignment).
 
 ```tsx StyledTextExample.tsx
-import { Host, Text } from '@expo/ui';
 
 export default function StyledTextExample() {
   return (
@@ -52,7 +48,6 @@ export default function StyledTextExample() {
 Use [`numberOfLines`](#numberoflines) to clamp long text with a trailing ellipsis.
 
 ```tsx TruncatedTextExample.tsx
-import { Host, Text } from '@expo/ui';
 
 export default function TruncatedTextExample() {
   return (
@@ -68,7 +63,6 @@ export default function TruncatedTextExample() {
 ## API
 
 ```tsx
-import { Text } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/text" apiName="Text" />

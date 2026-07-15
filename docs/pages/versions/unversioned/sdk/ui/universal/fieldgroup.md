@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A scrollable container for grouped settings-style rows, mirroring the look of an iOS Settings screen. Compose `FieldGroup.Section` (for explicit groups), `FieldGroup.SectionHeader`, and `FieldGroup.SectionFooter` slots inside.
 
@@ -22,8 +20,6 @@ A scrollable container for grouped settings-style rows, mirroring the look of an
 ### Sectioned form
 
 ```tsx FieldGroupExample.tsx
-import { useState } from 'react';
-import { Host, FieldGroup, Switch, Text } from '@expo/ui';
 
 export default function FieldGroupExample() {
   const [notifications, setNotifications] = useState(true);
@@ -51,8 +47,6 @@ export default function FieldGroupExample() {
 Use `FieldGroup.SectionHeader` and `FieldGroup.SectionFooter` to render fully styled header/footer slots in place of the default `title` text.
 
 ```tsx FieldGroupSlotsExample.tsx
-import { useState } from 'react';
-import { Host, FieldGroup, Switch, Text } from '@expo/ui';
 
 export default function FieldGroupSlotsExample() {
   const [enabled, setEnabled] = useState(false);
@@ -82,7 +76,6 @@ export default function FieldGroupSlotsExample() {
 ## API
 
 ```tsx
-import { FieldGroup } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/fieldgroup" apiName="FieldGroup" />

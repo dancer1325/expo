@@ -127,7 +127,6 @@ require building a new app binary to take effect.
 ## API
 
 ```js
-import * as DevClient from 'expo-dev-client';
 ```
 
 <APISection packageName={['expo-dev-client']} apiName="DevClient" />

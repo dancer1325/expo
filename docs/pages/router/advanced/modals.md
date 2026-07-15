@@ -3,8 +3,6 @@ title: Modals
 description: Learn how to use modals in Expo Router.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { FileTree } from '~/ui/components/FileTree';
 
 Modals are a common user interface pattern in mobile apps. They are used to present content on top of the existing screen and is used for different purposes, such as displaying confirmation alerts or standalone forms. You can create modals in your app using the following methods:
 
@@ -43,7 +41,6 @@ To implement a modal route, create a screen called **modal.tsx** inside the **ap
 The above file structure produces a layout where the `index` is the first route in the stack. Inside the root layout file (**app/\_layout.tsx**), you can add the `modal` route in the stack. To present it as a modal, set the `presentation` option to `modal` on the route.
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function Layout() {
   return (
@@ -66,8 +63,6 @@ You can use the `Link` component to navigate to the modal screen from the **inde
 
 {/* prettier-ignore */}
 ```tsx app/index.tsx|collapseHeight=350
-import { Link } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
 
 export default function Home() {
   return (
@@ -98,7 +93,6 @@ const styles = StyleSheet.create({
 The **modal.tsx** presents the contents of the modal.
 
 ```tsx app/modal.tsx|collapseHeight=250
-import { StyleSheet, Text, View } from 'react-native';
 
 export default function Modal() {
   return (
@@ -127,8 +121,6 @@ A modal loses its previous context when it is the current screen in the navigato
 
 {/* prettier-ignore */}
 ```tsx app/modal.tsx
-import { Link, /* @info Import the <CODE>router</CODE> object which is used to navigate imperatively. */ router /* @end */} from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
 
 export default function Modal() {
   /* @info Use <CODE>router.canGoBack()</CODE> to check if the modal is presented as a standalone screen. If the screen was reloaded or navigated to directly, then the modal should be presented as a full screen. You may need to change the UI to account for this. */
@@ -160,8 +152,6 @@ By default on iOS, the modal has a dark background which hides the status bar. T
 
 {/* prettier-ignore */}
 ```tsx app/modal.tsx|collapseHeight=250
-import { StyleSheet, Text, View, Platform } from "react-native";
-import { StatusBar } from "expo-status-bar";
 
 export default function Modal() {
   return (
@@ -194,7 +184,6 @@ You can achieve the above web modal behavior by using the [`transparentModal`](h
 Modify your project's root layout (**app/\_layout.tsx**) to add an `options` object to the modal route:
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
 
 /* @info <CODE>unstable_settings</CODE> can be set in any stack's <CODE>_layout.tsx</CODE> file. It is used to define the initial route name for the stack, which ensures that users have a consistent starting point, especially when deep linking. */
 export const unstable_settings = {
@@ -233,9 +222,6 @@ Style the overlay and modal content in **modal.tsx** as shown below:
 
 {/* prettier-ignore */}
 ```tsx app/modal.tsx|collapseHeight=250
-import { Link } from 'expo-router';
-import { Pressable, StyleSheet, Text } from 'react-native';
-import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
 
 export default function Modal() {
   return (

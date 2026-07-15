@@ -3,7 +3,6 @@ title: Animation
 description: Learn how to integrate React Native animations and use it in your Expo project.
 ---
 
-import { Terminal, SnackInline } from '~/ui/components/Snippet';
 
 Animations are a great way to enhance and provide a better user experience. In your Expo projects, you can use the [Animated API](https://reactnative.dev/docs/next/animations) from React Native. However, if you want to use more advanced animations with better performance, you can use the [`react-native-reanimated`](https://docs.swmansion.com/react-native-reanimated/) library. It provides an API that simplifies the process of creating smooth, powerful, and maintainable animations.
 
@@ -22,13 +21,11 @@ The following example shows how to use the `react-native-reanimated` library to 
 <SnackInline label="Using react-native-reanimated" dependencies={['react-native-reanimated']}>
 
 ```tsx
-import Animated, {
   useSharedValue,
   withTiming,
   useAnimatedStyle,
   Easing,
 } from 'react-native-reanimated';
-import { View, Button, StyleSheet } from 'react-native';
 
 export default function AnimatedStyleUpdateExample() {
   const randomWidth = useSharedValue(10);

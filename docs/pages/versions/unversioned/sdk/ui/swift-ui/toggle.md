@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Switch`](../universal/switch) — it renders the appropriate native component per platform.
 
@@ -31,8 +28,6 @@ Expo UI Toggle matches the official SwiftUI [Toggle API](https://developer.apple
 ### Basic toggle
 
 ```tsx BasicToggleExample.tsx
-import { useState } from 'react';
-import { Host, Toggle } from '@expo/ui/swift-ui';
 
 export default function BasicToggleExample() {
   const [isOn, setIsOn] = useState(false);
@@ -48,8 +43,6 @@ export default function BasicToggleExample() {
 ### Toggle with system image
 
 ```tsx ToggleWithImageExample.tsx
-import { useState } from 'react';
-import { Host, Toggle } from '@expo/ui/swift-ui';
 
 export default function ToggleWithImageExample() {
   const [airplaneMode, setAirplaneMode] = useState(false);
@@ -74,9 +67,6 @@ Use the `toggleStyle` modifier to change the toggle's appearance. Available styl
 > **Note:** The `button` style is not available on tvOS.
 
 ```tsx ToggleStylesExample.tsx
-import { useState } from 'react';
-import { Host, Toggle, VStack } from '@expo/ui/swift-ui';
-import { toggleStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function ToggleStylesExample() {
   const [isOn, setIsOn] = useState(false);
@@ -107,9 +97,6 @@ export default function ToggleStylesExample() {
 Use the `tint` modifier to change the toggle's color.
 
 ```tsx TintedToggleExample.tsx
-import { useState } from 'react';
-import { Host, Toggle } from '@expo/ui/swift-ui';
-import { tint } from '@expo/ui/swift-ui/modifiers';
 
 export default function TintedToggleExample() {
   const [isOn, setIsOn] = useState(true);
@@ -132,8 +119,6 @@ export default function TintedToggleExample() {
 You can pass custom components as `children` for more complex toggle labels. Use multiple `Text` views where the first represents the title and the second represents the subtitle.
 
 ```tsx CustomLabelExample.tsx
-import { useState } from 'react';
-import { Host, Toggle, Text } from '@expo/ui/swift-ui';
 
 export default function CustomLabelExample() {
   const [vibrateOnRing, setVibrateOnRing] = useState(false);
@@ -154,9 +139,6 @@ export default function CustomLabelExample() {
 Use the [`labelsHidden`](modifiers/#labelshidden) modifier to hide the label while keeping it for accessibility.
 
 ```tsx HiddenLabelExample.tsx
-import { useState } from 'react';
-import { Host, Toggle } from '@expo/ui/swift-ui';
-import { labelsHidden } from '@expo/ui/swift-ui/modifiers';
 
 export default function HiddenLabelExample() {
   const [isOn, setIsOn] = useState(false);
@@ -177,7 +159,6 @@ export default function HiddenLabelExample() {
 ## API
 
 ```tsx
-import { Toggle } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/toggle" apiName="Toggle" />

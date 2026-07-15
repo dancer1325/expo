@@ -4,15 +4,7 @@ sidebar_title: Isolated approach
 description: A guide for adding Expo and React Native as a native library and integrating it into an existing (brownfield) native app using the isolated approach.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { FileTree } from '~/ui/components/FileTree';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 In the isolated approach, your React Native code is developed and maintained separately from your native project. You package it as a native library, using an AAR for Android or XCFramework for iOS, and integrate it into your native app like any other dependency.
 
@@ -245,9 +237,6 @@ dependencyResolutionManagement {
 Create an activity that extends `BrownfieldActivity` and use the `showReactNativeFragment()` extension:
 
 ```kotlin ExpoActivity.kt
-import android.os.Bundle
-import com.example.brownfield.BrownfieldActivity
-import com.example.brownfield.showReactNativeFragment
 
 class ExpoActivity : BrownfieldActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -317,8 +306,6 @@ To support both `--debug` and `--release`, point your host app at the matching p
 Call `ReactNativeHostManager.shared.initialize()` early in your app's lifecycle. A good place is your `AppDelegate`:
 
 ```swift AppDelegate.swift
-import UIKit
-import MyAppBrownfield // Replace with your target name
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -341,8 +328,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 <Tab label="UIKit">
 
 ```swift ViewController.swift
-import UIKit
-import MyAppBrownfield
 
 class ViewController: UIViewController {
   @IBAction func openReactNative(_ sender: Any) {
@@ -366,8 +351,6 @@ let rnViewController = ReactNativeViewController(
 <Tab label="SwiftUI">
 
 ```swift ContentView.swift
-import SwiftUI
-import MyAppBrownfield
 
 struct ContentView: View {
   @State private var showReactNative = false

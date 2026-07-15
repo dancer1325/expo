@@ -3,11 +3,7 @@ title: Add custom native code
 description: Learn how to add custom native code to your Expo project.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
 
 You can add custom native code by using one or both of the following approaches:
 

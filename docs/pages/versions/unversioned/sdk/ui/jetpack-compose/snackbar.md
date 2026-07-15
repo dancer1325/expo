@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI exposes two components that mirror Jetpack Compose's [Snackbar](https://developer.android.com/develop/ui/compose/components/snackbar) APIs:
 
@@ -34,8 +31,6 @@ Expo UI exposes two components that mirror Jetpack Compose's [Snackbar](https://
 Place a [`SnackbarHost`](#snackbarhost) once in your layout and call `showSnackbar` on its ref to display a message. The returned promise resolves with `'actionPerformed'` or `'dismissed'` once the snackbar goes away.
 
 ```tsx SnackbarExample.tsx
-import { useRef } from 'react';
-import {
   Box,
   Button,
   Column,
@@ -44,7 +39,6 @@ import {
   Text,
   type SnackbarHostRef,
 } from '@expo/ui/jetpack-compose';
-import { align, fillMaxSize, fillMaxWidth, padding } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function SnackbarExample() {
   const hostRef = useRef<SnackbarHostRef>(null);
@@ -83,8 +77,6 @@ export default function SnackbarExample() {
 Pass a [`Snackbar`](#snackbar) child to [`SnackbarHost`](#snackbarhost) to override colors or place the action on a new line. The [`Snackbar`](#snackbar) itself takes no content, the message and action come from each `showSnackbar` call.
 
 ```tsx StyledSnackbar.tsx
-import { useRef } from 'react';
-import {
   Box,
   Button,
   Column,
@@ -94,7 +86,6 @@ import {
   Text,
   type SnackbarHostRef,
 } from '@expo/ui/jetpack-compose';
-import { align, fillMaxSize, fillMaxWidth, padding } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function StyledSnackbar() {
   const hostRef = useRef<SnackbarHostRef>(null);
@@ -134,7 +125,6 @@ export default function StyledSnackbar() {
 ## API
 
 ```tsx
-import { Snackbar, SnackbarHost } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/snackbar" apiName="Snackbar" />

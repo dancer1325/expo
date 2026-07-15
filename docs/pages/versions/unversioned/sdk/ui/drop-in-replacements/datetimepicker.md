@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A `DateTimePicker` component with an API compatible with `@react-native-community/datetimepicker`. It uses Jetpack Compose on Android and SwiftUI on iOS, providing a modern Material 3 and SwiftUI appearance by default (the community module defaults to the older look on Android).
 
@@ -36,8 +34,6 @@ If you need lower-level control (custom modifiers, styles, or layouts), use thos
 ## Basic usage
 
 ```tsx DateTimePickerExample.tsx
-import { useState } from 'react';
-import DateTimePicker from '@expo/ui/community/datetime-picker';
 
 export default function DateTimePickerExample() {
   const [date, setDate] = useState(new Date());
@@ -57,8 +53,6 @@ export default function DateTimePickerExample() {
 ## Time picker
 
 ```tsx TimePickerExample.tsx
-import { useState } from 'react';
-import DateTimePicker from '@expo/ui/community/datetime-picker';
 
 export default function TimePickerExample() {
   const [date, setDate] = useState(new Date());
@@ -78,8 +72,6 @@ export default function TimePickerExample() {
 ## With date constraints
 
 ```tsx ConstrainedDatePickerExample.tsx
-import { useState } from 'react';
-import DateTimePicker from '@expo/ui/community/datetime-picker';
 
 const today = new Date();
 const thirtyDaysFromNow = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -106,9 +98,6 @@ export default function ConstrainedDatePickerExample() {
 On Android, you can use `presentation="dialog"` to show the picker as a modal dialog. The dialog opens when the component mounts. Unmount it in response to `onValueChange` or `onDismiss`. On iOS, this prop is ignored and the picker always renders inline.
 
 ```tsx AndroidDialogExample.tsx
-import { useState } from 'react';
-import { Button, View } from 'react-native';
-import DateTimePicker from '@expo/ui/community/datetime-picker';
 
 export default function AndroidDialogExample() {
   const [date, setDate] = useState(new Date());
@@ -139,7 +128,6 @@ export default function AndroidDialogExample() {
 ## API
 
 ```tsx
-import DateTimePicker from '@expo/ui/community/datetime-picker';
 ```
 
 <APISection packageName="expo-ui/community/datetime-picker" apiName="DateTimePicker" />

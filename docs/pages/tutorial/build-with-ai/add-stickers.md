@@ -3,9 +3,6 @@ title: Add stickers
 description: In this chapter, direct your AI agent to add an emoji picker modal and make the sticker respond to drag and tap gestures.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Step } from '~/ui/components/Step';
 
 In this chapter, the app earns its name: you'll pick an emoji from a sliding panel, smash it onto your photo, and move it around with your fingers.
 

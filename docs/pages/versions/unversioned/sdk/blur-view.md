@@ -7,11 +7,6 @@ iconUrl: '/static/images/packages/expo-blur.png'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { SnackInline } from '~/ui/components/Snippet';
-import { CODE } from '~/ui/components/Text';
 
 A React component that blurs everything underneath the view. Common usage of this is for navigation bars, tab bars, and modals.
 
@@ -40,8 +35,6 @@ The blur effect does not update when `BlurView` is rendered before dynamic conte
   <SnackInline label='Basic iOS-only BlurView usage' dependencies={['expo-blur']}>
 
 ```jsx
-import { Text, StyleSheet, View } from 'react-native';
-import { BlurView } from 'expo-blur';
 
 export default function App() {
   const text = 'Hello, my container is blurring contents underneath!';
@@ -112,9 +105,6 @@ const styles = StyleSheet.create({
   <SnackInline label='Basic BlurView usage with Android support' dependencies={['expo-blur']}>
 
 ```tsx
-import { BlurView, BlurTargetView } from 'expo-blur';
-import { useRef } from 'react';
-import { Text, StyleSheet, View } from 'react-native';
 
 export default function App() {
   const targetRef = useRef<View | null>(null);
@@ -213,7 +203,6 @@ which will only blur on newer versions of Android and fall back to the [`none`](
 ## API
 
 ```js
-import { BlurView } from 'expo-blur';
 ```
 
 <APISection packageName="expo-blur" />

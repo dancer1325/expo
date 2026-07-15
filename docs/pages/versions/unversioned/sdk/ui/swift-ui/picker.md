@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Picker`](../universal/picker) — it renders the appropriate native component per platform.
 
@@ -29,9 +26,6 @@ Expo UI Picker matches the official SwiftUI [Picker API](https://developer.apple
 ## Segmented picker
 
 ```tsx SegmentedPickerExample.tsx
-import { useState } from 'react';
-import { Host, Picker, Text } from '@expo/ui/swift-ui';
-import { pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 
 const options = ['Apple', 'Banana', 'Orange'];
 
@@ -61,9 +55,6 @@ export default function SegmentedPickerExample() {
 ## Menu picker
 
 ```tsx MenuPickerExample.tsx
-import { useState } from 'react';
-import { Host, Picker, Text } from '@expo/ui/swift-ui';
-import { pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 
 const options = ['Apple', 'Banana', 'Orange'];
 
@@ -95,9 +86,6 @@ export default function MenuPickerExample() {
 > **Warning** The wheel variant is not available on Apple TV.
 
 ```tsx WheelPickerExample.tsx
-import { useState } from 'react';
-import { Host, Picker, Text } from '@expo/ui/swift-ui';
-import { pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 
 const options = ['Apple', 'Banana', 'Orange'];
 
@@ -127,7 +115,6 @@ export default function WheelPickerExample() {
 ## API
 
 ```tsx
-import { Picker } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/picker" apiName="Picker" />

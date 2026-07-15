@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI BasicAlertDialog matches the official Jetpack Compose [BasicAlertDialog](https://developer.android.com/develop/ui/compose/components/dialog) API and displays a minimal dialog that accepts custom children as its content, giving you full control over the dialog layout.
 
@@ -29,8 +26,6 @@ Expo UI BasicAlertDialog matches the official Jetpack Compose [BasicAlertDialog]
 ### Basic dialog with custom content
 
 ```tsx BasicAlertDialogExample.tsx
-import { useState } from 'react';
-import {
   Host,
   BasicAlertDialog,
   Button,
@@ -40,7 +35,6 @@ import {
   Column,
   Spacer,
 } from '@expo/ui/jetpack-compose';
-import {
   padding,
   wrapContentWidth,
   wrapContentHeight,
@@ -84,7 +78,6 @@ export default function BasicAlertDialogExample() {
 ## API
 
 ```tsx
-import { BasicAlertDialog } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/basicalertdialog" apiName="BasicAlertDialog" />

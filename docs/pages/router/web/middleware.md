@@ -4,9 +4,6 @@ description: Learn how to create middleware that runs for every request to the s
 isAlpha: true
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 > **important** Server middleware is in [alpha](/more/release-statuses/#alpha) and is available in SDK 54 and later. It requires a [deployed server](/router/web/api-routes/#deployment) for production use.
 
@@ -183,7 +180,6 @@ Middleware does not run for:
 Middleware is often used to perform authorization checks before a route has loaded. You can check headers, cookies, or query parameters to determine if a user has access to certain routes:
 
 ```ts src/app/+middleware.ts
-import { jwtVerify } from 'jose';
 
 export default function middleware(request) {
   const token = request.headers.get('authorization');
@@ -309,7 +305,6 @@ export default function middleware(request) {
 ### Typed middleware
 
 ```ts src/app/+middleware.ts
-import { MiddlewareFunction } from 'expo-router/server';
 
 const middleware: MiddlewareFunction = request => {
   if (request.headers.has('specific-header')) {

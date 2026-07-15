@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A horizontal layout container that arranges its children from start to end. Delegates to Jetpack Compose's [`Row`](../jetpack-compose/row) on Android, SwiftUI's [`HStack`](../swift-ui/hstack) on iOS, and a flex `View` on web.
 
@@ -20,7 +18,6 @@ A horizontal layout container that arranges its children from start to end. Dele
 ### Basic row
 
 ```tsx RowExample.tsx
-import { Host, Row, Text } from '@expo/ui';
 
 export default function RowExample() {
   return (
@@ -40,7 +37,6 @@ export default function RowExample() {
 Use [`alignment`](#alignment) to position children along the cross (vertical) axis.
 
 ```tsx RowAlignmentExample.tsx
-import { Host, Row, Text } from '@expo/ui';
 
 export default function RowAlignmentExample() {
   return (
@@ -59,7 +55,6 @@ export default function RowAlignmentExample() {
 Pair `Row` with a flexible [`Spacer`](spacer) to push its children to the opposite ends.
 
 ```tsx RowSpacerExample.tsx
-import { Host, Row, Text, Spacer } from '@expo/ui';
 
 export default function RowSpacerExample() {
   return (
@@ -77,7 +72,6 @@ export default function RowSpacerExample() {
 ## API
 
 ```tsx
-import { Row } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/row" apiName="Row" />

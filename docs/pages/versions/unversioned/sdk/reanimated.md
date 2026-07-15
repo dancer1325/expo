@@ -7,10 +7,7 @@ platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 inExpoGo: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { SnackInline, Terminal } from '~/ui/components/Snippet';
 
 [`react-native-reanimated`](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/) provides an API that greatly simplifies the process of creating smooth, powerful, and maintainable animations.
 
@@ -39,13 +36,11 @@ The following example shows how to use the `react-native-reanimated` library to 
 
 {/* prettier-ignore */}
 ```jsx
-import Animated, {
   useSharedValue,
   withTiming,
   useAnimatedStyle,
   Easing,
 } from 'react-native-reanimated';
-import { View, Button, StyleSheet } from 'react-native';
 
 export default function AnimatedStyleUpdateExample() {
   const randomWidth = useSharedValue(10);

@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI NavigationBar matches the official Jetpack Compose [`NavigationBar`](https://developer.android.com/develop/ui/compose/components/navigation-bar) API. It displays a row of destinations for switching between top-level app sections.
 
@@ -31,8 +28,6 @@ Expo UI NavigationBar matches the official Jetpack Compose [`NavigationBar`](htt
 Manage the selected item in React state and pass `selected` to each `NavigationBarItem`.
 
 ```tsx BasicNavigationBar.tsx
-import { useState } from 'react';
-import { Host, Icon, NavigationBar, NavigationBarItem, Text } from '@expo/ui/jetpack-compose';
 
 const HOME_ICON = require('./assets/home.xml');
 const SEARCH_ICON = require('./assets/search.xml');
@@ -83,7 +78,6 @@ export default function BasicNavigationBar() {
 ## API
 
 ```tsx
-import { NavigationBar, NavigationBarItem } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/navigationbar" apiName="NavigationBar" />

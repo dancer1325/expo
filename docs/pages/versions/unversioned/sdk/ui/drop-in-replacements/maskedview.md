@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A `MaskedView` component with an API compatible with `@react-native-masked-view/masked-view`. The opaque pixels of `maskElement` reveal the masked content behind it; transparent pixels hide it.
 
@@ -32,8 +30,6 @@ Under the hood this component bridges arbitrary React Native children into the p
 ## Basic usage
 
 ```tsx MaskedViewExample.tsx
-import { MaskedView } from '@expo/ui/community/masked-view';
-import { StyleSheet, Text, View } from 'react-native';
 
 export default function MaskedViewExample() {
   return (
@@ -63,9 +59,6 @@ export default function MaskedViewExample() {
 Only the alpha channel of the `maskElement` matters: opaque pixels reveal content, transparent pixels hide it. Use a `LinearGradient` (from `expo-linear-gradient`) that goes from opaque to transparent — `'black'` (for example) to `'transparent'` below — to fade content out along an axis.
 
 ```tsx AlphaFadeExample.tsx
-import { MaskedView } from '@expo/ui/community/masked-view';
-import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet, View } from 'react-native';
 
 export default function AlphaFadeExample() {
   return (
@@ -90,7 +83,6 @@ export default function AlphaFadeExample() {
 ## API
 
 ```tsx
-import { MaskedView } from '@expo/ui/community/masked-view';
 ```
 
 <APISection packageName="expo-ui/community/masked-view" apiName="MaskedView" />

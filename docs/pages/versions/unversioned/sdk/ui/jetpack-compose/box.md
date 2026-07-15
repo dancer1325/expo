@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Box matches the official Jetpack Compose [Box](https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/package-summary#Box) API and stacks children on top of each other with configurable content alignment.
 
@@ -29,8 +26,6 @@ Expo UI Box matches the official Jetpack Compose [Box](https://developer.android
 `Box` stacks children on top of each other. Use `contentAlignment` to position them within the box.
 
 ```tsx BoxExample.tsx
-import { Host, Box, Text } from '@expo/ui/jetpack-compose';
-import { size, background } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function BoxExample() {
   return (
@@ -46,7 +41,6 @@ export default function BoxExample() {
 ## API
 
 ```tsx
-import { Box } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/box" apiName="Box" />

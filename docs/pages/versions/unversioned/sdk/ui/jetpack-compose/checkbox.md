@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Checkbox`](../universal/checkbox) — it renders the appropriate native component per platform.
 
@@ -31,8 +28,6 @@ Expo UI Checkbox matches the official Jetpack Compose [Checkbox](https://develop
 ### Basic checkbox
 
 ```tsx CheckboxExample.tsx
-import { useState } from 'react';
-import { Host, Checkbox } from '@expo/ui/jetpack-compose';
 
 export default function CheckboxExample() {
   const [checked, setChecked] = useState(false);
@@ -48,8 +43,6 @@ export default function CheckboxExample() {
 ### Custom colors
 
 ```tsx CustomColorsExample.tsx
-import { useState } from 'react';
-import { Host, Checkbox } from '@expo/ui/jetpack-compose';
 
 export default function CustomColorsExample() {
   const [checked, setChecked] = useState(false);
@@ -76,9 +69,6 @@ Use `TriStateCheckbox` for a parent checkbox that reflects the state of its chil
 Apply the `toggleable` modifier to each `Row` to make the entire row (checkbox + label) tappable with correct accessibility semantics. When using `toggleable` on the row, omit `onCheckedChange`/`onClick` from the checkbox itself to avoid double-handling.
 
 ```tsx SelectAllExample.tsx
-import { useState } from 'react';
-import { Host, Checkbox, TriStateCheckbox, Row, Column, Text } from '@expo/ui/jetpack-compose';
-import { toggleable } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function SelectAllExample() {
   const [child1, setChild1] = useState(false);
@@ -135,7 +125,6 @@ export default function SelectAllExample() {
 ## API
 
 ```tsx
-import { Checkbox, TriStateCheckbox } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/checkbox" apiName="Checkbox" />

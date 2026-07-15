@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI DisclosureGroup matches the official SwiftUI [DisclosureGroup API](https://developer.apple.com/documentation/swiftui/disclosuregroup) and displays a disclosure indicator that reveals or hides content.
 
@@ -31,8 +28,6 @@ Expo UI DisclosureGroup matches the official SwiftUI [DisclosureGroup API](https
 `DisclosureGroup` is most commonly used inside a [`Form`](form) so it picks up the standard iOS list styling with a chevron indicator.
 
 ```tsx BasicDisclosureGroupExample.tsx
-import { useState } from 'react';
-import { DisclosureGroup, Form, Host, Section, Text } from '@expo/ui/swift-ui';
 
 export default function BasicDisclosureGroupExample() {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -60,8 +55,6 @@ export default function BasicDisclosureGroupExample() {
 Set `isExpanded` to `true` initially to show the content by default.
 
 ```tsx InitiallyExpandedExample.tsx
-import { useState } from 'react';
-import { Host, DisclosureGroup, Text } from '@expo/ui/swift-ui';
 
 export default function InitiallyExpandedExample() {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -81,9 +74,6 @@ export default function InitiallyExpandedExample() {
 Use `DisclosureGroup.Label` when the label needs custom SwiftUI content or modifiers instead of the `label` string prop.
 
 ```tsx CustomLabelDisclosureGroupExample.tsx
-import { useState } from 'react';
-import { DisclosureGroup, Form, Host, Section, Text } from '@expo/ui/swift-ui';
-import { font, foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function CustomLabelDisclosureGroupExample() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -112,7 +102,6 @@ export default function CustomLabelDisclosureGroupExample() {
 ## API
 
 ```tsx
-import { DisclosureGroup } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/disclosuregroup" apiName="DisclosureGroup" />

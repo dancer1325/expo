@@ -4,11 +4,7 @@ sidebar_title: Get started
 description: Learn how to automate and maintain your app store presence from the command line with EAS Metadata.
 ---
 
-import { EasMetadataIcon } from '@expo/styleguide-icons/custom/EasMetadataIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
 
 > **important** **EAS Metadata** is in [beta](/more/release-statuses/#beta) and subject to breaking changes.
 

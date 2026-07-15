@@ -5,14 +5,7 @@ description: Learn how to develop your app for the web so you can build a univer
 hideTOC: true
 ---
 
-import { RouterLogo } from '@expo/styleguide';
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Tabs, Tab } from '~/ui/components/Tabs';
-import { CODE } from '~/ui/components/Text';
 
 Expo has first-class support for building full-stack websites with React. Expo websites can be [statically rendered](/router/reference/static-rendering) for SEO and performance, or client-rendered for a more app-like experience in the browser.
 
@@ -75,7 +68,6 @@ If you haven't added Expo to your React Native app yet, you can either [install 
 ```diff
 + import {registerRootComponent} from 'expo';
 
-import App from './App';
 - import {AppRegistry} from 'react-native';
 - import {name as appName} from './app.json';
 

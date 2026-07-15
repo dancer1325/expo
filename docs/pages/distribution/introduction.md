@@ -5,14 +5,7 @@ hideTOC: true
 description: An overview of submitting an app to the app stores or with the internal distribution.
 ---
 
-import { AppleAppStoreIcon } from '@expo/styleguide-icons/custom/AppleAppStoreIcon';
-import { GoogleAppStoreIcon } from '@expo/styleguide-icons/custom/GoogleAppStoreIcon';
-import { Globe04DuotoneIcon } from '@expo/styleguide-icons/duotone/Globe04DuotoneIcon';
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { LayersTwo02Icon } from '@expo/styleguide-icons/outline/LayersTwo02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
 
 Get your app into the hands of users by submitting it to the app stores or with [Internal Distribution](/build/internal-distribution).
 

@@ -3,12 +3,6 @@ title: Use an image picker
 description: In this tutorial, learn how to use Expo Image Picker.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 React Native provides built-in components as standard building blocks, such as `<View>`, `<Text>`, and `<Pressable>`. We are building a feature to select an image from the device's media gallery. This isn't possible with the core components and we'll need a library to add this feature in our app.
 
@@ -88,8 +82,6 @@ On pressing the primary button, we'll call the `pickImageAsync()` function on th
 
 {/* prettier-ignore */}
 ```tsx components/Button.tsx
-import { StyleSheet, View, Pressable, Text } from 'react-native';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 type Props = {
   label: string;
@@ -155,11 +147,7 @@ In **app/(tabs)/index.tsx**, add the `pickImageAsync()` function to the `onPress
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx
-import { View, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 
-import Button from '@/components/Button';
-import ImageViewer from '@/components/ImageViewer';
 
 const PlaceholderImage = require('@/assets/images/background-image.png');
 
@@ -300,14 +288,9 @@ Modify the **app/(tabs)/index.tsx** file:
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx
-import { View, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 /* @tutinfo Import <CODE>useState</CODE> hook from React.*/
-import { useState } from 'react';
 /* @end */
 
-import Button from '@/components/Button';
-import ImageViewer from '@/components/ImageViewer';
 
 const PlaceholderImage = require('@/assets/images/background-image.png');
 
@@ -371,8 +354,6 @@ Pass the `selectedImage` prop to the `ImageViewer` component to display the sele
 
 {/* prettier-ignore */}
 ```tsx components/ImageViewer.tsx
-import { StyleSheet } from 'react-native';
-import { Image, type ImageSource } from "expo-image";
 
 type Props = {
   imgSource: ImageSource;

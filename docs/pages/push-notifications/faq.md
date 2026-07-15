@@ -4,8 +4,6 @@ sidebar_title: Troubleshooting and FAQ
 description: A collection of common questions about Expo push notification service.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
 
 A collection of common issues and FAQs when setting up push notifications with the `expo-notifications` library and Expo push notification service.
 

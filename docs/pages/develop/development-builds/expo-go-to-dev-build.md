@@ -4,13 +4,7 @@ sidebar_title: Expo Go to development build
 description: How to switch from your Expo Go project to use development builds.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tab, Tabs } from '~/ui/components/Tabs';
 
 To switch from Expo Go to a development build, you'll need to follow the steps below:
 

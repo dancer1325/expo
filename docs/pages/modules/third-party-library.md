@@ -4,17 +4,7 @@ description: Learn how to create a simple wrapper around two separate native lib
 hasVideoLink: true
 ---
 
-import { Grid01Icon } from '@expo/styleguide-icons/outline/Grid01Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { FileTree } from '~/ui/components/FileTree';
-import { DiffBlock, Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { TabsGroup, Tabs, Tab } from '~/ui/components/Tabs';
-import { CODE } from '~/ui/components/Text';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 <TabsGroup>
 
@@ -276,7 +266,6 @@ Your **ios** directory should end up with a file structure similar to this:
 To use the module in the app, define the types for the props. It accepts a list of series — each with a color and a percentage value.
 
 ```ts src/ExpoRadialChart.types.ts
-import { ViewStyle } from 'react-native/types';
 
 export type ChangeEventPayload = {
   value: string;
@@ -296,7 +285,6 @@ export type ExpoRadialChartViewProps = {
 Since the module isn't implemented for web in this example, let's replace the **src/ExpoRadialChartView.web.tsx** file:
 
 ```tsx src/ExpoRadialChartView.web.tsx
-import * as React from 'react';
 
 export default function ExpoRadialChartView() {
   return <div>Not implemented</div>;
@@ -318,17 +306,6 @@ Now you can implement the native functionality by editing the placeholder files 
 ```kotlin android/src/main/java/expo/modules/radialchart/ExpoRadialChartView.kt
 package expo.modules.radialchart
 
-import android.content.Context
-import android.graphics.Color
-import androidx.annotation.ColorInt
-import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import expo.modules.kotlin.AppContext
-import expo.modules.kotlin.records.Field
-import expo.modules.kotlin.records.Record
-import expo.modules.kotlin.views.ExpoView
 
 
 class Series : Record {
@@ -367,8 +344,6 @@ You also need to use the [`Prop`](/modules/module-api/#prop) function to define 
 ```kotlin android/src/main/java/expo/modules/radialchart/ExpoRadialChartModule.kt
 package expo.modules.radialchart
 
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
 
 class ExpoRadialChartModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -396,8 +371,6 @@ Now you can implement the native functionality by editing the placeholder files 
 3. Create a `setChartData` function that accepts a list of series, creates a `PieChartDataSet` instance with the data, and assigns it to the `data` property of the `PieChartView` instance.
 
 ```swift ios/ExpoRadialChartView.swift
-import ExpoModulesCore
-import DGCharts
 
 struct Series: Record {
   @Field
@@ -436,7 +409,6 @@ class ExpoRadialChartView: ExpoView {
 You also need to use the [`Prop`](/modules/module-api/#prop) function to define the `data` prop and call the native `setChartData` function when the prop changes:
 
 ```swift ios/ExpoRadialChartModule.swift
-import ExpoModulesCore
 
 public class ExpoRadialChartModule: Module {
   public func definition() -> ModuleDefinition {
@@ -460,8 +432,6 @@ public class ExpoRadialChartModule: Module {
 You can update the app inside the **src/app** directory to test the module. Use the `ExpoRadialChartView` component to render a pie chart with three slices:
 
 ```tsx src/app/index.tsx
-import { ExpoRadialChartView } from '@/modules/expo-radial-chart';
-import { StyleSheet } from 'react-native';
 
 export default function App() {
   return (

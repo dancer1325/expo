@@ -3,7 +3,6 @@ title: '"Application has not been registered" error'
 description: Learn about what the Application has not been registered error means and how to resolve it in an Expo or React Native app.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 When developing an Expo or React Native app, it's common to run into an error that looks like:
 
@@ -39,8 +38,6 @@ In projects that use [Continuous Native Generation (CNG)](/workflow/continuous-n
 In projects with native code, you will see something like this in your **index.js** by default:
 
 ```js
-import { registerRootComponent } from 'expo';
-import App from './App';
 registerRootComponent(App);
 ```
 

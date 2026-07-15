@@ -5,7 +5,6 @@ sidebar_title: GDPR compliance
 hideTOC: true
 ---
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 ## Are apps built with Expo GDPR compliant?
 

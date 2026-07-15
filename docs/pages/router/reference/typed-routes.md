@@ -3,7 +3,6 @@ title: Typed routes
 description: Learn how to use statically typed links and routes in Expo Router.
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
 
 > Available when using TypeScript in your project. Expo Router supports standard TypeScript out of the box. See the [TypeScript](/guides/typescript/) guide for more information on how to set it up.
 
@@ -91,7 +90,6 @@ You can leverage the `useSegments()` hooks from `expo-router` to create complex 
 You can ensure that you push to the same tab by using the `useSegments()` hook to get the first segment of the current route.
 
 ```tsx button.tsx
-import { Link, useSegments } from 'expo-router';
 
 export function Button() {
   const [
@@ -108,7 +106,6 @@ Now, you can leverage `<Button />` from both **app/(feed)/feed.tsx** and **app/(
 If you require the segments for a specific your, you can pass the full route to `useSegments`
 
 ```tsx button.tsx
-import { Link, useSegments } from 'expo-router';
 
 export function useMySegments() {
   const segments = useSegments<'app/(search)/profile.tsx'>();
@@ -122,7 +119,6 @@ export function useMySegments() {
 You can use the typed `router` object to navigate imperatively:
 
 ```tsx
-import { router } from 'expo-router';
 
 router.push('/about');
 ```
@@ -130,7 +126,6 @@ router.push('/about');
 Or with the typed `useRouter()` hook:
 
 ```tsx
-import { useRouter } from 'expo-router';
 
 function Page() {
   const router = useRouter();
@@ -146,8 +141,6 @@ function Page() {
 For strongly typed route parameters you can pass a full href to the `useLocalSearchParams` and `useGlobalSearchParams` hooks
 
 ```tsx app/search.tsx
-import { Text } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
 
 export default function Page() {
   /* @info Profile a route for strongly typed hooks */
@@ -171,8 +164,6 @@ export default function Page() {
 Most query parameters will not be represented in the file system and therefore cannot be typed automatically. You can type query parameters manually by passing a generic to the `useLocalSearchParams` and `useGlobalSearchParams` hooks. For example:
 
 ```tsx app/search.tsx
-import { Text } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
 
 export default function Page() {
   /* @info Manually typed additional query parameters */
@@ -186,8 +177,6 @@ export default function Page() {
 If you need a combination of route and query parameters, pass the route as the first generic and then the query parameters
 
 ```tsx app/search.tsx
-import { Text } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
 
 export default function Page() {
   /* @info Provide both a route and search parameters */

@@ -3,10 +3,6 @@ title: Build the home screen
 description: In this chapter, direct your AI agent to add tab navigation, the photo viewer, and an image picker.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Step } from '~/ui/components/Step';
 
 In this chapter, the app starts to look like StickerSmash: two navigation tabs, a photo viewer, and a button that opens your phone's photo library.
 

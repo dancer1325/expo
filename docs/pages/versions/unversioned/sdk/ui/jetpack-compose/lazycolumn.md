@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 A lazily-loaded vertical list component that only renders visible items for efficient scrolling. See the [official Jetpack Compose documentation](https://developer.android.com/develop/ui/compose/lists) for more information.
 
@@ -31,7 +28,6 @@ A lazily-loaded vertical list component that only renders visible items for effi
 ### Basic lazy column
 
 ```tsx BasicLazyColumn.tsx
-import { Host, LazyColumn, ListItem, Text } from '@expo/ui/jetpack-compose';
 
 const items = Array.from({ length: 100 }, (_, i) => `Item ${i + 1}`);
 
@@ -57,7 +53,6 @@ export default function BasicLazyColumn() {
 Use the `verticalArrangement` prop to control how items are spaced within the list. Pass a string value like `'spaceBetween'` or an object like `{ spacedBy: 8 }` for fixed spacing in dp.
 
 ```tsx LazyColumnArrangement.tsx
-import { Host, LazyColumn, ListItem, Text } from '@expo/ui/jetpack-compose';
 
 export default function LazyColumnArrangement() {
   return (
@@ -89,7 +84,6 @@ export default function LazyColumnArrangement() {
 Use the `contentPadding` prop to add padding around the list content in dp.
 
 ```tsx LazyColumnPadding.tsx
-import { Host, LazyColumn, ListItem } from '@expo/ui/jetpack-compose';
 
 export default function LazyColumnPadding() {
   return (
@@ -113,7 +107,6 @@ export default function LazyColumnPadding() {
 ## API
 
 ```tsx
-import { LazyColumn } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/lazycolumn" apiName="LazyColumn" />

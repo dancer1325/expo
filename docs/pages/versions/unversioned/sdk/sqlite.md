@@ -8,12 +8,6 @@ iconUrl: '/static/images/packages/expo-sqlite.png'
 platforms: ['android', 'ios', 'macos', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ConfigPluginExample, ConfigPluginProperties } from '~/ui/components/ConfigSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { DiffBlock } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 `expo-sqlite` gives your app access to a database that can be queried through a SQLite API. The database is persisted across restarts of your app.
 
@@ -126,7 +120,6 @@ If you deploy your app on [EAS Hosting](/eas/hosting/introduction/), you can con
 Import the module from `expo-sqlite`.
 
 ```js Import the module from expo-sqlite
-import * as SQLite from 'expo-sqlite';
 ```
 
 ### Basic CRUD operations
@@ -264,9 +257,6 @@ const syncUser = sql<User>`SELECT * FROM users WHERE id = ${1}`.firstSync();
 ### `useSQLiteContext()` hook
 
 ```tsx useSQLiteContext() hook
-import { SQLiteProvider, useSQLiteContext, type SQLiteDatabase } from 'expo-sqlite';
-import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 
 export default function App() {
   return (
@@ -359,9 +349,6 @@ const styles = StyleSheet.create({
 As with the [`useSQLiteContext()`](#usesqlitecontext-hook) hook, you can also integrate the [`SQLiteProvider`](#sqliteprovider) with [`React.Suspense`](https://react.dev/reference/react/Suspense) to show a fallback component until the database is ready. To enable the integration, pass the `useSuspense` prop to the `SQLiteProvider` component.
 
 ```tsx useSQLiteContext() hook with React.Suspense
-import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
-import { Suspense } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 
 export default function App() {
   return (
@@ -433,8 +420,6 @@ await db.execAsync('PRAGMA foreign_keys = ON');
 To open a new SQLite database using an existing **.db** file you already have, you can use the [`SQLiteProvider`](#sqliteprovider) with [`assetSource`](#assetsource).
 
 ```tsx useSQLiteContext() with existing database
-import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
-import { View, Text, StyleSheet } from 'react-native';
 
 export default function App() {
   return (
@@ -476,10 +461,6 @@ Configure the App Group in app config:
 Use [`Paths.appleSharedContainers`](filesystem/#applesharedcontainers) from the [`expo-file-system`](filesystem/) library to retrieve the path to the shared container:
 
 ```tsx Using Shared Container for SQLite Database on iOS
-import { SQLiteProvider, defaultDatabaseDirectory } from 'expo-sqlite';
-import { Paths } from 'expo-file-system';
-import { useMemo } from 'react';
-import { Platform, View } from 'react-native';
 
 export default function App() {
   const dbDirectory = useMemo(() => {
@@ -539,7 +520,6 @@ The `expo-sqlite` library provides [`Storage`](#sqlitestorage) as a drop-in repl
 
 ```ts Using the Store
 // The storage API is the default export, you can call it Storage, AsyncStorage, or whatever you prefer.
-import Storage from 'expo-sqlite/kv-store';
 
 await Storage.setItem('key', JSON.stringify({ entity: 'value' }));
 const value = await Storage.getItem('key');
@@ -551,7 +531,6 @@ A key benefit of using `expo-sqlite/kv-store` is the addition of synchronous API
 
 ```ts Using the Store with synchronous APIs
 // The storage API is the default export, you can call it Storage, AsyncStorage, or whatever you prefer.
-import Storage from 'expo-sqlite/kv-store';
 
 Storage.setItemSync('key', 'value');
 const value = Storage.getItemSync('key');
@@ -571,7 +550,6 @@ The `expo-sqlite/localStorage/install` module provides a drop-in implementation 
 > **Note:** `import 'expo-sqlite/localStorage/install';` is a no-op on web and will be excluded from the production JS bundle.
 
 ```ts Install globalThis.localStorage
-import 'expo-sqlite/localStorage/install';
 
 globalThis.localStorage.setItem('key', 'value');
 console.log(globalThis.localStorage.getItem('key')); // 'value'

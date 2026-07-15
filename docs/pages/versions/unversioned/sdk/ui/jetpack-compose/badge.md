@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Badge matches the official Jetpack Compose [`Badge`](https://developer.android.com/develop/ui/compose/components/badges) API. It renders as a small colored indicator dot, or with content such as a count number.
 
@@ -31,7 +28,6 @@ Expo UI Badge matches the official Jetpack Compose [`Badge`](https://developer.a
 A badge with no children renders as a small dot indicator.
 
 ```tsx BadgeDot.tsx
-import { Host, Badge } from '@expo/ui/jetpack-compose';
 
 export default function BadgeDot() {
   return (
@@ -47,7 +43,6 @@ export default function BadgeDot() {
 Pass a `Text` child to display a number or label.
 
 ```tsx BadgeCount.tsx
-import { Host, Badge, Text } from '@expo/ui/jetpack-compose';
 
 export default function BadgeCount() {
   return (
@@ -63,7 +58,6 @@ export default function BadgeCount() {
 ## API
 
 ```tsx
-import { Badge } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/badge" apiName="Badge" />

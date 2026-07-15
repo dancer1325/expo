@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`TextInput`](../universal/textinput) — it renders the appropriate native component per platform.
 
@@ -33,7 +30,6 @@ Expo UI TextField matches the official SwiftUI [TextField API](https://developer
 Bind a [`useNativeState`](usenativestate) observable to `text`. The field tracks the user's input on its own, and you read the current value from `textState.value`.
 
 ```tsx BasicTextFieldExample.tsx
-import { Host, TextField, useNativeState } from '@expo/ui/swift-ui';
 
 export default function BasicTextFieldExample() {
   const textState = useNativeState('');
@@ -53,8 +49,6 @@ Pass an `onTextChange` worklet to transform or validate input and write the resu
 > **Note:** Worklets require installing [`react-native-worklets`](https://docs.swmansion.com/react-native-worklets/).
 
 ```tsx ControlledTextFieldExample.tsx
-import { Host, TextField, useNativeState } from '@expo/ui/swift-ui';
-import { useCallback } from 'react';
 
 export default function ControlledTextFieldExample() {
   const text = useNativeState('');
@@ -80,8 +74,6 @@ export default function ControlledTextFieldExample() {
 Set `axis="vertical"` to allow the text field to expand vertically. Use the [`lineLimit`](modifiers/#linelimit) modifier to control the visible line count. When using `Host matchContents`, add `fixedSize({ horizontal: false, vertical: true })` so the text field accepts the parent's width while using its ideal height.
 
 ```tsx MultilineTextFieldExample.tsx
-import { Host, TextField, useNativeState } from '@expo/ui/swift-ui';
-import { lineLimit, fixedSize } from '@expo/ui/swift-ui/modifiers';
 
 export default function MultilineTextFieldExample() {
   const textState = useNativeState('');
@@ -104,8 +96,6 @@ export default function MultilineTextFieldExample() {
 Use the [`keyboardType`](modifiers/#keyboardtypekeyboardtype) modifier to display a specific keyboard layout.
 
 ```tsx KeyboardTypeExample.tsx
-import { Host, TextField, useNativeState } from '@expo/ui/swift-ui';
-import { keyboardType, autocorrectionDisabled } from '@expo/ui/swift-ui/modifiers';
 
 export default function KeyboardTypeExample() {
   const textState = useNativeState('');
@@ -127,8 +117,6 @@ export default function KeyboardTypeExample() {
 Use the [`submitLabel`](modifiers/#submitlabelsubmitlabel) modifier to customize the return key and [`onSubmit`](modifiers/#onsubmithandler) to handle the submit action.
 
 ```tsx SubmitHandlingExample.tsx
-import { Host, TextField, useNativeState } from '@expo/ui/swift-ui';
-import { submitLabel, onSubmit } from '@expo/ui/swift-ui/modifiers';
 
 export default function SubmitHandlingExample() {
   const textState = useNativeState('');
@@ -155,8 +143,6 @@ Use a `ref` to imperatively set text, focus, blur, or select text.
 > **Note:** `setSelection` requires iOS 18.0+ / tvOS 18.0+. The other ref methods work on all supported versions.
 
 ```tsx ImperativeRefExample.tsx
-import { useRef } from 'react';
-import {
   Host,
   TextField,
   TextFieldRef,
@@ -165,7 +151,6 @@ import {
   VStack,
   useNativeState,
 } from '@expo/ui/swift-ui';
-import { buttonStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function ImperativeRefExample() {
   const ref = useRef<TextFieldRef>(null);
@@ -215,9 +200,6 @@ When `onTextChange` is marked with the `'worklet'` directive, it runs synchronou
 > **Note:** Worklets require installing [`react-native-worklets`](https://docs.swmansion.com/react-native-worklets/). The `selection` prop requires iOS 18.0+ / tvOS 18.0+. On older versions the worklet can still update the text but cursor positioning is unavailable.
 
 ```tsx WorkletPhoneMaskExample.tsx
-import { Host, TextField, useNativeState } from '@expo/ui/swift-ui';
-import { keyboardType } from '@expo/ui/swift-ui/modifiers';
-import { useCallback } from 'react';
 
 export default function WorkletPhoneMaskExample() {
   const phone = useNativeState('');
@@ -259,7 +241,6 @@ export default function WorkletPhoneMaskExample() {
 ## API
 
 ```tsx
-import { TextField } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/textfield" apiName="TextField" />

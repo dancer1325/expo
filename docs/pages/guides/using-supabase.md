@@ -3,9 +3,6 @@ title: Using Supabase
 description: Add a Postgres Database and user authentication to your React Native app with Supabase.
 ---
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 [Supabase](https://supabase.com/?utm_source=expo&utm_medium=referral&utm_term=expo-react-native) is a Backend-as-a-Service (BaaS) app development platform that provides hosted backend services such as a Postgres database, user authentication, file storage, edge functions, realtime syncing, and a vector and AI toolkit. It's an open-source alternative to Google's Firebase.
 
@@ -42,9 +39,6 @@ After you have created your [Expo project](/get-started/create-a-project/), inst
 Create a helper file to initialize the Supabase client (`@supabase/supabase-js`). You need the API URL and the `anon` key copied [earlier](#get-the-api-keys). These variables are safe to expose in your Expo app since Supabase has [Row Level Security](https://supabase.com/docs/guides/auth/row-level-security?utm_source=expo&utm_medium=referral&utm_term=expo-react-native) enabled in the Database.
 
 ```ts utils/supabase.ts
-import 'react-native-url-polyfill/auto';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = YOUR_REACT_NATIVE_SUPABASE_URL;
 const supabaseAnonKey = YOUR_REACT_NATIVE_SUPABASE_ANON_KEY;

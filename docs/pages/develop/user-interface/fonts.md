@@ -3,16 +3,7 @@ title: Fonts
 description: Learn how to integrate custom fonts in your app using local files or Google Font packages
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ConfigReactNative } from '~/ui/components/ConfigSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { YesIcon, NoIcon } from '~/ui/components/DocIcons';
-import { Terminal, SnackInline } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { CODE } from '~/ui/components/Text';
 
 Android and iOS come with their own set of platform fonts. To provide a consistent user experience and enhance your app's branding, you can use custom fonts.
 
@@ -150,7 +141,6 @@ Map the font file using the `useFonts` hook in a top level component such as the
 ```tsx app/_layout.tsx
 /* @info Import <CODE>useFonts</CODE> hook from <CODE>expo-font</CODE>. */ import { useFonts } from 'expo-font'; /* @end */
 /* @info Import <CODE>SplashScreen</CODE> so that when the fonts are not loaded, we can continue to show <CODE>SplashScreen</CODE>. */ import * as SplashScreen from 'expo-splash-screen'; /* @end */
-import {useEffect} from 'react';
 
 /* @info This prevents <CODE>SplashScreen</CODE> from auto hiding while the fonts are in loading state. */
 SplashScreen.preventAutoHideAsync();
@@ -243,7 +233,6 @@ On Android, you can use the font file name. For example, `Inter_900Black`. On iO
 
 {/* prettier-ignore */}
 ```tsx
-import { Platform } from 'react-native';
 
 // Inside a React component:
 <Text
@@ -284,12 +273,9 @@ After installing the font package, map the font using the `useFonts` hook in a t
 ```tsx app/_layout.tsx
 // Rest of the import statements
 /* @info Import <CODE>Inter_900Black</CODE> and <CODE>useFonts</CODE> hook from <CODE>@expo-google-fonts/inter</CODE>*/
-import { Inter_900Black, useFonts } from '@expo-google-fonts/inter';
 /* @end */
 /* @info Import <CODE>SplashScreen</CODE> so that when the fonts are not loaded, we can continue to show <CODE>SplashScreen</CODE>. */
-import * as SplashScreen from 'expo-splash-screen';
 /* @end */
-import {useEffect} from 'react';
 
 /* @info This prevents <CODE>SplashScreen</CODE> from auto hiding while the fonts are in loading state. */
 SplashScreen.preventAutoHideAsync();
@@ -378,8 +364,6 @@ A platform's default font is usually easy-to-read. However, don't be surprised w
 When the icons from `@expo/vector-icons` library load for the first time, they appear as invisible icons in your app. Once they load, they're cached for all the app's subsequent usage. To avoid showing invisible icons on your app's first load, preload during the initial loading screen with [`useFonts`](/versions/latest/sdk/font/#usefontsmap). For example:
 
 ```tsx app/_layout.tsx
-import { useFonts } from 'expo-font';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function RootLayout() {
   useFonts([require('./assets/fonts/Inter-Black.otf', Ionicons.font)]);
@@ -414,8 +398,6 @@ However, loading a font file directly from web is done by replacing the `require
 <SnackInline label="Using a remote font" dependencies={['expo-font']}>
 
 ```tsx
-import { useFonts } from 'expo-font';
-import { Text, View, StyleSheet } from 'react-native';
 
 export default function App() {
   const [loaded, error] = useFonts({

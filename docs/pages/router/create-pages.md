@@ -70,9 +70,7 @@ Dynamic segments are accessible as [route parameters](/router/reference/url-para
 {/* prettier-ignore */}
 ```tsx app/blog/[slug].tsx
 /* @info Import the <b>useLocalSearchParams</b> React hook */
-import { useLocalSearchParams } from 'expo-router';
 /* @end */
-import { Text } from 'react-native';
 
 export default function Page() {
   /* @info Access the query parameter named <b>slug</b> */

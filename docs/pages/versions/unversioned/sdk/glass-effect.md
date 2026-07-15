@@ -6,9 +6,6 @@ packageName: 'expo-glass-effect'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 > **important** `GlassView` is only available on iOS 26 and above. It will fallback to regular `View` on unsupported platforms.
 
@@ -31,8 +28,6 @@ The `GlassView` component renders the native iOS glass effect. It supports diffe
 <SnackInline label='Basic GlassView usage' dependencies={['expo-glass-effect']} platforms={['ios']}>
 
 ```jsx
-import { StyleSheet, View, Image } from 'react-native';
-import { GlassView } from 'expo-glass-effect';
 
 export default function App() {
   return (
@@ -102,8 +97,6 @@ The `GlassContainer` component allows you to combine multiple glass views into a
 <SnackInline label='GlassContainer example' dependencies={['expo-glass-effect']} platforms={['ios']}>
 
 ```jsx
-import { StyleSheet, View, Image } from 'react-native';
-import { GlassView, GlassContainer } from 'expo-glass-effect';
 
 export default function GlassContainerDemo() {
   return (
@@ -169,9 +162,6 @@ The `glassEffectStyle` prop accepts a config object with `animate` and `animatio
 <SnackInline label='Animated glass effect style' dependencies={['expo-glass-effect']} platforms={['ios']}>
 
 ```jsx
-import { useState } from 'react';
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
-import { GlassView } from 'expo-glass-effect';
 
 export default function AnimatedGlassStyleExample() {
   const [visible, setVisible] = useState(true);
@@ -244,9 +234,6 @@ Since setting `opacity` to `0` on `GlassView` or its parent views causes the gla
 <SnackInline label='Glass effect opacity animation workaround' dependencies={['expo-glass-effect', 'react-native-reanimated']} platforms={['ios']}>
 
 ```jsx
-import { GlassView } from 'expo-glass-effect';
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
-import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
@@ -343,7 +330,6 @@ The `isLiquidGlassAvailable` function let's you check, if the Liquid Glass effec
 It validates the system and compiler versions, as well as the [**Info.plist**](https://developer.apple.com/documentation/BundleResources/Information-Property-List/UIDesignRequiresCompatibility) settings.
 
 ```tsx
-import { isLiquidGlassAvailable } from 'expo-glass-effect';
 
 export default function CheckLiquidGlass() {
   return (
@@ -363,7 +349,6 @@ The `isGlassEffectAPIAvailable` function checks whether the Liquid Glass API is 
 > **Warning** This API was added because some iOS 26 beta versions do not have the Liquid Glass API available, which can lead to crashes. You should check this before using `GlassView` in your app to ensure compatibility. See [GitHub issue #40911](https://github.com/expo/expo/issues/40911) for more information.
 
 ```tsx
-import { isGlassEffectAPIAvailable } from 'expo-glass-effect';
 
 export default function CheckGlassEffectAPI() {
   return (
@@ -379,7 +364,6 @@ export default function CheckGlassEffectAPI() {
 ## API
 
 ```js
-import {
   GlassView,
   GlassContainer,
   isLiquidGlassAvailable,

@@ -4,9 +4,6 @@ description: A reference for the expo-type-information package.
 packageName: 'expo-type-information'
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
 
 > **warning** The `expo-type-information` library works only on macOS. Available for SDK 56 and later.
 

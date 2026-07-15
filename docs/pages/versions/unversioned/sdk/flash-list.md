@@ -7,10 +7,7 @@ platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 inExpoGo: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
 
 `@shopify/flash-list` is a "Fast and performant React Native list" component that is a drop-in replacement for React Native's `<FlatList>` component. It "recycles components under the hood to maximize performance."
 

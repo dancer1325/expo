@@ -7,10 +7,6 @@ iconUrl: '/static/images/packages/expo-sensors.png'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { IOSPermissions } from '~/components/plugins/permissions';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
@@ -70,7 +66,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 ## API
 
 ```js
-import { DeviceMotion } from 'expo-sensors';
 ```
 
 <APISection packageName="expo-device-motion" />

@@ -3,13 +3,6 @@ title: Build a screen
 description: In this tutorial, learn how to use components such as React Native's Pressable and Expo Image to build a screen.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { CODE } from '~/ui/components/Text';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 In this chapter, we'll create the first screen of the StickerSmash app.
 
@@ -83,7 +76,6 @@ To use the Image component in **app/(tabs)/index.tsx** file:
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx|collapseHeight=380
-import { View, StyleSheet } from 'react-native';
 /* @tutinfo Import the <CODE>Image</CODE> component. */ import { Image } from 'expo-image'; /* @end */
 
 /* @tutinfo Import the image from the "assets/images/" directory. Since this picture is a static resource, you have to reference it using <CODE>require</CODE>. */
@@ -136,8 +128,6 @@ Let's divide the code into multiple files as we add more components to this scre
 
 {/* prettier-ignore */}
 ```tsx components/ImageViewer.tsx|collapseHeight=280
-import { StyleSheet } from "react-native";
-import { Image, type ImageSource } from "expo-image";
 
 type Props = {
   imgSource: ImageSource;
@@ -162,7 +152,6 @@ Import `ImageViewer` and use it in the **app/(tabs)/index.tsx**:
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx|collapseHeight=320
-import { StyleSheet, View } from 'react-native';
 
 /* @tutinfo */import ImageViewer from "@/components/ImageViewer"; /* @end */
 
@@ -210,7 +199,6 @@ In the design, there are two buttons we need to create. Each has a different sty
 
 {/* prettier-ignore */}
 ```tsx components/Button.tsx|collapseHeight=280
-import { StyleSheet, View, Pressable, Text } from 'react-native';
 
 type Props = {
   label: string;
@@ -254,10 +242,8 @@ The app displays an alert when the user taps any of the buttons on the screen. I
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx
-import { View, StyleSheet } from "react-native";
 
 /* @tutinfo */import Button from '@/components/Button'; /* @end */
-import ImageViewer from '@/components/ImageViewer';
 
 const PlaceholderImage = require("@/assets/images/background-image.png");
 
@@ -318,7 +304,6 @@ To load and display the icon on the button, let's use `FontAwesome` from the lib
 
 {/* prettier-ignore */}
 ```tsx components/Button.tsx
-import { StyleSheet, View, Pressable, Text } from 'react-native';
 /* @tutinfo Import FontAwesome. */import FontAwesome from '@expo/vector-icons/FontAwesome';/* @end */
 
 type Props = {
@@ -394,10 +379,7 @@ Now, modify the **app/(tabs)/index.tsx** file to use the `theme="primary"` prop 
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx
-import { View, StyleSheet } from 'react-native';
 
-import Button from '@/components/Button';
-import ImageViewer from '@/components/ImageViewer';
 
 const PlaceholderImage = require('@/assets/images/background-image.png');
 

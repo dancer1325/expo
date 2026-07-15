@@ -4,7 +4,6 @@ sidebar_title: Dangerous mods
 description: Learn about dangerous mods and how to use them when creating a config plugin.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
 
 Dangerous mods in Expo provide direct access to native project files through string manipulation and regular expressions. While [existing mod plugins](/config-plugins/mods) are the recommended approach, dangerous mods serve as an escape hatch for modifications that cannot be achieved through existing mod plugins.
 
@@ -33,9 +32,6 @@ Let's take a look at an example config plugin to modify a file inside a native d
 Following the directory structure and steps to create a config plugin (steps 3, 4, and 5) from [Creating a config plugin section](/config-plugins/plugins/#creating-a-config-plugin), let's assume this config plugin is created inside the **plugins** directory of your Expo project:
 
 ```tsx withCustomPodfile.ts
-import { ConfigPlugin, IOSConfig, withDangerousMod } from 'expo/config-plugins';
-import fs from 'fs/promises';
-import path from 'path';
 
 const withCustomPodfile: ConfigPlugin = config => {
   return withDangerousMod(config, [
@@ -94,9 +90,6 @@ Using `withDangerousMod` requires certain parameters:
 The code snippet below provides a skeleton of the required field and how the config plugin can be structured when using `withDangerousMod`:
 
 ```tsx
-import { ConfigPlugin, withDangerousMod } from 'expo/config-plugins';
-import fs from 'fs/promises';
-import path from 'path';
 
 const myPlugin: ConfigPlugin = config => {
   return withDangerousMod(config, [

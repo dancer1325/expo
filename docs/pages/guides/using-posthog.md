@@ -4,10 +4,6 @@ description: A guide on installing and configuring PostHog for product analytics
 platforms: ['android', 'ios']
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 [PostHog](https://posthog.com/) is a product analytics platform with session replay, feature flags, and error tracking.
 
@@ -68,8 +64,6 @@ Pass `--non-interactive` with `--region US` or `--region EU` (required, since th
 In your root layout file (**src/app/\_layout.tsx** with Expo Router), wrap your app in `<PostHogProvider>`, reading the keys from the environment variables the command wrote. See the [PostHog React Native docs](https://posthog.com/docs/libraries/react-native) for all options, including [error-tracking autocapture](https://posthog.com/docs/error-tracking/installation/react-native).
 
 ```tsx src/app/_layout.tsx
-import { PostHogProvider } from 'posthog-react-native';
-import { Slot } from 'expo-router';
 
 export default function RootLayout() {
   return (
@@ -110,8 +104,6 @@ Add a temporary button to capture a test event, run your development build, and 
 
 {/* prettier-ignore */}
 ```tsx
-import { Button } from 'react-native';
-import { usePostHog } from 'posthog-react-native';
 
 // Inside a component
 const posthog = usePostHog();
@@ -206,9 +198,6 @@ This is one of three pieces required end to end: build-time symbol upload (above
 Map each captured event back to a specific over-the-air update by registering [super properties](https://posthog.com/docs/libraries/react-native#super-properties) from [`expo-updates`](/versions/latest/sdk/updates/):
 
 ```tsx
-import { useEffect } from 'react';
-import * as Updates from 'expo-updates';
-import { usePostHog } from 'posthog-react-native';
 
 function ReleaseTagger() {
   const posthog = usePostHog();

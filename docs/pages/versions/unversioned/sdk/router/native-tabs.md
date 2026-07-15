@@ -7,11 +7,7 @@ packageName: 'expo-router'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import APISection from '~/components/plugins/APISection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ConfigPluginExample } from '~/ui/components/ConfigSection';
 
 `expo-router/unstable-native-tabs` is a submodule of `expo-router` and exports components to build tab layouts using platform-native system tabs.
 
@@ -58,7 +54,6 @@ To learn how to use native tabs, with Expo Router, read the native tabs guide:
 ## API
 
 ```js
-import { NativeTabs } from 'expo-router/unstable-native-tabs';
 ```
 
 <APISection packageName="expo-router/native-tabs" apiName="Native tabs" />

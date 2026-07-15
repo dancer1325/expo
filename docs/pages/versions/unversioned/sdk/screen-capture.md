@@ -6,9 +6,6 @@ packageName: 'expo-screen-capture'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-screen-capture` allows you to protect screens in your app from being captured or recorded, as well as be notified if a screenshot is taken while your app is foregrounded. The two most common reasons you may want to prevent screen capture are:
 
@@ -36,8 +33,6 @@ If you want to use the screen capture callback on Android 13 or lower, you need 
 <SnackInline label="Screen Capture hook" dependencies={["expo-screen-capture"]}>
 
 ```jsx
-import { usePreventScreenCapture } from 'expo-screen-capture';
-import { Text, View } from 'react-native';
 
 export default function ScreenCaptureExample() {
   usePreventScreenCapture();
@@ -57,9 +52,6 @@ export default function ScreenCaptureExample() {
 <SnackInline label="Blocking screen capture" dependencies={["expo-screen-capture", "expo-media-library"]}>
 
 ```jsx
-import * as ScreenCapture from 'expo-screen-capture';
-import { useEffect } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
 
 export default function ScreenCaptureExample() {
   const activate = async () => {
@@ -94,9 +86,6 @@ const styles = StyleSheet.create({
 <SnackInline label="Callback for screen capture" dependencies={["expo-screen-capture", "expo-media-library"]}>
 
 ```jsx
-import * as ScreenCapture from 'expo-screen-capture';
-import { useEffect } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
 
 export default function useScreenCaptureCallback() {
   // Only use this if you add the READ_MEDIA_IMAGES permission to your AndroidManifest.xml
@@ -131,7 +120,6 @@ export default function useScreenCaptureCallback() {
 ## API
 
 ```js
-import * as ScreenCapture from 'expo-screen-capture';
 ```
 
 <APISection packageName="expo-screen-capture" apiName="ScreenCapture" />

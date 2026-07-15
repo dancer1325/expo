@@ -7,8 +7,6 @@ iconUrl: '/static/images/packages/expo-sms.png'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 `expo-sms` provides access to the system's UI/app for sending SMS messages.
 
@@ -19,7 +17,6 @@ import { APIInstallSection } from '~/components/plugins/InstallSection';
 ## API
 
 ```js
-import * as SMS from 'expo-sms';
 ```
 
 <APISection packageName="expo-sms" apiName="SMS" />

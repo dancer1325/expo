@@ -4,10 +4,7 @@ sidebar_title: Introduction
 description: An introduction to a tutorial on building an Expo app that runs on Android, iOS, and the web by directing an AI coding agent, with no programming experience required.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 In this tutorial, you'll build a complete app for Android, iOS, and the web without writing code yourself. Instead, you'll direct an AI coding agent, such as Claude Code, Codex, or Cursor, and check the results live on your own phone after every step.
 

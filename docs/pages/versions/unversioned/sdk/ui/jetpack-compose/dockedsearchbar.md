@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI DockedSearchBar matches the official Jetpack Compose [SearchBar API](https://developer.android.com/develop/ui/compose/components/search-bar) and displays a search input that remains anchored in its parent layout rather than expanding to full screen.
 
@@ -29,8 +26,6 @@ Expo UI DockedSearchBar matches the official Jetpack Compose [SearchBar API](htt
 ### Basic docked search bar
 
 ```tsx BasicDockedSearchBarExample.tsx
-import { useState } from 'react';
-import { Host, DockedSearchBar } from '@expo/ui/jetpack-compose';
 
 export default function BasicDockedSearchBarExample() {
   const [query, setQuery] = useState('');
@@ -48,8 +43,6 @@ export default function BasicDockedSearchBarExample() {
 Use the `DockedSearchBar.Placeholder` and `DockedSearchBar.LeadingIcon` slot components to customize the search bar appearance.
 
 ```tsx DockedSearchBarWithSlotsExample.tsx
-import { useState } from 'react';
-import { Host, DockedSearchBar, Text } from '@expo/ui/jetpack-compose';
 
 export default function DockedSearchBarWithSlotsExample() {
   const [query, setQuery] = useState('');
@@ -72,7 +65,6 @@ export default function DockedSearchBarWithSlotsExample() {
 ## API
 
 ```tsx
-import { DockedSearchBar } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/dockedsearchbar" apiName="DockedSearchBar" />

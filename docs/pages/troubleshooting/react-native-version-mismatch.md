@@ -3,7 +3,6 @@ title: '"React Native version mismatch" errors'
 description: Learn about what React Native version mismatch means and how to resolve it in an Expo or React Native app.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 When developing an Expo or React Native app, it's common to run into an error that looks like:
 

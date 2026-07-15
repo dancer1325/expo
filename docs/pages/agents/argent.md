@@ -4,12 +4,7 @@ sidebar_title: Argent
 description: Use Argent to let your AI agent control, debug, and profile your Expo project on Android Emulators and iOS Simulators.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Step } from '~/ui/components/Step';
-import { Terminal } from '~/ui/components/Snippet';
 
 [Argent](https://argent.swmansion.com) is an agentic toolkit from Software Mansion. Where an AI agent like Claude Code or Codex reads your code and documentation, Argent gives that same agent direct access to your running app: it can **control, debug, and profile** your Expo app on an Android Emulator or iOS Simulator. You set it up once and connect it to your editor through the [Model Context Protocol (MCP)](/mcp/).
 

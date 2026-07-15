@@ -8,11 +8,7 @@ platforms: ['ios', 'android']
 isAlpha: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import APISection from '~/components/plugins/APISection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
 
 > **important** `ExperimentalStack` is an [alpha](/more/release-statuses/#alpha) API available in **Expo SDK 56** and later. It is for testing only — the API and feature set may change before it is ready for production use.
 
@@ -40,7 +36,6 @@ On Android, `ExperimentalStack` ships with [predictive back gesture](https://dev
 ## Basic usage
 
 ```tsx app/_layout.tsx
-import { ExperimentalStack as Stack } from 'expo-router';
 
 export default function Layout() {
   return (
@@ -114,7 +109,6 @@ On Web, `<ExperimentalStack />` renders the standard `Stack` from `expo-router`.
 ## API
 
 ```js
-import { ExperimentalStack } from 'expo-router';
 ```
 
 <APISection packageName="expo-router/experimental-stack" apiName="Experimental Stack" />

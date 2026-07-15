@@ -47,7 +47,6 @@ This example will create and modify the following files
 In **withAndroidPlugin.ts**, add the following code:
 
 ```ts withAndroidPlugin.ts
-import { ConfigPlugin, withAndroidManifest } from 'expo/config-plugins';
 
 const withAndroidPlugin: ConfigPlugin = config => {
   // Define a custom message
@@ -90,7 +89,6 @@ The example code above adds a meta-data entry `HelloWorldMessage` to the **andro
 In **withIosPlugin.ts**, add the following code:
 
 ```ts withIosPlugin.ts
-import { ConfigPlugin, withInfoPlist } from 'expo/config-plugins';
 
 const withIosPlugin: ConfigPlugin = config => {
   // Define the custom message
@@ -121,9 +119,6 @@ Now you can create a combined plugin that applies both platform-specific plugins
 In **withPlugin.ts**, add the following code:
 
 ```ts withPlugin.ts
-import { ConfigPlugin } from 'expo/config-plugins';
-import withAndroidPlugin from './withAndroidPlugin';
-import withIosPlugin from './withIosPlugin';
 
 const withPlugin: ConfigPlugin = config => {
   // Apply Android modifications first
@@ -161,7 +156,6 @@ Then, change the static app config (**app.json**) to the [dynamic app config (**
 * Ensure to add the following import statement at the top of your **app.config.ts** file:
 
 ```ts app.config.ts
-import 'tsx/cjs';
 
 module.exports = () => {
   /* @hide ... rest of your app config */
@@ -179,9 +173,7 @@ Now, you can call the config plugin from your dynamic app config
 * To do this, you need to add the path to the **withPlugin.ts** file to the plugins array in your app config:
 
 ```ts app.config.ts
-import "tsx/cjs";
 /* @info */
-import { ExpoConfig } from "expo/config";
 /* @end */
 
 module.exports = /* @info */({ config }: { config: ExpoConfig })/* @end */ => {
@@ -350,7 +342,6 @@ The `plugins` array uses `withPlugins` method under the hood to chain the plugin
 * `withPlugins` will chain the plugins together and execute them in order.
 
 ```ts app.config.ts
-import { withPlugins } from 'expo/config-plugins';
 
 // Create a base config object
 const baseConfig = {

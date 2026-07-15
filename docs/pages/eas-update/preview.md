@@ -4,10 +4,7 @@ sidebar_title: Preview updates
 description: Learn how to preview updates in development, preview, and production builds.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { LayersTwo02Icon } from '@expo/styleguide-icons/outline/LayersTwo02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 Before deploying an update to production, you will often want to test it in a production-like environment. This guide will outline different approaches for previewing updates, and link out to more detailed guides for each approach.
 

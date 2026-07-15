@@ -6,8 +6,6 @@ packageName: 'expo-application'
 platforms: ['android', 'ios', 'web', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 `expo-application` provides useful information about the native application's ID, app name, and build version at runtime.
 
@@ -18,7 +16,6 @@ import { APIInstallSection } from '~/components/plugins/InstallSection';
 ## API
 
 ```js
-import * as Application from 'expo-application';
 ```
 
 <APISection packageName="expo-application" apiName="Application" />

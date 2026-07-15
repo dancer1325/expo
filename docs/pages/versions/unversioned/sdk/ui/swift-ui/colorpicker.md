@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI ColorPicker matches the official SwiftUI [ColorPicker API](https://developer.apple.com/documentation/swiftui/colorpicker) and allows app users to select colors from a palette.
 
@@ -29,8 +26,6 @@ Expo UI ColorPicker matches the official SwiftUI [ColorPicker API](https://devel
 ### Basic color picker
 
 ```tsx ColorPickerExample.tsx
-import { useState } from 'react';
-import { Host, ColorPicker } from '@expo/ui/swift-ui';
 
 export default function ColorPickerExample() {
   const [color, setColor] = useState('#FF6347');
@@ -48,8 +43,6 @@ export default function ColorPickerExample() {
 Use the `supportsOpacity` prop to allow users to select colors with alpha transparency.
 
 ```tsx ColorPickerOpacityExample.tsx
-import { useState } from 'react';
-import { Host, ColorPicker } from '@expo/ui/swift-ui';
 
 export default function ColorPickerOpacityExample() {
   const [color, setColor] = useState('#FF634780');
@@ -70,7 +63,6 @@ export default function ColorPickerOpacityExample() {
 ## API
 
 ```tsx
-import { ColorPicker } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/colorpicker" apiName="ColorPicker" />

@@ -3,12 +3,7 @@ title: Finishing touches
 description: In this chapter, direct your AI agent to polish the status bar, splash screen, and app icon, then take your next steps as a builder.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Step } from '~/ui/components/Step';
 
 The app works. Now make it feel finished. In this chapter, you'll polish the details users notice without realizing it: the status bar, the splash screen, and the app icon.
 

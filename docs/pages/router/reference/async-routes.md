@@ -3,9 +3,6 @@ title: Async routes
 description: Learn how to speed up development with async bundling in Expo Router.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 > **warning** Async routes is an experimental feature.
 

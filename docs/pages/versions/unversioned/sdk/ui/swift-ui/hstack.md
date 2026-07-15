@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Row`](../universal/row) — it renders the appropriate native component per platform.
 
@@ -31,7 +28,6 @@ Expo UI HStack matches the official SwiftUI [HStack API](https://developer.apple
 ### Basic horizontal stack
 
 ```tsx BasicHStackExample.tsx
-import { Host, HStack, Text } from '@expo/ui/swift-ui';
 
 export default function BasicHStackExample() {
   return (
@@ -51,8 +47,6 @@ export default function BasicHStackExample() {
 The `alignment` prop controls vertical alignment of children. Available options are: `top`, `center`, `bottom`, `firstTextBaseline`, and `lastTextBaseline`.
 
 ```tsx HStackAlignmentExample.tsx
-import { Host, HStack, Rectangle } from '@expo/ui/swift-ui';
-import { frame } from '@expo/ui/swift-ui/modifiers';
 
 export default function HStackAlignmentExample() {
   return (
@@ -70,7 +64,6 @@ export default function HStackAlignmentExample() {
 ## API
 
 ```tsx
-import { HStack } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/hstack" apiName="HStack" />

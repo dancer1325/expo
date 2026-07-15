@@ -5,9 +5,6 @@ maxHeadingDepth: 4
 description: A reference of store config in EAS Metadata.
 ---
 
-import { MetadataTable, MetadataSubcategories } from '~/components/plugins/EasMetadataTable';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { markdownComponents as MD } from '~/ui/components/Markdown';
 
 > **important** **EAS Metadata** is in [beta](/more/release-statuses/#beta) and subject to breaking changes.
 

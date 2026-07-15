@@ -4,10 +4,6 @@ sidebar_title: Troubleshooting
 description: Solutions for common EAS Observe issues.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 ## Common issues
 
@@ -26,7 +22,6 @@ Verify that your root layout is wrapped with the root HOC:
 <Tab label="SDK 56 and later">
 
 ```jsx
-import { ObserveRoot } from 'expo-observe';
 
 function RootLayout() {
   return (/* your layout */);
@@ -40,7 +35,6 @@ export default ObserveRoot.wrap(RootLayout);
 <Tab label="SDK 55">
 
 ```jsx
-import { AppMetricsRoot } from 'expo-observe';
 
 function RootLayout() {
   return (/* your layout */);
@@ -111,8 +105,6 @@ Instead of calling `markFirstRender()` manually, wrap your root layout with the 
 Before:
 
 ```jsx
-import { useEffect } from 'react';
-import AppMetrics from 'expo-eas-observe';
 
 export default function RootLayout() {
   useEffect(() => {
@@ -130,7 +122,6 @@ After:
 <Tab label="SDK 56 and later">
 
 ```jsx
-import { ObserveRoot } from 'expo-observe';
 
 function RootLayout() {
   return (/* your layout */);
@@ -144,7 +135,6 @@ export default ObserveRoot.wrap(RootLayout);
 <Tab label="SDK 55">
 
 ```jsx
-import { AppMetricsRoot } from 'expo-observe';
 
 function RootLayout() {
   return (/* your layout */);

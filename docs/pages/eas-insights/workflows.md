@@ -4,10 +4,7 @@ sidebar_title: EAS Workflows
 description: Track run counts, success rates, and trends for your EAS Workflows in the Workflows tab of EAS Insights.
 ---
 
-import { Dataflow03Icon } from '@expo/styleguide-icons/outline/Dataflow03Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** Workflows insights is available on the Production and Enterprise plans. Learn more at [EAS pricing](https://expo.dev/pricing).
 

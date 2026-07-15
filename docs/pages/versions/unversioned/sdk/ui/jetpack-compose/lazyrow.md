@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 A lazily-loaded horizontal list component that only renders visible items for efficient scrolling. See the [official Jetpack Compose documentation](https://developer.android.com/develop/ui/compose/lists) for more information.
 
@@ -31,7 +28,6 @@ A lazily-loaded horizontal list component that only renders visible items for ef
 ### Basic lazy row
 
 ```tsx BasicLazyRow.tsx
-import { Host, LazyRow, Text } from '@expo/ui/jetpack-compose';
 
 const items = Array.from({ length: 100 }, (_, i) => `Item ${i + 1}`);
 
@@ -53,7 +49,6 @@ export default function BasicLazyRow() {
 Use the `horizontalArrangement` prop to control how items are spaced within the list. Pass a string value like `'spaceBetween'` or an object like `{ spacedBy: 8 }` for fixed spacing in dp.
 
 ```tsx LazyRowArrangement.tsx
-import { Host, LazyRow, Text } from '@expo/ui/jetpack-compose';
 
 export default function LazyRowArrangement() {
   return (
@@ -73,7 +68,6 @@ export default function LazyRowArrangement() {
 Use the `contentPadding` prop to add padding around the list content in dp.
 
 ```tsx LazyRowPadding.tsx
-import { Host, LazyRow, Text } from '@expo/ui/jetpack-compose';
 
 export default function LazyRowPadding() {
   return (
@@ -91,7 +85,6 @@ export default function LazyRowPadding() {
 ## API
 
 ```tsx
-import { LazyRow } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/lazyrow" apiName="LazyRow" />

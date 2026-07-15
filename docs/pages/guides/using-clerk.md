@@ -4,13 +4,6 @@ description: Learn how to add Clerk authentication and user management in your E
 platforms: ['android', 'ios', 'web']
 ---
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { YesIcon, NoIcon } from '~/ui/components/DocIcons';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { TabsGroup, Tabs, Tab } from '~/ui/components/Tabs';
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
 <TabsGroup>
 
@@ -131,9 +124,6 @@ The `EXPO_PUBLIC_` prefix is required because [Expo inlines these values at buil
 In your root layout file (**src/app/\_layout.tsx** with Expo Router), wrap your app in `<ClerkProvider>` and pass the Publishable Key. Passing `tokenCache` explicitly is recommended:
 
 ```tsx src/app/_layout.tsx
-import { ClerkProvider } from '@clerk/expo';
-import { tokenCache } from '@clerk/expo/token-cache';
-import { Slot } from 'expo-router';
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
@@ -167,10 +157,6 @@ The next step depends on which approach you chose. The tabs below show the minim
 Drop `<AuthView />` into a screen. It renders a complete native sign-in and sign-up interface that handles email, phone, passkeys, multi-factor authentication, and any social connection enabled in the Clerk Dashboard:
 
 ```tsx
-import { AuthView } from '@clerk/expo/native';
-import { useAuth } from '@clerk/expo';
-import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
 
 export default function SignInScreen() {
   const { isSignedIn } = useAuth({ treatPendingAsSignedOut: false });
@@ -193,9 +179,6 @@ After the user signs in, the native session is synchronized back to the JavaScri
 To show the user's avatar and a profile modal elsewhere in your app, use `<UserButton />`:
 
 ```tsx
-import { UserButton } from '@clerk/expo/native';
-import { Show } from '@clerk/expo';
-import { View } from 'react-native';
 
 export function Header() {
   return (
@@ -211,8 +194,6 @@ export function Header() {
 `<UserButton />` fills its parent, so the parent controls size and shape. To open the native profile modal from any other UI, use the `useUserProfileModal()` hook:
 
 ```tsx
-import { useUserProfileModal } from '@clerk/expo';
-import { Pressable, Text } from 'react-native';
 
 export function ProfileLink() {
   const { presentUserProfile, isAvailable } = useUserProfileModal();
@@ -274,9 +255,6 @@ This approach requires a development build because the components are backed by 
 Use the `useSignInWithGoogle()` and `useSignInWithApple()` hooks alongside your own React Native UI:
 
 ```tsx
-import { useSignInWithGoogle } from '@clerk/expo/google';
-import { useRouter } from 'expo-router';
-import { Platform, Text, TouchableOpacity } from 'react-native';
 
 export function GoogleSignInButton() {
   const { startGoogleAuthenticationFlow } = useSignInWithGoogle();
@@ -317,10 +295,6 @@ This approach requires a development build because it uses native modules. `useS
 Build a custom sign-in form using the Core 3 hooks. This works in Expo Go.
 
 ```tsx
-import { useSignIn } from '@clerk/expo';
-import { useRouter, type Href } from 'expo-router';
-import { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function SignInScreen() {
   const { signIn, fetchStatus, errors } = useSignIn();
@@ -399,9 +373,6 @@ Clerk's bot sign-up protection is enabled by default, so include `<View nativeID
 Anywhere in your app, use `useUser()` and `useAuth()` to read user data, plus `<Show>` and `useClerk()` to protect content and sign out:
 
 ```tsx
-import { Show, useClerk, useUser } from '@clerk/expo';
-import { Link } from 'expo-router';
-import { Pressable, Text, View } from 'react-native';
 
 export default function HomeScreen() {
   const { user } = useUser();

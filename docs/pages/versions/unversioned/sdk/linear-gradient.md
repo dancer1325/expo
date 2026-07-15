@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-linear-gradient.png'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-linear-gradient` provides a native React view that transitions between multiple colors in a linear direction.
 
@@ -24,8 +21,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Linear Gradient' dependencies={['expo-linear-gradient']}>
 
 ```tsx
-import { StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function App() {
   return (
@@ -77,7 +72,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import { LinearGradient } from 'expo-linear-gradient';
 ```
 
 <APISection packageName="expo-linear-gradient" />

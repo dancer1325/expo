@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 `useNativeState` returns an [`ObservableState`](#observablestate) that maps to a Compose [`MutableState`](https://developer.android.com/reference/kotlin/androidx/compose/runtime/MutableState) on the native side, so reads and writes to `.value` are tracked directly by Compose without going through the React render cycle. This lets you update the native view synchronously from a worklet on the UI thread.
 
@@ -24,9 +22,6 @@ import { APIInstallSection } from '~/components/plugins/InstallSection';
 The example below masks a phone number as the user types. The formatting and the writes to `maskedPhone.value` (text) and `selection.value` (cursor position) all happen synchronously on the UI thread, so there is no flicker between the typed value and the masked value.
 
 ```tsx WorkletPhoneMaskExample.tsx
-import { Host, TextField, Text as ComposeText, useNativeState } from '@expo/ui/jetpack-compose';
-import { fillMaxWidth } from '@expo/ui/jetpack-compose/modifiers';
-import { useCallback } from 'react';
 
 export default function WorkletPhoneMaskExample() {
   const maskedPhone = useNativeState('');
@@ -75,7 +70,6 @@ export default function WorkletPhoneMaskExample() {
 ## API
 
 ```tsx
-import { useNativeState } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/usenativestate" apiName="useNativeState" />

@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Popover matches the official SwiftUI [Popover API](<https://developer.apple.com/documentation/swiftui/view/popover(ispresented:attachmentanchor:arrowedge:content:)>) and provides a way to present content in a floating overlay anchored to a trigger element.
 
@@ -29,9 +26,6 @@ Expo UI Popover matches the official SwiftUI [Popover API](<https://developer.ap
 ### Basic popover
 
 ```tsx BasicPopoverExample.tsx
-import { useState } from 'react';
-import { Host, Button, Popover, Text, VStack } from '@expo/ui/swift-ui';
-import { padding } from '@expo/ui/swift-ui/modifiers';
 
 export default function BasicPopoverExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -60,9 +54,6 @@ export default function BasicPopoverExample() {
 The `attachmentAnchor` prop controls where the popover attaches to the trigger element. Available options are: `center`, `leading`, `trailing`, `top`, and `bottom`.
 
 ```tsx AttachmentAnchorExample.tsx
-import { useState } from 'react';
-import { Host, Button, Popover, Text, VStack } from '@expo/ui/swift-ui';
-import { padding } from '@expo/ui/swift-ui/modifiers';
 
 export default function AttachmentAnchorExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -92,9 +83,6 @@ export default function AttachmentAnchorExample() {
 The `arrowEdge` prop controls which edge of the popover displays the arrow. Available options are: `none`, `leading`, `trailing`, `top`, and `bottom`.
 
 ```tsx ArrowEdgeExample.tsx
-import { useState } from 'react';
-import { Host, Button, Popover, Text, VStack } from '@expo/ui/swift-ui';
-import { padding } from '@expo/ui/swift-ui/modifiers';
 
 export default function ArrowEdgeExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -124,9 +112,6 @@ export default function ArrowEdgeExample() {
 You can use `RNHostView` to embed React Native components inside the popover content.
 
 ```tsx RNContentPopoverExample.tsx
-import { useState } from 'react';
-import { Pressable, Text as RNText, View } from 'react-native';
-import { Host, Button, Popover, RNHostView } from '@expo/ui/swift-ui';
 
 export default function RNContentPopoverExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -167,7 +152,6 @@ export default function RNContentPopoverExample() {
 ## API
 
 ```tsx
-import { Popover } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/popover" apiName="Popover" />

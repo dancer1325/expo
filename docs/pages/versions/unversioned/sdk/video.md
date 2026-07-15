@@ -8,13 +8,6 @@ platforms: ['android', 'ios', 'web', 'tvos', 'expo-go']
 searchRank: 10
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ConfigPluginExample, ConfigPluginProperties } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
-import { PlatformTags } from '~/ui/components/Tag/PlatformTags';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { CODE } from '~/ui/components/Text';
 
 `expo-video` is a cross-platform, performant video component for React Native and Expo with Web support.
 
@@ -72,9 +65,6 @@ Here's a simple example of a video with a play and pause button.
 <SnackInline label='Video' dependencies={['expo-video']}>
 
 ```jsx
-import { useEvent } from 'expo';
-import { useVideoPlayer, VideoView } from 'expo-video';
-import { StyleSheet, View, Button } from 'react-native';
 
 const videoSource =
   'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
@@ -141,7 +131,6 @@ The event system is based on the [`EventEmitter`](../sdk/expo/#eventemitter) cla
 Creates a listener that will return a stateful value that can be used in a component. It also cleans up automatically when the component unmounts.
 
 ```tsx useEvent
-import { useEvent } from 'expo';
 // ... Other imports, definition of the component, creating the player etc.
 
 const { status, error } = useEvent(player, 'statusChange', { status: player.status });
@@ -153,7 +142,6 @@ const { status, error } = useEvent(player, 'statusChange', { status: player.stat
 Built around the `Player.addListener` and `Player.removeListener` methods, creates an event listener with automatic cleanup.
 
 ```tsx useEventListener
-import { useEventListener } from 'expo';
 // ...Other imports, definition of the component, creating the player etc.
 
 useEventListener(player, 'statusChange', ({ status, error }) => {
@@ -190,7 +178,6 @@ useEffect(() => {
 `expo-video` supports playing local media loaded using the `require` function. You can use the result as a source directly, or assign it to the `assetId` parameter of a [`VideoSource`](#videosource) if you also want to configure other properties.
 
 ```tsx Playing local media
-import { VideoSource } from 'expo-video';
 
 const assetId = require('./assets/bigbuckbunny.mp4');
 
@@ -216,8 +203,6 @@ Before playing, make sure to request the necessary permissions using [`MediaLibr
 On iOS make sure **not** to use the `localUri` property of the asset info, as it does not contain the necessary permissions to read the asset.
 
 ```tsx Playing media from media library
-import * as MediaLibrary from 'expo-media-library/legacy';
-import { VideoSource, useVideoPlayer, VideoView } from 'expo-video';
 
 // ...Definition of the component, creating the player etc.
 
@@ -262,9 +247,6 @@ Here is an example of how to preload a video:
 <SnackInline label='Preloading videos' dependencies={['expo-video']}>
 
 ```tsx
-import { useVideoPlayer, VideoView, VideoSource } from 'expo-video';
-import { useState, useCallback } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const bigBuckBunnySource: VideoSource =
   'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
@@ -344,7 +326,6 @@ In most cases, the [`useVideoPlayer`](#usevideoplayersource-setup) hook should b
 In those cases, the `VideoPlayer` can be created using the [`createVideoPlayer`](#videocreatevideoplayersource) function. You need be aware of the risks that come with this approach, as it is your responsibility to call the [`release()`](../sdk/expo/#release) method when the player is no longer needed. If not handled properly, this approach may lead to memory leaks.
 
 ```tsx Creating player instance
-import { createVideoPlayer } from 'expo-video';
 const player = createVideoPlayer(videoSource);
 ```
 
@@ -423,7 +404,6 @@ If you want to reuse the provider across multiple apps, use the [standalone Expo
 1. Define the provider and load plan. After creating the module, add a class that conforms to `VideoAssetTransportProvider`. In `makeLoadPlan(for:)`, inspect the `VideoAssetSourceDescriptor` and return `nil` for sources you do not want to handle.
 
 ```swift
-import ExpoVideo
 
 final class ExampleVideoTransportProvider: VideoAssetTransportProvider {
   static let providerIdentifier = "com.example.video-transport"
@@ -449,8 +429,6 @@ final class ExampleVideoTransportProvider: VideoAssetTransportProvider {
 2. To register the provider, the recommended place to register a provider is an Expo module's `OnCreate` block. This ensures the provider is available before videos start loading.
 
 ```swift
-import ExpoModulesCore
-import ExpoVideo
 
 public final class CustomVideoTransportModule: Module {
   public func definition() -> ModuleDefinition {
@@ -481,7 +459,6 @@ You can use the following complete examples for a better grasp of how to use thi
 ## API
 
 ```js
-import { VideoView, useVideoPlayer } from 'expo-video';
 ```
 
 <APISection packageName="expo-video" apiName="Video" />

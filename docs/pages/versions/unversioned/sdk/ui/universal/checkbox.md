@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A controlled checkbox. Pair [`value`](#value) with [`onValueChange`](#onvaluechange) to manage state from React.
 
@@ -20,8 +18,6 @@ A controlled checkbox. Pair [`value`](#value) with [`onValueChange`](#onvaluecha
 ### Basic checkbox
 
 ```tsx CheckboxExample.tsx
-import { useState } from 'react';
-import { Host, Checkbox } from '@expo/ui';
 
 export default function CheckboxExample() {
   const [accepted, setAccepted] = useState(false);
@@ -37,7 +33,6 @@ export default function CheckboxExample() {
 ### Disabled
 
 ```tsx DisabledCheckboxExample.tsx
-import { Host, Checkbox } from '@expo/ui';
 
 export default function DisabledCheckboxExample() {
   return (
@@ -51,7 +46,6 @@ export default function DisabledCheckboxExample() {
 ## API
 
 ```tsx
-import { Checkbox } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/checkbox" apiName="Checkbox" />

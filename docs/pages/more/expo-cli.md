@@ -491,7 +491,6 @@ This will export the website with all resources prefixed with `/my-root`. For ex
 Expo Router has built-in support for `baseUrl`. When using the `Link` and `router` APIs, the `baseUrl` will be automatically prepended to the URL.
 
 ```jsx app/blog/index.tsx
-import { Link } from 'expo-router';
 
 export default function Blog() {
   return <Link href="/blog/123">Go to blog post</Link>;
@@ -511,7 +510,6 @@ The `baseUrl` functionality is production-only and must be set before exporting 
 Images and other assets will work automatically if you `require` or `import` them. If you directly reference a resource URL then you will need to append the **baseUrl** manually.
 
 ```jsx app/index.tsx
-import { Image } from 'expo-image';
 
 export default function Blog() {
   return <Image source={require('@/assets/image.png')} />;

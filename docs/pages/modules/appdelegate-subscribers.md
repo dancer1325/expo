@@ -42,7 +42,6 @@ In this scenario, `ExpoAppDelegate` passes a new completion block to each subscr
 ## Example
 
 ```swift AppLifecycleDelegate.swift
-import ExpoModulesCore
 
 public class AppLifecycleDelegate: ExpoAppDelegateSubscriber {
   public func applicationDidBecomeActive(_ application: UIApplication) {

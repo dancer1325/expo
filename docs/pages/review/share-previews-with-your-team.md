@@ -3,11 +3,7 @@ title: Share previews with your team
 description: Share previews of your app with your team by publishing updates on branches.
 ---
 
-import { LayersTwo02Icon } from '@expo/styleguide-icons/outline/LayersTwo02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 Once you've made changes on a branch, you can share them with your team by publishing an update. This allows you to get feedback on your changes during review.
 

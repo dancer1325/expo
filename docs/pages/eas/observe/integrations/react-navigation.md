@@ -4,9 +4,6 @@ sidebar_title: React Navigation
 description: Track per-screen render and interactive timings by enabling the React Navigation integration for EAS Observe.
 ---
 
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 EAS Observe ships an opt-in integration for [React Navigation](https://reactnavigation.org/) that collects per-screen metrics tagged with the screen's route-name path (for example, `/Tabs/Sessions`). This lets you compare navigation performance by screen in the dashboard instead of looking only at app-wide aggregates.
 
@@ -38,7 +35,6 @@ If your app uses [Expo Router](/router/introduction/), use the [Expo Router inte
 Call `Observe.configure()` with the `react-navigation` integration flag at module scope, before any screen mounts:
 
 ```tsx App.tsx
-import { Observe } from 'expo-observe';
 
 Observe.configure({
   integrations: { 'react-navigation': true },
@@ -60,8 +56,6 @@ How you connect the integration depends on whether your app uses React Navigatio
 For [dynamic configuration](https://reactnavigation.org/docs/hello-react-navigation/), replace your top-level `<NavigationContainer>` with `<ObserveNavigationContainer>`. It wraps the stock container, accepts the same props, and forwards the same ref. It also subscribes to navigation state changes so it can record per-screen render timings.
 
 ```tsx App.tsx
-import { Observe } from 'expo-observe';
-import { ObserveNavigationContainer } from 'expo-observe/integrations/react-navigation';
 
 Observe.configure({
   integrations: { 'react-navigation': true },
@@ -79,11 +73,7 @@ export default function App() {
 With [static configuration](https://reactnavigation.org/docs/static-configuration/), there is no `NavigationContainer` to replace. `createStaticNavigation()` renders one for you. Instead, create the navigation ref yourself, pass it to the returned `<Navigation>` element, and wrap the element in `<ObserveNavigationProvider>` with the same ref. The provider listens to navigation events through the ref and records the same per-screen render timings.
 
 ```tsx App.tsx
-import { createStaticNavigation, useNavigationContainerRef } from '@react-navigation/native';
-import { Observe } from 'expo-observe';
-import { ObserveNavigationProvider } from 'expo-observe/integrations/react-navigation';
 
-import { RootStack } from './navigation';
 
 Observe.configure({
   integrations: { 'react-navigation': true },
@@ -117,8 +107,6 @@ export default function App() {
 Use the `useObserve()` hook to get a `markInteractive` that is automatically scoped to the current screen. The emitted event is tagged with the screen's path.
 
 ```tsx screens/Home.tsx
-import { useObserve } from 'expo-observe';
-import { useEffect } from 'react';
 
 export default function Home() {
   const { markInteractive } = useObserve();

@@ -6,15 +6,10 @@ packageName: 'expo-tracking-transparency'
 platforms: ['android', 'ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { IOSPermissions } from '~/components/plugins/permissions';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 A library for tracking app users and managing tracking permissions. Provides access to advertising identifiers and manages the required permissions for tracking. Examples of data used for tracking include email address, device ID, advertising ID, and more. If the "Allow Apps to Request to Track" device-level setting is off, this permission will be denied. Be sure to add `NSUserTrackingUsageDescription` to your [**Info.plist**](../config/app/#infoplist) to explain how the user will be tracked. Otherwise, your app will be rejected by Apple.
 
@@ -84,9 +79,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 <SnackInline label='Basic tracking transparency usage' dependencies={['expo-tracking-transparency']}>
 
 ```jsx
-import { useEffect } from 'react';
-import { Text, StyleSheet, View } from 'react-native';
-import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 
 export default function App() {
   useEffect(() => {
@@ -119,7 +111,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```ts
-import * as ExpoTrackingTransparency from 'expo-tracking-transparency';
 ```
 
 <APISection packageName="expo-tracking-transparency" />

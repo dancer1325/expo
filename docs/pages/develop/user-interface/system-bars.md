@@ -3,10 +3,7 @@ title: System bars
 description: Learn how to handle and customize system bars for safe areas and edge-to-edge layout in your Expo project.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 System bars are the UI elements at the edges of the screen that provide essential device information and navigation controls. Depending on the mobile OS, they include the status bar ([Android](https://developer.android.com/design/ui/mobile/guides/foundations/system-bars) and [iOS](https://developer.apple.com/design/human-interface-guidelines/status-bars)), caption bar ([Android](https://medium.com/androiddevelopers/insets-handling-tips-for-android-15s-edge-to-edge-enforcement-872774e8839b#:~:text=or%20SHORT_EDGES.-,Caption%20bars,-When%20your%20app) only), navigation bar ([Android](https://developer.android.com/design/ui/mobile/guides/foundations/system-bars#navigation-bar) and [iOS](https://developer.apple.com/design/human-interface-guidelines/navigation-bars)), and home indicator (iOS only).
 
@@ -48,7 +45,6 @@ System bars can be customized to match your app's design and provide better visi
 The status bar appears at the top of the screen on both Android and iOS. You can customize it using [`expo-status-bar`](/versions/latest/sdk/status-bar). It provides a `StatusBar` component that you can use to control the appearance of the status bar while your app is running using the [`style`](/versions/latest/sdk/status-bar/#style) property or the [`setStatusBarStyle`](/versions/latest/sdk/status-bar/#statusbarsetstatusbarstylestyle-animated) method:
 
 ```tsx src/app/_layout.tsx
-import { StatusBar } from 'expo-status-bar';
 
 export default function RootLayout() {
   return (
@@ -69,7 +65,6 @@ To control the `StatusBar` visibility, you can set the [`hidden`](/versions/late
 On Android devices, the Navigation Bar appears at the bottom of the screen. You can customize it using the [`expo-navigation-bar`](/versions/latest/sdk/navigation-bar) library. It provides a `NavigationBar` component that you can use to set the style of the navigation bar using the [`setStyle`](/versions/latest/sdk/navigation-bar/#navigationbarsetstylestyle) method:
 
 ```tsx src/app/_layout.tsx
-import { NavigationBar } from 'expo-navigation-bar';
 
 export default function RootLayout() {
   return (

@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 SwiftUI view modifiers that allow you to customize the appearance and behavior of UI components.
 
@@ -20,8 +18,6 @@ SwiftUI view modifiers that allow you to customize the appearance and behavior o
 Modifiers are applied to components using the `modifiers` prop with an array syntax. You can combine multiple modifiers to create complex styling and behavior.
 
 ```tsx
-import { Text, Host, VStack } from '@expo/ui/swift-ui';
-import {
   background,
   cornerRadius,
   padding,
@@ -83,7 +79,6 @@ function ModifiersExample() {
 
 {/* prettier-ignore */}
 ```tsx
-import { background, cornerRadius, padding, shadow, foregroundColor, onTapGesture } from '@expo/ui/swift-ui/modifiers';
 ```
 
 <APISection packageName="expo-ui/swift-ui/modifiers" />

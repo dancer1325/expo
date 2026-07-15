@@ -4,8 +4,6 @@ sidebar_title: Events
 description: Log named events from your app to track custom signals visible in the EAS Observe dashboard.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 User-defined events let you record arbitrary, named events from your app. Use them to track any signal specific to your app that the built-in performance metrics do not cover.
 
@@ -16,7 +14,6 @@ Events are persisted on-device, batched, and dispatched on the next flush as Ope
 Call `Observe.logEvent` from anywhere in your app:
 
 ```tsx
-import { Observe } from 'expo-observe';
 
 function handleOnboardingComplete() {
   Observe.logEvent('onboarding.completed');

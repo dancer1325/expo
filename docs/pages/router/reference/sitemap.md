@@ -4,8 +4,6 @@ description: Learn how to use the sitemap to debug your app with Expo Router.
 hideTOC: true
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 On native, you can use the [`uri-scheme`](https://www.npmjs.com/package/uri-scheme) CLI to test opening native links on a device.
 

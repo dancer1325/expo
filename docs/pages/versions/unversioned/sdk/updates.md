@@ -9,13 +9,7 @@ searchRank: 100
 searchPosition: 1
 ---
 
-import { GithubIcon } from '@expo/styleguide-icons/custom/GithubIcon';
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { YesIcon, NoIcon } from '~/ui/components/DocIcons';
 
 `expo-updates` is a library that enables your app to manage remote updates to your application code. It communicates with the configured remote update service to get information about available updates.
 
@@ -270,7 +264,6 @@ Most of the methods and constants in this library can be used or tested only in 
 ## API
 
 ```js
-import * as Updates from 'expo-updates';
 ```
 
 <APISection packageName="expo-updates" apiName="Updates" />

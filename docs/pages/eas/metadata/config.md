@@ -4,7 +4,6 @@ sidebar_title: store.config.json
 description: Learn about different ways to configure EAS Metadata.
 ---
 
-import { CodeBlocksTable } from '~/components/plugins/CodeBlocksTable';
 
 > **important** **EAS Metadata** is in [beta](/more/release-statuses/#beta) and subject to breaking changes.
 

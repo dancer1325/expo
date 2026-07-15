@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A component that enables proper layout behavior when React Native views are rendered inside Jetpack Compose components. It syncs layout information from Jetpack Compose back to React Native's Yoga layout system by updating the shadow node size.
 
@@ -27,10 +25,6 @@ When React Native views are placed inside Jetpack Compose components like [`Moda
 Use `matchContents` when you want the Jetpack Compose parent to size itself based on the React Native content.
 
 ```tsx RNHostView with matchContents
-import { useState } from 'react';
-import { Pressable, Text as RNText, View } from 'react-native';
-import { Host, Card, Column, Row, RNHostView, Text } from '@expo/ui/jetpack-compose';
-import { fillMaxWidth, padding } from '@expo/ui/jetpack-compose/modifiers';
 
 function Example() {
   const [counter, setCounter] = useState(0);
@@ -83,9 +77,6 @@ function Example() {
 When using `flex: 1` in your React Native content, omit the `matchContents` prop so the content fills the available Jetpack Compose space.
 
 ```tsx RNHostView with flex content
-import { Text as RNText, View } from 'react-native';
-import { Host, Card, Column, Row, RNHostView, Text } from '@expo/ui/jetpack-compose';
-import { fillMaxWidth, padding, size } from '@expo/ui/jetpack-compose/modifiers';
 
 function Example() {
   return (
@@ -116,11 +107,6 @@ function Example() {
 `RNHostView` works well inside [`ModalBottomSheet`](/versions/latest/sdk/ui/jetpack-compose/bottomsheet) to display interactive React Native content.
 
 ```tsx RNHostView in ModalBottomSheet
-import { useRef, useState } from 'react';
-import { Pressable, Text as RNText, View } from 'react-native';
-import { Host, ModalBottomSheet, Button, Column, RNHostView, Text } from '@expo/ui/jetpack-compose';
-import type { ModalBottomSheetRef } from '@expo/ui/jetpack-compose';
-import { padding } from '@expo/ui/jetpack-compose/modifiers';
 
 function Example() {
   const [visible, setVisible] = useState(false);
@@ -170,11 +156,6 @@ function Example() {
 Use `RNHostView` without `matchContents` to let the React Native view fill the remaining space inside the sheet. Combine with a `height` modifier on the parent `Column` to control the sheet size.
 
 ```tsx RNHostView flex in ModalBottomSheet
-import { useRef, useState } from 'react';
-import { Text as RNText, View } from 'react-native';
-import { Host, ModalBottomSheet, Button, Column, RNHostView, Text } from '@expo/ui/jetpack-compose';
-import type { ModalBottomSheetRef } from '@expo/ui/jetpack-compose';
-import { height, padding } from '@expo/ui/jetpack-compose/modifiers';
 
 function Example() {
   const [visible, setVisible] = useState(false);
@@ -215,7 +196,6 @@ function Example() {
 ## API
 
 ```tsx
-import { RNHostView } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/rnhostview" apiName="RNHostView" />

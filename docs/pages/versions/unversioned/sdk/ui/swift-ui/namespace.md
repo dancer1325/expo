@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A Namespace component that allows you to create SwiftUI [Namespaces](https://developer.apple.com/documentation/swiftui/namespace) for coordinating animations and matched geometry effects between views.
 
@@ -20,7 +18,6 @@ A Namespace component that allows you to create SwiftUI [Namespaces](https://dev
 Namespaces are used to coordinate animations and matched geometry effects between views. They provide a unique identifier that can be shared across components to create smooth transitions.
 
 ```tsx
-import {
   Host,
   HStack,
   GlassEffectContainer,
@@ -30,7 +27,6 @@ import {
   Button,
   Text,
 } from '@expo/ui/swift-ui';
-import {
   padding,
   glassEffect,
   animation,
@@ -41,7 +37,6 @@ import {
   frame,
   foregroundStyle,
 } from '@expo/ui/swift-ui/modifiers';
-import { useId, useState } from 'react';
 
 function MatchedGeometryExample() {
   const [isGlassExpanded, setIsGlassExpanded] = useState(false);
@@ -193,7 +188,6 @@ function MatchedGeometryExample() {
 ## API
 
 ```tsx
-import { Namespace } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/namespace" apiName="Namespace" />

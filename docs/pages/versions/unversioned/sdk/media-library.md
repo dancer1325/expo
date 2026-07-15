@@ -7,10 +7,6 @@ iconUrl: '/static/images/packages/expo-media-library.png'
 platforms: ['android', 'ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-media-library` provides access to the user's media library, allowing apps to read existing images and videos, as well as save new ones.
 
@@ -26,11 +22,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label="Add a new asset from the web" dependencies={['expo-file-system', 'expo-image', 'expo-media-library']}>
 
 ```tsx
-import { View, Text } from 'react-native';
-import { Image } from 'expo-image';
-import { useEffect, useState } from 'react';
-import { File, Paths } from 'expo-file-system';
-import { Asset, requestPermissionsAsync } from 'expo-media-library';
 
 export default function SaveToMediaLibraryExample() {
   const [asset, setAsset] = useState<Asset | null>(null);
@@ -81,9 +72,6 @@ export default function SaveToMediaLibraryExample() {
 <SnackInline label="Retrieve asset properties" dependencies={["expo-media-library"]}>
 
 ```tsx
-import { View, Text } from 'react-native';
-import { useEffect, useState } from 'react';
-import { AssetField, MediaType, Query, requestPermissionsAsync } from 'expo-media-library';
 
 export default function RetrievingAssetPropertiesExample() {
   const [assetInfo, setAssetInfo] = useState<{
@@ -167,9 +155,6 @@ export default function RetrievingAssetPropertiesExample() {
 <SnackInline label="Create a new album" dependencies={["expo-media-library"]}>
 
 ```tsx
-import { View, Text, FlatList, Image, Button } from 'react-native';
-import { useState } from 'react';
-import {
   Asset,
   AssetField,
   MediaType,

@@ -88,8 +88,6 @@ Here, we'll define a global style for the class name `.container`:
 We can then use the class name in our component by importing the stylesheet and using `.container`:
 
 ```jsx App.js|collapseHeight=470
-import './styles.css';
-import { View } from 'react-native';
 
 export default function App() {
   return (
@@ -116,7 +114,6 @@ You can also import stylesheets that are vendored in libraries, just like you wo
 
 ```js index.js
 // Applies the styles app-wide.
-import 'emoji-mart/css/emoji-mart.css';
 ```
 
 - On native, all global stylesheets are automatically ignored.
@@ -150,7 +147,6 @@ Flipping the extension, for example, `App.ios.module.css` will not work and resu
 * Instead, you must use the `style` prop.
 
 ```jsx App.js|collapseHeight=470
-import styles, { unstable_styles } from './App.module.css';
 
 export default function Page() {
   return (
@@ -480,7 +476,6 @@ export function add(a, b) {
 ```
 
 ```js index.js
-import '@expo/metro-runtime';
 
 // This will be split into a separate chunk.
 import('./math').then(math => {
@@ -629,9 +624,7 @@ On native platforms, an asset will be a numeric ID: `1`, `2`, `3`, and so on, wh
 The assets can be used as follows:
 
 ```jsx
-import { Image } from 'react-native';
 
-import asset from './img.png';
 
 function Demo() {
   return <Image source={asset} />;
@@ -641,7 +634,6 @@ function Demo() {
 In API routes, you can always assume the type of the asset will not be a number:
 
 ```js
-import asset from './img.png';
 
 export async function GET(req: Request) {
   const ImageData = await fetch(

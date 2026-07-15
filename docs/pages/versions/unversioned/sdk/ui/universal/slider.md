@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A controlled slider for selecting a numeric value within a range. Pair [`value`](#value) with [`onValueChange`](#onvaluechange) to manage state from React.
 
@@ -22,8 +20,6 @@ A controlled slider for selecting a numeric value within a range. Pair [`value`]
 The default range is `[0, 1]`.
 
 ```tsx ContinuousSliderExample.tsx
-import { useState } from 'react';
-import { Host, Slider } from '@expo/ui';
 
 export default function ContinuousSliderExample() {
   const [value, setValue] = useState(0.5);
@@ -41,8 +37,6 @@ export default function ContinuousSliderExample() {
 Use `min`, `max`, and `step` to constrain the values produced by the slider.
 
 ```tsx SteppedSliderExample.tsx
-import { useState } from 'react';
-import { Host, Column, Slider, Text } from '@expo/ui';
 
 export default function SteppedSliderExample() {
   const [volume, setVolume] = useState(50);
@@ -61,7 +55,6 @@ export default function SteppedSliderExample() {
 ## API
 
 ```tsx
-import { Slider } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/slider" apiName="Slider" />

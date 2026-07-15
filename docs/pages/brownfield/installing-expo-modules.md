@@ -4,8 +4,6 @@ sidebar_title: Install Expo modules
 description: Learn how to prepare your existing native project to install and use Expo modules and the module API.
 ---
 
-import { DiffBlock, Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 > **info** If your project is a **greenfield React Native app** &mdash; primarily built with React Native from the start, then see [Install Expo modules in an existing React Native project](/bare/installing-expo-modules/) instead of this guide.
 

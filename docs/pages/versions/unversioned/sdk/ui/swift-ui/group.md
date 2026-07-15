@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 Expo UI Group matches the official SwiftUI [Group API](https://developer.apple.com/documentation/swiftui/group) and groups views together without introducing additional layout structure.
 
@@ -22,8 +20,6 @@ Expo UI Group matches the official SwiftUI [Group API](https://developer.apple.c
 Groups are useful for applying modifiers to multiple views at once or organizing views without affecting layout.
 
 ```tsx BasicGroupExample.tsx
-import { Host, Group, Text } from '@expo/ui/swift-ui';
-import { foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function BasicGroupExample() {
   return (
@@ -41,7 +37,6 @@ export default function BasicGroupExample() {
 ## API
 
 ```tsx
-import { Group } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/group" apiName="Group" />

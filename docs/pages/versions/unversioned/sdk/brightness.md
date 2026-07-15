@@ -7,11 +7,6 @@ iconUrl: '/static/images/packages/expo-brightness.png'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions } from '~/components/plugins/permissions';
-import { ConfigReactNative } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 An API to get and set screen brightness.
 
@@ -38,9 +33,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 <SnackInline label='Basic Brightness Usage' dependencies={['expo-brightness']}>
 
 ```jsx
-import { useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import * as Brightness from 'expo-brightness';
 
 export default function App() {
   useEffect(() => {
@@ -74,7 +66,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as Brightness from 'expo-brightness';
 ```
 
 <APISection packageName="expo-brightness" apiName="Brightness" />

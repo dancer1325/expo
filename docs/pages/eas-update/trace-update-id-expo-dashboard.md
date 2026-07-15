@@ -14,8 +14,6 @@ To avoid this issue, you can use the `Updates.isEmbeddedLaunch` property to dete
 Here's an example of how you can display whether the update is embedded or downloaded:
 
 ```tsx update-status.tsx
-import * as Updates from 'expo-updates';
-import { Text } from 'react-native';
 
 export default function UpdateStatus() {
   return (

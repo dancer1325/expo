@@ -3,8 +3,6 @@ title: Handle incoming notifications
 description: Learn how to respond to a notification received by your app and take action based on the event.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { CODE } from '~/ui/components/Text';
 
 The [`expo-notifications`](/versions/latest/sdk/notifications) library contains event listeners that handle how your app responds when receiving a notification.
 

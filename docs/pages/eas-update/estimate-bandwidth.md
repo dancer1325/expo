@@ -3,7 +3,6 @@ title: Estimate bandwidth usage
 description: Learn how to estimate bandwidth usage for EAS Update.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 ## Understanding update bandwidth usage
 

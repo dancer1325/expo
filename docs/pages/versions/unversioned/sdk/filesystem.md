@@ -7,15 +7,10 @@ iconUrl: '/static/images/packages/expo-file-system.png'
 platforms: ['android', 'ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { Collapsible } from '~/ui/components/Collapsible';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { CODE } from '~/ui/components/Text';
 
 `expo-file-system` provides access to files and directories stored on a device or bundled as assets into the native project. It also allows downloading files from the network.
 
@@ -82,7 +77,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 ## Usage
 
 ```js
-import { File, Directory, Paths } from 'expo-file-system';
 ```
 
 The `File` and `Directory` instances hold a reference to a file, content, or asset URI.
@@ -103,7 +97,6 @@ The file or directory does not need to exist — an error will be thrown from th
 <Collapsible summary="Writing and reading text files">
 
 ```ts example.ts
-import { File, Paths } from 'expo-file-system';
 
 try {
   const file = new File(Paths.cache, 'example.txt');
@@ -122,8 +115,6 @@ try {
 Usage with `expo-document-picker`:
 
 ```ts example.ts
-import { File } from 'expo-file-system';
-import * as DocumentPicker from 'expo-document-picker';
 
 try {
   const result = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: true });
@@ -140,7 +131,6 @@ try {
 Using the built-in `pickFileAsync` or `pickDirectoryAsync` method on Android:
 
 ```ts example.ts
-import { File } from 'expo-file-system';
 
 try {
   const file = new File.pickFileAsync();
@@ -157,7 +147,6 @@ try {
 Using `downloadFileAsync`:
 
 ```ts example.ts
-import { Directory, File, Paths } from 'expo-file-system';
 
 const url = 'https://pdfobject.com/pdf/sample.pdf';
 const destination = new Directory(Paths.cache, 'pdfs');
@@ -174,8 +163,6 @@ try {
 Or using `expo/fetch`:
 
 ```ts example.ts
-import { fetch } from 'expo/fetch';
-import { File, Paths } from 'expo-file-system';
 
 const url = 'https://pdfobject.com/pdf/sample.pdf';
 const response = await fetch(url);
@@ -190,7 +177,6 @@ await src.write(await response.bytes());
 Use `File.preview()` to open a local file with the platform's file preview flow. File preview is currently supported on Android and iOS. On iOS, this presents Quick Look, which supports many common file types such as PDFs, images, text files, CSV files, and Office documents. On Android, this opens an `ACTION_VIEW` intent, so support depends on apps installed on the device that can handle the file's MIME type.
 
 ```ts example.ts
-import { File, Paths } from 'expo-file-system';
 
 const file = await File.downloadFileAsync(
   'https://pdfobject.com/pdf/sample.pdf',
@@ -211,8 +197,6 @@ The `mimeType` option defaults to the file's `type` property. If the file extens
 If a share sheet is useful in your app, you can compose this with [`expo-sharing`](./sharing/) when previewing fails:
 
 ```ts example.ts
-import { File, Paths } from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
 
 // This can be a file created, picked, or downloaded earlier.
 const file = new File(Paths.cache, 'report.pdf');
@@ -236,8 +220,6 @@ try {
 You can upload files as blobs directly with `fetch` built into the Expo package:
 
 ```ts example.ts
-import { fetch } from 'expo/fetch';
-import { File, Paths } from 'expo-file-system';
 
 const file = new File(Paths.cache, 'file.txt');
 await file.write('Hello, world!');
@@ -251,8 +233,6 @@ const response = await fetch('https://example.com', {
 Or using the `FormData` constructor:
 
 ```ts example.ts
-import { fetch } from 'expo/fetch';
-import { File, Paths } from 'expo-file-system';
 
 const file = new File(Paths.cache, 'file.txt');
 await file.write('Hello, world!');
@@ -269,7 +249,6 @@ const response = await fetch('https://example.com', {
 <Collapsible summary="Moving and copying files">
 
 ```ts example.ts
-import { Directory, File, Paths } from 'expo-file-system';
 try {
   const file = new File(Paths.document, 'example.txt');
   file.create();
@@ -293,7 +272,6 @@ try {
 Use [`FileHandle`](#filehandle) for efficient, random-access reads of large files without loading the entire file into memory. Obtain a handle by calling `file.open()`, read or write at any position using the `offset` property, and always close the handle when finished.
 
 ```ts example.ts
-import { File, Paths, FileMode } from 'expo-file-system';
 
 const file = new File(Paths.document, 'recording.wav');
 const handle = file.open(FileMode.ReadOnly);
@@ -324,8 +302,6 @@ handle.close();
 <Collapsible summary="Using legacy FileSystem API">
 
 ```ts example.ts
-import * as FileSystem from 'expo-file-system/legacy';
-import { File, Paths } from 'expo-file-system';
 
 try {
   const file = new File(Paths.cache, 'example.txt');
@@ -341,7 +317,6 @@ try {
 <Collapsible summary="Listing directory contents recursively">
 
 ```ts example.ts
-import { Directory, Paths } from 'expo-file-system';
 
 function printDirectory(directory: Directory, indent: number = 0) {
   console.log(`${' '.repeat(indent)} + ${directory.name}`);

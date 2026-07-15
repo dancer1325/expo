@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 Expo UI SwipeActions matches the official SwiftUI [swipeActions](<https://developer.apple.com/documentation/swiftui/view/swipeactions(edge:allowsfullswipe:content:)>) modifier and lets you attach leading or trailing actions to row content.
 
@@ -18,7 +16,6 @@ Expo UI SwipeActions matches the official SwiftUI [swipeActions](<https://develo
 ## Usage
 
 ```tsx SwipeActionsExample.tsx
-import { Button, Host, List, Section, SwipeActions, Text } from '@expo/ui/swift-ui';
 
 export default function SwipeActionsExample() {
   return (
@@ -46,7 +43,6 @@ export default function SwipeActionsExample() {
 ## API
 
 ```tsx
-import { SwipeActions } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/swipeactions" apiName="SwipeActions" />

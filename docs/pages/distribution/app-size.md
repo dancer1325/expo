@@ -3,10 +3,7 @@ title: Understanding app size
 description: Learn about how to determine what the actual size of your app will be when distributed to users, and how to get insights into your app size and optimize it.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
 
 A common concern for developers is how much space their app takes up on the app store. This guide will help you:
 

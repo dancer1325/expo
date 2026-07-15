@@ -4,10 +4,7 @@ sidebar_title: expo-media-library/legacy
 description: Migrate from the legacy expo-media-library API to the new class-based expo-media-library API with Asset, Album, and Query.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
 
 The new class-based `expo-media-library` API is now stable. The legacy API is available from `expo-media-library/legacy`. Migrate to the root `expo-media-library` import to benefit from the new API and future fixes.
 
@@ -24,7 +21,6 @@ Install the SDK-compatible package:
 Import from `expo-media-library`:
 
 ```ts
-import { Asset, Album, Query } from 'expo-media-library';
 ```
 
 ## Assets
@@ -113,9 +109,6 @@ await Asset.delete([asset1, asset2]);
 If you have a legacy `Asset` object in memory and need a new `Asset` instance, use `asset.uri` on iOS (it is already a `ph://` URI accepted by the new API) and `getAssetContentUriAsync` on Android to convert the numeric MediaStore ID to a `content://` URI.
 
 ```ts
-import { Asset } from 'expo-media-library';
-import * as LegacyMediaLibrary from 'expo-media-library/legacy';
-import { Platform } from 'react-native';
 
 async function toNewAsset(legacyAsset: LegacyMediaLibrary.Asset): Promise<Asset> {
   switch (Platform.OS) {

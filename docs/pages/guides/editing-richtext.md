@@ -3,7 +3,6 @@ title: Edit rich text
 description: Learn about current approaches to preview and edit rich text in React Native.
 ---
 
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 A lot of applications need to allow users to type in text. For example, if you want to build a messaging or social media app, you will probably rely heavily on text inputs. React Native has a built-in `<TextInput>` component to implement this without much effort for many simple cases.
 

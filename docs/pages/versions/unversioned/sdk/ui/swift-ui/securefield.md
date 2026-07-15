@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI SecureField matches the official SwiftUI [SecureField API](https://developer.apple.com/documentation/swiftui/securefield) and provides a text field that masks user input for passwords and other sensitive text.
 
@@ -29,8 +26,6 @@ Expo UI SecureField matches the official SwiftUI [SecureField API](https://devel
 ### Basic secure field
 
 ```tsx BasicSecureFieldExample.tsx
-import { useState } from 'react';
-import { Host, SecureField } from '@expo/ui/swift-ui';
 
 export default function BasicSecureFieldExample() {
   const [password, setPassword] = useState('');
@@ -48,9 +43,6 @@ export default function BasicSecureFieldExample() {
 Use the [`submitLabel`](modifiers/#submitlabelsubmitlabel) and [`onSubmit`](modifiers/#onsubmithandler) modifiers to handle form submission from the keyboard.
 
 ```tsx SecureFieldSubmitExample.tsx
-import { useState } from 'react';
-import { Host, SecureField } from '@expo/ui/swift-ui';
-import { submitLabel, onSubmit } from '@expo/ui/swift-ui/modifiers';
 
 export default function SecureFieldSubmitExample() {
   const [password, setPassword] = useState('');
@@ -72,9 +64,6 @@ export default function SecureFieldSubmitExample() {
 Use a ref to imperatively set text, focus, or blur the secure field.
 
 ```tsx ImperativeSecureFieldExample.tsx
-import { useRef } from 'react';
-import { Host, SecureField, SecureFieldRef, Button, HStack, VStack } from '@expo/ui/swift-ui';
-import { buttonStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function ImperativeSecureFieldExample() {
   const ref = useRef<SecureFieldRef>(null);
@@ -109,7 +98,6 @@ export default function ImperativeSecureFieldExample() {
 ## API
 
 ```tsx
-import { SecureField } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/securefield" apiName="SecureField" />

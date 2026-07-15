@@ -158,7 +158,6 @@ You can verify that the installation was successful by logging a value from [`ex
 - Then, run `npx expo run` and modify your app JavaScript code to add the following:
 
 ```js
-import Constants from 'expo-constants';
 console.log(Constants.systemFonts);
 ```
 

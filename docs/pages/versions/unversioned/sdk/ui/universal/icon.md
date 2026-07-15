@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { Terminal } from '~/ui/components/Snippet';
 
 A platform-native icon. On Android, it renders a Material Symbol XML vector drawable (recommended source: [`@expo/material-symbols`](https://www.npmjs.com/package/@expo/material-symbols)). On iOS, it renders an [SF Symbol](https://developer.apple.com/sf-symbols/).
 
@@ -36,7 +33,6 @@ Optionally, install [`@expo/material-symbols`](https://www.npmjs.com/package/@ex
 [`Icon.select`](#selectspec) picks the right asset for the current platform. Pair it with [`@expo/ui/babel-plugin`](https://github.com/expo/expo/tree/main/packages/expo-ui/plugin) (auto-loaded by `babel-preset-expo`) so Metro can tree-shake the unused side per platform.
 
 ```tsx IconSelectExample.tsx
-import { Host, Icon } from '@expo/ui';
 
 export default function IconSelectExample() {
   return (
@@ -59,7 +55,6 @@ export default function IconSelectExample() {
 Hoist the [`Icon.select`](#selectspec) call when reusing the same icon across multiple call sites.
 
 ```tsx HoistedIconExample.tsx
-import { Host, Row, Icon } from '@expo/ui';
 
 const STAR = Icon.select({
   ios: 'star.fill',
@@ -84,8 +79,6 @@ export default function HoistedIconExample() {
 Inside an **.android.tsx** file, import the XML asset directly. Inside an **.ios.tsx** file, pass the SF Symbol name as a string.
 
 ```tsx Icon.android.tsx
-import StarIcon from '@expo/material-symbols/star.xml';
-import { Host, Icon } from '@expo/ui';
 
 export default function StarRow() {
   return (
@@ -97,7 +90,6 @@ export default function StarRow() {
 ```
 
 ```tsx Icon.ios.tsx
-import { Host, Icon } from '@expo/ui';
 
 export default function StarRow() {
   return (
@@ -111,7 +103,6 @@ export default function StarRow() {
 ## API
 
 ```tsx
-import { Icon } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/icon" apiName="Icon" />

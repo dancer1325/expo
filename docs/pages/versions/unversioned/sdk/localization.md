@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-localization.png'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ConfigPluginExample } from '~/ui/components/ConfigSection';
 
 `expo-localization` allows you to Localize your app, customizing the experience for specific regions, languages, or cultures. It also provides access to the locale data on the native device. Using a localization library such as [`lingui-js`](https://lingui.dev/introduction), [`react-i18next`](https://react.i18next.com/), [`react-intl`](https://formatjs.io/docs/getting-started/installation/), [`i18n-js`](https://github.com/fnando/i18n-js) or [`react-native-intlayer`](https://intlayer.org/doc/environment/react-native-and-expo) with `expo-localization` will enable you to create a very accessible experience for users.
 
@@ -40,7 +37,6 @@ Find more information about using `expo-localization` and adding support for rig
 ## API
 
 ```jsx
-import { getLocales, getCalendars } from 'expo-localization';
 ```
 
 ### Behavior

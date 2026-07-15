@@ -84,7 +84,6 @@ For example, the **example.png** is linked by the above config plugin
 * You can directly import it into your component and use its resource name.
 
 ```tsx app/index.tsx
-import { Image } from 'expo-image';
 /* @hide ..
 * */ /* @end */
 
@@ -120,7 +119,6 @@ Install the `expo-asset` library.
 Import the [`useAssets`](/versions/latest/sdk/asset/#useassetsmoduleids) hook from the `expo-asset` library in your screen component:
 
 ```tsx app/index.tsx
-import { useAssets } from 'expo-asset';
 
 export default function HomeScreen() {
   const [assets, error] = useAssets([
@@ -141,7 +139,6 @@ When an asset is served remotely, it is not bundled into the app binary at build
 * For example, pass the URL to the `<Image>` component to render a remote image:
 
 ```jsx App.js
-import { Image } from 'expo-image';
 /* @hide ..
 * */ /* @end */
 

@@ -4,8 +4,6 @@ sidebar_title: Expo Router
 description: Track per-route render and interactive timings by enabling the Expo Router integration for EAS Observe.
 ---
 
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Step } from '~/ui/components/Step';
 
 EAS Observe ships an opt-in integration for [Expo Router](/router/introduction/) that collects per-route metrics tagged with the route pattern (for example, `/(tabs)/sessions/[sessionId]`). This lets you compare navigation performance by route in the dashboard instead of looking only at app-wide aggregates.
 
@@ -35,7 +33,6 @@ EAS Observe ships an opt-in integration for [Expo Router](/router/introduction/)
 Call `Observe.configure()` with the `expo-router` integration flag at module scope, before any screen mounts:
 
 ```tsx src/app/_layout.tsx
-import { Observe } from 'expo-observe';
 
 Observe.configure({
   integrations: { 'expo-router': true },
@@ -51,8 +48,6 @@ Observe.configure({
 Use the `useObserve()` hook to get a `markInteractive` that is automatically scoped to the current route. The emitted event is tagged with the screen's route pattern.
 
 ```tsx src/app/(tabs)/index.tsx
-import { useObserve } from 'expo-observe';
-import { useEffect } from 'react';
 
 export default function Home() {
   const { markInteractive } = useObserve();

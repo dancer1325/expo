@@ -3,9 +3,6 @@ title: Stack Toolbar
 description: Learn how to use the native toolbar in Stack navigation with Expo Router.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 > **important** `Stack.Toolbar` is an [alpha](/more/release-statuses/#alpha) API available on Android in **Expo SDK 56** and later, and on iOS in **Expo SDK 55** and later. The API is subject to breaking changes.
 
@@ -20,9 +17,6 @@ Use [`Stack.Toolbar.Button`](/versions/latest/sdk/router/stack/#stacktoolbarbutt
 <Tab label="Android">
 
 ```tsx src/app/notes/[id].tsx
-import { useState } from 'react';
-import { Stack } from 'expo-router';
-import { View, Text, Alert } from 'react-native';
 
 export default function NoteScreen() {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -60,9 +54,6 @@ export default function NoteScreen() {
 <Tab label="iOS">
 
 ```tsx src/app/notes/[id].tsx
-import { useState } from 'react';
-import { Stack } from 'expo-router';
-import { View, Text, Alert } from 'react-native';
 
 export default function NoteScreen() {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -126,9 +117,6 @@ The recommended source of icons for Android is [`@expo/material-symbols`](https:
 Import any icon directly from its own subpath and pass it to the `icon` prop:
 
 ```tsx
-import Star from '@expo/material-symbols/star.xml';
-import Share from '@expo/material-symbols/share.xml';
-import MoreVert from '@expo/material-symbols/more_vert.xml';
 
 <Stack.Toolbar.Button icon={Star} onPress={() => {}} />
 <Stack.Toolbar.Button icon={Share} onPress={() => {}} />
@@ -144,7 +132,6 @@ Vector drawables are tinted with the toolbar's tint color by default. Pass `icon
 `Stack.Toolbar.Button`'s `icon` prop accepts both an `ImageSourcePropType` (Android) and an SF Symbol name (iOS). To use a single component for both platforms, branch on `process.env.EXPO_OS` and pass the platform-appropriate value. Metro replaces `process.env.EXPO_OS` with a string literal at build time, then tree-shakes the branch that doesn't match the current platform — so the Material Symbols XML drawable never ships in the iOS bundle, and the SF Symbol name never ships in the Android bundle:
 
 ```tsx
-import Star from '@expo/material-symbols/star.xml';
 
 <Stack.Toolbar.Button
   icon={process.env.EXPO_OS === 'ios' ? 'star.fill' : Star}
@@ -163,7 +150,6 @@ You can also use custom images. The API for passing them differs by platform:
 Pass an image to the `icon` prop:
 
 ```tsx
-import { Stack } from 'expo-router';
 
 export default function Page() {
   return (
@@ -180,7 +166,6 @@ export default function Page() {
 Image-source icons are tinted with the toolbar's tint color by default (`iconRenderingMode` defaults to `'template'`). Pass `iconRenderingMode="original"` to keep the source's original colors, useful for multi-color icons:
 
 ```tsx
-import { Stack } from 'expo-router';
 
 export default function Page() {
   return (
@@ -207,7 +192,6 @@ iOS uses two different APIs depending on placement: pass an image source directl
 > **info** Using custom images inside submenus (`Stack.Toolbar.Menu`) in header placements requires `react-native-screens` 4.24.0 or later. SDK 55 bundles `~4.23.0`, so you need to install `react-native-screens@~4.24.0` manually to use this feature. SDK 56 bundles a compatible version by default.
 
 ```tsx
-import { Stack } from 'expo-router';
 
 export default function Page() {
   return (
@@ -224,8 +208,6 @@ export default function Page() {
 In the bottom toolbar, use the `useImage` hook from `expo-image` and pass the result to the `image` prop:
 
 ```tsx
-import { Stack } from 'expo-router';
-import { useImage } from 'expo-image';
 
 export default function Page() {
   const customIcon = useImage('https://simpleicons.org/icons/expo.svg', {
@@ -261,9 +243,6 @@ For screens with multiple actions, use [`Stack.Toolbar.Menu`](/versions/latest/s
 <Tab label="Android">
 
 ```tsx src/app/mail/[id].tsx
-import { useState } from 'react';
-import { Stack } from 'expo-router';
-import { Alert } from 'react-native';
 
 export default function EmailScreen() {
   const [isArchived, setIsArchived] = useState(false);
@@ -310,9 +289,6 @@ export default function EmailScreen() {
 <Tab label="iOS">
 
 ```tsx src/app/mail/[id].tsx
-import { useState } from 'react';
-import { Stack } from 'expo-router';
-import { Alert } from 'react-native';
 
 export default function EmailScreen() {
   const [isArchived, setIsArchived] = useState(false);
@@ -364,8 +340,6 @@ For more complex menus, nest `Stack.Toolbar.Menu` inside another menu. Use the `
 <Tab label="Android">
 
 ```tsx
-import { useState } from 'react';
-import { Stack } from 'expo-router';
 
 export default function EmailScreen() {
   const [sortBy, setSortBy] = useState<'name' | 'date' | 'size'>('name');
@@ -409,8 +383,6 @@ export default function EmailScreen() {
 <Tab label="iOS">
 
 ```tsx
-import { useState } from 'react';
-import { Stack } from 'expo-router';
 
 export default function EmailScreen() {
   const [sortBy, setSortBy] = useState<'name' | 'date' | 'size'>('name');
@@ -462,8 +434,6 @@ Bottom toolbars are commonly used on iOS for primary screen actions, such as the
 <Tab label="Android">
 
 ```tsx src/app/photos/index.tsx
-import { Stack } from 'expo-router';
-import { Alert } from 'react-native';
 
 export default function PhotosScreen() {
   return (
@@ -489,8 +459,6 @@ export default function PhotosScreen() {
 <Tab label="iOS">
 
 ```tsx src/app/photos/index.tsx
-import { Stack } from 'expo-router';
-import { Alert } from 'react-native';
 
 export default function PhotosScreen() {
   return (
@@ -527,8 +495,6 @@ Use [`Stack.Toolbar.Spacer`](/versions/latest/sdk/router/stack/#stacktoolbarspac
 In header toolbars, you can add badges to indicate counts or status. Use [`Stack.Toolbar.Icon`](/versions/latest/sdk/router/stack/#stacktoolbaricon), [`Stack.Toolbar.Label`](/versions/latest/sdk/router/stack/#stacktoolbarlabel), and [`Stack.Toolbar.Badge`](/versions/latest/sdk/router/stack/#stacktoolbarbadge) to compose the button content:
 
 ```tsx src/app/inbox.tsx
-import { Stack } from 'expo-router';
-import bellIcon from '@/assets/bell.png';
 
 export default function InboxScreen() {
   const unreadCount = 5;
@@ -556,9 +522,6 @@ export default function InboxScreen() {
 When you need something beyond buttons and menus, use [`Stack.Toolbar.View`](/versions/latest/sdk/router/stack/#stacktoolbarview) to embed any React Native component:
 
 ```tsx src/app/search.tsx
-import { Stack } from 'expo-router';
-import { Pressable, Alert } from 'react-native';
-import { SymbolView } from 'expo-symbols';
 
 export default function SearchScreen() {
   return (
@@ -595,8 +558,6 @@ Use the `hidden` prop to toggle toolbar items based on state:
 <Tab label="Android">
 
 ```tsx src/app/document.tsx
-import { useState } from 'react';
-import { Stack } from 'expo-router';
 
 export default function DocumentScreen() {
   const [isEditing, setIsEditing] = useState(false);
@@ -626,8 +587,6 @@ export default function DocumentScreen() {
 <Tab label="iOS">
 
 ```tsx src/app/document.tsx
-import { useState } from 'react';
-import { Stack } from 'expo-router';
 
 export default function DocumentScreen() {
   const [isEditing, setIsEditing] = useState(false);
@@ -659,8 +618,6 @@ Toolbar buttons with liquid glass styling may flicker or flash their background 
 To fix this, wrap your root layout with `<ThemeProvider>` from `expo-router` using the appropriate theme:
 
 ```tsx src/app/_layout.tsx
-import { ThemeProvider, DarkTheme, DefaultTheme, Stack } from 'expo-router';
-import { useColorScheme } from 'react-native';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -684,8 +641,6 @@ A white flash between screen transitions usually means the navigation stack is u
 To fix this, wrap your root layout with Expo Router's `<ThemeProvider>` and pass the appropriate theme:
 
 ```tsx src/app/_layout.tsx
-import { ThemeProvider, DarkTheme, DefaultTheme, Stack } from 'expo-router';
-import { useColorScheme } from 'react-native';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -709,8 +664,6 @@ When using `headerLargeTitle: true` (or `<Stack.Title large>`) alongside `Stack.
 To fix this, ensure `ScrollView` or `FlatList` is the first child rendered by your screen component. If you need a wrapper, set `collapsable={false}` on it:
 
 ```tsx src/app/index.tsx
-import { Stack } from 'expo-router';
-import { ScrollView, View, Text } from 'react-native';
 
 /* @info Correct: ScrollView is the direct first child */
 export default function Home() {
@@ -727,8 +680,6 @@ export default function Home() {
 If you need to wrap the `ScrollView`, set `collapsable={false}` on the wrapper:
 
 ```tsx src/app/index.tsx
-import { Stack } from 'expo-router';
-import { ScrollView, View, Text } from 'react-native';
 
 export default function Home() {
   return (

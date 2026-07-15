@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Text`](../universal/text) — it renders the appropriate native component per platform.
 
@@ -31,7 +28,6 @@ Expo UI Text matches the official SwiftUI [Text API](https://developer.apple.com
 ### Basic text
 
 ```tsx BasicTextExample.tsx
-import { Host, Text } from '@expo/ui/swift-ui';
 
 export default function BasicTextExample() {
   return (
@@ -47,8 +43,6 @@ export default function BasicTextExample() {
 Use modifiers to style the entire text.
 
 ```tsx StyledTextExample.tsx
-import { Host, Text } from '@expo/ui/swift-ui';
-import { font, foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function StyledTextExample() {
   return (
@@ -68,8 +62,6 @@ Nest `Text` components to style individual segments differently. This is useful 
 > **Note:** Nested text uses SwiftUI's [Text concatenation](https://developer.apple.com/documentation/swiftui/text), so only modifiers that return `Text` (such as `bold`, `italic`, `font`, `foregroundColor`, and `foregroundStyle` with color) will apply to nested segments.
 
 ```tsx NestedTextExample.tsx
-import { Host, Text } from '@expo/ui/swift-ui';
-import { bold, italic, foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function NestedTextExample() {
   return (
@@ -87,8 +79,6 @@ export default function NestedTextExample() {
 Combine multiple styled segments for rich text formatting.
 
 ```tsx MixedStylesExample.tsx
-import { Host, Text } from '@expo/ui/swift-ui';
-import { bold, italic, foregroundStyle, font } from '@expo/ui/swift-ui/modifiers';
 
 export default function MixedStylesExample() {
   return (
@@ -107,8 +97,6 @@ export default function MixedStylesExample() {
 Use the `font` modifier to apply different font weights.
 
 ```tsx FontWeightsExample.tsx
-import { Host, Text, VStack } from '@expo/ui/swift-ui';
-import { font } from '@expo/ui/swift-ui/modifiers';
 
 export default function FontWeightsExample() {
   return (
@@ -133,8 +121,6 @@ export default function FontWeightsExample() {
 Use the `font` modifier to apply different font designs.
 
 ```tsx FontDesignsExample.tsx
-import { Host, Text, VStack } from '@expo/ui/swift-ui';
-import { font } from '@expo/ui/swift-ui/modifiers';
 
 export default function FontDesignsExample() {
   return (
@@ -155,8 +141,6 @@ export default function FontDesignsExample() {
 Use the `font` modifier with a `family` parameter to use custom fonts. You can load custom fonts using [`expo-font`](/versions/latest/sdk/font/) library.
 
 ```tsx CustomFontExample.tsx
-import { Host, Text, VStack } from '@expo/ui/swift-ui';
-import { font } from '@expo/ui/swift-ui/modifiers';
 
 export default function CustomFontExample() {
   return (
@@ -175,8 +159,6 @@ export default function CustomFontExample() {
 Use the `lineLimit` modifier to truncate text after a certain number of lines.
 
 ```tsx LineLimitExample.tsx
-import { Host, Text } from '@expo/ui/swift-ui';
-import { lineLimit } from '@expo/ui/swift-ui/modifiers';
 
 export default function LineLimitExample() {
   const longText = 'This is a very long text that will be truncated after two lines. '.repeat(5);
@@ -194,7 +176,6 @@ export default function LineLimitExample() {
 Use the `markdownEnabled` property to enable Markdown formatting for the text content.
 
 ```tsx MarkdownTextExample.tsx
-import { Host, Text, VStack } from '@expo/ui/swift-ui';
 
 export default function MarkdownTextExample() {
   return (
@@ -221,7 +202,6 @@ export default function MarkdownTextExample() {
 Use the `date` and `dateStyle` props to display a date that automatically updates as time passes. This is especially useful in widgets and Live Activities.
 
 ```tsx DateTextExample.tsx
-import { Host, Text } from '@expo/ui/swift-ui';
 
 export default function DateTextExample() {
   return (
@@ -237,7 +217,6 @@ export default function DateTextExample() {
 Use `timerInterval` to display a live countdown or count-up timer. This requires iOS/tvOS 16+.
 
 ```tsx TimerIntervalExample.tsx
-import { Host, Text } from '@expo/ui/swift-ui';
 
 export default function TimerIntervalExample() {
   return (
@@ -256,7 +235,6 @@ export default function TimerIntervalExample() {
 ## API
 
 ```tsx
-import { Text } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/text" apiName="Text" />

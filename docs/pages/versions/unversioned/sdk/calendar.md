@@ -6,10 +6,6 @@ packageName: 'expo-calendar'
 platforms: ['ios*', 'android*']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions, IOSPermissions } from '~/components/plugins/permissions';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
@@ -106,9 +102,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 ## Usage
 
 ```jsx
-import * as Calendar from 'expo-calendar';
-import { useEffect } from 'react';
-import { StyleSheet, View, Text, Button } from 'react-native';
 
 const BasicUsage = () => {
   useEffect(() => {
@@ -152,7 +145,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as Calendar from 'expo-calendar';
 ```
 
 Unless specified otherwise, all dates are returned in the ISO 8601 format.

@@ -57,7 +57,6 @@ If you do not import the package through the `expo` re-export in this way, you m
 Config types are exported directly from `expo/config`, so there is no need to install or import from `expo/config-types`:
 
 ```ts
-import { ExpoConfig, ConfigContext } from 'expo/config';
 ```
 
 ### Best practices for mods
@@ -116,8 +115,6 @@ You can use built-in types and helpers to ease the process of working with compl
 Here's an example of adding a `<meta-data android:name="..." android:value="..."/>` to the default `<application android:name=".MainApplication" />`.
 
 ```ts my-config-plugin.ts
-import { AndroidConfig, ConfigPlugin, withAndroidManifest } from 'expo/config-plugins';
-import { ExpoConfig } from 'expo/config';
 
 // Using helpers keeps error messages unified and helps cut down on XML format changes.
 const { addMetaDataItemToMainApplication, getMainApplicationOrThrow } = AndroidConfig.Manifest;
@@ -158,7 +155,6 @@ Using the `withInfoPlist` is a bit safer than statically modifying the `expo.ios
 Here's an example of adding a `GADApplicationIdentifier` to the **Info.plist**:
 
 ```ts my-config-plugin.ts
-import { ConfigPlugin, withInfoPlist } from 'expo/config-plugins';
 
 // Pass `<string>` to specify that this plugin requires a string property.
 export const withCustomConfig: ConfigPlugin<string> = (config, id) => {
@@ -184,7 +180,6 @@ This is used by [expo-build-properties](/versions/latest/sdk/build-properties) a
 `_internal.pluginHistory` was created to prevent duplicate plugins from running while migrating from legacy UNVERSIONED plugins to versioned plugins.
 
 ```ts my-config-plugin.ts
-import { ConfigPlugin, createRunOncePlugin } from 'expo/config-plugins';
 
 // Keeping the name, and version in sync with it's package.
 const pkg = require('my-cool-plugin/package.json');
@@ -278,9 +273,6 @@ First, we register the `ReactActivity` listener in our Android native module, th
 ```kotlin expo-custom/android/src/main/java/expo/modules/custom/CustomPackage.kt
 package expo.modules.custom
 
-import android.content.Context
-import expo.modules.core.BasePackage
-import expo.modules.core.interfaces.ReactActivityLifecycleListener
 
 class CustomPackage : BasePackage() {
   override fun createReactActivityLifecycleListeners(activityContext: Context): List<ReactActivityLifecycleListener> {
@@ -296,11 +288,6 @@ Next we implement the `ReactActivity` listener, this is passed the `Context` and
 ```kotlin expo-custom/android/src/main/java/expo/modules/custom/CustomReactActivityLifecycleListener.kt
 package expo.modules.custom
 
-import android.app.Activity
-import android.content.Context
-import android.os.Bundle
-import android.util.Log
-import expo.modules.core.interfaces.ReactActivityLifecycleListener
 
 class CustomReactActivityLifecycleListener(activityContext: Context) : ReactActivityLifecycleListener {
   override fun onCreate(activity: Activity, savedInstanceState: Bundle?) {
@@ -538,8 +525,6 @@ For example, say you wanted to add support for managing the `ios/*/AppDelegate.h
 > This example uses `ts-node` for simple local TypeScript support, this isn't strictly necessary. [Learn more](/guides/typescript/#appconfigjs).
 
 ```ts withAppDelegateHeaderBaseMod.ts
-import { ConfigPlugin, IOSConfig, Mod, withMod, BaseMods } from 'expo/config-plugins';
-import fs from 'fs';
 
 /**
  * A plugin which adds new base modifiers to the prebuild config.
@@ -602,7 +587,6 @@ To use this new base mod, add it to the plugins array. The base mod **MUST** be 
 // Required for external files using TS
 require('ts-node/register');
 
-import {
   withAppDelegateHeaderBaseMod,
   withSimpleAppDelegateHeaderMod,
 } from './withAppDelegateHeaderBaseMod.ts';

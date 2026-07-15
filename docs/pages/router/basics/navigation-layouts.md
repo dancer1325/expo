@@ -6,8 +6,6 @@ hasVideoLink: true
 searchRank: 8
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 <VideoBoxLink
   videoId="Yh6Qlg2CYwQ"
@@ -27,10 +25,6 @@ Virtually every app will have a **\_layout.tsx** file directly inside the **src/
 Here's an example root layout:
 
 ```tsx src/app/_layout.tsx
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -71,7 +65,6 @@ You can implement a stack navigator in your root layout, as shown above, or in a
 If you want everything inside the **src/app/products** directory to be arranged in a stack relationship, inside the **\_layout.tsx** file, return a `Stack` component:
 
 ```tsx src/app/products/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function StackLayout() {
   return <Stack />;
@@ -83,7 +76,6 @@ When you navigate to `/products`, it will first go to the default route, which i
 The `Stack` component implements [React Navigation's native stack](https://reactnavigation.org/docs/native-stack-navigator/) and can use the same screen options. However, you do not have to define the pages specifically inside the navigator. The files inside the directory will be automatically treated as eligible routes in the stack. However, if you want to define screen options, you can add a `Stack.Screen` component inside the `Stack` component. The `name` prop should match the route name, but you do not need to supply a `component` prop; Expo Router will map this automatically:
 
 ```tsx src/app/products/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function StackLayout() {
   return (
@@ -116,8 +108,6 @@ You can implement a JavaScript-based tab navigator in a layout file using the `T
 In the **\_layout.tsx** file, return a `Tabs` component:
 
 ```tsx src/app/(tabs)/_layout.tsx|collapseHeight=480
-import { Tabs } from 'expo-router';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function TabLayout() {
   return (
@@ -156,7 +146,6 @@ Like JavaScript tabs, native tabs can be used in a layout file inside a route gr
 />
 
 ```tsx src/app/(tabs)/_layout.tsx
-import { NativeTabs } from 'expo-router/unstable-native-tabs';
 
 export default function TabLayout() {
   return (
@@ -195,7 +184,6 @@ Since native tabs are only available on Android and iOS, a common pattern is to 
 The root layout imports and renders the `AppTabs` component. **app-tabs.native.tsx** is used on Android and iOS, and **app-tabs.tsx** on web:
 
 ```tsx src/app/_layout.tsx
-import AppTabs from '@/components/app-tabs';
 
 export default function RootLayout() {
   return <AppTabs />;
@@ -205,7 +193,6 @@ export default function RootLayout() {
 On Android and iOS, **app-tabs.native.tsx** uses [native tabs](/router/advanced/native-tabs/):
 
 ```tsx src/components/app-tabs.native.tsx
-import { NativeTabs } from 'expo-router/native-tabs';
 
 export default function AppTabs() {
   return (
@@ -226,7 +213,6 @@ export default function AppTabs() {
 On web, **app-tabs.tsx** uses [custom tabs](/router/advanced/custom-tabs/) from `expo-router/ui`, which are unstyled and flexible components:
 
 ```tsx src/components/app-tabs.tsx
-import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
 
 export default function AppTabs() {
   return (
@@ -263,7 +249,6 @@ Consider the following file structure:
 For example, you may want to wrap any route inside the **social** directory with a header and footer, but you want navigating between the pages to simply replace the current page rather than pushing new pages onto a stack, which can then later be popped off with a "back" navigation action. In the **\_layout.tsx** file, return a `Slot` component surrounded by your header and footer:
 
 ```tsx src/app/social/_layout.tsx
-import { Slot } from 'expo-router';
 
 export default function Layout() {
   return (

@@ -4,7 +4,6 @@ description: Learn how to enable screen tracking for analytics when using Expo R
 hideTOC: true
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
 
 Unlike React Navigation, Expo Router always has access to a URL. This means screen tracking is as easy as the web.
 
@@ -14,8 +13,6 @@ Unlike React Navigation, Expo Router always has access to a URL. This means scre
 <FileTree files={['src/app/_layout.tsx']} />
 
 ```tsx src/app/_layout.tsx
-import { useEffect } from 'react';
-import { usePathname, useGlobalSearchParams, Slot } from 'expo-router';
 
 export default function Layout() {
   const pathname = usePathname();

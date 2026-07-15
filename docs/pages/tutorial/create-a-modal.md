@@ -4,10 +4,6 @@ description: In this tutorial, learn how to create a React Native modal to selec
 hasVideoLink: true
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Step } from '~/ui/components/Step';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 React Native provides a [`<Modal>` component](https://reactnative.dev/docs/modal) that presents content above the rest of your app. In general, modals are used to draw a user's attention toward critical information or guide them to take action. For example, in the [third chapter](/tutorial/build-a-screen/#step-7-enhance-the-reusable-button-component), after pressing the button, we used `alert()` to display some placeholder text. That's how a modal component displays an overlay.
 
@@ -35,12 +31,7 @@ In **app/(tabs)/index.tsx**:
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx
-import { View, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
 
-import Button from '@/components/Button';
-import ImageViewer from '@/components/ImageViewer';
 
 const PlaceholderImage = require('@/assets/images/background-image.png');
 
@@ -132,8 +123,6 @@ It contains a parent `<View>` with three buttons aligned in a row. The button in
 Inside the **components** directory, create a new **CircleButton.tsx** file with the following code:
 
 ```tsx components/CircleButton.tsx
-import { View, Pressable, StyleSheet } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 type Props = {
   onPress: () => void;
@@ -178,8 +167,6 @@ The other two buttons also use `<MaterialIcons>` to display vertically aligned t
 - `onPress`: this function invokes when the user presses the button.
 
 ```tsx components/IconButton.tsx
-import { Pressable, StyleSheet, Text } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 type Props = {
   icon: keyof typeof MaterialIcons.glyphMap;
@@ -215,15 +202,8 @@ Inside **app/(tabs)/index.tsx**:
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx
-import { View, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
 
-import Button from '@/components/Button';
-import ImageViewer from '@/components/ImageViewer';
 /* @tutinfo Import `IconButton` and `CircleButton` components.*/
-import IconButton from '@/components/IconButton';
-import CircleButton from '@/components/CircleButton';
 /* @end */
 
 const PlaceholderImage = require('@/assets/images/background-image.png');
@@ -334,9 +314,6 @@ The modal allows the user to choose an emoji from a list of available emoji. Cre
 
 {/* prettier-ignore */}
 ```tsx components/EmojiPicker.tsx|collapseHeight=430
-import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
-import { PropsWithChildren } from 'react';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 type Props = PropsWithChildren<{
   isVisible: boolean;
@@ -406,16 +383,8 @@ Now, let's modify the **app/(tabs)/index.tsx**:
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx
-import { View, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
 
-import Button from '@/components/Button';
-import ImageViewer from '@/components/ImageViewer';
-import IconButton from '@/components/IconButton';
-import CircleButton from '@/components/CircleButton';
 /* @tutinfo import the `EmojiPicker` component. */
-import EmojiPicker from '@/components/EmojiPicker';
 /* @end */
 
 const PlaceholderImage = require('@/assets/images/background-image.png');
@@ -532,9 +501,6 @@ Create a **EmojiList.tsx** file inside the **components** directory and add the 
 
 {/* prettier-ignore */}
 ```tsx components/EmojiList.tsx
-import { useState } from 'react';
-import { ImageSourcePropType, StyleSheet, FlatList, Platform, Pressable } from 'react-native';
-import { Image } from 'expo-image';
 
 type Props = {
   onSelect: (image: ImageSourcePropType) => void;
@@ -597,17 +563,8 @@ Now, update the **app/(tabs)/index.tsx** to import the `<EmojiList>` component a
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx|collapseHeight=440
-import { ImageSourcePropType, View, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
 
-import Button from '@/components/Button';
-import ImageViewer from '@/components/ImageViewer';
-import IconButton from '@/components/IconButton';
-import CircleButton from '@/components/CircleButton';
-import EmojiPicker from '@/components/EmojiPicker';
 /* @tutinfo Import the `EmojiList` component. */
-import EmojiList from '@/components/EmojiList';
 /* @end */
 
 const PlaceholderImage = require('@/assets/images/background-image.png');
@@ -722,8 +679,6 @@ Let's take a look at our app on Android, iOS and the web:
 Now, we'll put the emoji sticker on the image. Create a new file in the **components** directory and call it **EmojiSticker.tsx**. Then, add the following code:
 
 ```tsx components/EmojiSticker.tsx|collapseHeight=300
-import { ImageSourcePropType, View } from 'react-native';
-import { Image } from 'expo-image';
 
 type Props = {
   imageSize: number;
@@ -748,16 +703,7 @@ Import this component in the **app/(tabs)/index.tsx** file and update the `Index
 
 {/* prettier-ignore */}
 ```tsx app/(tabs)/index.tsx
-import { ImageSourcePropType, View, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
 
-import Button from '@/components/Button';
-import ImageViewer from '@/components/ImageViewer';
-import IconButton from '@/components/IconButton';
-import CircleButton from '@/components/CircleButton';
-import EmojiPicker from '@/components/EmojiPicker';
-import EmojiList from '@/components/EmojiList';
 /* @tutinfo Import the `EmojiSticker` component. */import EmojiSticker from '@/components/EmojiSticker';/* @end */
 
 const PlaceholderImage = require('@/assets/images/background-image.png');

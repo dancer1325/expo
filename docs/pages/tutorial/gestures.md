@@ -3,10 +3,6 @@ title: Add gestures
 description: In this tutorial, learn how to implement gestures from React Native Gesture Handler and Reanimated libraries.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Step } from '~/ui/components/Step';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 Gestures are a great way to provide an intuitive user experience in an app. The [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/docs/) library provides built-in native components that can handle gestures. It recognizes pan, tap, rotation, and other gestures using the platform's native touch handling system. In this chapter, we'll to add two different gestures using this library:
 
@@ -56,9 +52,6 @@ An `Animated` component looks at the `style` prop of the component and determine
 
 {/* prettier-ignore */}
 ```tsx components/EmojiSticker.tsx
-import { View } from 'react-native';
-import Animated from 'react-native-reanimated';
-import { type ImageSource } from "expo-image";
 
 type Props = {
   imageSize: number;
@@ -98,8 +91,6 @@ In the **EmojiSticker.tsx** file:
 
 ```tsx components/EmojiSticker.tsx
 // ...rest of the import statements remain same
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 export default function EmojiSticker({ imageSize, stickerSource }: Props) {
   const scaleImage = useSharedValue(imageSize);
@@ -145,10 +136,6 @@ Next, wrap the `<Animated.Image>` component with the `<GestureDetector>` and mod
 
 {/* prettier-ignore */}
 ```tsx components/EmojiSticker.tsx
-import { View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { type ImageSource } from "expo-image";
 
 type Props = {
   imageSize: number;
@@ -267,9 +254,6 @@ Next, inside the JSX code:
 
 {/* prettier-ignore */}
 ```tsx components/EmojiSticker.tsx
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { type ImageSource } from "expo-image";
 
 type Props = {
   imageSize: number;

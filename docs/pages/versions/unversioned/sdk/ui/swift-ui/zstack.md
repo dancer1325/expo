@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI ZStack matches the official SwiftUI [ZStack API](https://developer.apple.com/documentation/swiftui/zstack) and overlays its children on top of each other.
 
@@ -29,8 +26,6 @@ Expo UI ZStack matches the official SwiftUI [ZStack API](https://developer.apple
 ### Basic overlapping stack
 
 ```tsx BasicZStackExample.tsx
-import { Host, ZStack, Rectangle, Text } from '@expo/ui/swift-ui';
-import { frame, foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function BasicZStackExample() {
   return (
@@ -49,8 +44,6 @@ export default function BasicZStackExample() {
 The `alignment` prop controls how children are positioned within the stack. Available options include: `center`, `leading`, `trailing`, `top`, `bottom`, `topLeading`, `topTrailing`, `bottomLeading`, and `bottomTrailing`.
 
 ```tsx ZStackAlignmentExample.tsx
-import { Host, ZStack, Rectangle, Circle } from '@expo/ui/swift-ui';
-import { frame, foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function ZStackAlignmentExample() {
   return (
@@ -67,8 +60,6 @@ export default function ZStackAlignmentExample() {
 ### Creating a badge overlay
 
 ```tsx ZStackBadgeExample.tsx
-import { Host, ZStack, Circle, Text, Image } from '@expo/ui/swift-ui';
-import { frame, foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function ZStackBadgeExample() {
   return (
@@ -85,7 +76,6 @@ export default function ZStackBadgeExample() {
 ## API
 
 ```tsx
-import { ZStack } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/zstack" apiName="ZStack" />

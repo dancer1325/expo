@@ -4,8 +4,6 @@ sidebar_title: Usage
 description: Learn how to use environment variables in EAS builds, updates, hosting, and workflow jobs.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
 
 The following sections cover how to use environment variables in EAS builds, updates, and workflow jobs.
 

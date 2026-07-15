@@ -44,7 +44,6 @@ Import the local module in your application, for example in **App.js** or **App.
 
 ```tsx src/app/index.tsx
 /* @hide ...*/ /* @end */
-import MyModule from '@/modules/my-module';
 
 export default function HomeScreen() {
   return (

@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-keep-awake.png'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-keep-awake` provides a React hook that prevents the screen from sleeping and a pair of functions to enable this behavior imperatively.
 
@@ -24,9 +21,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Keep Awake hook' dependencies={['expo-keep-awake']}>
 
 ```jsx
-import { useKeepAwake } from 'expo-keep-awake';
-import React from 'react';
-import { Text, View } from 'react-native';
 
 export default function KeepAwakeExample() {
   /* @info As long as this component is mounted, the screen will not turn off from being idle. */
@@ -47,9 +41,6 @@ export default function KeepAwakeExample() {
 <SnackInline label='Keep Awake functions' dependencies={['expo-keep-awake']}>
 
 ```jsx
-import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
-import React from 'react';
-import { Button, View } from 'react-native';
 
 export default class KeepAwakeExample extends React.Component {
   render() {
@@ -78,7 +69,6 @@ export default class KeepAwakeExample extends React.Component {
 ## API
 
 ```js
-import * as KeepAwake from 'expo-keep-awake';
 ```
 
 <APISection packageName="expo-keep-awake" apiName="KeepAwake" />

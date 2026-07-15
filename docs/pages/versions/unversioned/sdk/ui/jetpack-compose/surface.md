@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Surface matches the official Jetpack Compose [Surface](https://developer.android.com/develop/ui/compose/designsystems/material3) API and provides a container that applies Material Design surface styling including color, elevation, and content color.
 
@@ -29,8 +26,6 @@ Expo UI Surface matches the official Jetpack Compose [Surface](https://developer
 ### Basic surface
 
 ```tsx BasicSurfaceExample.tsx
-import { Host, Surface, Text } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function BasicSurfaceExample() {
   return (
@@ -48,8 +43,6 @@ export default function BasicSurfaceExample() {
 Use `tonalElevation` and `shadowElevation` to control the visual depth of the surface.
 
 ```tsx SurfaceElevationExample.tsx
-import { Host, Surface, Column, Text } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function SurfaceElevationExample() {
   return (
@@ -72,8 +65,6 @@ export default function SurfaceElevationExample() {
 Use the `color` and `contentColor` props to override the default Material theme colors.
 
 ```tsx SurfaceCustomColorsExample.tsx
-import { Host, Surface, Text } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function SurfaceCustomColorsExample() {
   return (
@@ -95,8 +86,6 @@ export default function SurfaceCustomColorsExample() {
 Use the `shape` prop to clip content and `border` to draw a stroke around the surface.
 
 ```tsx SurfaceShapeBorderExample.tsx
-import { Host, Surface, Shape, Text } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function SurfaceShapeBorderExample() {
   return (
@@ -117,7 +106,6 @@ export default function SurfaceShapeBorderExample() {
 ## API
 
 ```tsx
-import { Surface } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/surface" apiName="Surface" />

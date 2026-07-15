@@ -4,14 +4,7 @@ sidebar_title: Using development builds
 description: Learn how to use the expo-dev-client library to preview a published EAS Update inside a development build.
 ---
 
-import { GithubIcon } from '@expo/styleguide-icons/custom/GithubIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { CODE } from '~/ui/components/Text';
 
 [`expo-dev-client`](/develop/development-builds/introduction/) library allows launching different versions of a project by creating a development build. Any compatible EAS Update can be previewed in a development build.
 

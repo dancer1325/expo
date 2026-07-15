@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvOS', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Overlay matches the official SwiftUI [overlay](<https://developer.apple.com/documentation/swiftui/view/overlay(alignment:content:)>) modifier and provides a way to layer secondary content on top of a view, positioned with a specified alignment.
 
@@ -27,8 +24,6 @@ Expo UI Overlay matches the official SwiftUI [overlay](<https://developer.apple.
 ## Usage
 
 ```tsx OverlayExample.tsx
-import { Host, Overlay, Text, Image } from '@expo/ui/swift-ui';
-import {
   foregroundStyle,
   frame,
   font,
@@ -67,7 +62,6 @@ export default function OverlayExample() {
 ## API
 
 ```tsx
-import { Overlay } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/overlay" apiName="Overlay" />

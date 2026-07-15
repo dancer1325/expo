@@ -4,7 +4,6 @@ description: Learn how to define shared routes or use arrays to use the same rou
 hideTOC: true
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
 
 To match the same URL with different layouts, use [**groups**](/router/layouts#groups) with overlapping child routes. This pattern is very common in native apps. For example, in the X app, a profile can be viewed in every tab (such as home, search, and profile). However, there is only one URL that is required to access this route.
 

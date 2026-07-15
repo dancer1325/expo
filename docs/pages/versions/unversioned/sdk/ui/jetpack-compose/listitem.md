@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI ListItem matches the official Jetpack Compose [`ListItem`](<https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary#ListItem(kotlin.Function0,androidx.compose.ui.Modifier,kotlin.Function0,kotlin.Function0,kotlin.Function0,kotlin.Function0,androidx.compose.material3.ListItemColors,androidx.compose.ui.unit.Dp,androidx.compose.ui.unit.Dp)>) API for structured list entries with headline, supporting, overline, leading, and trailing content slots.
 
@@ -29,7 +26,6 @@ Expo UI ListItem matches the official Jetpack Compose [`ListItem`](<https://deve
 ### Basic list item
 
 ```tsx BasicListItem.tsx
-import { Host, ListItem, Text } from '@expo/ui/jetpack-compose';
 
 export default function BasicListItem() {
   return (
@@ -49,7 +45,6 @@ export default function BasicListItem() {
 Use compound components for rich content in each position.
 
 ```tsx ListItemWithCompoundComponent.tsx
-import { Host, ListItem, Icon, Text } from '@expo/ui/jetpack-compose';
 
 export default function ListItemWithSlots() {
   return (
@@ -81,8 +76,6 @@ export default function ListItemWithSlots() {
 Use the `clickable` modifier to handle tap interactions.
 
 ```tsx ClickableListItem.tsx
-import { Host, ListItem, Text } from '@expo/ui/jetpack-compose';
-import { clickable } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function ClickableListItem() {
   return (
@@ -102,7 +95,6 @@ export default function ClickableListItem() {
 Use `ListItem.HeadlineContent` for composable headline content like rows with icons.
 
 ```tsx ListItemCustomHeadline.tsx
-import { Host, ListItem, Text, Row, Icon } from '@expo/ui/jetpack-compose';
 
 export default function ListItemCustomHeadline() {
   return (
@@ -123,7 +115,6 @@ export default function ListItemCustomHeadline() {
 ## API
 
 ```tsx
-import { ListItem } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/listitem" apiName="ListItem" />

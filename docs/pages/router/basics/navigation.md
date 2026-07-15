@@ -5,11 +5,7 @@ sidebar_title: Navigation
 hasVideoLink: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { FileTree } from '~/ui/components/FileTree';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 Once you have a few pages in your app and their layouts setup, it's time to start navigating between them. Every page in Expo Router has a URL by default, so you can navigate between pages using links and the same URL patterns you use on the web.
 
@@ -18,8 +14,6 @@ Once you have a few pages in your app and their layouts setup, it's time to star
 Like in React Navigation, you can call a function from an `onPress` handler to navigate to another page. In Expo Router, you can use the `useRouter` hook to access navigation functions:
 
 ```tsx
-import { useRouter } from 'expo-router';
-import { Button } from 'react-native';
 
 export default function Home() {
   const router = useRouter();
@@ -54,9 +48,7 @@ The typical way to link to a page in Expo Router is to use links like web apps. 
 
 {/* prettier-ignore */}
 ```tsx src/app/index.tsx
-import { View } from 'react-native';
 /* @info Import the `Link` React component from `expo-router`. */
-import { Link } from 'expo-router';
 /* @end */
 
 export default function Page() {
@@ -74,8 +66,6 @@ By default, the `Link` component renders its children inside a `<Text>` element.
 
 {/* prettier-ignore */}
 ```tsx
-import { Pressable, Text } from 'react-native';
-import { Link } from 'expo-router';
 
 export default function Page() {
   return (
@@ -139,9 +129,7 @@ Each of these links will navigate to the same page:
 {/* prettier-ignore */}
 ```tsx src/app/index.tsx
 /* @info Import the `Link` React component and `router` to navigate imperatively from `expo-router`. */
-import { Link, router } from 'expo-router';
 /* @end */
-import { View, Pressable, Text } from 'react-native';
 
 export default function Page() {
   return (
@@ -204,8 +192,6 @@ For example, if you have a link like this:
 Then you can read the parameters on the other end like this:
 
 ```tsx
-import { useLocalSearchParams } from 'expo-router';
-import { View, Text } from 'react-native';
 
 export default function Users() {
   const { id, limit } = useLocalSearchParams();
@@ -243,7 +229,6 @@ Query parameters can be updated without navigating to a new page. This can be do
 You can immediately redirect to another route from a page or layout with the `Redirect` component. This functions like the `replace` imperative navigation function. A redirect will navigate to the new route without rendering the current page.
 
 ```tsx
-import { Redirect } from 'expo-router';
 
 export default function Page() {
   return <Redirect href="/about" />;
@@ -255,7 +240,6 @@ export default function Page() {
 The `prefetch` prop on a `<Link />` component enables prefetching of the target screen when the component is rendered. This allows for faster navigation by preparing the screen in advance.
 
 ```tsx
-import { Link } from 'expo-router';
 
 export default function Page() {
   return <Link href="/about" prefetch />;

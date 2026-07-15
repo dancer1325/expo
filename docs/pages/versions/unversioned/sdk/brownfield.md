@@ -6,11 +6,6 @@ packageName: 'expo-brownfield'
 platforms: ['android', 'ios']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ConfigPluginExample, ConfigPluginProperties } from '~/ui/components/ConfigSection';
-import { Terminal } from '~/ui/components/Snippet';
-import { Tab, Tabs } from '~/ui/components/Tabs';
 
 `expo-brownfield` is a toolkit for adding React Native views to existing native Android and iOS applications. It provides:
 
@@ -31,7 +26,6 @@ The Communication API enables bi-directional, message-based communication betwee
 #### Sending messages from React Native to native
 
 ```typescript
-import * as Brownfield from 'expo-brownfield';
 
 Brownfield.sendMessage({
   type: 'MyMessage',
@@ -46,8 +40,6 @@ Brownfield.sendMessage({
 #### Receiving messages from native in React Native
 
 ```typescript
-import * as Brownfield, { type MessageEvent } from 'expo-brownfield';
-import { useEffect } from 'react';
 
 function MyComponent() {
   useEffect(() => {
@@ -72,7 +64,6 @@ function MyComponent() {
 <Tab label="Android">
 
 ```kotlin
-import expo.modules.brownfield.BrownfieldMessaging
 
 BrownfieldMessaging.sendMessage(mapOf(
     "type" to "MyAndroidMessage",
@@ -87,7 +78,6 @@ BrownfieldMessaging.sendMessage(mapOf(
 <Tab label="iOS">
 
 ```swift
-import ExpoBrownfield
 
 BrownfieldMessaging.sendMessage([
     "type": "MyIOSMessage",
@@ -107,7 +97,6 @@ BrownfieldMessaging.sendMessage([
 <Tab label="Android">
 
 ```kotlin
-import expo.modules.brownfield.BrownfieldMessaging
 
 val listenerId = BrownfieldMessaging.addListener { event ->
     println("Message from React Native: $event")
@@ -121,7 +110,6 @@ BrownfieldMessaging.removeListener(listenerId)
 <Tab label="iOS">
 
 ```swift
-import ExpoBrownfield
 
 let listenerId = BrownfieldMessaging.addListener { message in
     print("Message from React Native: \(message)")
@@ -274,7 +262,6 @@ Lists all available publish tasks and Maven repositories.
 ## API
 
 ```js
-import * as Brownfield from 'expo-brownfield';
 ```
 
 <APISection packageName="expo-brownfield" apiName="Brownfield" />

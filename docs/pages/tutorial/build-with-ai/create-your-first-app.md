@@ -3,11 +3,6 @@ title: Create your first app
 description: In this chapter, direct your AI agent to create a new Expo app and see it running on your phone.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 In this chapter, your agent creates a new Expo app, you get it running on your phone, and you make your first change. This is the loop you'll repeat for the rest of the tutorial.
 

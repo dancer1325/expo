@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-gl.png'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-gl` provides a `View` that acts as an OpenGL ES render target, useful for rendering 2D and 3D graphics. On mounting, an OpenGL ES context is created. Its drawing buffer is presented as the contents of the `View` every frame.
 
@@ -22,8 +19,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Basic GL usage' dependencies={['expo-gl']}>
 
 ```jsx
-import { View } from 'react-native';
-import { GLView } from 'expo-gl';
 
 export default function App() {
   return (
@@ -94,9 +89,6 @@ To use this API inside Reanimated worklet, you need to pass the GL context ID to
 <SnackInline label='GL usage in reanimated worklet' dependencies={['expo-gl', 'react-native-reanimated']}>
 
 ```jsx
-import { View } from 'react-native';
-import { runOnUI } from 'react-native-reanimated';
-import { GLView } from 'expo-gl';
 
 function render(gl) {
   'worklet';
@@ -145,7 +137,6 @@ This API does not function as intended with remote debugging enabled. The React 
 ## API
 
 ```js
-import { GLView } from 'expo-gl';
 ```
 
 <APISection packageName="expo-gl" apiName="GLView" />

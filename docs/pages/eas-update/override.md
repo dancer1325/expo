@@ -4,7 +4,6 @@ sidebar_title: Override update configuration at runtime
 description: Learn how to override the update URL and request headers at runtime to control which update is loaded on the client side.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
 
 The typical way to use EAS Update is to have a single update URL and a set of request headers (such as update channel name) embedded in a build of your app. To control which update is loaded you make changes on the server through the `eas update` command or the EAS dashboard. For example, you publish a new update to a channel that your build is pointing to, then the build fetches that update on the next launch. Updates published to a channel different from the one your build is pointing to will not be downloaded with this approach.
 
@@ -27,7 +26,6 @@ You can override the `expo-channel-name` request header by calling [`Updates.set
 Somewhere in your app, you would provide a way for users to trigger the change to request headers. This may be in a hidden menu that only trusted users have access to, or some other mechanism, depending on your use case. After the parameters are changed, you can call [`fetchUpdateAsync()`](/versions/latest/sdk/updates/#updatesfetchupdateasync) to fetch the update, and then [`reloadAsync()`](/versions/latest/sdk/updates/#updatesreloadasyncoptions) to reload the app. Or you can wait for the next launch, which will automatically fetch and install the update.
 
 ```js
-import * as Updates from 'expo-updates';
 
 // Where you call this method depends on your use case - it may make sense to
 // have a menu in your preview builds that allows testers to pick from available channels,
@@ -82,7 +80,6 @@ Yes. CodePush allowed developers to swap deployment keys with `sync({ deployment
 Here's an example of how you might use these APIs:
 
 ```js
-import * as Updates from 'expo-updates';
 
 // Where you call this method depends on your use case - it may make sense to
 // have a menu in your preview builds that allows testers to pick from available

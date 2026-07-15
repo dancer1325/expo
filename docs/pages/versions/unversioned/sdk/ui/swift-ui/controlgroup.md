@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI ControlGroup matches the official SwiftUI [ControlGroup API](https://developer.apple.com/documentation/swiftui/controlgroup). When placed inside a [`Menu`](menu), the children are rendered as a compact horizontal row of buttons.
 
@@ -33,7 +30,6 @@ Expo UI ControlGroup matches the official SwiftUI [ControlGroup API](https://dev
 A control group inside a menu, these render as a horizontal row of icon buttons.
 
 ```tsx BasicControlGroupExample.tsx
-import { Host, Menu, ControlGroup, Button } from '@expo/ui/swift-ui';
 
 export default function BasicControlGroupExample() {
   return (
@@ -58,7 +54,6 @@ export default function BasicControlGroupExample() {
 ## API
 
 ```tsx
-import { ControlGroup } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/controlgroup" apiName="ControlGroup" />

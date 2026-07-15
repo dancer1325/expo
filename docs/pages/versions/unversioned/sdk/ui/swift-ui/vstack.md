@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Column`](../universal/column) — it renders the appropriate native component per platform.
 
@@ -31,7 +28,6 @@ Expo UI VStack matches the official SwiftUI [VStack API](https://developer.apple
 ### Basic vertical stack
 
 ```tsx BasicVStackExample.tsx
-import { Host, VStack, Text } from '@expo/ui/swift-ui';
 
 export default function BasicVStackExample() {
   return (
@@ -51,8 +47,6 @@ export default function BasicVStackExample() {
 The `alignment` prop controls horizontal alignment of children. Available options are: `leading`, `center`, and `trailing`.
 
 ```tsx VStackAlignmentExample.tsx
-import { Host, VStack, Rectangle } from '@expo/ui/swift-ui';
-import { frame } from '@expo/ui/swift-ui/modifiers';
 
 export default function VStackAlignmentExample() {
   return (
@@ -70,7 +64,6 @@ export default function VStackAlignmentExample() {
 ## API
 
 ```tsx
-import { VStack } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/vstack" apiName="VStack" />

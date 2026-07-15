@@ -3,11 +3,7 @@ title: How to use a standalone Expo module
 description: Learn how to use a standalone module created with create-expo-module in your project by using a monorepo or publishing the package to npm.
 ---
 
-import { Grid01Icon } from '@expo/styleguide-icons/outline/Grid01Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 **The recommended way to create an Expo module** in an existing project is described in the [Expo Modules API: Get Started](/modules/get-started/) guide. This tutorial explains two additional methods for using a module created with `create-expo-module` in an existing project:
 
@@ -121,9 +117,6 @@ Compile and run the app with the following command:
 You can now use the module in your app. To test it, edit the **src/app/index.tsx** file in your app and render the text message from the `expo-settings` module:
 
 ```tsx src/app/index.tsx
-import React from 'react';
-import { Text, View } from 'react-native';
-import * as Settings from 'expo-settings';
 
 export default function TabOneScreen() {
   return (
@@ -279,9 +272,6 @@ To test the published module in a new project, create a new app and install the 
 You can now use the module in your app! To test it, edit **src/app/index.tsx** and render the text message from **expo-settings**.
 
 ```tsx src/app/index.tsx
-import React from 'react';
-import * as Settings from 'expo-settings';
-import { Text, View } from 'react-native';
 
 export default function TabOneScreen() {
   return (

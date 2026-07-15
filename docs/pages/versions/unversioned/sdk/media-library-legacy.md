@@ -7,15 +7,10 @@ iconUrl: '/static/images/packages/expo-media-library.png'
 platforms: ['android', 'ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions, IOSPermissions } from '~/components/plugins/permissions';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 > **important** The legacy version of the MediaLibrary API is included in the `expo-media-library` library. It can be used alongside the class-based `expo-media-library` API, which is exposed from the root import. To use the legacy API, import it from `expo-media-library/legacy`.
 
@@ -132,9 +127,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 
 {/* prettier-ignore */}
 ```jsx
-import { useState, useEffect } from 'react';
-import { Button, Text, ScrollView, StyleSheet, Image, View, Platform } from 'react-native';
-import * as MediaLibrary from 'expo-media-library/legacy';
 
 export default function App() {
   const [albums, setAlbums] = useState(null);
@@ -225,7 +217,6 @@ On Android, when using `getAssetsAsync` without `resolveWithFullInfo: true`, ima
 ## API
 
 ```js
-import * as MediaLibrary from 'expo-media-library/legacy';
 ```
 
 <APISection packageName="expo-media-library-legacy" apiName="MediaLibrary" />

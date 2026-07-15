@@ -6,8 +6,6 @@ packageName: 'expo-manifests'
 platforms: ['android', 'ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 ## Installation
 
@@ -16,7 +14,6 @@ import { APIInstallSection } from '~/components/plugins/InstallSection';
 ## API
 
 ```js
-import * as Manifests from 'expo-manifests';
 ```
 
 <APISection packageName="expo-manifests" apiName="Manifests" />

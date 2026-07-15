@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Alert matches the official SwiftUI [alert API](<https://developer.apple.com/documentation/swiftui/view/alert(_:ispresented:actions:message:)>) and presents a native iOS alert dialog with a title, actions, and an optional message.
 
@@ -33,8 +30,6 @@ Expo UI Alert matches the official SwiftUI [alert API](<https://developer.apple.
 Use `Alert.Trigger` to define the visible element and `Alert.Actions` to provide the dialog buttons.
 
 ```tsx BasicAlertExample.tsx
-import { useState } from 'react';
-import { Host, Alert, Button } from '@expo/ui/swift-ui';
 
 export default function BasicAlertExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -59,8 +54,6 @@ export default function BasicAlertExample() {
 Combine `role="cancel"` with a confirm button to build a standard yes/no alert.
 
 ```tsx CancelConfirmAlertExample.tsx
-import { useState } from 'react';
-import { Host, Alert, Button, Text } from '@expo/ui/swift-ui';
 
 export default function CancelConfirmAlertExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -89,8 +82,6 @@ export default function CancelConfirmAlertExample() {
 Use `role="destructive"` on a `Button` inside `Alert.Actions` to style it as a destructive action.
 
 ```tsx DestructiveAlertExample.tsx
-import { useState } from 'react';
-import { Host, Alert, Button, Text } from '@expo/ui/swift-ui';
 
 export default function DestructiveAlertExample() {
   const [isPresented, setIsPresented] = useState(false);
@@ -124,7 +115,6 @@ export default function DestructiveAlertExample() {
 ## API
 
 ```tsx
-import { Alert } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/alert" apiName="Alert" />

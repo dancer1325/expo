@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI provides four FloatingActionButton variants matching the Material Design 3 [`FloatingActionButton`](https://developer.android.com/develop/ui/compose/components/fab) API:
 
@@ -38,7 +35,6 @@ Each component uses slot-based children (`.Icon` and, for `ExtendedFloatingActio
 ### Standard FloatingActionButton
 
 ```tsx StandardFABExample.tsx
-import { FloatingActionButton, Host, Icon } from '@expo/ui/jetpack-compose';
 
 export default function StandardFABExample() {
   return (
@@ -56,14 +52,12 @@ export default function StandardFABExample() {
 ### FAB variants
 
 ```tsx FABVariantsExample.tsx
-import {
   FloatingActionButton,
   Host,
   Icon,
   LargeFloatingActionButton,
   SmallFloatingActionButton,
 } from '@expo/ui/jetpack-compose';
-import { View } from 'react-native';
 
 export default function FABVariantsExample() {
   return (
@@ -97,8 +91,6 @@ export default function FABVariantsExample() {
 ### ExtendedFloatingActionButton
 
 ```tsx ExtendedFABExample.tsx
-import { ExtendedFloatingActionButton, Host, Icon, Text } from '@expo/ui/jetpack-compose';
-import { useState } from 'react';
 
 export default function ExtendedFABExample() {
   const [expanded, setExpanded] = useState(true);
@@ -123,7 +115,6 @@ export default function ExtendedFABExample() {
 Use a Compose `Box` with `align('bottomEnd')` to position the FAB over scrollable content entirely within the Compose layer.
 
 ```tsx FloatingFABExample.tsx
-import {
   Box,
   FloatingActionButton,
   Host,
@@ -131,7 +122,6 @@ import {
   LazyColumn,
   ListItem,
 } from '@expo/ui/jetpack-compose';
-import { align, fillMaxSize, fillMaxWidth, offset } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function FloatingFABExample() {
   return (
@@ -155,7 +145,6 @@ export default function FloatingFABExample() {
 ### Custom color
 
 ```tsx FABCustomColorExample.tsx
-import { ExtendedFloatingActionButton, Host, Icon, Text } from '@expo/ui/jetpack-compose';
 
 export default function FABCustomColorExample() {
   return (
@@ -176,7 +165,6 @@ export default function FABCustomColorExample() {
 ## API
 
 ```tsx
-import {
   SmallFloatingActionButton,
   FloatingActionButton,
   LargeFloatingActionButton,

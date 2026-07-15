@@ -3,7 +3,6 @@ title: Navigate between pages
 description: Learn how to create links to move between pages.
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
 
 Expo Router uses "links" to move between pages in the app. This is conceptually similar to how the web works with `<a>` tags and the `href` attribute.
 
@@ -13,9 +12,7 @@ In the following example, there are two [`Link`](/versions/latest/sdk/router/#li
 
 {/* prettier-ignore */}
 ```tsx app/index.tsx
-import { View } from 'react-native';
 /* @info Import the <strong>Link</strong> React component from <strong>expo-router</strong> */
-import { Link } from 'expo-router';
 /* @end */
 
 export default function Page() {
@@ -39,8 +36,6 @@ The Link component wraps the children in a `<Text>` component by default, this i
 
 {/* prettier-ignore */}
 ```tsx
-import { Pressable, Text } from 'react-native';
-import { Link } from 'expo-router';
 
 export default function Page() {
   return (
@@ -121,9 +116,7 @@ Dynamic routes and query parameters can be provided statically or with the conve
 {/* prettier-ignore */}
 ```tsx app/index.tsx
 /* @info Import the <strong>Link</strong> React component from <strong>expo-router</strong> */
-import { Link } from 'expo-router';
 /* @end */
-import { View } from 'react-native';
 
 export default function Page() {
   return (
@@ -148,7 +141,6 @@ By default, links `navigate` to the nearest route in the navigation stack, eithe
 
 {/* prettier-ignore */}
 ```tsx app/index.tsx
-import { Link } from 'expo-router';
 
 export default function Page() {
   return (
@@ -167,7 +159,6 @@ By default, links "push" routes onto the navigation stack. It follows the same r
 
 {/* prettier-ignore */}
 ```tsx app/index.tsx
-import { Link } from 'expo-router';
 
 export default function Page() {
   return (
@@ -189,7 +180,6 @@ Native navigation does not always support `replace`. For example on X, you would
 You can also navigate imperatively using the `router` object. This is useful when you need to perform a navigation action outside a React component, such as in an event handler or a utility function.
 
 ```tsx
-import { router } from 'expo-router';
 
 export function logout() {
   /* @info Navigate to <strong>/login</strong> */

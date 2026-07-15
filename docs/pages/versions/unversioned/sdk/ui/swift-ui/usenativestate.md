@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 `useNativeState` returns an [`ObservableState`](#observablestate) that maps to a SwiftUI [`ObservableObject`](https://developer.apple.com/documentation/combine/observableobject) on the native side, so reads and writes to `.value` are observed directly by SwiftUI without going through the React render cycle. This lets you update the native view synchronously from a worklet on the UI thread.
 
@@ -24,9 +22,6 @@ import { APIInstallSection } from '~/components/plugins/InstallSection';
 The example below masks a phone number as the user types. The formatting and the writes to `maskedPhone.value` (text) and `selection.value` (cursor position) all happen synchronously on the UI thread, so there is no flicker between the typed value and the masked value.
 
 ```tsx WorkletPhoneMaskExample.tsx
-import { Host, TextField, useNativeState } from '@expo/ui/swift-ui';
-import { keyboardType } from '@expo/ui/swift-ui/modifiers';
-import { useCallback } from 'react';
 
 export default function WorkletPhoneMaskExample() {
   const maskedPhone = useNativeState('');
@@ -72,7 +67,6 @@ export default function WorkletPhoneMaskExample() {
 ## API
 
 ```tsx
-import { useNativeState } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/usenativestate" apiName="useNativeState" />

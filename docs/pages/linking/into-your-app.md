@@ -4,8 +4,6 @@ sidebar_title: Into your app
 description: Learn how to handle an incoming URL in your React Native and Expo app by creating a deep link.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
 
 This guide provides steps to configure standard **deep links** in your project by adding a custom scheme.
 
@@ -72,7 +70,6 @@ By default, `exp://` is replaced with `http://` when opening a URL in Expo Go. Y
 You can observe links that launch your app using the [`Linking.useURL()`](/versions/latest/sdk/linking/#useurl) hook from [`expo-linking`](/versions/latest/sdk/linking/).
 
 ```tsx index.tsx
-import * as Linking from 'expo-linking';
 
 export default function Home() {
   const url = Linking.useURL();
@@ -91,7 +88,6 @@ The `Linking.useURL()` hook works behind the scenes by following these imperativ
 You can use the [`Linking.parse()`](/versions/latest/sdk/linking/#linkingparseurl) method to parse the **path**, **hostname**, and **query parameters** from a URL. This method extracts deep linking information and considers nonstandard implementations.
 
 ```tsx index.tsx|collapseHeight=440
-import * as Linking from 'expo-linking';
 
 export default function Home() {
   const url = Linking.useURL();

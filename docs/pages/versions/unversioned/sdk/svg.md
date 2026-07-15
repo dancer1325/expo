@@ -7,12 +7,7 @@ platforms: ['android', 'ios', 'macos', 'web', 'tvos', 'expo-go']
 inExpoGo: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { SnackInline } from '~/ui/components/Snippet';
-import { MONOSPACE } from '~/ui/components/Text';
 
 `react-native-svg` allows you to use SVGs in your app, with support for interactivity and animation.
 
@@ -23,7 +18,6 @@ import { MONOSPACE } from '~/ui/components/Text';
 ## API
 
 ```js
-import * as Svg from 'react-native-svg';
 ```
 
 ### <MONOSPACE>Svg</MONOSPACE>
@@ -35,7 +29,6 @@ The implementation is provided by [react-native-svg](https://github.com/react-na
 <SnackInline label='SVG' dependencies={['react-native-svg']}>
 
 ```tsx
-import Svg, { Circle, Rect } from 'react-native-svg';
 
 export default function SvgComponent(props) {
   return (

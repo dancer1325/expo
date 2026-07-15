@@ -4,7 +4,6 @@ description: Proxy requests to the EAS Update server through your own server.
 hideTOC: true
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 EAS Update supports request proxying, which allows you to proxy requests to the EAS Update server through your own server. This can be useful for various reasons, such as adding custom headers, logging requests, or implementing additional security or request IP anonymization measures.
 

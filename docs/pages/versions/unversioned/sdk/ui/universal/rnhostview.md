@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 Hosts a React Native view subtree inside a universal `@expo/ui` layout. On Android and iOS, it re-exports the platform-native [`RNHostView` for Jetpack Compose](../jetpack-compose/rnhostview)/[`RNHostView` for SwiftUI](../swift-ui/rnhostview), so React Native children bridge into the surrounding Compose/SwiftUI tree. On web, there is no native host tree to bridge into, so it falls back to a React Native [`View`](https://reactnative.dev/docs/view) that wraps the children.
 
@@ -22,8 +20,6 @@ Hosts a React Native view subtree inside a universal `@expo/ui` layout. On Andro
 Place a React Native view subtree anywhere inside a universal `@expo/ui` layout.
 
 ```tsx RNHostViewExample.tsx
-import { Host, Column, RNHostView, Text } from '@expo/ui';
-import { Text as RNText, View } from 'react-native';
 
 export default function RNHostViewExample() {
   return (
@@ -52,8 +48,6 @@ export default function RNHostViewExample() {
 By default `RNHostView` fills its native parent. Set `matchContents` to have it shrink to fit its React Native children instead.
 
 ```tsx RNHostViewExample.tsx
-import { Host, Column, Row, Text, RNHostView } from '@expo/ui';
-import { View } from 'react-native';
 
 export default function RNHostViewExample() {
   return (
@@ -93,7 +87,6 @@ export default function RNHostViewExample() {
 ## API
 
 ```tsx
-import { RNHostView } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/rnhostview" apiName="RNHostView" />

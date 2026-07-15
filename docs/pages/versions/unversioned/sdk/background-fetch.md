@@ -7,13 +7,6 @@ platforms: ['android', 'ios']
 isDeprecated: true
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions } from '~/components/plugins/permissions';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { SnackInline } from '~/ui/components/Snippet';
-import { PlatformTags } from '~/ui/components/Tag/PlatformTags';
 
 > **warning** **[Deprecated](/more/release-statuses/#deprecated):** The `expo-background-fetch` library is being replaced by a new version in [`expo-background-task`](background-task.mdx). `expo-background-fetch` is not receiving patches and will be removed in an upcoming release.
 
@@ -55,10 +48,6 @@ Below is an example that demonstrates how to use `expo-background-fetch`.
 <SnackInline label="Background Fetch Usage" dependencies={['expo-background-fetch', 'expo-task-manager']}>
 
 ```tsx
-import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import * as BackgroundFetch from 'expo-background-fetch';
-import * as TaskManager from 'expo-task-manager';
 
 const BACKGROUND_FETCH_TASK = 'background-fetch';
 
@@ -188,7 +177,6 @@ async function registerBackgroundFetchAsync() {
 ## API
 
 ```js
-import * as BackgroundFetch from 'expo-background-fetch';
 ```
 
 <APISection packageName="expo-background-fetch" apiName="BackgroundFetch" />

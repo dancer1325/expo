@@ -4,7 +4,6 @@ sidebar_title: Dashboard
 description: View performance metrics, filter by platform, environment, and release, and investigate individual sessions in the EAS Observe dashboard.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 The EAS Observe dashboard provides a visual overview of your app's performance metrics. Open your project in the EAS dashboard and select [**Observe**](https://expo.dev/accounts/[account]/projects/[project]/observe) from the navigation menu.
 

@@ -4,7 +4,6 @@ sidebar_title: LLMs
 description: Efficient ways for AI agents and LLMs to access and consume Expo documentation.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
 
 Use the following endpoints and tools to give AI agents and LLMs access to Expo documentation at lower token cost than fetching full web pages.
 

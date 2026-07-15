@@ -3,10 +3,6 @@ title: Using TypeScript
 description: An in-depth guide on configuring an Expo project with TypeScript.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { CODE } from '~/ui/components/Text';
 
 Expo has first-class support for [TypeScript](https://www.typescriptlang.org/). The JavaScript interface of Expo SDK is written in TypeScript.
 
@@ -151,7 +147,6 @@ To enable absolute imports from a project's root directory, define [`compilerOpt
 For example, setting the above configuration allows importing `Button` component from the path **src/components/Button**:
 
 ```tsx
-import Button from 'src/components/Button';
 ```
 
 #### Considerations
@@ -197,7 +192,6 @@ module.exports = require('./metro.config.ts');
 Update **metro.config.ts** file with your project's metro configuration:
 
 ```ts metro.config.ts
-import { getDefaultConfig } from 'expo/metro-config';
 
 const config = getDefaultConfig(__dirname);
 
@@ -214,8 +208,6 @@ module.exports = require('./webpack.config.ts');
 ```
 
 ```ts webpack.config.ts
-import createExpoWebpackConfigAsync from '@expo/webpack-config/webpack';
-import { Arguments, Environment } from '@expo/webpack-config/webpack/types';
 
 module.exports = async function (env: Environment, argv: Arguments) {
   const config = await createExpoWebpackConfigAsync(env, argv);
@@ -231,8 +223,6 @@ module.exports = async function (env: Environment, argv: Arguments) {
 **app.config.ts** is supported by default. However, it doesn't support external TypeScript modules, or **tsconfig.json** customization. You can use the following approach to get a more comprehensive TypeScript setup:
 
 ```ts app.config.ts
-import 'ts-node/register'; // Add this to import TypeScript files
-import { ExpoConfig } from 'expo/config';
 
 const config: ExpoConfig = {
   name: 'my-app',

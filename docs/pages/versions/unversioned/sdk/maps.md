@@ -10,15 +10,6 @@ isAlpha: true
 hasVideoLink: true
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions, IOSPermissions } from '~/components/plugins/permissions';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ConfigPluginExample, ConfigPluginProperties } from '~/ui/components/ConfigSection';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
-import { PlatformTag } from '~/ui/components/Tag/PlatformTag';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 > **important** **This library is currently in [alpha](/more/release-statuses/#alpha) and will frequently experience breaking changes.** It is not available in the Expo Go app &ndash; use [development builds](/develop/development-builds/introduction/) to try it out.
 
@@ -147,8 +138,6 @@ To display the user's location on the map, you need to declare and request locat
 ## Usage
 
 ```tsx
-import { AppleMaps, GoogleMaps } from 'expo-maps';
-import { Platform, Text } from 'react-native';
 
 export default function App() {
   if (Platform.OS === 'ios') {
@@ -171,8 +160,6 @@ You can use the [`useImage`](/versions/latest/sdk/image/#useimage) hook from `ex
 The following example shows how to display a custom marker icon with Google Maps on Android.
 
 ```tsx
-import { useImage } from 'expo-image';
-import { GoogleMaps } from 'expo-maps';
 
 export default function Map() {
   const icon = useImage('https://example.com/marker.svg', { maxWidth: 48, maxHeight: 48 });
@@ -202,8 +189,6 @@ The loaded image dimensions determine the marker size, not a marker style prop. 
 The following example shows how to display a custom annotation icon with Apple Maps on iOS.
 
 ```tsx
-import { useImage } from 'expo-image';
-import { AppleMaps } from 'expo-maps';
 
 export default function Map() {
   const icon = useImage('https://example.com/marker.svg');
@@ -230,7 +215,6 @@ export default function Map() {
 ## API
 
 ```js
-import { AppleMaps, GoogleMaps } from 'expo-maps';
 
 // AppleMaps.View and GoogleMaps.View are the React components
 ```

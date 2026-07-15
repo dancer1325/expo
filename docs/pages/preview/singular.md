@@ -3,7 +3,6 @@ title: Singular stack routes
 description: Learn how to enforce singular routes.
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
 
 > **warning** Singular routes are currently flagged as `dangerouslySingular` due to an upstream issue with `react-native-screens`. Expo is working with Software Mansion to resolve the issue.
 

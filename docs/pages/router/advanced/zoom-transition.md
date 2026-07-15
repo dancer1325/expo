@@ -3,9 +3,6 @@ title: Zoom transition
 description: Learn how to use the zoom transition to create fluid animations between screens when using Expo Router for iOS.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { CODE } from '~/ui/components/Text';
 
 > **important** Zoom transition is an [alpha](/more/release-statuses/#alpha) API available on **iOS only** in **Expo SDK 55** and later. The API is subject to breaking changes.
 
@@ -25,9 +22,6 @@ To implement zoom transitions, you need to use the `Link.AppleZoom` component to
 To activate zoom transition for a link, wrap the source (`Image`) element with `Link.AppleZoom` in your screen:
 
 ```tsx src/app/index.tsx
-import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { Link } from 'expo-router';
-import { Image } from 'expo-image';
 
 export default function HomeScreen() {
   return (
@@ -50,8 +44,6 @@ export default function HomeScreen() {
 In the destination screen, define the `Image` component:
 
 ```tsx src/app/image.tsx
-import { View, Text, StyleSheet } from 'react-native';
-import { Image } from 'expo-image';
 
 export default function DetailsScreen() {
   return <Image source={{ uri: 'https://example.com/image-1.jpg' }} style={{ flex: 1 }} />;
@@ -106,10 +98,6 @@ If you need more control over the alignment rectangle, you can pass an `alignmen
 Here's a more complex example showing a gallery grid with zoom transitions to detail views. The source screen component (**src/app/index.tsx**) uses `Link.AppleZoom` to wrap an `Image` component:
 
 ```tsx src/app/index.tsx
-import { Image } from 'expo-image';
-import { Link } from 'expo-router';
-import { useState } from 'react';
-import { Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 
 const IMAGES = [
   // Define your array of images here.
@@ -179,10 +167,6 @@ const styles = StyleSheet.create({
 In the destination screen, the `Link.AppleZoomTarget` is used to specify the alignment of the zoomed element:
 
 ```tsx src/app/image/[id].tsx
-import { Image } from 'expo-image';
-import { Link, useLocalSearchParams } from 'expo-router';
-import { useMemo } from 'react';
-import { StyleSheet, useWindowDimensions, View } from 'react-native';
 
 export default function ImagePage() {
   const params = useLocalSearchParams();
@@ -241,7 +225,6 @@ The [`usePreventZoomTransitionDismissal`](/versions/latest/sdk/router/link/#usep
 Call the hook without any options to completely disable the swipe-to-dismiss gesture:
 
 ```tsx src/app/detail.tsx
-import { usePreventZoomTransitionDismissal } from 'expo-router';
 
 export default function DetailScreen() {
   usePreventZoomTransitionDismissal();
@@ -255,9 +238,6 @@ export default function DetailScreen() {
 Use the `unstable_dismissalBoundsRect` option to define a rectangle where dismissal gestures are allowed. This is useful for image viewers where you want dismissal only from the image area:
 
 ```tsx src/app/image.tsx
-import { usePreventZoomTransitionDismissal } from 'expo-router';
-import { View, StyleSheet } from 'react-native';
-import { Image } from 'expo-image';
 
 export default function DetailScreen() {
   // Only allow dismissal gestures that start within this rectangle

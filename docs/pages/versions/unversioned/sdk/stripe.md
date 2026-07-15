@@ -8,8 +8,6 @@ inExpoGo: true
 hasVideoLink: true
 ---
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 Expo includes support for [`@stripe/stripe-react-native`](https://github.com/stripe/stripe-react-native), which allows you to build delightful payment experiences in your native Android and iOS apps using React Native and Expo. This library provides powerful and customizable UI screens and elements that can be used out-of-the-box to collect your users' payment details.
 
@@ -72,8 +70,6 @@ For usage information and detailed documentation, see the following resources:
 If you're relying on redirects, you'll need to pass in a `urlScheme` to `initStripe`. To make sure you always use the proper `urlScheme`, pass in:
 
 ```js
-import * as Linking from 'expo-linking';
-import Constants from 'expo-constants';
 
 urlScheme:
   Constants.appOwnership === 'expo'

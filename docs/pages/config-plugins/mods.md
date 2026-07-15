@@ -3,10 +3,6 @@ title: Mods
 description: Learn about mods and how to use them when creating a config plugin.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ConfigPluginHierarchy } from '~/ui/components/ConfigPluginHierarchy';
-import { YesIcon, NoIcon, WarningIcon } from '~/ui/components/DocIcons';
-import { FileTree } from '~/ui/components/FileTree';
 
 This guide explains what mods and mod plugins are, how they work, and how to use them effectively when creating config plugins for your Expo project.
 
@@ -126,7 +122,6 @@ The `modRequest` object contains the following additional properties supplied by
 For example, if you want to write a mod to update the Xcode Project's "product name", you'll create a config plugin file that uses the [`withXcodeProject`](#ios) mod plugin.
 
 ```ts my-config-plugin.ts
-import { ConfigPlugin, withXcodeProject, IOSConfig } from 'expo/config-plugins';
 
 const withCustomProductName: ConfigPlugin<string> = (config, customName) => {
   return withXcodeProject(

@@ -4,12 +4,6 @@ sidebar_title: Integrate in existing native apps
 description: Learn how to integrate EAS Update into your existing native Android and iOS app to enable over-the-air updates.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { FAQ } from '~/ui/components/FAQ';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal, DiffBlock } from '~/ui/components/Snippet';
-import { Tabs, Tab } from '~/ui/components/Tabs';
-import { CODE } from '~/ui/components/Text';
 
 > **info** If your project is a **greenfield React Native app** — primarily built with React Native from the start, and the entry point of the app is React Native, then skip this guide and proceed to [Get started with EAS Update](/eas-update/getting-started/).
 
@@ -152,18 +146,8 @@ Open **android/app/src/main/java/com/\<your-app-name\>/MainApplication.kt** and 
 ```kotlin android/app/src/main/java/com/<your-app-name>/MainApplication.kt
 package com.yourpackagename
 
-import android.app.Application
-import android.content.res.Configuration
 
-import com.facebook.react.PackageList
-import com.facebook.react.ReactApplication
-import com.facebook.react.ReactNativeApplicationEntryPoint.loadReactNative
-import com.facebook.react.ReactHost
-import com.facebook.react.common.ReleaseLevel
-import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint
 
-import expo.modules.ApplicationLifecycleDispatcher
-import expo.modules.ExpoReactHostFactory
 
 // Step 1
 class MainApplication : Application(), ReactApplication {
@@ -210,14 +194,8 @@ Open **android/app/src/main/java/com/\<your-app-name\>/MainActivity.kt** and fol
 ```kotlin android/app/src/main/java/com/<your-app-name>/MainActivity.kt
 package com.yourpackagename
 
-import android.os.Bundle
 
-import com.facebook.react.ReactActivity
-import com.facebook.react.ReactActivityDelegate
-import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
-import com.facebook.react.defaults.DefaultReactActivityDelegate
 
-import expo.modules.ReactActivityDelegateWrapper
 
 // Step 1
 class MainActivity : ReactActivity() {
@@ -261,11 +239,6 @@ The following instructions assume you have an app written in Swift, with one or 
    2. Call `AppController.initializeWithoutStarting()`. This creates the controller instance, but defers the rest of the updates startup procedure until it is needed.
 
 ```swift ios/<your-app-name>/AppDelegate.swift
-import Expo
-import EXUpdates
-import React
-import ReactAppDependencyProvider
-import UIKit
 
 @UIApplicationMain
 // Step 1
@@ -352,9 +325,6 @@ class CustomReactNativeFactoryDelegate: ExpoReactNativeFactoryDelegate {
    2. Add this root view to the view controller.
 
 ```swift ios/<your-app-name>/CustomViewController.swift
-import UIKit
-import EXUpdates
-import ExpoModulesCore
 
 
 /**
@@ -433,10 +403,6 @@ public class CustomViewController: UIViewController, AppControllerDelegate {
    2. Call `AppController.initializeWithoutStarting()` . This creates the controller instance, but defers the rest of the updates startup procedure until it is needed.
 
 ```swift ios/<your-app-name>/AppDelegate.swift
-import ExpoModulesCore
-import EXUpdates
-import React
-import UIKit
 
 @UIApplicationMain
 // Step 1
@@ -508,9 +474,6 @@ class AppDelegate: EXAppDelegateWrapper {
    2. Add this root view to the view controller.
 
 ```swift ios/<your-app-name>/CustomViewController.swift
-import UIKit
-import EXUpdates
-import ExpoModulesCore
 
 // Step 1
 public class CustomViewController: UIViewController, AppControllerDelegate {

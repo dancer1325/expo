@@ -7,15 +7,10 @@ iconUrl: '/static/images/packages/expo-contacts.png'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions, IOSPermissions } from '~/components/plugins/permissions';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 > **important** The `legacy` version of Contacts API included on `expo-contacts` library. It can be used alongside class-based `expo-contacts` API, which is exposed from root. To use the legacy API, import it from `expo-contacts/legacy`.
 
@@ -86,9 +81,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 <SnackInline label='Basic Contacts Usage' dependencies={['expo-contacts']}>
 
 ```jsx
-import { useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import * as Contacts from 'expo-contacts/legacy';
 
 export default function App() {
   useEffect(() => {
@@ -129,7 +121,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as Contacts from 'expo-contacts/legacy';
 ```
 
 <APISection packageName="expo-contacts-legacy" apiName="Contacts (legacy)" />

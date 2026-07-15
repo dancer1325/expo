@@ -3,10 +3,7 @@ title: Stack
 description: Learn how to use the Stack navigator in Expo Router.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { FileTree } from '~/ui/components/FileTree';
 
 A stack navigator is the foundational way of navigating between routes in an app. On Android, a stacked route animates on top of the current screen. On iOS, a stacked route animates from the right. Expo Router provides a `Stack` navigation component that creates a navigation stack and allows you to add new routes in your app.
 
@@ -23,7 +20,6 @@ This file structure produces a layout where the `index` route is the first route
 You can use the **app/\_layout.tsx** file to define your app's `Stack` navigator with these two routes:
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router/stack';
 
 export default function Layout() {
   return <Stack />;
@@ -37,7 +33,6 @@ export default function Layout() {
 You can use the `<Stack.Screen name={routeName} />` component in the layout component route to statically configure a route's options. This is also useful for [tabs](/router/advanced/tabs/) or [drawers](/router/advanced/drawer/) as they need an icon defined ahead of time.
 
 ```tsx app/_layout.tsx|collapseHeight=440
-import { Stack } from 'expo-router';
 
 export default function Layout() {
   return (
@@ -63,9 +58,6 @@ export default function Layout() {
 As an alternative to the `<Stack.Screen>` component, you can use [`navigation.setOptions()`](https://reactnavigation.org/docs/navigation-object/#setoptions) to configure a route's options from within the route's component file.
 
 ```tsx app/index.tsx
-import { Stack, useNavigation } from 'expo-router';
-import { Text, View } from 'react-native';
-import { useEffect } from 'react';
 
 export default function Home() {
   const navigation = useNavigation();
@@ -87,7 +79,6 @@ export default function Home() {
 You can configure the header bar for all routes in a `Stack` navigator by using the `screenOptions` prop. This is useful for setting a common header style across all routes.
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function Layout() {
   return (
@@ -109,8 +100,6 @@ export default function Layout() {
 To configure the header bar dynamically for an individual route, use that navigator's `<Stack.Screen>` component in the routes's file. This is useful for interactions that change the UI.
 
 ```tsx app/index.tsx
-import { Link, Stack } from 'expo-router';
-import { Image, Text, View, StyleSheet } from 'react-native';
 
 function LogoTitle() {
   return (
@@ -163,8 +152,6 @@ To configure a route's option dynamically, you can always use the `<Stack.Screen
 As an alternative, you can also use the [imperative API's `router.setParams()`](/versions/latest/sdk/router/#router) function to configure the route dynamically.
 
 ```tsx app/details.tsx
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
 
 export default function Details() {
   const router = useRouter();
@@ -201,9 +188,6 @@ const styles = StyleSheet.create({
 You can add buttons to the header by using the `headerLeft` and `headerRight` options. These options accept a React component that renders in the header.
 
 ```tsx app/index.tsx
-import { Stack } from 'expo-router';
-import { Button, Text, Image, StyleSheet } from 'react-native';
-import { useState } from 'react';
 
 function LogoTitle() {
   return (
@@ -254,7 +238,6 @@ The `Stack` navigator will push a new screen every time the app user navigates t
 You can use the `<Stack.Screen name="[profile]" getId={}>` component in the layout component route to modify the push behavior:
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function Layout() {
   return (
@@ -286,9 +269,7 @@ Dismiss is different from `back` as it targets the closest stack and not the cur
 
 {/* prettier-ignore */}
 ```tsx app/settings.tsx
-import { Button, View } from 'react-native';
 /* @info Import <CODE>useRouter</CODE> from Expo Router. */
-import { useRouter } from 'expo-router';
 /* @end */
 
 export default function Settings() {
@@ -322,9 +303,7 @@ For example, consider the history of `/one`, `/two`, `/three` routes, where `/th
 
 {/* prettier-ignore */}
 ```tsx app/settings.tsx
-import { Button, View, Text } from 'react-native';
 /* @info Import <CODE>useRouter</CODE> from Expo Router. */
-import { useRouter } from 'expo-router';
 /* @end */
 
 export default function Settings() {
@@ -356,9 +335,7 @@ For example, the `home` route is the first screen, and the `settings` is the las
 
 {/* prettier-ignore */}
 ```tsx app/settings.tsx
-import { Button, View, Text } from 'react-native';
 /* @info Import <CODE>useRouter</CODE> from Expo Router. */
-import { useRouter } from 'expo-router';
 /* @end */
 
 export default function Settings() {
@@ -388,9 +365,7 @@ To check if it is possible to dismiss the current screen. Returns `true` if the 
 
 {/* prettier-ignore */}
 ```tsx app/settings.tsx|collapseHeight=410
-import { Button, View } from 'react-native';
 /* @info Import <CODE>useRouter</CODE> from Expo Router. */
-import { useRouter } from 'expo-router';
 /* @end */
 
 export default function Settings() {
@@ -429,13 +404,10 @@ You can also use the JavaScript-powered `@react-navigation/stack` library to cre
 In the following example, `JsStack` component is defined using `@react-navigation/stack` library:
 
 ```tsx layouts/js-stack.tsx
-import { ParamListBase, StackNavigationState } from '@react-navigation/native';
-import {
   createStackNavigator,
   StackNavigationEventMap,
   StackNavigationOptions,
 } from '@react-navigation/stack';
-import { withLayoutContext } from 'expo-router';
 
 const { Navigator } = createStackNavigator();
 
@@ -451,7 +423,6 @@ After defining the `JsStack` component, you can use it in your app:
 
 {/* prettier-ignore */}
 ```tsx app/_layout.tsx
-import { JsStack } from '../layouts/js-stack';
 
 export default function Layout() {
   return (

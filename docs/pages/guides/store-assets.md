@@ -4,10 +4,7 @@ description: Learn how to create screenshots and previews for your app's store p
 sidebar_title: App store assets
 ---
 
-import { FigmaIcon } from '@expo/styleguide-icons/outline/FigmaIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Before submitting your app to the Google Play Store and Apple App Store, you need to provide some assets for your store listing page. The goal of these images and videos is to give your prospective users an idea of what your app experience is going to be like.
 

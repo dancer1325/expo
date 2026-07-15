@@ -3,7 +3,6 @@ title: Link preview
 description: Learn how to add a preview to your link on iOS when using Expo Router.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **important** Link preview is an iOS-only feature available in SDK 54 and later.
 
@@ -18,7 +17,6 @@ This guide will show you how to add and customize a link preview for your app on
 If you have a link in your app, you can add a link preview to it by replacing the link's content with a [`Link.Trigger`](/versions/latest/sdk/router/link/#linktrigger) and adding the [`Link.Preview`](/versions/latest/sdk/router/link/#linkpreview) component to it. This will create a preview of the page that the link points to.
 
 ```tsx
-import { Link } from 'expo-router';
 
 export default function Page() {
   return (

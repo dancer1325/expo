@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI HorizontalPager matches Jetpack Compose's [HorizontalPager](<https://developer.android.com/reference/kotlin/androidx/compose/foundation/pager/package-summary#HorizontalPager(androidx.compose.foundation.pager.PagerState,androidx.compose.ui.Modifier,kotlin.Function0,kotlin.Function0,kotlin.Function0,kotlin.Function0,kotlin.Function0,kotlin.Function0,kotlin.Function2)>) — a horizontally scrolling pager that snaps to individual pages.
 
@@ -33,9 +30,6 @@ Expo UI HorizontalPager matches Jetpack Compose's [HorizontalPager](<https://dev
 The pager owns its scroll position natively. Use `initialPage` to pick the starting page, and listen for changes with `onCurrentPageChange` (fires mid-swipe as the snap target flips) or `onSettledPageChange` (fires only after the swipe settles).
 
 ```tsx UncontrolledPagerExample.tsx
-import { Box, Column, Host, HorizontalPager, Text } from '@expo/ui/jetpack-compose';
-import { background, fillMaxSize, fillMaxWidth, height } from '@expo/ui/jetpack-compose/modifiers';
-import { useState } from 'react';
 
 export default function UncontrolledPagerExample() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,7 +71,6 @@ function Page({ label, color }: { label: string; color: string }) {
 Attach a `ref` and call `animateScrollToPage` or `scrollToPage` on it. These mirror Compose's `PagerState.animateScrollToPage` and `PagerState.scrollToPage`.
 
 ```tsx ProgrammaticPagerExample.tsx
-import {
   Box,
   Button,
   Column,
@@ -87,8 +80,6 @@ import {
   Row,
   Text,
 } from '@expo/ui/jetpack-compose';
-import { background, fillMaxSize, fillMaxWidth, height } from '@expo/ui/jetpack-compose/modifiers';
-import { useRef, useState } from 'react';
 
 const PAGE_COUNT = 5;
 
@@ -147,8 +138,6 @@ function Page({ label, color }: { label: string; color: string }) {
 Use `pageSpacing` to add a gap between pages (visible during swipe) and `contentPadding` to inset the pager so neighboring pages peek at rest.
 
 ```tsx PagerLayoutExample.tsx
-import { Box, Host, HorizontalPager, Text } from '@expo/ui/jetpack-compose';
-import { background, fillMaxSize, fillMaxWidth, height } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function PagerLayoutExample() {
   return (
@@ -179,7 +168,6 @@ function Page({ label, color }: { label: string; color: string }) {
 ## API
 
 ```tsx
-import { HorizontalPager } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/horizontalpager" apiName="HorizontalPager" />

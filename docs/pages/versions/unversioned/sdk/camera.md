@@ -8,18 +8,11 @@ iconUrl: '/static/images/packages/expo-camera.png'
 platforms: ['android*', 'ios*', 'web', 'expo-go']
 ---
 
-import { GithubIcon } from '@expo/styleguide-icons/custom/GithubIcon';
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions, IOSPermissions } from '~/components/plugins/permissions';
-import { BoxLink } from '~/ui/components/BoxLink';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 * `expo-camera`
   * 👀React component / renders a preview of the device's front or back camera 👀
@@ -240,7 +233,6 @@ When using **Chrome versions 64+**, if you try to use a web camera in a cross-or
 ## API
 
 ```js
-import { CameraView } from 'expo-camera';
 ```
 
 <APISection packageName="expo-camera" apiName="Camera" exposeAllClassPropsInSidebar />

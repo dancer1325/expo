@@ -4,9 +4,6 @@ sidebar_title: Submit to Apple
 description: Learn how to submit your app to the Apple App Store from your computer and CI.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 This guide outlines how to submit your app to the Apple App Store from your own computer and from CI.
 

@@ -3,8 +3,6 @@ title: Development and production modes
 description: Learn how to run a project in development mode or production mode.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 Your project will always run in either **development** or **production** mode. By default, running your project locally with `npx expo start` runs it in development mode, whereas a published project (with `eas update`), or any standalone app, will run in production mode.
 

@@ -4,8 +4,6 @@ description: Learn how to nest navigators in Expo Router.
 hasVideoLink: true
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 > **warning** Navigation UI elements (Link, Tabs, Stack) may move out of the Expo Router library in the future.
 
@@ -35,7 +33,6 @@ Consider the following file structure which is used as an example:
 In the above example, **src/app/home/feed.tsx** matches `/home/feed`, and **src/app/home/messages.tsx** matches `/home/messages`.
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default Stack;
 ```
@@ -43,13 +40,11 @@ export default Stack;
 Both **src/app/home/\_layout.tsx** and **src/app/index.tsx** below are nested in the **src/app/\_layout.tsx** layout so that it will be rendered as a stack.
 
 ```tsx src/app/home/_layout.tsx
-import { Tabs } from 'expo-router';
 
 export default Tabs;
 ```
 
 ```tsx src/app/index.tsx
-import { Link } from 'expo-router';
 
 export default function Root() {
   return <Link href="/home/messages">Navigate to nested route</Link>;
@@ -59,7 +54,6 @@ export default function Root() {
 Both **src/app/home/feed.tsx** and **src/app/home/messages.tsx** below are nested in the **home/\_layout.tsx** layout, so it will be rendered as a tab.
 
 ```tsx src/app/home/feed.tsx
-import { View, Text } from 'react-native';
 
 export default function Feed() {
   return (
@@ -71,7 +65,6 @@ export default function Feed() {
 ```
 
 ```tsx src/app/home/messages.tsx
-import { View, Text } from 'react-native';
 
 export default function Messages() {
   return (

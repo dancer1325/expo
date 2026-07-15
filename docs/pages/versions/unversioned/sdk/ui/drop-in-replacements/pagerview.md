@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { YesIcon, NoIcon } from '~/ui/components/DocIcons';
 
 A `PagerView` component with an API compatible with `react-native-pager-view`. It wraps the platform-specific `@expo/ui` primitives: Jetpack Compose `HorizontalPager` on Android and a paged SwiftUI `ScrollView` on iOS. Each child becomes a separate page and stretches to fill the pager.
 
@@ -28,9 +25,7 @@ Optionally, install [`react-native-worklets`](https://docs.swmansion.com/react-n
 Update the import statement by importing `PagerView` from `@expo/ui/community/pager-view`:
 
 ```tsx
-import PagerView from 'react-native-pager-view';
 // becomes:
-import PagerView from '@expo/ui/community/pager-view';
 ```
 
 Before you swap, you should know what changes:
@@ -44,9 +39,6 @@ See [Platform behavior](#platform-behavior) for the full list.
 ## Basic usage
 
 ```tsx PagerViewExample.tsx
-import { useRef } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-import PagerView, { type PagerViewRef } from '@expo/ui/community/pager-view';
 
 export default function PagerViewExample() {
   const pagerRef = useRef<PagerViewRef>(null);
@@ -104,7 +96,6 @@ Additional differences from upstream `react-native-pager-view`:
 ## API
 
 ```tsx
-import PagerView from '@expo/ui/community/pager-view';
 ```
 
 <APISection packageName="expo-ui/community/pager-view" apiName="PagerView" />

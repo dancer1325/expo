@@ -3,7 +3,6 @@ title: Dynamic routes
 description: Learn about dynamic routes and how you can create them using Expo Router library.
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
 
 A **dynamic route** allows matching one or multiple paths based on a dynamic segment embedded in the URL. This segment is in the form of a variable, such as a unique identifier, and your app doesn't know the exact segment ahead of time.
 
@@ -49,8 +48,6 @@ Navigating from one route to a dynamic route is done by providing query paramete
 For example, the following code allows you to navigate to the dynamic route statically using query parameters:
 
 ```tsx app/(home)/index.tsx|collapseHeight=300
-import { Link } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
 
 export default function HomeScreen() {
   return (
@@ -74,8 +71,6 @@ const styles = StyleSheet.create({
 You can also use the `href` object to provide a `pathname` which takes the value of the dynamic route and passes `params`:
 
 ```tsx app/(home)/index.tsx
-import { Link } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
 
 export default function HomeScreen() {
   return (
@@ -106,8 +101,6 @@ const styles = StyleSheet.create({
 Dynamic segments of a URL are accessible with a [route parameter](/router/reference/url-parameters/) in the route component. For example, you can use the [`useLocalSearchParams`](/router/reference/hooks/#uselocalsearchparams) hook which returns the URL parameters for the selected route.
 
 ```tsx app/(home)/details/[id].tsx|collapseHeight=300
-import { useLocalSearchParams } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
 
 export default function DetailsScreen() {
   const { id } = useLocalSearchParams();

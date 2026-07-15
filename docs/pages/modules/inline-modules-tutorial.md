@@ -4,11 +4,7 @@ sidebar_title: Create an inline module
 description: A tutorial on creating a native module and view directly in your Expo project using inline modules.
 ---
 
-import { Grid01Icon } from '@expo/styleguide-icons/outline/Grid01Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 > **warning** Inline modules are [experimental](/more/release-statuses/#experimental) and available in Expo SDK 56 and later. The API is subject to breaking changes.
 
@@ -67,8 +63,6 @@ For Android, create a Kotlin file called **FirstInlineModule.kt** inside the **a
 ```kotlin app/FirstInlineModule.kt
 package app
 
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
 
 class FirstInlineModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -102,8 +96,6 @@ class FirstInlineModule: Module {
 In your app's TypeScript/JavaScript code you can use the module in the following way:
 
 ```tsx app/index.tsx
-import { requireNativeModule } from 'expo';
-import { Text } from 'react-native';
 
 const FirstInlineModule = requireNativeModule('FirstInlineModule');
 
@@ -161,16 +153,7 @@ For Android, create a Kotlin file called **FirstInlineView.kt** inside the **app
 ```kotlin app/FirstInlineView.kt
 package app
 
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
-import java.net.URL
 
-import android.content.Context
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import expo.modules.kotlin.AppContext
-import expo.modules.kotlin.viewevent.EventDispatcher
-import expo.modules.kotlin.views.ExpoView
 
 class FirstInlineView : Module() {
   override fun definition() = ModuleDefinition {
@@ -208,7 +191,6 @@ For iOS, create a Swift file called **FirstInlineView.swift** inside the **app**
 
 ```swift app/FirstInlineView.swift
 internal import ExpoModulesCore
-import WebKit
 
 class FirstInlineView: Module {
   public func definition() -> ModuleDefinition {
@@ -257,8 +239,6 @@ class ExpoWebView: ExpoView, WKNavigationDelegate {
 You use the inline view in a similar way to the inline module:
 
 ```tsx app/index.tsx
-import { requireNativeModule, requireNativeView } from 'expo';
-import { StyleSheet, Text, View } from 'react-native';
 
 const FirstInlineModule = requireNativeModule('FirstInlineModule');
 const FirstInlineView = requireNativeView('FirstInlineView');

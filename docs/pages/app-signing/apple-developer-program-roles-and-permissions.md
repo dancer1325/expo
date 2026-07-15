@@ -4,8 +4,6 @@ sidebar_title: Apple Developer Program roles and permissions
 description: Learn about the Apple Developer account membership requirements for creating an EAS Build.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 An Apple Developer account with permissions to create [app signing credentials](/app-signing/managed-credentials/#generating-app-signing-credentials), such as certificates, identifiers, and provisioning profiles, is required when using EAS Build to create iOS device builds. These credentials can be generated when submitting the build by logging into your Apple Account from the EAS CLI, or they can be uploaded to your Expo account by an authorized user, so users without Apple Developer account access can create builds using the uploaded credentials.
 

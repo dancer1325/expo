@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`List`](../universal/list) — it renders the appropriate native component per platform.
 
@@ -33,7 +30,6 @@ Expo UI List matches the official SwiftUI [List API](https://developer.apple.com
 ### Basic list
 
 ```tsx BasicListExample.tsx
-import { Host, List, Text, Section } from '@expo/ui/swift-ui';
 
 export default function BasicListExample() {
   return (
@@ -58,7 +54,6 @@ export default function BasicListExample() {
 ### List with labels and icons
 
 ```tsx ListWithLabelsExample.tsx
-import { Host, List, Label, Section } from '@expo/ui/swift-ui';
 
 export default function ListWithLabelsExample() {
   return (
@@ -82,9 +77,6 @@ Use the [`listStyle`](modifiers/#liststylestyle) modifier to change the list's a
 > **Note:** The `inset`, `insetGrouped`, and `sidebar` styles are not available on tvOS.
 
 ```tsx ListStylesExample.tsx
-import { useState } from 'react';
-import { Host, List, Text, Section, Picker } from '@expo/ui/swift-ui';
-import { listStyle, pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 
 const styles = ['automatic', 'plain', 'inset', 'insetGrouped', 'grouped', 'sidebar'] as const;
 
@@ -128,9 +120,6 @@ Enable selection, deletion, and reordering of list items using the [`List.ForEac
 - Use [`moveDisabled`](modifiers/#movedisableddisabled) and [`deleteDisabled`](modifiers/#deletedisableddisabled) modifiers to disable these actions on individual items
 
 ```tsx EditableListExample.tsx
-import { useState } from 'react';
-import { Host, List, Label, Section, Button, Toggle } from '@expo/ui/swift-ui';
-import { environment, tag } from '@expo/ui/swift-ui/modifiers';
 
 type Task = { id: string; title: string };
 
@@ -187,9 +176,6 @@ export default function EditableListExample() {
 Use the [`refreshable`](modifiers/#refreshablehandler) modifier to enable pull-to-refresh functionality.
 
 ```tsx RefreshableListExample.tsx
-import { useState } from 'react';
-import { Host, List, Text, Section } from '@expo/ui/swift-ui';
-import { refreshable } from '@expo/ui/swift-ui/modifiers';
 
 export default function RefreshableListExample() {
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
@@ -218,8 +204,6 @@ export default function RefreshableListExample() {
 Use [`listRowBackground`](modifiers/#listrowbackgroundcolor), [`listRowSeparator`](modifiers/#listrowseparatorvisibility-edges), and [`listRowInsets`](modifiers/#listrowinsetsparams) modifiers to customize individual rows.
 
 ```tsx RowStylingExample.tsx
-import { Host, List, Text, Section } from '@expo/ui/swift-ui';
-import { listRowBackground, listRowSeparator, listRowInsets } from '@expo/ui/swift-ui/modifiers';
 
 export default function RowStylingExample() {
   return (
@@ -242,8 +226,6 @@ export default function RowStylingExample() {
 Use the [`scrollDismissesKeyboard`](modifiers/#scrolldismisseskeyboardmode) modifier to control how the keyboard is dismissed when scrolling.
 
 ```tsx KeyboardDismissExample.tsx
-import { Host, List, Section, TextField } from '@expo/ui/swift-ui';
-import { scrollDismissesKeyboard } from '@expo/ui/swift-ui/modifiers';
 
 export default function KeyboardDismissExample() {
   return (
@@ -265,8 +247,6 @@ export default function KeyboardDismissExample() {
 Use the [`headerProminence`](modifiers/#headerprominenceprominence) modifier to adjust the visual prominence of section headers.
 
 ```tsx HeaderProminenceExample.tsx
-import { Host, List, Text, Section } from '@expo/ui/swift-ui';
-import { headerProminence } from '@expo/ui/swift-ui/modifiers';
 
 export default function HeaderProminenceExample() {
   return (
@@ -287,7 +267,6 @@ export default function HeaderProminenceExample() {
 ## API
 
 ```tsx
-import { List } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/list" apiName="List" />

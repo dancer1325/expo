@@ -5,10 +5,6 @@ description: Learn how to install EAS Observe and start collecting performance m
 searchRank: 9
 ---
 
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Tabs, Tab } from '~/ui/components/Tabs';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 EAS Observe tracks your app's startup performance in production. This guide walks you through installing the library, setting up your app, and viewing your first metrics.
 
@@ -59,8 +55,6 @@ Wrap your root layout with `AppMetricsRoot` (SDK 55) or `ObserveRoot` (SDK 56 an
 <Tab label="SDK 56 and later">
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
-import { ObserveRoot } from 'expo-observe';
 
 function RootLayout() {
   return <Stack />;
@@ -74,8 +68,6 @@ export default ObserveRoot.wrap(RootLayout);
 <Tab label="SDK 55">
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
-import { AppMetricsRoot } from 'expo-observe';
 
 function RootLayout() {
   return <Stack />;
@@ -106,10 +98,6 @@ Call `markInteractive()` when your app is fully ready for user interaction. This
 <Tab label="SDK 56">
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { ObserveRoot, useObserve } from 'expo-observe';
-import { useEffect, useState } from 'react';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -155,10 +143,6 @@ export default ObserveRoot.wrap(RootLayout);
 <Tab label="SDK 55">
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { AppMetrics, AppMetricsRoot } from 'expo-observe';
-import { useEffect, useState } from 'react';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();

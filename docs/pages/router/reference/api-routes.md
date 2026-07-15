@@ -5,10 +5,6 @@ description: Learn how to create server endpoints with Expo Router.
 
 > **warning** API Routes is an experimental feature. Available from Expo Router v3.
 
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tab, Tabs } from '~/ui/components/Tabs';
 
 Expo Router enables you to write server code for all platforms, right in your **app** directory.
 
@@ -66,7 +62,6 @@ You can make a network request to the route to access the data. Run the followin
 You can also make a request from the client code:
 
 ```tsx app/index.tsx
-import { Button } from 'react-native';
 
 async function fetchHello() {
   const response = await fetch('/hello');
@@ -159,7 +154,6 @@ export function GET() {
 You can respond to server errors by using the `Response` object.
 
 ```ts app/blog/[post].ts
-import { Request, Response } from 'expo-router/server';
 
 export async function GET(request: Request, { post }: Record<string, string>) {
   if (!post) {

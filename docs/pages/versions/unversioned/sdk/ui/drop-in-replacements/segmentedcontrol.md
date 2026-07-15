@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A `SegmentedControl` component with an API compatible with `@react-native-segmented-control/segmented-control`. It uses Jetpack Compose `SingleChoiceSegmentedButtonRow` on Android and SwiftUI `Picker` with segmented style on iOS.
 
@@ -32,8 +30,6 @@ If you need lower-level control (custom modifiers, styles, or layouts), use thos
 ## Basic usage
 
 ```tsx SegmentedControlExample.tsx
-import { useState } from 'react';
-import SegmentedControl from '@expo/ui/community/segmented-control';
 
 export default function SegmentedControlExample() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -53,7 +49,6 @@ export default function SegmentedControlExample() {
 ## API
 
 ```tsx
-import SegmentedControl from '@expo/ui/community/segmented-control';
 ```
 
 <APISection packageName="expo-ui/community/segmented-control" apiName="SegmentedControl" />

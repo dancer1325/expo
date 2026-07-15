@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Button`](../universal/button) — it renders the appropriate native component per platform.
 
@@ -31,7 +28,6 @@ Expo UI Button matches the official SwiftUI [Button API](https://developer.apple
 ### Basic button
 
 ```tsx BasicButtonExample.tsx
-import { Host, Button } from '@expo/ui/swift-ui';
 
 export default function BasicButtonExample() {
   return (
@@ -45,7 +41,6 @@ export default function BasicButtonExample() {
 ### Button with system image
 
 ```tsx ButtonWithImageExample.tsx
-import { Host, Button } from '@expo/ui/swift-ui';
 
 export default function ButtonWithImageExample() {
   return (
@@ -65,8 +60,6 @@ export default function ButtonWithImageExample() {
 Use the `labelStyle` modifier to show only the icon while keeping the label for accessibility.
 
 ```tsx IconOnlyButtonExample.tsx
-import { Host, Button } from '@expo/ui/swift-ui';
-import { labelStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function IconOnlyButtonExample() {
   return (
@@ -89,8 +82,6 @@ Use the `buttonStyle` modifier to change the button's appearance. Available styl
 > **Note:** The `glass` and `glassProminent` styles are only available on iOS 26+ when built with Xcode 26.
 
 ```tsx ButtonStylesExample.tsx
-import { Host, Button, VStack } from '@expo/ui/swift-ui';
-import { buttonStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function ButtonStylesExample() {
   return (
@@ -111,8 +102,6 @@ export default function ButtonStylesExample() {
 Use the `buttonBorderShape` modifier to change the shape of a styled button. Available shapes are: `automatic`, `capsule`, `roundedRectangle`, and `circle` (iOS 17+).
 
 ```tsx ButtonBorderShapeExample.tsx
-import { Host, Button } from '@expo/ui/swift-ui';
-import {
   buttonStyle,
   controlSize,
   buttonBorderShape,
@@ -145,8 +134,6 @@ Use the `controlSize` modifier to adjust the button size. Available sizes are: `
 > **Note:** The `extraLarge` size is only available on iOS 17+.
 
 ```tsx ControlSizeExample.tsx
-import { Host, Button, VStack } from '@expo/ui/swift-ui';
-import { buttonStyle, controlSize } from '@expo/ui/swift-ui/modifiers';
 
 export default function ControlSizeExample() {
   return (
@@ -167,7 +154,6 @@ export default function ControlSizeExample() {
 Use the `role` prop to indicate the semantic role of the button. Available roles are: `default`, `cancel`, and `destructive`.
 
 ```tsx ButtonRolesExample.tsx
-import { Host, Button, VStack } from '@expo/ui/swift-ui';
 
 export default function ButtonRolesExample() {
   return (
@@ -187,8 +173,6 @@ export default function ButtonRolesExample() {
 Use the `tint` modifier to change the button's color.
 
 ```tsx TintedButtonExample.tsx
-import { Host, Button } from '@expo/ui/swift-ui';
-import { tint } from '@expo/ui/swift-ui/modifiers';
 
 export default function TintedButtonExample() {
   return (
@@ -204,8 +188,6 @@ export default function TintedButtonExample() {
 Use the `disabled` modifier to disable the button.
 
 ```tsx DisabledButtonExample.tsx
-import { Host, Button } from '@expo/ui/swift-ui';
-import { disabled } from '@expo/ui/swift-ui/modifiers';
 
 export default function DisabledButtonExample() {
   return (
@@ -221,7 +203,6 @@ export default function DisabledButtonExample() {
 You can pass custom components as `children` for more complex button label content.
 
 ```tsx CustomContentExample.tsx
-import { Host, Button, VStack, Image, Text } from '@expo/ui/swift-ui';
 
 export default function CustomContentExample() {
   return (
@@ -240,7 +221,6 @@ export default function CustomContentExample() {
 ## API
 
 ```tsx
-import { Button } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/button" apiName="Button" />

@@ -7,7 +7,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 The Jetpack Compose components in `@expo/ui/jetpack-compose` allow you to build fully native Android interfaces using Jetpack Compose from React Native.
 
@@ -20,7 +19,6 @@ The Jetpack Compose components in `@expo/ui/jetpack-compose` allow you to build 
 Using a component from `@expo/ui/jetpack-compose` requires wrapping it in a [`Host`](./host) component. The `Host` is a container for Jetpack Compose views.
 
 ```tsx
-import { Host, Button } from '@expo/ui/jetpack-compose';
 
 export function SaveButton() {
   return (

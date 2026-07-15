@@ -3,7 +3,6 @@ title: Clear bundler caches on Windows
 description: Learn how to clear the bundler cache when using Yarn or npm with Expo CLI or React Native CLI on Windows.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 > Need to clear development caches on macOS or Linux? [Find the relevant commands here.](/troubleshooting/clear-cache-macos-linux/)
 

@@ -7,11 +7,6 @@ iconUrl: '/static/images/packages/expo.png'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { FAQ } from '~/ui/components/FAQ';
-import { CODE } from '~/ui/components/Text';
 
 ## Installation
 
@@ -20,7 +15,6 @@ import { CODE } from '~/ui/components/Text';
 ## API
 
 ```tsx
-import * as Expo from 'expo';
 ```
 
 ### `expo/fetch` API
@@ -28,7 +22,6 @@ import * as Expo from 'expo';
 `expo/fetch` provides a [WinterCG-compliant Fetch API](https://fetch.spec.whatwg.org/) that works consistently across web and mobile environments, ensuring a standardized and cross-platform fetch experience within Expo applications.
 
 ```ts Streaming fetch
-import { fetch } from 'expo/fetch';
 
 const resp = await fetch('https://httpbin.org/drip?numbytes=512&duration=2', {
   headers: { Accept: 'text/event-stream' },
@@ -184,8 +177,6 @@ For example, let's say you want to make **src/main.jsx** the entry file for your
 Then, in **src/main.jsx**, make sure you call `registerRootComponent` and pass in the component you want to render at the root of the app:
 
 ```jsx src/main.jsx
-import { registerRootComponent } from 'expo';
-import { View } from 'react-native';
 
 function App() {
   return <View />;

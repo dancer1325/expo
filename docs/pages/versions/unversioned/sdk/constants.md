@@ -6,8 +6,6 @@ packageName: 'expo-constants'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 * `expo-constants`
   * system information / remains constant -- throughout the -- lifetime of your app's installation
@@ -20,7 +18,6 @@ import { APIInstallSection } from '~/components/plugins/InstallSection';
 ## API
 
 ```js
-import Constants from 'expo-constants';
 ```
 
 <APISection packageName="expo-constants" apiName="Constants" />

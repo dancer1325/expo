@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 Jetpack Compose modifiers allow you to customize the layout, appearance, and behavior of UI components. Modifiers are the Compose equivalent of style properties — they control sizing, padding, backgrounds, interactions, and more.
 
@@ -20,8 +18,6 @@ Jetpack Compose modifiers allow you to customize the layout, appearance, and beh
 Modifiers are applied to components using the `modifiers` prop with an array syntax. You can combine multiple modifiers to create complex styling and behavior. Modifiers are applied in the order they appear in the array, which can affect the final result (for example, applying `padding` before `background` produces different results than the reverse).
 
 ```tsx
-import { Button, Host } from '@expo/ui/jetpack-compose';
-import {
   paddingAll,
   fillMaxWidth,
   background,
@@ -60,7 +56,6 @@ Applies equal padding on all four sides.
 | `all`     | `number` | Padding value in dp. |
 
 ```tsx
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[paddingAll(16)]}>Padded button</Button>;
 ```
@@ -77,7 +72,6 @@ Applies individual padding to each side.
 | `bottom`  | `number` | Bottom padding in dp.     |
 
 ```tsx
-import { padding } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[padding(16, 8, 16, 8)]}>Custom padding</Button>;
 ```
@@ -96,7 +90,6 @@ Sets exact dimensions for the component.
 | `height`  | `number` | Height in dp. |
 
 ```tsx
-import { size } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[size(200, 48)]}>Fixed size</Button>;
 ```
@@ -110,7 +103,6 @@ Fills all available space in both dimensions.
 | `fraction` | `number` | Fraction of available space (0.0–1.0). Default `1.0`. |
 
 ```tsx
-import { fillMaxSize } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[fillMaxSize()]}>Fill all space</Button>
 <Button modifiers={[fillMaxSize(0.5)]}>Fill half</Button>
@@ -125,7 +117,6 @@ Fills available width.
 | `fraction` | `number` | Fraction of available width (0.0–1.0). Default `1.0`. |
 
 ```tsx
-import { fillMaxWidth } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[fillMaxWidth()]}>Full width</Button>;
 ```
@@ -184,7 +175,6 @@ Offsets the component from its natural position without affecting the layout of 
 | `y`       | `number` | Vertical offset in dp.   |
 
 ```tsx
-import { offset } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[offset(10, 5)]}>Offset button</Button>;
 ```
@@ -202,7 +192,6 @@ Sets the background color.
 | `color`   | `string` | Background color (hex string). |
 
 ```tsx
-import { background } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[background('#3498DB')]}>Blue background</Button>;
 ```
@@ -217,7 +206,6 @@ Adds a border around the component.
 | `borderColor` | `string` | Border color (hex string). |
 
 ```tsx
-import { border } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[border(2, '#E74C3C')]}>Bordered button</Button>;
 ```
@@ -231,7 +219,6 @@ Adds an elevation shadow beneath the component.
 | `elevation` | `number` | Shadow elevation in dp. |
 
 ```tsx
-import { shadow } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[shadow(8)]}>Elevated button</Button>;
 ```
@@ -251,7 +238,6 @@ Draws a shadow behind the component with control over the blur radius, spread, o
 | `config.alpha`   | `number` | Shadow opacity (0.0–1.0).                                 |
 
 ```tsx
-import { dropShadow, Shapes } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button
   modifiers={[
@@ -276,7 +262,6 @@ Draws a shadow inside the component to create an inset effect. Apply the `backgr
 | `config.alpha`   | `number` | Shadow opacity (0.0–1.0).                                 |
 
 ```tsx
-import { innerShadow, background, Shapes } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button
   modifiers={[
@@ -296,7 +281,6 @@ Controls the opacity of the component.
 | `alpha`   | `number` | Opacity value (0.0–1.0). |
 
 ```tsx
-import { alpha } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[alpha(0.5)]}>Semi-transparent</Button>;
 ```
@@ -310,7 +294,6 @@ Applies a blur effect to the component.
 | `radius`  | `number` | Blur radius in dp. |
 
 ```tsx
-import { blur } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[blur(4)]}>Blurred button</Button>;
 ```
@@ -324,7 +307,6 @@ Common shadow styles are combinations of the `dropShadow` and `innerShadow` modi
 A neobrutalist shadow is a hard-edged drop shadow with no blur and a thick border. Set `radius` and `spread` to `0`, then offset the shadow.
 
 ```tsx
-import { dropShadow, border, background, Shapes } from '@expo/ui/jetpack-compose/modifiers';
 
 <Box
   modifiers={[
@@ -346,7 +328,6 @@ import { dropShadow, border, background, Shapes } from '@expo/ui/jetpack-compose
 A neumorphic shadow layers two drop shadows on a surface that shares its background color: a light shadow toward the light source and a darker shadow on the opposite side. Apply both before the `background`.
 
 ```tsx
-import { dropShadow, background, Shapes } from '@expo/ui/jetpack-compose/modifiers';
 
 const shape = Shapes.RoundedCorner(24);
 
@@ -374,7 +355,6 @@ Rotates the component.
 | `degrees` | `number` | Rotation angle in degrees. |
 
 ```tsx
-import { rotate } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[rotate(45)]}>Rotated</Button>;
 ```
@@ -388,7 +368,6 @@ Controls the drawing order of overlapping components.
 | `index`   | `number` | Layer index. |
 
 ```tsx
-import { zIndex } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[zIndex(10)]}>On top</Button>;
 ```
@@ -407,7 +386,6 @@ Animates size changes of the component's content using a spring animation.
 | `stiffness`    | `number` | Spring stiffness. Controls animation speed. |
 
 ```tsx
-import { animateContentSize } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[animateContentSize()]}>Animated size</Button>
 <Button modifiers={[animateContentSize(0.5, 200)]}>Custom spring</Button>
@@ -426,7 +404,6 @@ Assigns a flexible weight to a component inside a `Row` or `Column`, distributin
 | `weight`  | `number` | Weight factor. |
 
 ```tsx
-import { weight } from '@expo/ui/jetpack-compose/modifiers';
 
 // In a Row, the first button takes 2/3 and the second takes 1/3
 <Button modifiers={[weight(2)]}>Wider</Button>
@@ -446,7 +423,6 @@ Sets the alignment of the component within its parent container.
 Sizes the component to match the size of its parent `Box`. Unlike `fillMaxSize`, this does not affect the parent's measurement.
 
 ```tsx
-import { matchParentSize } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[matchParentSize()]}>Match parent</Button>;
 ```
@@ -464,7 +440,6 @@ Makes the component respond to click events.
 | `handler` | `() => void` | Callback invoked on click. |
 
 ```tsx
-import { clickable } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[clickable(() => console.log('Clicked!'))]}>Clickable</Button>;
 ```
@@ -480,7 +455,6 @@ Makes the component respond to both short-tap and long-press gestures. Wraps Com
 | `options.indication`   | `boolean`    | Whether to show a ripple indication. Defaults to `true`. |
 
 ```tsx
-import { combinedClickable } from '@expo/ui/jetpack-compose/modifiers';
 
 <Text
   modifiers={[
@@ -503,7 +477,6 @@ Makes the component selectable, similar to a radio button.
 | `handler`  | `() => void` | Callback invoked when selection state changes. |
 
 ```tsx
-import { selectable } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[selectable(isSelected, () => setIsSelected(!isSelected))]}>
   Selectable option
@@ -534,8 +507,6 @@ Clips the component to the given shape. Content outside the shape boundary is no
 | `Shapes.Material.Cookie6Sided` | Material Design cookie shape with 6 sides.                                                                                                                          |
 
 ```tsx
-import { clip } from '@expo/ui/jetpack-compose/modifiers';
-import { Shapes } from '@expo/ui/jetpack-compose/modifiers';
 
 // Circular clipping
 <Button modifiers={[clip(Shapes.Circle)]}>Circle</Button>
@@ -566,7 +537,6 @@ Assigns a test identifier to the component for use in UI testing.
 | `tag`     | `string` | The test ID. |
 
 ```tsx
-import { testID } from '@expo/ui/jetpack-compose/modifiers';
 
 <Button modifiers={[testID('submit-button')]}>Submit</Button>;
 ```
@@ -575,7 +545,6 @@ import { testID } from '@expo/ui/jetpack-compose/modifiers';
 
 {/* prettier-ignore */}
 ```tsx
-import { paddingAll, padding, size, fillMaxWidth, background, clickable, clip, Shapes } from '@expo/ui/jetpack-compose/modifiers';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/modifiers" />

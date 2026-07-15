@@ -7,10 +7,7 @@ platforms: ['android', 'ios', 'tvos', 'macos', 'web', 'expo-go']
 inExpoGo: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { BoxLink } from '~/ui/components/BoxLink';
 
 Async Storage is asynchronous, unencrypted, persistent, key-value storage solution.
 

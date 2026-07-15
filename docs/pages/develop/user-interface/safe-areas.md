@@ -3,9 +3,6 @@ title: Safe areas
 description: Learn how to add safe areas for screen components inside your Expo project.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal, SnackInline } from '~/ui/components/Snippet';
 
 Creating a safe area ensures your app screen's content is positioned correctly. This means it doesn't get overlapped by notches, status bars, home indicators, and other interface elements that are part of the device's physical hardware or are controlled by the operating system. When the content gets overlapped, it gets concealed by these interface elements.
 
@@ -40,8 +37,6 @@ You can skip installing `react-native-safe-area-context` if you have created a p
 You can directly use [`SafeAreaView`](https://github.com/th3rdwave/react-native-safe-area-context#safeareaview) to wrap the content of your screen's component. It is a regular `<View>` with the safe area insets applied as extra padding or margin.
 
 ```tsx app/index.tsx
-import { Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   return (
@@ -57,7 +52,6 @@ export default function HomeScreen() {
 Import and add [`SafeAreaProvider`](https://github.com/th3rdwave/react-native-safe-area-context#safeareaprovider) to the root component file (such as **App.tsx**) before using `SafeAreaView` in your screen component.
 
 ```tsx App.tsx
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
   return (
@@ -75,8 +69,6 @@ Alternate to `SafeAreaView`, you can use [`useSafeAreaInsets`](https://github.co
 The example below uses the `useSafeAreaInsets` hook. It applies top padding to a `<View>` using `insets.top`.
 
 ```tsx app/index.tsx
-import { Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -109,8 +101,6 @@ Below is a minimal working example that uses the `useSafeAreaInsets` hook to app
 <SnackInline label="Using react-native-safe-area-context" dependencies={['react-native-safe-area-context']}>
 
 ```tsx collapseHeight=320
-import { Text, View } from 'react-native';
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 function HomeScreen() {
   const insets = useSafeAreaInsets();

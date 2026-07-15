@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-image-manipulator.png'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-image-manipulator` provides an API to modify images stored on the local file system.
 
@@ -29,10 +26,6 @@ files={{
 dependencies={['expo-asset', 'expo-image-manipulator']}>
 
 ```jsx
-import { useEffect, useState } from 'react';
-import { Button, Image, StyleSheet, Text, View } from 'react-native';
-import { Asset } from 'expo-asset';
-import { FlipType, SaveFormat, useImageManipulator } from 'expo-image-manipulator';
 
 const IMAGE = Asset.fromModule(require('./assets/snack-icon.png'));
 
@@ -102,7 +95,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as ImageManipulator from 'expo-image-manipulator';
 ```
 
 <APISection packageName="expo-image-manipulator" apiName="ImageManipulator" />

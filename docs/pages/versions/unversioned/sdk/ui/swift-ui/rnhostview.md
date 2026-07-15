@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A component that enables proper layout behavior when React Native views are rendered inside SwiftUI components. It syncs layout information from SwiftUI back to React Native's Yoga layout system by updating the shadow node size.
 
@@ -27,9 +25,6 @@ When React Native views are placed inside SwiftUI components like [`BottomSheet`
 Use `matchContents` when you want the SwiftUI parent to size itself based on the React Native content.
 
 ```tsx RNHostView with matchContents
-import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
-import { Host, BottomSheet, Button, RNHostView } from '@expo/ui/swift-ui';
 
 function Example() {
   const [isPresented, setIsPresented] = useState(false);
@@ -59,10 +54,6 @@ function Example() {
 When using `flex: 1` in your React Native content, omit the `matchContents` prop so the content fills the available SwiftUI space.
 
 ```tsx RNHostView with flex content
-import { useState } from 'react';
-import { Text, View } from 'react-native';
-import { Host, BottomSheet, Button, Group, RNHostView } from '@expo/ui/swift-ui';
-import { presentationDetents } from '@expo/ui/swift-ui/modifiers';
 
 function Example() {
   const [isPresented, setIsPresented] = useState(false);
@@ -91,9 +82,6 @@ function Example() {
 `RNHostView` works well inside [`Popover`](/versions/latest/sdk/ui/swift-ui/popover) to display interactive React Native content.
 
 ```tsx RNHostView in Popover
-import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
-import { Host, Button, Popover, RNHostView } from '@expo/ui/swift-ui';
 
 function Example() {
   const [isPresented, setIsPresented] = useState(false);
@@ -134,7 +122,6 @@ function Example() {
 ## API
 
 ```tsx
-import { RNHostView } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/rnhostview" apiName="RNHostView" />

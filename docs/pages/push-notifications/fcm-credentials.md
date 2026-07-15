@@ -4,9 +4,6 @@ sidebar_title: Add Android FCM V1 credentials
 description: Learn how to create or use a Google Service Account Key for sending Android Notifications using FCM.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Step } from '~/ui/components/Step';
-import { Tab, Tabs } from '~/ui/components/Tabs';
 
 ## Create a new Google Service Account Key
 

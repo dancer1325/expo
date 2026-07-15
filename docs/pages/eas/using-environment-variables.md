@@ -4,8 +4,6 @@ sidebar_title: Environment variables usage
 description: Learn how to use environment variables in EAS with examples.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 [Environment variables in EAS](/eas/environment-variables) describes concepts related to using environment variables in EAS and differences in handling them with Expo CLI and EAS CLI. In this guide, you will learn how to use environment variables in EAS with practical examples.
 
@@ -21,7 +19,6 @@ The example used in this guide is a simple project that uses common environment 
 The environment variables with the [`EXPO_PUBLIC_`](/guides/environment-variables) prefix are available as `process.env` variables in your app's code. This means you can use them to dynamically configure your app behavior based on the values from environment variables.
 
 ```tsx
-import { Button } from 'react-native';
 
 function Post() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;

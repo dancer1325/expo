@@ -41,9 +41,6 @@ To use React Server Components in your Expo app, you need to:
 ```tsx app/index.tsx (Client Component)
 /// <reference types="react/canary" />
 
-import React from 'react';
-import { ActivityIndicator } from 'react-native';
-import renderInfo from '../actions/render-info';
 
 export default function Index() {
   return (
@@ -63,7 +60,6 @@ export default function Index() {
 ```tsx actions/render-info.tsx (Server Function)
 'use server';
 
-import { Text } from 'react-native';
 
 export default async function renderInfo({ name }) {
   // Securely fetch data from an API, and read environment variables...
@@ -82,9 +78,7 @@ Server Components run in the server, meaning they can access server APIs and Nod
 Consider the following component which fetches data and renders it:
 
 ```tsx components/pokemon.tsx
-import 'server-only';
 
-import { Image, Text, View } from 'react-native';
 
 export async function Pokemon() {
   const res = await fetch('https://pokeapi.co/api/v2/pokemon/2');
@@ -117,7 +111,6 @@ Since Server Components cannot access native APIs or React Context, you can crea
 
 ```tsx components/button.tsx
 'use client';
-import { Text } from 'react-native';
 
 export default function Button({ title }) {
   return <Text onPress={() => {}}>{title}</Text>;
@@ -156,7 +149,6 @@ You can create a Client Component to invoke the Server Function:
 
 ```tsx components/button.tsx
 'use client';
-import { Text } from 'react-native';
 
 export default function Button({ title, onPress }) {
   return <Text onPress={() => onPress()}>{title}</Text>;
@@ -176,8 +168,6 @@ export async function callAction() {
 These can be used in a Client Component:
 
 ```tsx components/button.tsx
-import { Text } from 'react-native';
-import { callAction } from './server-actions';
 
 export default function Button({ title }) {
   return <Text onPress={() => callAction()}>{title}</Text>;
@@ -201,9 +191,7 @@ For example, the following Server Function will render some text:
 'use server';
 
 // Optional: Import "server-only" for sanity.
-import 'server-only';
 
-import { View, Image, Text } from 'react-native';
 
 export async function renderProfile({
   username,
@@ -239,11 +227,7 @@ This Server Function can be invoked from a Client Component and the contents wil
 ```tsx components/profile.tsx
 'use client';
 
-import { useLocalSearchParams } from 'expo-router';
-import * as React from 'react';
-import { Text } from 'react-native';
 
-import { renderProfile } from '@/components/server-actions';
 
 // Loading state that renders while data is being fetched.
 function Fallback() {
@@ -290,8 +274,6 @@ You can stream back partial UI from the server while waiting for data to load by
 In the following example, a `Loading...` text is returned instantly on the client, and when the `<MediumTask>` finishes rendering one second later, it will replace the text with `Medium task done!`. The `<ExpensiveTask>` will take three seconds to load, and when it finishes, it will replace the text with `Expensive task done!`.
 
 ```tsx app/index.tsx (Client Component)
-import { Suspense } from 'react';
-import { renderMediumTask, renderExpensiveTask } from '@/actions/tasks';
 
 export default function App() {
   return <Suspense fallback={<Text>Loading...</Text>}>{renderTasks()}</Suspense>;
@@ -335,9 +317,7 @@ Server Components can access secrets and server-side APIs. You can use the `proc
 
 ```tsx actions/renderData.tsx
 // This will assert if the module runs on the client.
-import 'server-only';
 
-import { Text } from 'react-native';
 
 export async function renderData() {
   // This code only runs on the server.
@@ -399,7 +379,6 @@ You can use this instead of the `Head` component from `expo-router/head`, but it
 You can access the request headers used to make the request to the Server Component using the `expo-router/rsc/headers` module.
 
 ```tsx actions/renderHome.tsx
-import { unstable_headers } from 'expo-router/rsc/headers';
 
 export async function renderHome() {
   const authorization = (await unstable_headers()).get('authorization');
@@ -447,8 +426,6 @@ Server Components are reloaded on every request in development. This means that 
 
 ```tsx components/button.tsx
 'use client';
-import { useRouter } from 'expo-router';
-import { Text } from 'react-native';
 
 export function Button() {
   const router = useRouter();
@@ -473,7 +450,6 @@ If the route was rendered at build-time, it will not be re-rendered on the clien
 Expo Router supports two different modes of rendering Server Components: build-time rendering and request-time rendering. These modes can be indicated on a per-route basis by using the `unstable_settings` export:
 
 ```tsx app/index.tsx
-import { Text, View } from 'react-native';
 
 export const unstable_settings = {
   // This component will be rendered at build-time and never re-rendered in production.
@@ -505,8 +481,6 @@ The current default is `dynamic` rendering. In the future, we'll change the cach
 Expo Router supports importing global CSS and CSS modules in Server Components.
 
 ```tsx app/index.tsx
-import './styles.css';
-import styles from './styles.module.css';
 
 export default function Index() {
   return <div className={styles.container}>Hello, world!</div>;

@@ -40,7 +40,6 @@ Throughout the tutorial, any important code or code that has changed between exa
 
 {/* prettier-ignore */}
 ```tsx Hello World|collapseHeight=300
-import { StyleSheet, Text, View } from 'react-native';
 
 export default function Index() {
   return (

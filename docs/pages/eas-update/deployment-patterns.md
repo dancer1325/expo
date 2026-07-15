@@ -3,7 +3,6 @@ title: Alternative deployment patterns
 description: Learn about different deployment patterns for your project when using EAS Update.
 ---
 
-import { Diagram } from '~/ui/components/Diagram';
 
 Once we've created features and fixed bugs in our app, we want to deliver those features and bug fixes to our users as quickly and safely as we can. Often "safe" and "fast" are opposing forces when delivering code to our users.
 We could push our code directly to production, which would be fast yet less safe since we never tested our code. On the other hand, we could make test builds, share them with a QA team, and release them periodically, which would be safer but slower to deliver changes to our users.

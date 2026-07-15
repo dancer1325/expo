@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Spacer`](../universal/spacer) — it renders the appropriate native component per platform.
 
@@ -33,7 +30,6 @@ Expo UI Spacer matches the official SwiftUI [Spacer API](https://developer.apple
 Use Spacer to push content to opposite ends of a horizontal stack.
 
 ```tsx SpacerHStackExample.tsx
-import { Host, HStack, Text, Spacer } from '@expo/ui/swift-ui';
 
 export default function SpacerHStackExample() {
   return (
@@ -53,7 +49,6 @@ export default function SpacerHStackExample() {
 Use Spacer to push content to opposite ends of a vertical stack.
 
 ```tsx SpacerVStackExample.tsx
-import { Host, VStack, Text, Spacer } from '@expo/ui/swift-ui';
 
 export default function SpacerVStackExample() {
   return (
@@ -71,7 +66,6 @@ export default function SpacerVStackExample() {
 ## API
 
 ```tsx
-import { Spacer } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/spacer" apiName="Spacer" />

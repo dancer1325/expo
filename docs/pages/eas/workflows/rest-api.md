@@ -4,10 +4,7 @@ sidebar_title: REST API
 description: Trigger a workflow and check its status from your own systems with the EAS REST API.
 ---
 
-import { Dataflow03Icon } from '@expo/styleguide-icons/outline/Dataflow03Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
 
 The EAS REST API exposes endpoints for triggering a workflow and reading run details. All endpoints live under `https://api.expo.dev`. Requests and responses are JSON.
 

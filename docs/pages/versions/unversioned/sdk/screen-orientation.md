@@ -7,14 +7,10 @@ iconUrl: '/static/images/packages/expo-screen-orientation.png'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Screen Orientation is defined as the orientation in which graphics are painted on the device. For example, the figure below has a device in a vertical and horizontal physical orientation, but a portrait screen orientation. For physical device orientation, see the orientation section of [Device Motion](devicemotion.mdx).
 
@@ -85,7 +81,6 @@ You can configure `expo-screen-orientation` using its built-in [config plugin](/
 If you use [Expo Router](/router/introduction/), you can set the orientation per screen using the `orientation` option on [`Stack.Screen`](/router/advanced/stack/). This is powered by `react-native-screens` and is the recommended approach for per-screen orientation in stack navigators.
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function Layout() {
   return (
@@ -100,7 +95,6 @@ export default function Layout() {
 ## API
 
 ```js
-import * as ScreenOrientation from 'expo-screen-orientation';
 ```
 
 <APISection packageName="expo-screen-orientation" apiName="ScreenOrientation" />

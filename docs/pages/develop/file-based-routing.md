@@ -3,7 +3,6 @@ title: File-based routing
 description: Learn about Expo Router which is a file-based routing system and how to use it in your project.
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
 
 This guide provides basic conventions and guidance for Expo Router and navigation patterns (stack and tabs). To follow along, you can [create a project by using the default template](/get-started/create-a-project/) or install [Expo Router library manually](/router/installation/#manual-installation) in your existing project.
 
@@ -22,7 +21,6 @@ In the **app** directory, a route is created by adding a file or a nested direct
 For example, to create an initial route of your app, you can add **index.tsx** to the **app** directory with the following code:
 
 ```tsx app/index.tsx|collapseHeight=280
-import { View, Text, StyleSheet } from 'react-native';
 
 export default function HomeScreen() {
   return (
@@ -96,7 +94,6 @@ A stack navigator is a pattern to navigate between different routes in an app. I
 For example, if you want to add a new route `/details`, create **details.tsx** file. This will allow the app user to navigate from the `/` route to `/details`:
 
 ```tsx app/details.tsx|collapseHeight=300
-import { View, Text, StyleSheet } from 'react-native';
 
 export default function DetailsScreen() {
   return (
@@ -128,7 +125,6 @@ After creating this route file, the current file structure looks like:
 To allow navigation between two routes (`/` and `/details`), update the Root layout file and add a `Stack` component to it:
 
 ```tsx app/_layout.tsx|collapseHeight=440
-import { Stack } from 'expo-router';
 
 export default function RootLayout() {
   return (
@@ -160,8 +156,6 @@ Expo Router uses a built-in component called `Link` to move between routes in an
 You can use it by importing it from Expo Router library and then passing the `href` prop with the route to navigate as the value of the prop. For example, to navigate from `/` to `/details`, add a `Link` component in the **index.tsx** file:
 
 ```tsx app/index.tsx|collapseHeight=300
-import { Link } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
 
 export default function HomeScreen() {
   return (
@@ -205,7 +199,6 @@ For example, you have the `/` and `/details` routes which can be grouped inside 
 You also need to add **(home)/\_layout.tsx** which is used to define the `Stack` navigator for `/` and `/details` routes.
 
 ```tsx app/(home)/_layout.tsx|collapseHeight=440
-import { Stack } from 'expo-router';
 
 export default function HomeLayout() {
   return (
@@ -229,7 +222,6 @@ export default function HomeLayout() {
 The Root layout file also changes and now includes the **(home)** group which further uses **(home)/index** as the initial route of the app.
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function RootLayout() {
   return (
@@ -262,7 +254,6 @@ For example, in the current file structure, you have two different sections: Hom
 Any file or directory inside **(tabs)** becomes a route in the tab navigator. To switch between different routes using the tab bar, you need to create a layout file inside this directory **(tabs)/\_layout** and export a `TabLayout` component:
 
 ```tsx app/(tabs)/_layout.tsx
-import { Tabs } from 'expo-router';
 
 export default function TabLayout() {
   return (
@@ -279,7 +270,6 @@ export default function TabLayout() {
 To make this work, update the **app/\_layout.tsx** file by adding **(tabs)** as the first route.
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function RootLayout() {
   return (
@@ -297,8 +287,6 @@ Expo Router provides a special file **+not-found.tsx** which is used to handle r
 Create this file in the **app** directory:
 
 ```tsx +not-found.tsx|collapseHeight=320
-import { Link, Stack } from 'expo-router';
-import { View, StyleSheet } from 'react-native';
 
 export default function NotFoundScreen() {
   return (

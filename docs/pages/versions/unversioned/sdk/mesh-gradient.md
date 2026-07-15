@@ -7,8 +7,6 @@ iconUrl: '/static/images/packages/expo-mesh-gradient.png'
 platforms: ['android', 'ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 ## Installation
 
@@ -17,7 +15,6 @@ import { APIInstallSection } from '~/components/plugins/InstallSection';
 ## API
 
 ```tsx
-import { MeshGradientView } from 'expo-mesh-gradient';
 
 function App() {
   return (

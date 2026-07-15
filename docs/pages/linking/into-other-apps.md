@@ -4,8 +4,6 @@ sidebar_title: Into other apps
 description: Learn how to handle and open a URL from your app based on the URL scheme of another app.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { SnackInline } from '~/ui/components/Snippet';
 
 Handling linking into other apps from your app is achieved by using the target app's URL. There are two methods you can use to open such URLs from your app:
 
@@ -19,8 +17,6 @@ The [`expo-linking`](/versions/latest/sdk/linking) API provides a universal abst
 The example below opens at the [common URL scheme](#common-url-schemes) in the default browser of the operating system using [`Linking.openURL`](/versions/latest/sdk/linking/#linkingopenurlurl):
 
 ```tsx index.tsx|collapseHeight=240
-import { Button, View, StyleSheet } from 'react-native';
-import * as Linking from 'expo-linking';
 
 export default function Home() {
   return (
@@ -46,8 +42,6 @@ If your project uses [Expo Router](/router/introduction/), use the `Link` compon
 The example below opens a [common URL scheme](#common-url-schemes) (HTTPS) in the default browser of the operating system:
 
 ```tsx index.tsx|collapseHeight=240
-import { Button, View, StyleSheet } from 'react-native';
-import { Link } from 'expo-router';
 
 export default function Home() {
   return (
@@ -84,7 +78,6 @@ For Android 11 (API level 30) and above, you must specify the intents your app w
 The following config plugin example enables linking to email and phone apps by defining the intents:
 
 ```ts my-plugin.ts|collapseHeight=300
-import { withAndroidManifest, ConfigPlugin } from 'expo/config-plugins';
 
 const withAndroidQueries: ConfigPlugin = config => {
   return withAndroidManifest(config, config => {
@@ -199,9 +192,6 @@ The example below simulates the behavior of opening a URL in an in-app browser u
 <SnackInline label="WebBrowser compared to Linking" dependencies={["expo-web-browser", "expo-linking"]}>
 
 ```tsx
-import { Button, View, StyleSheet } from 'react-native';
-import * as Linking from 'expo-linking';
-import * as WebBrowser from 'expo-web-browser';
 
 export default function Home() {
   return (
@@ -241,7 +231,6 @@ const styles = StyleSheet.create({
 To provide additional link functionality on the web, such as right-click to copy or hover to preview, you can use a `Link` component from the [`expo-router`](/router/introduction/) library.
 
 ```tsx index.tsx
-import { Link } from 'expo-router';
 
 export default function Home() {
   return <Link href="https://expo.dev">Go to Expo</Link>;
@@ -251,7 +240,6 @@ export default function Home() {
 Alternatively, you can use the [`@expo/html-elements`](https://www.npmjs.com/package/@expo/html-elements) library to use a universal `<A>` element:
 
 ```tsx index.tsx
-import { A } from '@expo/html-elements';
 
 export default function Home() {
   return <A href="https://expo.dev">Go to Expo</A>;

@@ -4,10 +4,6 @@ description: Learn how to fetch data on the server using data loaders in Expo Ro
 isAlpha: true
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { FAQ } from '~/ui/components/FAQ';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 > **important** Data loaders are in [alpha](/more/release-statuses/#alpha) and are available in SDK 55 and later. They require either [static rendering](/router/web/static-rendering) or [server rendering](/router/web/server-rendering).
 
@@ -83,8 +79,6 @@ Start the development server:
 Export a `loader` function from your route file and use the [`useLoaderData`](/versions/latest/sdk/router/#useloaderdata) hook to access the data in your component:
 
 ```tsx src/app/index.tsx
-import { Text, View } from 'react-native';
-import { useLoaderData } from 'expo-router';
 
 export async function loader() {
   // Fetch data from an API, database, or any server-side source
@@ -114,9 +108,6 @@ When a component calls the [`useLoaderData`](/versions/latest/sdk/router/#useloa
 This lets you control exactly where loading fallbacks appear by placing [`<Suspense>`](https://react.dev/reference/react/Suspense) boundaries in your component tree:
 
 ```tsx src/app/index.tsx
-import { Suspense } from 'react';
-import { Text, View } from 'react-native';
-import { useLoaderData } from 'expo-router';
 
 export async function loader() {
   const response = await fetch('https://api.example.com/data');
@@ -147,8 +138,6 @@ In the above example, [`useLoaderData`](/versions/latest/sdk/router/#useloaderda
 When a loader throws an error, it propagates to the nearest [error boundary](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary). You can export an [`ErrorBoundary`](/versions/latest/sdk/router/#errorboundary) component from the same route file to handle loader errors:
 
 ```tsx src/app/data.tsx
-import { Text, View } from 'react-native';
-import { useLoaderData, type ErrorBoundaryProps } from 'expo-router';
 
 export async function loader() {
   const response = await fetch('https://api.example.com/data');
@@ -184,8 +173,6 @@ When no `ErrorBoundary` is exported, the error propagates to the nearest parent 
 Loaders receive route parameters as the second argument:
 
 ```tsx src/app/posts/[postId].tsx
-import { Text, View } from 'react-native';
-import { useLoaderData } from 'expo-router';
 
 export async function loader(request, params) {
   const response = await fetch(`https://api.example.com/posts/${params.postId}`);
@@ -211,8 +198,6 @@ export default function Post() {
 When using [server rendering](/router/web/server-rendering), loaders receive the incoming HTTP request as the first argument. This allows you to access headers, cookies, and other request information:
 
 ```tsx src/app/profile.tsx
-import { Text, View } from 'react-native';
-import { useLoaderData } from 'expo-router';
 
 export async function loader(request) {
   // Access authorization header
@@ -263,7 +248,6 @@ If your loader returns `undefined` or `null`, the value is normalized to `null`.
 Data loaders have full access to the [Runtime API](/router/web/api-routes/#runtime-api) from [`expo-server`](/versions/latest/sdk/server/). This includes utilities for setting response headers, throwing HTTP errors, and running background tasks:
 
 ```tsx src/app/example.tsx
-import { setResponseHeaders, StatusError } from 'expo-server';
 
 export async function loader(request) {
   const authToken = request?.headers.get('Authorization');
@@ -285,8 +269,6 @@ See the [Runtime API documentation](/router/web/api-routes/#runtime-api) for a f
 Loaders run on the server and have access to `process.env`. Environment variables used in loaders are never exposed to the client bundle. This is useful for accessing API keys and other secrets:
 
 ```tsx src/app/api-data.tsx
-import { Text, View } from 'react-native';
-import { useLoaderData } from 'expo-router';
 
 export async function loader() {
   /* @info Access server-side environment variables */
@@ -345,9 +327,6 @@ With server rendering, loaders execute on every request. This means:
 Use [`createStaticLoader`](/versions/latest/sdk/server/#createstaticloaderfn) for routes that only need route parameters. The callback only receives the route params, and is safe to use with both static and server rendering:
 
 ```tsx src/app/posts/[postId].tsx
-import { Text, View } from 'react-native';
-import { useLoaderData } from 'expo-router';
-import { createStaticLoader } from 'expo-router/server';
 
 export const loader = createStaticLoader(async params => {
   const response = await fetch(`https://api.example.com/posts/${params.postId}`);
@@ -370,9 +349,6 @@ export default function Post() {
 Use [`createServerLoader`](/versions/latest/sdk/server/#createserverloaderfn) for routes that need access to the incoming HTTP request. The callback receives an [`ImmutableRequest`](/versions/latest/sdk/server/#immutablerequest) and the route params as arguments:
 
 ```tsx src/app/profile.tsx
-import { Text, View } from 'react-native';
-import { useLoaderData } from 'expo-router';
-import { createServerLoader } from 'expo-router/server';
 
 export const loader = createServerLoader(async (request, params) => {
   const authToken = request.headers.get('Authorization');
@@ -410,9 +386,6 @@ export default function Profile() {
 You can also type loaders directly using the [`LoaderFunction`](/versions/latest/sdk/server/#loaderfunction) type from `expo-router/server`. This gives you full control over the function signature, including both `request` and `params`:
 
 ```tsx src/app/posts/[postId].tsx
-import { Text, View } from 'react-native';
-import { useLoaderData } from 'expo-router';
-import { type LoaderFunction } from 'expo-router/server';
 
 type PostData = {
   title: string;

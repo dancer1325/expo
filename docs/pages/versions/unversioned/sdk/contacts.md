@@ -7,11 +7,6 @@ iconUrl: '/static/images/packages/expo-contacts.png'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions, IOSPermissions } from '~/components/plugins/permissions';
-import { Collapsible } from '~/ui/components/Collapsible';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
@@ -137,9 +132,6 @@ const contactsFromGetAll = await Contact.getAll({
 <Collapsible summary="Contacts infinite scroll example">
 
 ```tsx Contacts infinite scroll example
-import { Contact, ContactField, PartialContactDetails } from 'expo-contacts';
-import { useEffect, useState } from 'react';
-import { FlatList, Text, View } from 'react-native';
 
 const FIELDS = [ContactField.FULL_NAME, ContactField.PHONES] as const;
 
@@ -182,9 +174,6 @@ export default function InfiniteContacts() {
 <Collapsible summary="Edit contact form example">
 
 ```tsx Edit contact form example
-import { Contact, ContactField, ContactPatch } from 'expo-contacts';
-import { useEffect, useState } from 'react';
-import { Alert, Button, ScrollView, Text, TextInput, View } from 'react-native';
 
 export default function ContactForm() {
   const [contact, setContact] = useState<Contact | null>(null);
@@ -275,7 +264,6 @@ export default function ContactForm() {
 ## API
 
 ```jsx
-import { Contact } from 'expo-contacts';
 ```
 
 <APISection packageName="expo-contacts" apiName="Contacts" />

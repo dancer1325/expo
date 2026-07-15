@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-sensors.png'
 platforms: ['android', 'ios*', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `Accelerometer` from `expo-sensors` provides access to the device accelerometer sensor(s) and associated listeners to respond to changes in acceleration in three-dimensional space, meaning any movement or vibration.
 
@@ -22,9 +19,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label="Basic Accelerometer usage" dependencies={['expo-sensors']}>
 
 ```jsx
-import { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Accelerometer } from 'expo-sensors';
 
 export default function App() {
   const [{ x, y, z }, setData] = useState({
@@ -106,7 +100,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import { Accelerometer } from 'expo-sensors';
 ```
 
 <APISection packageName="expo-accelerometer" />

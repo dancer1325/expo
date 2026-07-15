@@ -3,10 +3,7 @@ title: App stores metadata
 description: A brief overview of how to use EAS Metadata to automate and maintain your app store presence.
 ---
 
-import { EasMetadataIcon } from '@expo/styleguide-icons/custom/EasMetadataIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
 
 > **important** **EAS Metadata** is in [beta](/more/release-statuses/#beta) and subject to breaking changes. The service currently **only supports the Apple App Store**.
 

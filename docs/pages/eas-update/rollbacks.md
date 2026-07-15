@@ -3,7 +3,6 @@ title: Rollbacks
 description: Rollback a branch to a previous update or the embedded update.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 > **info** Available from SDK 50 using [`expo-updates`](/versions/latest/sdk/updates/) 0.23.0 or above.
 

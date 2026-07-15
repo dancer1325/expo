@@ -3,12 +3,7 @@ title: Channel surfing
 description: Learn how to switch EAS Update channels at runtime.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Step } from '~/ui/components/Step';
-import { Terminal } from '~/ui/components/Snippet';
 
 **Channel surfing** lets an installed release build request updates from a different EAS Update channel at runtime.
 
@@ -56,7 +51,6 @@ For developer-focused testing and to preview compatible updates, use a [developm
 Provide an app-level trigger for changing channels, such as a hidden menu for trusted users or another mechanism that fits your workflow. When a channel is selected, use [`Updates.setUpdateRequestHeadersOverride()`](/versions/latest/sdk/updates/#updatessetupdaterequestheadersoverriderequestheaders) to override the `expo-channel-name` request header. After setting the override, check for an update, fetch it if available, and reload the app:
 
 ```tsx
-import * as Updates from 'expo-updates';
 
 export async function switchUpdateChannelAsync(channel: string) {
   Updates.setUpdateRequestHeadersOverride({
@@ -80,7 +74,6 @@ The override persists on the device. After it is set, future update checks use t
 Pass `null` to `Updates.setUpdateRequestHeadersOverride()` to clear the request header override and return to the channel configured in the build:
 
 ```tsx
-import * as Updates from 'expo-updates';
 
 export async function clearUpdateChannelOverrideAsync() {
   Updates.setUpdateRequestHeadersOverride(null);

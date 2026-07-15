@@ -6,9 +6,6 @@ packageName: 'expo-system-ui'
 platforms: ['android', 'ios', 'tvos', 'web']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ConfigReactNative, ConfigPluginExample } from '~/ui/components/ConfigSection';
 
 `expo-system-ui` enables you to interact with UI elements that fall outside of the React tree. Specifically the root view background color, and locking the user interface style globally on Android.
 
@@ -74,7 +71,6 @@ To apply `backgroundColor` on iOS, you need to add the `UIUserInterfaceStyle` co
 ## API
 
 ```js
-import * as SystemUI from 'expo-system-ui';
 ```
 
 <APISection packageName="expo-system-ui" apiName="SystemUI" />

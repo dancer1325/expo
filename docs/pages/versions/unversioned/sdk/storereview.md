@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-store-review.png'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 `expo-store-review` is a library that provides access to `ReviewManager` API on Android 5+ and `SKStoreReviewController` API on iOS. It allows you to ask the user to rate your app without leaving the app itself.
 
@@ -66,7 +63,6 @@ Linking.openURL(
 ## API
 
 ```js
-import * as StoreReview from 'expo-store-review';
 ```
 
 <APISection packageName="expo-store-review" apiName="StoreReview" />

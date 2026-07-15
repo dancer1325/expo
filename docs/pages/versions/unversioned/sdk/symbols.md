@@ -8,9 +8,6 @@ platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 isBeta: true
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **important** This library is currently in [beta](/more/release-statuses/#beta) and subject to breaking changes.
 
@@ -33,8 +30,6 @@ import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 Pass an object with per-platform symbol names to render symbols on all platforms. Browse available iOS symbols in the [Apple SF Symbols app](https://developer.apple.com/sf-symbols/) and Android/web symbols at [Google Material Symbols](https://fonts.google.com/icons).
 
 ```jsx App.js
-import { SymbolView } from 'expo-symbols';
-import { StyleSheet, View } from 'react-native';
 
 export default function App() {
   return (
@@ -90,7 +85,6 @@ If you only pass a string, it is treated as an SF Symbol name and renders only o
 On iOS, pass a weight string directly. On Android, import a weight object from `expo-symbols/androidWeights`:
 
 ```jsx
-import bold from 'expo-symbols/androidWeights/bold';
 
 <SymbolView
   name={{ ios: 'star.fill', android: 'star', web: 'star' }}
@@ -105,7 +99,6 @@ Available weight imports: `bold`, `semiBold`, `medium`, `regular`, `light`, `ext
 ## API
 
 ```js
-import { SymbolView } from 'expo-symbols';
 ```
 
 <APISection packageName="expo-symbols" apiName="Symbol" />

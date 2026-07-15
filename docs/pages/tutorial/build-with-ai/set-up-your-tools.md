@@ -3,16 +3,7 @@ title: Set up your tools
 description: In this chapter, install an AI coding agent, Node.js, and Expo Go, and teach your agent about Expo.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 In this chapter, you'll install everything you need, starting from zero. This is the longest chapter. Once your tools are set up, the fun starts and the rest of the tutorial moves quickly.
 

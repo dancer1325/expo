@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Loading Indicators match the official Jetpack Compose [Loading Indicator API](https://m3.material.io/components/loading-indicator/overview).
 
@@ -31,7 +28,6 @@ Expo UI Loading Indicators match the official Jetpack Compose [Loading Indicator
 A morphing-shape loading animation from Material 3 Expressive.
 
 ```tsx LoadingIndicatorExample.tsx
-import { Host, LoadingIndicator } from '@expo/ui/jetpack-compose';
 
 export default function LoadingIndicatorExample() {
   return (
@@ -47,7 +43,6 @@ export default function LoadingIndicatorExample() {
 A loading indicator inside a colored background.
 
 ```tsx ContainedLoadingIndicatorExample.tsx
-import { Host, ContainedLoadingIndicator } from '@expo/ui/jetpack-compose';
 
 export default function ContainedLoadingIndicatorExample() {
   return (
@@ -63,7 +58,6 @@ export default function ContainedLoadingIndicatorExample() {
 Omit the `progress` prop to animate continuously without indicating a specific completion level.
 
 ```tsx IndeterminateExample.tsx
-import { ContainedLoadingIndicator, Host, LoadingIndicator, Row } from '@expo/ui/jetpack-compose';
 
 export default function IndeterminateExample() {
   return (
@@ -82,14 +76,12 @@ export default function IndeterminateExample() {
 Pass an observable state from `useNativeState` as `progress`. Update `progress.value` between `0` and `1`.
 
 ```tsx DeterminateExample.tsx
-import {
   ContainedLoadingIndicator,
   Host,
   LoadingIndicator,
   Row,
   useNativeState,
 } from '@expo/ui/jetpack-compose';
-import { useEffect } from 'react';
 
 export default function DeterminateExample() {
   const progress = useNativeState(0);
@@ -115,7 +107,6 @@ export default function DeterminateExample() {
 ## API
 
 ```tsx
-import { LoadingIndicator, ContainedLoadingIndicator } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/loadingindicator" />

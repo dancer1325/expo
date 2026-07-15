@@ -6,10 +6,6 @@ packageName: 'expo-dev-menu'
 platforms: ['android', 'ios', 'tvos']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 The `expo-dev-menu` can be used as a **standalone library** in any Expo project. It is especially useful in [brownfield apps](/versions/latest/sdk/brownfield/) that don't need the full [`expo-dev-client`](/versions/latest/sdk/dev-client/) launcher interface.
 
@@ -36,7 +32,6 @@ Once installed, the developer menu is available in your debug builds. You can op
 The dev menu can be extended to include extra buttons by using the `registerDevMenuItems` API:
 
 ```tsx
-import { registerDevMenuItems } from 'expo-dev-menu';
 
 const devMenuItems = [
   {
@@ -80,7 +75,6 @@ For more information, check the [`expo-dev-client` reference](/versions/latest/s
 ## API
 
 ```js
-import * as DevMenu from 'expo-dev-menu';
 ```
 
 <APISection packageName={['expo-dev-menu']} apiName="DevMenu" />

@@ -7,10 +7,6 @@ iconUrl: '/static/images/packages/expo-web-browser.png'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 `expo-web-browser` provides access to the system's web browser and supports handling redirects. On Android, it uses `ChromeCustomTabs` and on iOS, it uses `SFSafariViewController` or `ASWebAuthenticationSession`, depending on the method you call. As of iOS 11, `SFSafariViewController` no longer shares cookies with Safari, so if you are using `WebBrowser` for authentication you will want to use `WebBrowser.openAuthSessionAsync`, and if you just want to open a webpage (such as your app privacy policy), then use `WebBrowser.openBrowserAsync`.
 
@@ -27,11 +23,7 @@ You can configure `expo-web-browser` using its built-in [config plugin](/config-
 <SnackInline label="Basic WebBrowser usage" dependencies={["expo-web-browser", "expo-constants"]}>
 
 ```jsx
-import { useState } from 'react';
-import { Button, Text, View, StyleSheet } from 'react-native';
-import * as WebBrowser from 'expo-web-browser';
 /* @hide */
-import Constants from 'expo-constants';
 /* @end */
 
 export default function App() {
@@ -83,7 +75,6 @@ If you use the `WebBrowser` window for authentication or another use case where 
 ## API
 
 ```js
-import * as WebBrowser from 'expo-web-browser';
 ```
 
 <APISection packageName="expo-web-browser" apiName="WebBrowser" />

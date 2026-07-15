@@ -7,10 +7,6 @@ iconUrl: '/static/images/packages/expo-cellular.png'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions } from '~/components/plugins/permissions';
-import { ConfigReactNative } from '~/ui/components/ConfigSection';
 
 `expo-cellular` provides information about the user's cellular service provider, such as its unique identifier, cellular connection type, and whether it allows VoIP calls on its network.
 
@@ -35,7 +31,6 @@ This library does not require the more risky `READ_PRIVILEGED_PHONE_STATE` permi
 ## API
 
 ```js
-import * as Cellular from 'expo-cellular';
 ```
 
 <APISection packageName="expo-cellular" apiName="Cellular" />

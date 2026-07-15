@@ -3,8 +3,6 @@ title: Manage plans and billing
 description: Learn how to update, downgrade, or cancel your Expo account's plans and manage billing details.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 **Billing** in the EAS dashboard provides information about your account's currently subscribed plan and monthly usage. It also allows you to manage your plan and billing details.
 

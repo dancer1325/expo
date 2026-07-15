@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-device.png'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-device` provides access to system information about the physical device, such as its manufacturer and model.
 
@@ -22,8 +19,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Basic Device Usage' dependencies={['expo-device']}>
 
 ```jsx
-import { Text, View } from 'react-native';
-import * as Device from 'expo-device';
 
 export default function App() {
   return (
@@ -41,7 +36,6 @@ export default function App() {
 ## API
 
 ```js
-import * as Device from 'expo-device';
 ```
 
 <APISection packageName="expo-device" apiName="Device" />

@@ -4,11 +4,7 @@ sidebar_title: Maestro
 description: Track flow health, flaky flows, and failure patterns for your Maestro end-to-end tests in the Maestro tab of EAS Insights.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { Dataflow03Icon } from '@expo/styleguide-icons/outline/Dataflow03Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** Maestro insights is available on the Production and Enterprise plans. Learn more at [EAS pricing](https://expo.dev/pricing).
 

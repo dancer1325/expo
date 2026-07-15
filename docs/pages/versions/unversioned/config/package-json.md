@@ -3,7 +3,6 @@ title: package.json
 description: A reference for Expo-specific properties that can be used in the package.json file.
 ---
 
-import { PaddedAPIBox } from '~/components/plugins/PaddedAPIBox';
 
 **package.json** is a JSON file that contains the metadata for a JavaScript project. This is a reference to Expo-specific properties that can be used by adding an `expo` field in the **package.json** file.
 

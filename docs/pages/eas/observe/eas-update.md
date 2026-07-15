@@ -4,8 +4,6 @@ sidebar_title: EAS Update
 description: Track how long EAS Update OTA bundles take to download on real user devices, with per-update breakdowns in the EAS Observe dashboard.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 EAS Observe automatically tracks how long each OTA update takes to download on real user devices. You don't need to add any instrumentation: if your app uses [EAS Update](/eas-update/introduction/) and includes [`expo-observe`](/eas/observe/get-started/), EAS Observe collects download metrics for every update fetch.
 

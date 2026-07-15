@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI FlowRow matches the official Jetpack Compose [FlowRow](https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/package-summary#FlowRow) API and arranges children in a horizontal flow that wraps to the next line when it runs out of space.
 
@@ -29,8 +26,6 @@ Expo UI FlowRow matches the official Jetpack Compose [FlowRow](https://developer
 `FlowRow` arranges children in a horizontal flow that wraps to the next line when it runs out of space.
 
 ```tsx FlowRowExample.tsx
-import { Host, FlowRow, Text } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function FlowRowExample() {
   const tags = ['React Native', 'Expo', 'Android', 'Jetpack Compose', 'Material 3', 'Kotlin'];
@@ -53,7 +48,6 @@ export default function FlowRowExample() {
 ## API
 
 ```tsx
-import { FlowRow } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/flowrow" apiName="FlowRow" />

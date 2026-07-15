@@ -5,9 +5,6 @@ description: Learn about how Expo CLI optimizes production JavaScript bundles.
 platforms: ['android', 'ios', 'web', 'tvos']
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tab, Tabs } from '~/ui/components/Tabs';
 
 Tree shaking (also referred to as _dead code removal_) is a technique to remove unused code from the production bundle. Expo CLI employs different techniques, including [minification](/guides/minify), to improve startup time by removing unused code.
 
@@ -20,7 +17,6 @@ Any code that is used conditionally based on the `Platform` module from `react-n
 For example, consider the following transformation input:
 
 ```js Input
-import { Platform } from 'react-native';
 
 if (Platform.OS === 'ios') {
   console.log('Hello on iOS');
@@ -204,12 +200,9 @@ console.log('Hello on the server!');
 If you import `react-native` using the static `import` syntax, the barrel file will be removed.
 
 ```js Input
-import { View, Image } from 'react-native';
 ```
 
 ```js Output (web)
-import View from 'react-native-web/dist/exports/View';
-import Image from 'react-native-web/dist/exports/Image';
 ```
 
 </Tab>
@@ -239,7 +232,6 @@ You can experimentally enable support for automatically removing unused imports 
 Consider the following example code:
 
 ```js index.js
-import { ArrowUp } from './icons';
 
 export default function Home() {
   return <ArrowUp />;
@@ -424,7 +416,6 @@ if (process.env.NODE_ENV === 'development') {
 This is problematic because you don't have accurate TypeScript support and it makes the graph ambiguous since you cannot statically analyze the code. With Expo tree shaking enabled, you can restructure this code to use ESM imports:
 
 ```js Input
-import { doSomething } from './dev-only';
 
 if (process.env.NODE_ENV === 'development') {
   doSomething();

@@ -92,7 +92,6 @@ The typical flow for browser-based authentication in mobile apps is as follows:
 ## API
 
 ```js
-import * as AuthSession from 'expo-auth-session';
 ```
 
 <APISection packageName="expo-auth-session" apiName="AuthSession" />

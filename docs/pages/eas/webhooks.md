@@ -3,8 +3,6 @@ title: Webhooks
 description: Learn how to configure webhooks to get alerts on EAS Build and EAS submit completion.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
 
 EAS can alert you as soon as your build or submission is completed via a webhook. Webhooks need to be configured per project. For example, if you want to be alerted for both `@johndoe/awesomeApp` and `@johndoe/coolApp`, in each directory, run the command:
 

@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Progress Indicators match the official Jetpack Compose [Progress Indicator API](https://developer.android.com/develop/ui/compose/components/progress).
 
@@ -31,7 +28,6 @@ Expo UI Progress Indicators match the official Jetpack Compose [Progress Indicat
 A horizontal bar that fills to indicate progress. Provide a `progress` value between `0` and `1` for determinate mode.
 
 ```tsx LinearExample.tsx
-import { Host, LinearProgressIndicator } from '@expo/ui/jetpack-compose';
 
 export default function LinearExample() {
   return (
@@ -47,7 +43,6 @@ export default function LinearExample() {
 A spinning circle whose stroke grows to indicate progress.
 
 ```tsx CircularExample.tsx
-import { Host, CircularProgressIndicator } from '@expo/ui/jetpack-compose';
 
 export default function CircularExample() {
   return (
@@ -63,7 +58,6 @@ export default function CircularExample() {
 Omit the `progress` prop to animate continuously without indicating a specific completion level.
 
 ```tsx IndeterminateExample.tsx
-import {
   CircularProgressIndicator,
   CircularWavyProgressIndicator,
   Column,
@@ -91,7 +85,6 @@ export default function IndeterminateExample() {
 Use `color` for the indicator and `trackColor` for the background track.
 
 ```tsx ColorsExample.tsx
-import { Host, CircularProgressIndicator } from '@expo/ui/jetpack-compose';
 
 export default function ColorsExample() {
   return (
@@ -107,7 +100,6 @@ export default function ColorsExample() {
 `LinearWavyProgressIndicator` and `CircularWavyProgressIndicator` add an expressive wave animation from Material 3 Expressive.
 
 ```tsx WavyExample.tsx
-import {
   Host,
   LinearWavyProgressIndicator,
   CircularWavyProgressIndicator,
@@ -129,7 +121,6 @@ export default function WavyExample() {
 ## API
 
 ```tsx
-import {
   LinearProgressIndicator,
   CircularProgressIndicator,
   LinearWavyProgressIndicator,

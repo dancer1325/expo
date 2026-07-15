@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A scrollable container, defaulting to vertical scrolling. Use [`direction="horizontal"`](#direction) for horizontal lists.
 
@@ -20,7 +18,6 @@ A scrollable container, defaulting to vertical scrolling. Use [`direction="horiz
 ### Vertical scrolling
 
 ```tsx VerticalScrollViewExample.tsx
-import { Host, ScrollView, Column, Text } from '@expo/ui';
 
 export default function VerticalScrollViewExample() {
   return (
@@ -40,7 +37,6 @@ export default function VerticalScrollViewExample() {
 ### Horizontal scrolling
 
 ```tsx HorizontalScrollViewExample.tsx
-import { Host, ScrollView, Row, Text } from '@expo/ui';
 
 export default function HorizontalScrollViewExample() {
   return (
@@ -60,7 +56,6 @@ export default function HorizontalScrollViewExample() {
 ## API
 
 ```tsx
-import { ScrollView } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/scrollview" apiName="ScrollView" />

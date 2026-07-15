@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Slider`](../universal/slider) — it renders the appropriate native component per platform.
 
@@ -33,8 +30,6 @@ Expo UI Slider matches the official SwiftUI [Slider API](https://developer.apple
 ### Basic slider
 
 ```tsx BasicSliderExample.tsx
-import { useState } from 'react';
-import { Host, Slider } from '@expo/ui/swift-ui';
 
 export default function BasicSliderExample() {
   const [value, setValue] = useState(0.5);
@@ -50,8 +45,6 @@ export default function BasicSliderExample() {
 ### Slider with custom range
 
 ```tsx CustomRangeSliderExample.tsx
-import { useState } from 'react';
-import { Host, Slider } from '@expo/ui/swift-ui';
 
 export default function CustomRangeSliderExample() {
   const [value, setValue] = useState(50);
@@ -69,8 +62,6 @@ export default function CustomRangeSliderExample() {
 Use the `step` prop to define discrete increments. Set `step` to `0` for continuous values.
 
 ```tsx SteppedSliderExample.tsx
-import { useState } from 'react';
-import { Host, Slider } from '@expo/ui/swift-ui';
 
 export default function SteppedSliderExample() {
   const [value, setValue] = useState(0);
@@ -88,8 +79,6 @@ export default function SteppedSliderExample() {
 You can add labels to describe a slider's purpose and to mark the minimum and maximum value positions.
 
 ```tsx LabeledSliderExample.tsx
-import { useState } from 'react';
-import { Host, Slider, Text } from '@expo/ui/swift-ui';
 
 export default function LabeledSliderExample() {
   const [value, setValue] = useState(50);
@@ -113,7 +102,6 @@ export default function LabeledSliderExample() {
 ## API
 
 ```tsx
-import { Slider } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/slider" apiName="Slider" />

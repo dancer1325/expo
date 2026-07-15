@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI ContextMenu matches the official SwiftUI [contextMenu API](<https://developer.apple.com/documentation/swiftui/view/contextmenu(menuitems:)>) and displays a menu when long-pressed. For single-tap menu interactions, use [`Menu`](menu) instead.
 
@@ -29,7 +26,6 @@ Expo UI ContextMenu matches the official SwiftUI [contextMenu API](<https://deve
 ### Basic context menu
 
 ```tsx BasicContextMenuExample.tsx
-import { Host, ContextMenu, Button, Text } from '@expo/ui/swift-ui';
 
 export default function BasicContextMenuExample() {
   return (
@@ -51,7 +47,6 @@ export default function BasicContextMenuExample() {
 ### Context menu with system images
 
 ```tsx ContextMenuWithImagesExample.tsx
-import { Host, ContextMenu, Button, Text } from '@expo/ui/swift-ui';
 
 export default function ContextMenuWithImagesExample() {
   return (
@@ -85,8 +80,6 @@ export default function ContextMenuWithImagesExample() {
 Use `ContextMenu.Preview` to show a custom preview above the menu when opened.
 
 ```tsx ContextMenuWithPreviewExample.tsx
-import { View, Text as RNText } from 'react-native';
-import { Host, ContextMenu, Button, Text } from '@expo/ui/swift-ui';
 
 export default function ContextMenuWithPreviewExample() {
   return (
@@ -113,9 +106,6 @@ export default function ContextMenuWithPreviewExample() {
 ### Context menu with picker
 
 ```tsx ContextMenuWithPickerExample.tsx
-import { useState } from 'react';
-import { Host, ContextMenu, Button, Text, Picker } from '@expo/ui/swift-ui';
-import { pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 
 export default function ContextMenuWithPickerExample() {
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(0);
@@ -151,7 +141,6 @@ export default function ContextMenuWithPickerExample() {
 Use `Section` and `Divider` components to organize menu items.
 
 ```tsx ContextMenuWithSectionsExample.tsx
-import { Host, ContextMenu, Button, Text, Section, Divider } from '@expo/ui/swift-ui';
 
 export default function ContextMenuWithSectionsExample() {
   return (
@@ -179,8 +168,6 @@ export default function ContextMenuWithSectionsExample() {
 Use the [`disabled(true)`](modifiers/#disableddisabled) modifier on a menu `Button` to render it greyed-out and non-interactive.
 
 ```tsx DisabledContextMenuItemExample.tsx
-import { Host, ContextMenu, Button, Text } from '@expo/ui/swift-ui';
-import { disabled } from '@expo/ui/swift-ui/modifiers';
 
 export default function DisabledContextMenuItemExample() {
   return (
@@ -209,8 +196,6 @@ export default function DisabledContextMenuItemExample() {
 A SwiftUI [`Toggle`](toggle) inside `ContextMenu.Items` automatically renders as a row with a leading SF Symbol and a trailing checkmark when `isOn` is `true`.
 
 ```tsx CheckmarkContextMenuItemExample.tsx
-import { Host, ContextMenu, Toggle, Text } from '@expo/ui/swift-ui';
-import { useState } from 'react';
 
 export default function CheckmarkContextMenuItemExample() {
   const [pinned, setPinned] = useState(false);
@@ -235,7 +220,6 @@ export default function CheckmarkContextMenuItemExample() {
 Use nested `ContextMenu` components to create submenus.
 
 ```tsx NestedContextMenuExample.tsx
-import { Host, ContextMenu, Button, Text } from '@expo/ui/swift-ui';
 
 export default function NestedContextMenuExample() {
   return (
@@ -265,7 +249,6 @@ export default function NestedContextMenuExample() {
 ## API
 
 ```tsx
-import { ContextMenu } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/contextmenu" apiName="ContextMenu" />

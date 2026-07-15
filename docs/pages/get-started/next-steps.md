@@ -4,7 +4,6 @@ description: Develop, review, and submit your project.
 hideTOC: true
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 Here are next steps to continue building your app:
 

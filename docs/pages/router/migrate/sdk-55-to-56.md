@@ -4,7 +4,6 @@ sidebar_title: SDK 55 to 56
 description: Learn how to migrate Expo Router from SDK 55 to 56 using a codemod or manually.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 In **SDK 56 and later**, Expo Router no longer supports importing from external `@react-navigation/*` packages in application code. Update those imports to the matching `expo-router` entry points. The runtime API is unchanged - only the module specifiers move.
 
@@ -29,12 +28,8 @@ If you cannot run the codemod, repoint each import by hand:
 
 ```tsx
 // Before (SDK 55)
-import { ThemeProvider, DarkTheme } from '@react-navigation/native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 // After (SDK 56)
-import { ThemeProvider, DarkTheme } from 'expo-router/react-navigation';
-import { createMaterialTopTabNavigator } from 'expo-router/js-top-tabs';
 ```
 
 Use the following table to map each React Navigation import in your code to its `expo-router` equivalent:

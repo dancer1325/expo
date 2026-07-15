@@ -3,8 +3,6 @@ title: Single Sign-On (SSO)
 description: Learn how your organization can use your identity provider to manage Expo users on your team.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 Single Sign-On (SSO) is available for [Production and Enterprise plan](https://expo.dev/pricing) customers.
 

@@ -4,10 +4,7 @@ sidebar_title: expo-calendar/legacy
 description: Migrate from the legacy expo-calendar API to the new class-based expo-calendar API with ExpoCalendar, ExpoCalendarEvent, and hooks.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
 
 The new object-oriented `expo-calendar` API is now stable. The legacy API is available from `expo-calendar/legacy`. Migrate to the root `expo-calendar` import to benefit from the new API and future fixes.
 
@@ -28,10 +25,8 @@ Import the legacy API from `expo-calendar/legacy` while you migrate, and import 
 
 ```ts
 // Before
-import * as Calendar from 'expo-calendar/legacy';
 
 // After
-import { ExpoCalendar, ExpoCalendarEvent } from 'expo-calendar';
 ```
 
 ## Calendars

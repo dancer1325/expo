@@ -4,10 +4,6 @@ description: In this tutorial, learn the basics of how to configure a status bar
 hasVideoLink: true
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { ProgressTracker } from '~/ui/components/ProgressTracker';
-import { Step } from '~/ui/components/Step';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 In this chapter, we'll address some app details before deploying our app to an app store, such as theming the status bar, customizing the app icon, and splash screen.
 
@@ -32,9 +28,7 @@ Inside **app/\_layout.tsx**:
 
 {/* prettier-ignore */}
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
 /* @tutinfo */
-import { StatusBar } from 'expo-status-bar';
 /* @end */
 
 export default function RootLayout() {

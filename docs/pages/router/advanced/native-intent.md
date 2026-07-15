@@ -3,7 +3,6 @@ title: Customizing links
 description: Learn how to perform link redirection and utilize third-party deep links with +native-intent when using Expo Router.
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
 
 Expo Router uses an extended version of web standards to navigate through an app. However, native apps do not always conform to server-based routing. This can lead to misalignment when integrating any third-party service. For example, apps can be launched with arbitrary strings or intent objects instead of URLs. There are two common scenarios where you may need to customize a link:
 
@@ -31,7 +30,6 @@ To facilitate this, create a special file called **+native-intent.tsx** at the t
 Here's an example the applies practices on how `redirectSystemPath` is used inside **+native-intent.tsx** file. Following this example, you can ensure the stability and reliability of your app's URL processing functionality and mitigate the risk of unexpected errors and crashes.
 
 ```ts src/app/+native-intent.tsx
-import ThirdPartyService from 'third-party-sdk';
 
 export function redirectSystemPath({ path, initial }) {
   try {
@@ -75,7 +73,6 @@ While your app is open, you can react to URL changes within your `_layout` files
 - **localized**: Add a `_layout` file to an existing directory (or create a new [group directory](/router/basics/notation/#parentheses))
 
 ```tsx src/app/_layout.tsx
-import { Slot, Redirect } from 'expo-router';
 
 export default function RootLayout() {
   const pathname = usePathname();
@@ -100,8 +97,6 @@ In native apps, an alternative way to rewrite a URL is to handle it within the [
 Below is a basic example of how to send navigation events to an external service, such as an analytics or logging service. Consult with your provider for specific instructions.
 
 ```tsx src/app/_layout.tsx
-import ThirdPartyService from 'third-party-sdk';
-import { Slot, usePathname } from 'expo-router';
 
 const thirdParty = new ThirdPartyService();
 

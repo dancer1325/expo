@@ -3,7 +3,6 @@ title: Downloading updates
 description: Learn strategies for downloading and launching updates.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
 
 > **info** All of the following information on this page applies only to release builds and debug builds [with `EX_UPDATES_NATIVE_DEBUG` enabled](/eas-update/debug/#runtime-issues).
 
@@ -51,9 +50,6 @@ It's worth considering whether you want to reload the app after an update is dow
 To ensure the background task is registered when the application starts, import and invoke the `setupBackgroundUpdates` function within the top-level component.
 
 ```ts
-import * as TaskManager from 'expo-task-manager';
-import * as BackgroundTask from 'expo-background-task';
-import * as Updates from 'expo-updates';
 
 const BACKGROUND_TASK_NAME = 'task-run-expo-update';
 

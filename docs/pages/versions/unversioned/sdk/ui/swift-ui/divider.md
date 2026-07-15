@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Divider matches the official SwiftUI [Divider API](https://developer.apple.com/documentation/swiftui/divider) and creates a visual separator between content.
 
@@ -29,7 +26,6 @@ Expo UI Divider matches the official SwiftUI [Divider API](https://developer.app
 ### Basic divider
 
 ```tsx BasicDividerExample.tsx
-import { Host, Divider, VStack, Text } from '@expo/ui/swift-ui';
 
 export default function BasicDividerExample() {
   return (
@@ -47,7 +43,6 @@ export default function BasicDividerExample() {
 ### Divider in a list
 
 ```tsx DividerInListExample.tsx
-import { Host, Divider, VStack, Text } from '@expo/ui/swift-ui';
 
 export default function DividerInListExample() {
   return (
@@ -71,7 +66,6 @@ export default function DividerInListExample() {
 Dividers are commonly used to separate groups of actions in context menus.
 
 ```tsx DividerInContextMenuExample.tsx
-import { Host, ContextMenu, Button, Text, Divider } from '@expo/ui/swift-ui';
 
 export default function DividerInContextMenuExample() {
   return (
@@ -95,7 +89,6 @@ export default function DividerInContextMenuExample() {
 ## API
 
 ```tsx
-import { Divider } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/divider" apiName="Divider" />

@@ -4,7 +4,6 @@ description: Learn how to seamlessly continue app navigation across Apple device
 platforms: ['ios*', 'web']
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 Apple Handoff is a feature that enables users to continue browsing your app or website on another device. Expo Router automates all of the runtime routing for this feature. However, the one-time configuration must be set up manually.
 
@@ -120,8 +119,6 @@ In development, you must start the website **before installing the app on your d
 In any route that you want to support handoff, use the `Head` component from `expo-router/head`:
 
 ```tsx src/app/index.tsx
-import Head from 'expo-router/head';
-import { Text } from 'react-native';
 
 export default function App() {
   return (
@@ -150,7 +147,6 @@ You may want to switch the values between platforms, for that you can use **Plat
 
 {/* prettier-ignore */}
 ```tsx src/app/index.tsx
-import Head from 'expo-router/head';
 
 export default function App() {
   return (

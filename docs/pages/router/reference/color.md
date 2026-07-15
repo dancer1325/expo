@@ -3,16 +3,13 @@ title: Color
 description: Access platform-specific colors with type safety in Expo Router.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 The `Color` API provides type-safe access to platform-specific colors on Android and iOS. It wraps React Native's `PlatformColor` with full TypeScript support, enabling autocomplete and compile-time type checking for system colors.
 
 ## Usage
 
 ```tsx
-import { Color } from 'expo-router';
 ```
 
 The `Color` object has two platform-specific namespaces:
@@ -29,7 +26,6 @@ Android provides four categories of colors through the `Color.android` namespace
 Access Android system colors through `Color.android.*`. These map to `@android:color/` resources.
 
 ```tsx
-import { Color } from 'expo-router';
 
 // Basic colors
 Color.android.black;
@@ -48,7 +44,6 @@ See the [Android R.color documentation](https://developer.android.com/reference/
 Access Android theme attributes through `Color.android.attr.*`. These resolve colors from the current theme using `?attr/` syntax.
 
 ```tsx
-import { Color } from 'expo-router';
 
 // Theme colors
 Color.android.attr.colorPrimary;
@@ -64,7 +59,6 @@ See the [Android R.attr documentation](https://developer.android.com/reference/a
 Access Material Design 3 static colors through `Color.android.material.*`. These use the standard Material 3 Light/Dark theme colors.
 
 ```tsx
-import { Color } from 'expo-router';
 
 // Primary colors
 Color.android.material.primary;
@@ -84,7 +78,6 @@ See the [Material Design 3 color roles documentation](https://m3.material.io/sty
 Access Material Design 3 dynamic colors through `Color.android.dynamic.*`. Dynamic colors adapt to the user's wallpaper using Android's [Dynamic Color feature](https://m3.material.io/styles/color/dynamic/user-generated-source), available on Android 12+ (API 31+).
 
 ```tsx
-import { Color } from 'expo-router';
 
 // Dynamic colors adapt to user's wallpaper
 Color.android.dynamic.primary;
@@ -100,8 +93,6 @@ The available colors are the same as [Material 3 static colors](#material-design
 Android Material colors (both static and dynamic) respond to the system's light/dark mode. To ensure your component re-renders when the theme changes, use the `useColorScheme()` hook from React Native.
 
 ```tsx
-import { Color } from 'expo-router';
-import { View, Text, useColorScheme } from 'react-native';
 
 function MyComponent() {
   // Triggers re-render when system theme changes
@@ -124,8 +115,6 @@ Without using `useColorScheme()`, the colors may not update when the user switch
 Access iOS system colors through `Color.ios.*`. These map directly to UIKit's [standard colors](https://developer.apple.com/documentation/uikit/standard-colors) and [UI element colors](https://developer.apple.com/documentation/uikit/ui-element-colors).
 
 ```tsx
-import { Color } from 'expo-router';
-import { View, Text } from 'react-native';
 
 function MyComponent() {
   return (
@@ -143,8 +132,6 @@ iOS colors automatically adapt to the system appearance (light/dark mode) and ac
 The `Color` API is platform-specific. Use `Platform.select` to select the appropriate color for each platform:
 
 ```tsx
-import { Platform, View, Text } from 'react-native';
-import { Color } from 'expo-router';
 
 function MyComponent() {
   const backgroundColor = Platform.select({

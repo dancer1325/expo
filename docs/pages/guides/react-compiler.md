@@ -3,8 +3,6 @@ title: React Compiler
 description: Learn how to enable and use the React Compiler in Expo apps.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 > **warning** **Warning:** React Compiler is experimental. Currently, it is on hold and we'll soon provide more updates on its usage.
 

@@ -4,11 +4,7 @@ sidebar_title: expo-contacts/legacy
 description: Migrate from the legacy expo-contacts API to the new class-based expo-contacts API with Contact.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { NoIcon } from '~/ui/components/DocIcons';
-import { Terminal } from '~/ui/components/Snippet';
 
 The new class-based `expo-contacts` API is now stable. The legacy API is available from `expo-contacts/legacy`. Migrate to the root `expo-contacts` import to benefit from the new API and future fixes.
 
@@ -29,7 +25,6 @@ Install the SDK-compatible package:
 Import from `expo-contacts`:
 
 ```ts
-import { Contact } from 'expo-contacts';
 ```
 
 ## Contacts

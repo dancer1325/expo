@@ -3,9 +3,6 @@ title: Android App Links
 description: Learn how to configure Android App Links to open your Expo app from a standard web URL.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 To configure Android App Links for your app, you need to:
 

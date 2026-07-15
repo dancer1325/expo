@@ -4,13 +4,7 @@ sidebar_title: New Architecture
 description: Learn about React Native's "New Architecture" and how and why to migrate to it.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tab, Tabs } from '~/ui/components/Tabs';
 
 > **info** We recommend using SDK 52 or newer for the best experience with the New Architecture.
 

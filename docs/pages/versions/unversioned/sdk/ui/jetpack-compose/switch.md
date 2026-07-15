@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Switch`](../universal/switch) — it renders the appropriate native component per platform.
 
@@ -31,8 +28,6 @@ Expo UI Switch matches the official Jetpack Compose [Switch](https://developer.a
 ### Toggle switch
 
 ```tsx ToggleSwitchExample.tsx
-import { useState } from 'react';
-import { Host, Switch } from '@expo/ui/jetpack-compose';
 
 export default function ToggleSwitchExample() {
   const [checked, setChecked] = useState(false);
@@ -48,8 +43,6 @@ export default function ToggleSwitchExample() {
 ### Custom colors
 
 ```tsx CustomColorsExample.tsx
-import { useState } from 'react';
-import { Host, Switch } from '@expo/ui/jetpack-compose';
 
 export default function CustomColorsExample() {
   const [checked, setChecked] = useState(false);
@@ -77,9 +70,6 @@ export default function CustomColorsExample() {
 Use `Switch.ThumbContent` to render a custom element inside the thumb. `Switch.DefaultIconSize` gives you the M3 default icon size so your content fits perfectly.
 
 ```tsx ThumbContentExample.tsx
-import { useState } from 'react';
-import { Host, Switch, Box } from '@expo/ui/jetpack-compose';
-import { size, clip, background, Shapes } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function ThumbContentExample() {
   const [checked, setChecked] = useState(false);
@@ -116,7 +106,6 @@ export default function ThumbContentExample() {
 ## API
 
 ```tsx
-import { Switch } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/switch" apiName="Switch" />

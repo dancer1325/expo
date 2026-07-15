@@ -3,9 +3,6 @@ title: Color themes
 description: Learn how to support light and dark modes in your app.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { SnackInline, Terminal } from '~/ui/components/Snippet';
 
 It's common for apps to support light and dark color schemes. Here is an example of how supporting both modes looks in an Expo project:
 
@@ -61,8 +58,6 @@ Implement the `onConfigurationChanged` method in **MainActivity.java**:
 
 ```java
 /* @info Import the <CODE>Intent</CODE> and <CODE>Configuration</CODE> classes. */
-import android.content.Intent;
-import android.content.res.Configuration;
 /* @end */
 public class MainActivity extends ReactActivity {
   /* @hide ... */ /* @end */
@@ -97,7 +92,6 @@ The `userInterfaceStyle` property supports the following values:
 To detect the color scheme in your project, use `Appearance` or `useColorScheme` from `react-native`:
 
 ```tsx app/index.tsx
-import { Appearance, useColorScheme } from 'react-native';
 ```
 
 Then, you can use `useColorScheme()` hook as shown below:
@@ -124,9 +118,7 @@ In some cases, you will find it helpful to get the current color scheme imperati
 
 {/* prettier-ignore */}
 ```tsx
-import { Text, StyleSheet, View, /* @info Import <CODE>useColorScheme</CODE> from react-native */ useColorScheme /* @end */ } from 'react-native';
 /* @info Automatically switches bar style based on theme. */
-import { StatusBar } from 'expo-status-bar';
 /* @end */
 
 export default function App() {

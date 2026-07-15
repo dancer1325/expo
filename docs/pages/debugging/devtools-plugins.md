@@ -3,8 +3,6 @@ title: Dev tools plugins
 description: Learn about using dev tools plugins to inspect and debug your Expo project.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
-import { Tab, Tabs } from '~/ui/components/Tabs';
 
 > **warning** Available from SDK 50 and above.
 
@@ -23,7 +21,6 @@ Some plugin hooks require parameters that relate to how the plugin inspects your
 To start using the plugin, use the hook in your app's root component:
 
 ```jsx App.js
-import { useMyDevToolsPlugin } from 'my-devtools-plugin';
 
 export default App() {
   useMyDevToolsPlugin();
@@ -34,7 +31,6 @@ export default App() {
 In some cases, you may need to interact with a plugin directly. All plugins communicate through exports from `expo/devtools`, and you can send and listen to messages through `useDevToolsPluginClient`. Be sure to pass the same plugin name to `useDevToolsPluginClient` as is used by the plugin's web user interface:
 
 ```jsx App.js
-import { useDevToolsPluginClient } from "expo/devtools";
 
 export default App() {
   const client = useDevToolsPluginClient('my-devtools-plugin');
@@ -83,9 +79,6 @@ Pass the navigation root to the plugin in your app's entry point:
 <Tab>
 
 ```jsx app/_layout.js
-import { useEffect, useRef } from 'react';
-import { useNavigationContainerRef, Slot } from 'expo-router';
-import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 
 export default Layout() {
   const navigationRef = useNavigationContainerRef();
@@ -102,8 +95,6 @@ export default Layout() {
 
 {/* prettier-ignore */}
 ```jsx App.js
-import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
-import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 
 export default function App() {
   const navigationRef = useNavigationContainerRef();
@@ -134,8 +125,6 @@ To use the plugin, start by installing the package:
 Then pass your client instance to the plugin in your app's root component or where you wrap the rest of your app in the `ApolloProvider`:
 
 ```jsx App.js
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
-import { useApolloClientDevTools } from '@dev-plugins/apollo-client';
 
 const client = new ApolloClient({
   uri: 'https://demo.test.com/',
@@ -162,8 +151,6 @@ To use the plugin, start by installing the package:
 Then pass your client instance to the plugin in your app's root component or where you wrap the rest of your app in the `QueryClientProvider`:
 
 ```jsx App.js
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useReactQueryDevTools } from '@dev-plugins/react-query';
 
 const queryClient = new QueryClient({});
 
@@ -187,7 +174,6 @@ To use the plugin, start by installing the package:
 If you're using `@reduxjs/toolkit`, modify the `configureStore` call to disable the built-in dev tools by passing in `devTools: false`. Then, add in the Expo DevTools plugin enhancer by concatenating the `devToolsEnhancer()`. The `configureStore` call is going to look like the following:
 
 ```js store.js
-import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
 
 const store = configureStore({
   reducer: rootReducer,
@@ -211,9 +197,6 @@ To use the plugin, start by installing the package:
 Then pass your client instance to the plugin in your app's root component or where you wrap the rest of your app with the store's `Provider`:
 
 ```jsx App.js
-import { createStore } from 'tinybase';
-import { useValue, Provider } from 'tinybase/lib/ui-react';
-import { useTinyBaseDevTools } from '@dev-plugins/tinybase';
 
 const store = createStore().setValue('counter', 0);
 

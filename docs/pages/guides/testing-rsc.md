@@ -5,7 +5,6 @@ description: Learn about writing unit tests for React Server Components in Expo.
 platforms: ['android', 'ios', 'web']
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 > **warning** This guide refers to the experimental feature React Server Components which is still in development.
 
@@ -51,7 +50,6 @@ Tests should be written in a **\_\_rsc_tests\_\_** directory to prevent Jest fro
 ```js __rsc_tests__/my-component.test.ts
 /// <reference types="jest-expo/rsc/expect" />
 
-import { LinearGradient } from 'expo-linear-gradient';
 
 it(`renders to RSC`, async () => {
   const jsx = (
@@ -98,7 +96,6 @@ In an RSC bundling environment, you can import files like
 Use the `server-only` and `client-only` modules to assert that a module should not be imported on the client or server:
 
 ```js my-module.js
-import 'server-only';
 ```
 
 RSC supports package exports by default. You can use the `react-server` condition to change what file is imported from a module:

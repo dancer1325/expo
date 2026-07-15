@@ -4,13 +4,7 @@ sidebar_title: Run E2E tests
 description: Learn how to set up and run E2E tests on EAS Workflows with Maestro.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { Dataflow03Icon } from '@expo/styleguide-icons/outline/Dataflow03Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 In this guide, you'll learn how to run end-to-end (E2E) tests on EAS Workflows using [Maestro](https://maestro.dev/). The example demonstrates how to configure your E2E tests workflow using the [default Expo template](/more/create-expo/#--template). For your own app, you'll need to adjust the flows to match your app's UI.
 

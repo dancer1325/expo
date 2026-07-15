@@ -7,12 +7,7 @@ platforms: ['android', 'ios', 'web', 'tvos', 'expo-go']
 inExpoGo: true
 ---
 
-import { CornerDownRightIcon } from '@expo/styleguide-icons/outline/CornerDownRightIcon';
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { PaddedAPIBox } from '~/components/plugins/PaddedAPIBox';
-import { APIBoxSectionHeader } from '~/components/plugins/api/components/APIBoxSectionHeader';
-import { CALLOUT, A } from '~/ui/components/Text';
 
 `react-native-safe-area-context` provides a flexible API for accessing device safe area inset information. This allows you to position your content appropriately around notches, status bars, home indicators, and other such device and operating system interface elements. It also provides a `SafeAreaView` component that you can use in place of `View` to automatically inset your views to account for safe areas.
 
@@ -23,7 +18,6 @@ import { CALLOUT, A } from '~/ui/components/Text';
 ## API
 
 ```js
-import {
   SafeAreaView,
   SafeAreaProvider,
   SafeAreaInsetsContext,
@@ -42,7 +36,6 @@ If you set your own padding on the view, it will be added to the padding from th
 > **info** If you are targeting web, you must set up `SafeAreaProvider` as described in the [Context](#context) section.
 
 ```jsx
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 function SomeComponent() {
   return (
@@ -96,7 +89,6 @@ Hook gives you direct access to the safe area insets. This is a more advanced us
 <APIBoxSectionHeader text="Example" />
 
 ```jsx
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 function HookComponent() {
   const insets = useSafeAreaInsets();
@@ -146,7 +138,6 @@ To use safe area context, you need to add `SafeAreaProvider` in your app root co
 > You may need to add it in other places too, including at the root of any modals any routes when using `react-native-screen`.
 
 ```jsx
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 function App() {
   return <SafeAreaProvider>...</SafeAreaProvider>;
@@ -156,7 +147,6 @@ function App() {
 Then, you can use [`useSafeAreaInsets()`](#usesafeareainsets) hook and also consumer API to access inset data:
 
 ```jsx
-import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
 function Component() {
   return (
@@ -174,7 +164,6 @@ If you can, use `SafeAreaView`. It's implemented natively so when rotating the d
 To speed up the initial render, you can import `initialWindowMetrics` from this package and set as the `initialMetrics` prop on the provider as described in Web SSR. You cannot do this if your provider remounts, or you are using `react-native-navigation`.
 
 ```jsx
-import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 
 function App() {
   return <SafeAreaProvider initialMetrics={initialWindowMetrics}>...</SafeAreaProvider>;
@@ -205,7 +194,6 @@ div {
 Universally, the hook `useSafeAreaInsets()` can provide access to this information.
 
 ```jsx App.js
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 function App() {
   const insets = useSafeAreaInsets();

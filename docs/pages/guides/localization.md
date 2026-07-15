@@ -3,8 +3,6 @@ title: Localization
 description: Learn about getting started and configuring localization in an Expo project using expo-localization.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { SnackInline, Terminal } from '~/ui/components/Snippet';
 
 If you want your app to be easy to use for users who speak different languages or come from different cultures, you should localize it. Localizing an app makes it adapt to the locale of the user's device. The app will show translations and currencies that the user knows and understands. Numbers, lists, and more will be formatted in a way that the user is used to.
 
@@ -19,7 +17,6 @@ Use the [`expo-localization`](/versions/latest/sdk/localization/) library to get
 Then, you will be able to access localization methods and data in your app:
 
 ```tsx
-import { getLocales } from 'expo-localization';
 
 const deviceLanguage = getLocales()[0].languageCode;
 ```
@@ -42,8 +39,6 @@ Let's make the app support English and Japanese. To achieve this install the i18
 Then, configure the languages for your app:
 
 ```tsx
-import { getLocales } from 'expo-localization';
-import { I18n } from 'i18n-js';
 
 // Set the key-value pairs for the different languages you want to support.
 const i18n = new I18n({
@@ -70,9 +65,6 @@ On iOS, when a user changes the device's language, the app will reset. This mean
 <SnackInline label="Localization" dependencies={['expo-localization', 'i18n-js']}>
 
 ```tsx
-import { View, StyleSheet, Text } from 'react-native';
-import { getLocales } from 'expo-localization';
-import { I18n } from 'i18n-js';
 
 // Set the key-value pairs for the different languages you want to support.
 const translations = {
@@ -210,9 +202,6 @@ dependencies={['expo-updates', 'expo-constants']}
 >
 
 ```tsx
-import { Text, View, StyleSheet, I18nManager, Platform } from 'react-native';
-import Constants from 'expo-constants';
-import * as Updates from 'expo-updates';
 
 export default function App() {
   const shouldBeRTL = true;
@@ -269,8 +258,6 @@ Web support for RTL layouts requires no app config changes.
 Expo uses `react-native-web` for running Expo projects in the browser. To make `react-native-web` automatically adapt to locale direction, add a `dir` property to your root `<View>` component.
 
 ```tsx App.tsx
-import { View } from 'react-native';
-import { getLocales } from 'expo-localization';
 // ...
 
 return <View dir={getLocales()[0].textDirection || 'ltr'}>//...</View>;
@@ -287,7 +274,6 @@ However, the default unset value of `textDirection` property signifies the actua
 It's best to define this style in your custom reusable `<Text>` component that you can then import everywhere you need to render text strings.
 
 ```tsx MobileText.tsx
-import { Text as RNText, TextProps as RNTextProps } from 'react-native';
 
 const MobileText = (props: RNTextProps) => {
   return <RNText style={{ textAlign: 'left', ...props.style }} {...props} />;
@@ -300,7 +286,6 @@ export default MobileText;
 For each text tag, you need to add the `lang` property with the current locale identifier. It's best to define this style in a custom reusable component.
 
 ```tsx WebText.tsx
-import { getLocales } from 'expo-localization';
 
 const deviceLanguage = getLocales()[0].languageCode;
 
@@ -331,7 +316,6 @@ Expo provides the `expo-localization` library to allow you to read the user's lo
 - `getCalendars()` returns a list of calendars based on the order in which the user prefers them. There will always be at least one calendar on the list.
 
 ```ts
-import { getLocales, getCalendars } from 'expo-localization';
 
 const {
   languageTag,

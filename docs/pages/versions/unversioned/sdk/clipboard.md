@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-clipboard.png'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-clipboard` provides an interface for getting and setting Clipboard content on Android, iOS, and Web.
 
@@ -22,9 +19,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Clipboard' dependencies={['expo-clipboard']} platforms={['ios', 'android', 'web']}>
 
 ```tsx
-import { useState } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import * as Clipboard from 'expo-clipboard';
 
 export default function App() {
   const [copiedText, setCopiedText] = useState('');
@@ -76,7 +70,6 @@ Setting `android.isSensitive: true` marks clipboard content as sensitive, based 
 - Reduce accidental exposure from shoulder surfing
 
 ```ts
-import * as Clipboard from 'expo-clipboard';
 
 // Sensitive text
 await Clipboard.setStringAsync('my-secret-token', {
@@ -92,7 +85,6 @@ await Clipboard.setImageAsync(base64Image, {
 ## API
 
 ```ts
-import * as Clipboard from 'expo-clipboard';
 ```
 
 > **warning** On Web, this module uses the [`AsyncClipboard` API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API),

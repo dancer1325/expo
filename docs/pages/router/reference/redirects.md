@@ -10,9 +10,7 @@ You can redirect a request to a different URL based on some in-app criteria. Exp
 You can immediately redirect from a particular screen by using the `Redirect` component:
 
 ```tsx
-import { View, Text } from 'react-native';
 /* @info */
-import { Redirect } from 'expo-router';
 /* @end */
 
 export default function Page() {
@@ -39,8 +37,6 @@ export default function Page() {
 You can also redirect imperatively with the `useRouter` hook:
 
 ```tsx
-import { Text } from 'react-native';
-import { useRouter, useFocusEffect } from 'expo-router';
 
 function MyScreen() {
   const router = useRouter();

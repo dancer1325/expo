@@ -8,15 +8,10 @@ iconUrl: '/static/images/packages/expo-status-bar.png'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-status-bar` gives you a component and imperative interface to control the app status bar to change its text color, hide it, and apply animations to any of these changes. Exactly what you are able to do with the `StatusBar` component depends on the platform you're using.
 
@@ -100,8 +95,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 <SnackInline dependencies={["expo-status-bar"]}>
 
 ```jsx collapseHeight=310
-import { StyleSheet, Text, View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
   return (
@@ -130,7 +123,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import { StatusBar } from 'expo-status-bar';
 ```
 
 <APISection packageName="expo-status-bar" apiName="StatusBar" />

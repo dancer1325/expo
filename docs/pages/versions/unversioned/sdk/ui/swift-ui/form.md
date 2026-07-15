@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Form matches the official SwiftUI [Form API](https://developer.apple.com/documentation/swiftui/form). It provides a container for grouping controls used for data entry, such as in settings or inspection panes.
 
@@ -29,8 +26,6 @@ Expo UI Form matches the official SwiftUI [Form API](https://developer.apple.com
 ### Basic form
 
 ```tsx BasicFormExample.tsx
-import { useState } from 'react';
-import { Host, Form, TextField } from '@expo/ui/swift-ui';
 
 export default function BasicFormExample() {
   return (
@@ -48,8 +43,6 @@ export default function BasicFormExample() {
 Use the [`Section`](section) component to group related controls within a form.
 
 ```tsx FormWithSectionsExample.tsx
-import { useState } from 'react';
-import { Host, Form, Section, TextField, Toggle, Button } from '@expo/ui/swift-ui';
 
 export default function FormWithSectionsExample() {
   const [notifications, setNotifications] = useState(false);
@@ -86,9 +79,6 @@ export default function FormWithSectionsExample() {
 Use the `scrollContentBackground` modifier to customize or hide the form's background.
 
 ```tsx FormBackgroundExample.tsx
-import { useState } from 'react';
-import { Host, Form, Section, TextField } from '@expo/ui/swift-ui';
-import { scrollContentBackground, background } from '@expo/ui/swift-ui/modifiers';
 
 export default function FormBackgroundExample() {
   return (
@@ -110,9 +100,6 @@ Use the [`scrollDisabled`](modifiers/#scrolldisableddisabled) modifier to preven
 > **Note:** The `scrollDisabled` modifier is only available on iOS 16+ and tvOS 16+.
 
 ```tsx NonScrollableFormExample.tsx
-import { useState } from 'react';
-import { Host, Form, Section, TextField, Toggle } from '@expo/ui/swift-ui';
-import { scrollDisabled } from '@expo/ui/swift-ui/modifiers';
 
 export default function NonScrollableFormExample() {
   const [isOn, setIsOn] = useState(false);
@@ -134,9 +121,6 @@ export default function NonScrollableFormExample() {
 Use the `refreshable` modifier to add pull-to-refresh functionality.
 
 ```tsx RefreshableFormExample.tsx
-import { useState, useCallback } from 'react';
-import { Host, Form, Section, Text } from '@expo/ui/swift-ui';
-import { refreshable } from '@expo/ui/swift-ui/modifiers';
 
 export default function RefreshableFormExample() {
   const [lastRefresh, setLastRefresh] = useState(new Date());
@@ -162,7 +146,6 @@ export default function RefreshableFormExample() {
 ## API
 
 ```tsx
-import { Form } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/form" apiName="Form" />

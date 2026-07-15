@@ -3,7 +3,6 @@ title: Send over-the-air updates
 description: Learn how to send over-the-air updates to push critical bug fixes and improvements to your users.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 You can send over-the-air updates containing critical bug fixes and improvements to your users.
 

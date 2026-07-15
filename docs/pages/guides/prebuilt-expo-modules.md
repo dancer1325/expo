@@ -4,8 +4,6 @@ description: Learn how precompiled Expo Modules reduce native build times on And
 hideTOC: true
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
 
 Native build times can slow down your development workflow. Expo provides precompiled versions of its most complex modules so your project links precompiled binaries instead of recompiling them from source on every build. On Android, those binaries ship as **.aar** files linked through Gradle. On iOS, they ship as `XCFrameworks` linked through CocoaPods. Both are bundled into the regular Expo npm packages and packages that aren't yet precompiled fall back to building from source automatically — precompiled and source-built modules coexist in the same project.
 

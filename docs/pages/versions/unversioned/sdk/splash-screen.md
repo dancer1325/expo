@@ -8,14 +8,10 @@ iconUrl: '/static/images/packages/expo-splash-screen.png'
 platforms: ['android', 'ios', 'tvos']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 The `SplashScreen` module from the `expo-splash-screen` library provides control over the native splash screen behavior. By default, the splash screen will automatically hide when your app is ready, but you can also manually control its visibility for advanced use cases.
 
@@ -36,8 +32,6 @@ For most apps, you don't need to do anything special with the splash screen. It 
 <Tab label="With Expo Router">
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
 
 // Set the animation options. This is optional.
 SplashScreen.setOptions({
@@ -55,9 +49,6 @@ export default function RootLayout() {
 <Tab label="Without Expo Router">
 
 ```tsx App.tsx
-import { Text, View } from 'react-native';
-import Entypo from '@expo/vector-icons/Entypo';
-import * as SplashScreen from 'expo-splash-screen';
 
 // Set the animation options. This is optional.
 SplashScreen.setOptions({
@@ -88,9 +79,6 @@ In some cases, it may be necessary to delay hiding the splash screen until certa
 <Tab label="With Expo Router">
 
 ```tsx app/_layout.tsx
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -131,10 +119,6 @@ export default function RootLayout() {
 <Tab label="Without Expo Router">
 
 ```tsx App.tsx
-import { useCallback, useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
-import Entypo from '@expo/vector-icons/Entypo';
-import * as SplashScreen from 'expo-splash-screen';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -286,7 +270,6 @@ If you prefer to use custom animation, see the [`with-splash-screen`](https://gi
 ## API
 
 ```tsx
-import * as SplashScreen from 'expo-splash-screen';
 ```
 
 <APISection packageName="expo-splash-screen" apiName="SplashScreen" />

@@ -4,9 +4,7 @@ sidebar_title: Without EAS
 description: Learn about non-EAS ways to manage environment variables in Expo and React Native projects.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 Using [EAS Environment Variables](/eas/environment-variables/) is the recommended way to manage environment variables for cloud builds and updates, but you can still work locally or with other tooling.
 

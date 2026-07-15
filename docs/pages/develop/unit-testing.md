@@ -4,16 +4,7 @@ sidebar_title: Unit testing
 description: Learn how to set up and configure the jest-expo library to write unit and snapshot tests for a project with Jest.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { Cube01Icon } from '@expo/styleguide-icons/outline/Cube01Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
-import { CODE } from '~/ui/components/Text';
 
 [Jest](https://jestjs.io) is the most widely used unit and snapshot JavaScript testing framework. In this guide, you will learn how to set up Jest in your project, write a unit test, write a snapshot test, and best practices for structuring your tests when using Jest with React Native.
 
@@ -134,8 +125,6 @@ A unit test checks the smallest unit of code, usually a function. To write your 
 Inside the **app** directory of your project, create a new file called **index.tsx**, and the following code to render a simple component:
 
 ```tsx index.tsx
-import { PropsWithChildren } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 
 /* @info This is a custom component that will be used in the test. */
 export const CustomText = ({ children }: PropsWithChildren) => <Text>{children}</Text>;
@@ -170,9 +159,7 @@ Create a **\_\_tests\_\_** directory at the root of your project's directory. If
 Add the following example code in **HomeScreen-test.tsx**:
 
 ```tsx HomeScreen-test.tsx
-import { render } from '@testing-library/react-native';
 
-import HomeScreen, { CustomText } from '@/app/index';
 
 describe('<HomeScreen />', () => {
   test('Text renders correctly on HomeScreen', () => {

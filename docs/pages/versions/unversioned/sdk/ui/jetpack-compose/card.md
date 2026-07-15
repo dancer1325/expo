@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Card matches the official Jetpack Compose [Card API](https://developer.android.com/develop/ui/compose/components/card) and displays content inside a styled surface container with optional elevation and outline. The `Card` component renders a [filled card](https://developer.android.com/develop/ui/compose/components/card#filled), while `ElevatedCard` and `OutlinedCard` provide raised and bordered variants respectively.
 
@@ -29,8 +26,6 @@ Expo UI Card matches the official Jetpack Compose [Card API](https://developer.a
 ### Basic card
 
 ```tsx BasicCardExample.tsx
-import { Host, Card, Text } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function BasicCardExample() {
   return (
@@ -48,8 +43,6 @@ export default function BasicCardExample() {
 Use `Card` (filled), `ElevatedCard`, or `OutlinedCard` for different styles.
 
 ```tsx CardTypesExample.tsx
-import { Host, Card, ElevatedCard, OutlinedCard, Text, Column } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function CardTypesExample() {
   return (
@@ -75,8 +68,6 @@ export default function CardTypesExample() {
 Use the `elevation` prop (in dp) to control shadow depth. Elevation is most meaningful on `ElevatedCard`, which uses shadow elevation. Filled `Card` uses tonal elevation by default, so changes may be subtle.
 
 ```tsx ElevatedCardExample.tsx
-import { Host, ElevatedCard, Text } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function ElevatedCardExample() {
   return (
@@ -94,8 +85,6 @@ export default function ElevatedCardExample() {
 `Card` and `OutlinedCard` accept a `border` prop to customize stroke width and color.
 
 ```tsx OutlinedCardExample.tsx
-import { Host, OutlinedCard, Text } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function OutlinedCardExample() {
   return (
@@ -111,7 +100,6 @@ export default function OutlinedCardExample() {
 ## API
 
 ```tsx
-import { Card, ElevatedCard, OutlinedCard } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/card" apiName="Card" />

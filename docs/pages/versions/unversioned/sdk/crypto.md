@@ -7,10 +7,6 @@ iconUrl: '/static/images/packages/expo-crypto.png'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-crypto` enables you to hash data in an equivalent manner to the Node.js core `crypto` API, and perform crypto operations such as AES encryption and decryption.
 
@@ -23,9 +19,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Basic Crypto usage' dependencies={['expo-crypto']}>
 
 ```jsx
-import { useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import * as Crypto from 'expo-crypto';
 
 export default function App() {
   useEffect(() => {
@@ -63,9 +56,6 @@ const styles = StyleSheet.create({
 <SnackInline label='Simple encryption / decryption' dependencies={['expo-crypto']}>
 
 ```tsx
-import { useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { AESEncryptionKey, aesEncryptAsync, aesDecryptAsync } from 'expo-crypto';
 
 export default function App() {
   useEffect(() => {
@@ -106,9 +96,6 @@ const styles = StyleSheet.create({
 <Collapsible summary="Encrypt data and save it to the file">
 
 ```ts example.ts
-import { AESEncryptionKey, aesEncryptAsync } from 'expo-crypto';
-import { File, Paths } from 'expo-file-system';
-import * as SecureStore from 'expo-secure-store';
 
 async function encryptAndSaveData(plaintextData: Uint8Array) {
   // Generate encryption key
@@ -134,9 +121,6 @@ async function encryptAndSaveData(plaintextData: Uint8Array) {
 <Collapsible summary="Load file and decrypt data">
 
 ```ts example.ts
-import { AESEncryptionKey, AESSealedData, aesDecryptAsync } from 'expo-crypto';
-import { File, Paths } from 'expo-file-system';
-import * as SecureStore from 'expo-secure-store';
 
 async function loadAndDecryptData(): Promise<Uint8Array | null> {
   // Load encryption key
@@ -165,7 +149,6 @@ async function loadAndDecryptData(): Promise<Uint8Array | null> {
 ## API
 
 ```js
-import * as Crypto from 'expo-crypto';
 ```
 
 <APISection packageName="expo-crypto" apiName="Crypto" />

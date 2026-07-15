@@ -5,7 +5,6 @@ sidebar_title: Router notation
 searchRank: 8
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
 
 When you look inside the **src/app** directory in a typical Expo Router project, you'll see a lot more than some simple file and directory names. What do the parentheses and brackets mean? Let's learn the significance of file-based routing notation and how it allows you to define complex navigation patterns.
 

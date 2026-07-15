@@ -3,8 +3,6 @@ title: Work with monorepos
 description: Learn about setting up Expo projects in a monorepo with Yarn v1 workspaces.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
 
 Monorepos, or _"monolithic repositories"_, are single repositories containing multiple apps or packages. It can help speed up development for larger projects, make it easier to share code, and act as a single source of truth. This guide will set up a simple monorepo with an Expo project. We currently have first-class support for [Yarn 1 (Classic)](https://classic.yarnpkg.com/lang/en/) workspaces. If you want to use another tool, make sure you know how to configure it.
 
@@ -163,9 +161,7 @@ In monorepos, we can't hardcode paths to packages anymore since we can't be sure
 Open our app's **package.json**, change the `main` property to `index.js`, and create this new **index.js** file in the app directory with the content below.
 
 ```js index.js
-import { registerRootComponent } from 'expo';
 
-import App from './App';
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
 // It also ensures that whether you load the app in Expo Go or in a native build,
@@ -239,10 +235,6 @@ Like standard packages, we need to add our **cool-package** as a dependency to o
 Now you should be able to use the package inside your app! To test this, let's edit the **App.js** in our app and render the `greeting` text from our **cool-package**.
 
 ```jsx App.js
-import { greeting } from 'cool-package';
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { Text, View } from 'react-native';
 
 export default function App() {
   return (

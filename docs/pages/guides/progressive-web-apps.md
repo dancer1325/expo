@@ -3,10 +3,6 @@ title: Progressive web apps
 description: Learn how to add progressive web app support to Expo websites.
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tab, Tabs, TabsGroup } from '~/ui/components/Tabs';
 
 <TabsGroup>
 
@@ -106,8 +102,6 @@ Then add the manifest to the `<head>` tag:
 If you're using static or server rendering, the HTML entry can be dynamically created in **app/+html.tsx**. Here we'll link the manifest by adding a `<link>` tag to the `<head>` component:
 
 ```tsx app/+html.tsx
-import { ScrollViewStyleReset } from 'expo-router/html';
-import type { PropsWithChildren } from 'react';
 
 // This file is web-only and used to configure the root HTML for every
 // web page during static rendering.
@@ -206,8 +200,6 @@ Then create the service worker registration script in the `<head>` tag:
 Next, create a root HTML file for the app and add the service worker registration script:
 
 ```tsx app/+html.tsx
-import { ScrollViewStyleReset } from 'expo-router/html';
-import type { PropsWithChildren } from 'react';
 
 // This file is web-only and used to configure the root HTML for every
 // web page during static rendering.

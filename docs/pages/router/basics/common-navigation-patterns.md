@@ -5,11 +5,7 @@ sidebar_title: Common patterns
 searchRank: 8
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { Lock01Icon } from '@expo/styleguide-icons/outline/Lock01Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { FileTree } from '~/ui/components/FileTree';
 
 Now that you know the basics of how files and directories are named and arranged in Expo Router, let's apply that knowledge, looking at some real-life navigation patterns you might use in your app.
 
@@ -34,7 +30,6 @@ In the **src/app/(tabs)/\_layout.tsx** file, return a `Tabs` component:
 
 {/* prettier-ignore */}
 ```tsx src/app/(tabs)/_layout.tsx
-import { Tabs } from 'expo-router';
 
 export default function TabLayout() {
   return (
@@ -52,7 +47,6 @@ export default function TabLayout() {
 In the **src/app/(tabs)/feed/\_layout.tsx** file, return a `Stack` component:
 
 ```tsx src/app/(tabs)/feed/_layout.tsx
-import { Stack } from 'expo-router';
 
 /* @info Setting `initialRouteName` ensures that direct links deep into the stack still push the index route onto the stack first. */
 export const unstable_settings = {
@@ -120,7 +114,6 @@ Route groups can be used to share a single screen between two different tabs. Co
 Each of the tabs is put in a group so you can define a third directory that shares routes between two groups (**src/app/(tabs)/(feed,search)/**). Even with the extra layer, **src/app/(tabs)/(feed)/index.tsx** is still the nearest index, so it will be the default route.
 
 ```tsx src/app/(tabs)/_layout.tsx
-import { Tabs } from 'expo-router';
 
 export default function TabLayout() {
   return (
@@ -135,7 +128,6 @@ export default function TabLayout() {
 Both the `(feed)` and `(search)` route groups contain stacks, so they can also share a single layout:
 
 ```tsx src/app/(tabs)/(feed,search)/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function SharedLayout() {
   return <Stack />;
@@ -191,8 +183,6 @@ For example, consider the following navigation tree in which you have a bottom t
 When your app is first launched, the router will try to open the root index, **src/app/(tabs)/index.tsx**. If you wrap this screen in a `Stack.Protected` with the `guard={false}`, the screen will become inaccessible and the next available screen will be opened instead. In this example, the `sign-in` screen will be opened, since it is the next available route.
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
-import { useAuthState } from '@/utils/authState';
 
 export default function RootLayout() {
   const { isLoggedIn } = useAuthState();
@@ -220,8 +210,6 @@ Another benefit of protected routes is that they are checked even if you deep li
 Protected routes can also be used to conditionally show bottom tabs. In this example, the `vip` tab will only be shown to authenticated users who are VIP members:
 
 ```tsx src/app/(tabs)/_layout.tsx
-import { Stack } from 'expo-router';
-import { useAuthState } from '@/utils/authState';
 
 export default function TabsLayout() {
   const { isVip } = useAuthState();
@@ -254,9 +242,6 @@ Separating your navigation states into distinct routes is meant to serve you and
 Thinking back to authentication, the protected route setup works great if the user should simply not be able to visit certain pages without logging in. But what about when unauthenticated users can browse an app in read-only mode? In that case, you might want to show a login modal over the app, rather than redirecting the user to a login page:
 
 ```tsx src/app/(logged-in)/_layout.tsx
-import { Modal } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack } from 'expo-router';
 
 export default function Layout() {
   const isAuthenticated = /* check for valid auth token / session */

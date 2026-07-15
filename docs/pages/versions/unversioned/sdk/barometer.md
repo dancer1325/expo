@@ -7,10 +7,6 @@ iconUrl: '/static/images/packages/expo-sensors.png'
 platforms: ['android', 'ios*', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { NoIcon } from '~/ui/components/DocIcons';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `Barometer` from `expo-sensors` provides access to the device barometer sensor to respond to changes in air pressure, which is measured in hectopascals (`hPa`).
 
@@ -23,9 +19,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Basic Barometer usage' dependencies={['expo-sensors']} platforms={['android', 'ios']}>
 
 ```jsx
-import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
-import { Barometer } from 'expo-sensors';
 
 export default function App() {
   const [{ pressure, relativeAltitude }, setData] = useState({ pressure: 0, relativeAltitude: 0 });
@@ -81,7 +74,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import { Barometer } from 'expo-sensors';
 ```
 
 <APISection packageName="expo-barometer" />

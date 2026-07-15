@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI provides three carousel components matching the official Jetpack Compose [Carousel](https://developer.android.com/develop/ui/compose/components/carousel) API: `HorizontalCenteredHeroCarousel`, `HorizontalMultiBrowseCarousel`, and `HorizontalUncontainedCarousel`.
 
@@ -33,8 +30,6 @@ Expo UI provides three carousel components matching the official Jetpack Compose
 Centers one large hero item between two small peek items — ideal for spotlighting content like movie posters.
 
 ```tsx CenteredHeroExample.tsx
-import { Host, HorizontalCenteredHeroCarousel, Box, Text } from '@expo/ui/jetpack-compose';
-import { size, background } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function CenteredHeroExample() {
   const colors = ['#6200EE', '#03DAC5', '#FF5722', '#4CAF50', '#2196F3'];
@@ -61,8 +56,6 @@ export default function CenteredHeroExample() {
 Shows a large item alongside smaller peek items, letting users browse what comes next.
 
 ```tsx MultiBrowseExample.tsx
-import { Host, HorizontalMultiBrowseCarousel, Box, Text } from '@expo/ui/jetpack-compose';
-import { size, background } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function MultiBrowseExample() {
   const colors = ['#6200EE', '#03DAC5', '#FF5722', '#4CAF50', '#2196F3'];
@@ -92,8 +85,6 @@ export default function MultiBrowseExample() {
 Each item has a fixed width with free-form scrolling.
 
 ```tsx UncontainedExample.tsx
-import { Host, HorizontalUncontainedCarousel, Box, Text } from '@expo/ui/jetpack-compose';
-import { size, background } from '@expo/ui/jetpack-compose/modifiers';
 
 export default function UncontainedExample() {
   const items = ['Photo 1', 'Photo 2', 'Photo 3', 'Photo 4', 'Photo 5'];
@@ -121,7 +112,6 @@ export default function UncontainedExample() {
 ## API
 
 ```tsx
-import {
   HorizontalCenteredHeroCarousel,
   HorizontalMultiBrowseCarousel,
   HorizontalUncontainedCarousel,

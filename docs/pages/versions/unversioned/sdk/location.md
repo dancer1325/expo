@@ -7,18 +7,10 @@ iconUrl: '/static/images/packages/expo-location.png'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions, IOSPermissions } from '~/components/plugins/permissions';
-import { Collapsible } from '~/ui/components/Collapsible';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { SnackInline } from '~/ui/components/Snippet';
-import { PlatformTag } from '~/ui/components/Tag/PlatformTag';
 
 `expo-location` allows reading geolocation information from the device. Your app can poll for the current location or subscribe to location update events.
 
@@ -205,7 +197,6 @@ If the user selected `Allow Once` and you subsequently call [`requestBackgroundP
 If you suspect the user selected `Allow Once` and needs to request background permissions, they must **manually enable background location** in the Settings app. You can use `Linking` to open the Settings app within your app:
 
 ```js
-import { Linking } from 'react-native';
 
 function openSettings() {
   Linking.openURL('app-settings:');
@@ -239,12 +230,8 @@ If you're using the Android Emulator or iOS Simulator, ensure that [Location is 
 <SnackInline label='Location' dependencies={['expo-location', 'expo-constants', 'expo-device']}>
 
 ```tsx
-import { useState, useEffect } from 'react';
-import { Platform, Text, View, StyleSheet } from 'react-native';
 /* @hide */
-import * as Device from 'expo-device';
 /* @end */
-import * as Location from 'expo-location';
 
 export default function App() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
@@ -332,7 +319,6 @@ With Simulator open, go to **Features** > **Location** and choose any option bes
 ## API
 
 ```js
-import * as Location from 'expo-location';
 ```
 
 <APISection packageName="expo-location" apiName="Location" />

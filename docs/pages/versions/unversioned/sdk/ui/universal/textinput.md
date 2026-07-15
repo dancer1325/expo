@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A text input that routes to [`TextField`](../jetpack-compose/textfield) from `@expo/ui/jetpack-compose` on Android, [`TextField`](../swift-ui/textfield) from `@expo/ui/swift-ui` on iOS, and React Native's [`TextInput`](https://reactnative.dev/docs/textinput) on web.
 
@@ -24,8 +22,6 @@ The API mirrors React Native's [`TextInput`](https://reactnative.dev/docs/textin
 Omit [`value`](#value) and the field manages its own text internally. Use [`onChangeText`](#onchangetext) to observe edits, and use the [ref](#textinputref) for imperative actions like `focus`, `blur`, and `clear`.
 
 ```tsx UncontrolledTextInputExample.tsx
-import { Button, Column, Host, TextInput, type TextInputRef } from '@expo/ui';
-import { useRef } from 'react';
 
 export default function UncontrolledTextInputExample() {
   const inputRef = useRef<TextInputRef>(null);
@@ -51,8 +47,6 @@ export default function UncontrolledTextInputExample() {
 Pass [`value`](#value) to drive the field from a `useNativeState` observable. The example below replaces `Hello` with `World` as you type.
 
 ```tsx ControlledTextInputExample.tsx
-import { Host, TextInput, useNativeState } from '@expo/ui';
-import { useCallback } from 'react';
 
 export default function ControlledTextInputExample() {
   const text = useNativeState('');
@@ -80,8 +74,6 @@ Add the `'worklet'` directive to [`onChangeText`](#onchangetext) for synchronous
 > **Note:** Worklets require installing [`react-native-worklets`](https://docs.swmansion.com/react-native-worklets/).
 
 ```tsx PhoneMaskExample.tsx
-import { Host, TextInput, useNativeState } from '@expo/ui';
-import { useCallback } from 'react';
 
 function formatPhone(input: string) {
   'worklet';
@@ -129,7 +121,6 @@ Some React Native `TextInput` props are not supported, because Compose's `TextFi
 ## API
 
 ```tsx
-import { TextInput, useNativeState } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/textinput" apiName="TextInput" />

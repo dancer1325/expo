@@ -6,8 +6,6 @@ packageName: 'expo-blob'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 `expo-blob` provides a web standards-compliant Blob implementation for React Native that offers superior performance and works consistently across all platforms. It is more reliable compared to the implementation exported from `react-native`, unlike Blob from `react-native`, which has limitations with the `slice()` method and other Web API features.
 
@@ -20,7 +18,6 @@ import { APIInstallSection } from '~/components/plugins/InstallSection';
 ### Basic blob creation
 
 ```typescript
-import { Blob } from 'expo-blob';
 
 // Create an empty blob
 const emptyBlob = new Blob();

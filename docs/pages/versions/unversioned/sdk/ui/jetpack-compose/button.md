@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 > **info** For cross-platform usage, see the universal [`Button`](../universal/button) — it renders the appropriate native component per platform.
 
@@ -41,7 +38,6 @@ Expo UI provides five button components that match the official Jetpack Compose 
 A filled button is the default, high-emphasis button for primary actions.
 
 ```tsx BasicButtonExample.tsx
-import { Host, Button, Text } from '@expo/ui/jetpack-compose';
 
 export default function BasicButtonExample() {
   return (
@@ -59,7 +55,6 @@ export default function BasicButtonExample() {
 Use different button components to convey varying levels of emphasis.
 
 ```tsx ButtonVariantsExample.tsx
-import {
   Host,
   Button,
   FilledTonalButton,
@@ -100,7 +95,6 @@ export default function ButtonVariantsExample() {
 Since buttons accept composable children, you can add leading and trailing icons using the `Icon` component. This follows the [Material 3 buttons with icon](https://m3.material.io/components/buttons/guidelines) pattern ([official sample](https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material3/material3/samples/src/main/java/androidx/compose/material3/samples/ButtonSamples.kt;l=179?q=ButtonWithIconSample)), use 18dp icon size, 8dp spacing between the icon and label.
 
 ```tsx ButtonWithIconsExample.tsx
-import {
   Host,
   Button,
   OutlinedButton,
@@ -109,7 +103,6 @@ import {
   Spacer,
   Text,
 } from '@expo/ui/jetpack-compose';
-import { width } from '@expo/ui/jetpack-compose/modifiers';
 
 const addIcon = require('./assets/add.png');
 const sendIcon = require('./assets/send.png');
@@ -149,7 +142,6 @@ export default function ButtonWithIconsExample() {
 Override container and content colors using the `colors` prop.
 
 ```tsx CustomColorsExample.tsx
-import { Host, Button, Text } from '@expo/ui/jetpack-compose';
 
 export default function CustomColorsExample() {
   return (
@@ -165,7 +157,6 @@ export default function CustomColorsExample() {
 ### Custom shape
 
 ```tsx CustomShapeExample.tsx
-import { Host, Button, Shape, Text } from '@expo/ui/jetpack-compose';
 
 export default function CustomShapeExample() {
   return (
@@ -183,7 +174,6 @@ export default function CustomShapeExample() {
 ## API
 
 ```tsx
-import {
   Button,
   FilledTonalButton,
   OutlinedButton,

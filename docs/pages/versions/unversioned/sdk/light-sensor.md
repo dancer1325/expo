@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-sensors.png'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `LightSensor` from `expo-sensors` provides access to the device's light sensor to respond to illuminance changes.
 
@@ -22,9 +19,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Basic Light Sensor usage' dependencies={['expo-sensors']} platforms={['android']}>
 
 ```jsx
-import { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
-import { LightSensor } from 'expo-sensors';
 
 export default function App() {
   const [{ illuminance }, setData] = useState({ illuminance: 0 });
@@ -98,7 +92,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import { LightSensor } from 'expo-sensors';
 ```
 
 <APISection packageName="expo-light-sensor" />

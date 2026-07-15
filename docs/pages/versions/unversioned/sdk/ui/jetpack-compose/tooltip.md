@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Tooltip matches the official Jetpack Compose [Tooltip](https://developer.android.com/develop/ui/compose/components/tooltip) API. `TooltipBox` wraps anchor content and displays a tooltip. The tooltip content is provided via the `TooltipBox.PlainTooltip` or `TooltipBox.RichTooltip` compound components, which match [`PlainTooltip`](https://developer.android.com/develop/ui/compose/components/tooltip#display-plain) and [`RichTooltip`](https://developer.android.com/develop/ui/compose/components/tooltip#display-rich) respectively. Tooltips can be triggered by long-press or shown programmatically via `ref`.
 
@@ -31,7 +28,6 @@ Expo UI Tooltip matches the official Jetpack Compose [Tooltip](https://developer
 Long-press the anchor content to display the tooltip.
 
 ```tsx PlainTooltipExample.tsx
-import { Host, TooltipBox, Button, Text } from '@expo/ui/jetpack-compose';
 
 export default function PlainTooltipExample() {
   return (
@@ -54,7 +50,6 @@ export default function PlainTooltipExample() {
 Use `TooltipBox.RichTooltip` with `Title` and `Text` compound component pattern for more detailed contextual information.
 
 ```tsx RichTooltipExample.tsx
-import { Host, TooltipBox, Button, Text } from '@expo/ui/jetpack-compose';
 
 export default function RichTooltipExample() {
   return (
@@ -82,7 +77,6 @@ export default function RichTooltipExample() {
 Add an interactive action with `TooltipBox.RichTooltip.Action`. Use `isPersistent` so the tooltip stays visible for the user to tap it. `hasAction` is automatically derived when an action slot is present.
 
 ```tsx RichTooltipActionExample.tsx
-import { Host, TooltipBox, Button, TextButton, Text } from '@expo/ui/jetpack-compose';
 
 export default function RichTooltipActionExample() {
   return (
@@ -115,8 +109,6 @@ export default function RichTooltipActionExample() {
 Use a `ref` to imperatively `show()` or `dismiss()` the tooltip without requiring a long-press.
 
 ```tsx ProgrammaticTooltipExample.tsx
-import { useRef } from 'react';
-import { Host, TooltipBox, type TooltipBoxRef, Button, Text, Row } from '@expo/ui/jetpack-compose';
 
 export default function ProgrammaticTooltipExample() {
   const tooltipRef = useRef<TooltipBoxRef>(null);
@@ -147,7 +139,6 @@ export default function ProgrammaticTooltipExample() {
 ## API
 
 ```tsx
-import { TooltipBox } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/tooltip" apiName="TooltipBox" />

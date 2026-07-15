@@ -4,9 +4,6 @@ sidebar_title: React Navigation
 description: Learn how to migrate a project using React Navigation to Expo Router.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { FileTree } from '~/ui/components/FileTree';
-import { DiffBlock } from '~/ui/components/Snippet';
 
 > **info** This guide targets **SDK 56 and later**. In SDK 56, Expo Router stopped accepting application-code imports from `@react-navigation/*. They now come from `expo-router/\*` entry points. If you are upgrading an existing Expo Router app from SDK 55 or earlier, follow the [SDK 55 to 56 migration guide](/router/migrate/sdk-55-to-56). The samples below already use the SDK 56 and later import paths.
 
@@ -37,7 +34,6 @@ In Expo Router, search parameters can only serialize top-level values such as `n
 If your code has something similar to the below:
 
 ```js
-import { useNavigation } from '@react-navigation/native';
 
 const navigation = useNavigation();
 
@@ -165,7 +161,6 @@ function App() {
 />
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 export default function RootLayout() {
   return (
@@ -186,7 +181,6 @@ export default function RootLayout() {
 The tab navigator will be moved to a subdirectory.
 
 ```tsx src/app/(home)/_layout.tsx
-import { Tabs } from 'expo-router';
 
 export default function HomeLayout() {
   return <Tabs />;
@@ -254,7 +248,6 @@ The `NavigationContainer` ref should not be accessed directly. Use the following
 Navigate to the initial route of the application. For example, if your app starts at `/` (recommended), then you can replace the current route with `/` using this method.
 
 ```jsx
-import { useRouter } from 'expo-router';
 
 function Example() {
   const router = useRouter();
@@ -336,8 +329,6 @@ The [`fallback`](https://reactnavigation.org/docs/navigation-container/#fallback
 In React Navigation, you set the theme for the entire app using the [`<NavigationContainer />`](https://reactnavigation.org/docs/navigation-container/#theme) component. Expo Router manages the root container for you, so instead you should set the theme using the `ThemeProvider` directly.
 
 ```tsx src/app/_layout.tsx
-import { ThemeProvider, DarkTheme, DefaultTheme, useTheme } from 'expo-router/react-navigation';
-import { Slot } from 'expo-router';
 
 export default function RootLayout() {
   return (
@@ -377,7 +368,6 @@ If your project has a custom navigator, you can rewrite this or port it to Expo 
 To port, simply use the `withLayoutContext` function:
 
 ```js
-import { createCustomNavigator } from './my-navigator';
 
 export const CustomNavigator = withLayoutContext(createCustomNavigator().Navigator);
 ```
@@ -397,10 +387,7 @@ Custom layouts have an internal context that is ignored when using the `<Slot />
 
 {/* prettier-ignore */}
 ```jsx
-import { View } from 'react-native';
-import { TabRouter } from 'expo-router/react-navigation';
 
-import { Navigator, usePathname, Slot, Link } from 'expo-router';
 
 export default function App() {
   return (
@@ -463,8 +450,6 @@ In the below example, the `navigation` prop is accessible from the `useNavigatio
 
 {/* prettier-ignore */}
 ```tsx src/app/screen.tsx
-import { useNavigation } from 'expo-router'
-import { CommonActions } from 'expo-router/react-navigation'
 
 export default function Screen() {
   const navigation = useNavigation();
@@ -496,9 +481,7 @@ React Navigation navigators `<Stack>`, `<Drawer>`, and `<Tabs>` use a shared app
 
 ```tsx src/app/_layout.tsx
 /* @info Import theme APIs from React Navigation directly. */
-import { ThemeProvider, DarkTheme, DefaultTheme, useTheme } from 'expo-router/react-navigation';
 /* @end */
-import { Slot } from 'expo-router';
 
 export default function RootLayout() {
   return (
@@ -520,7 +503,6 @@ The [React Navigation Elements](https://reactnavigation.org/docs/elements/) libr
 In SDK 56 and later, this library is re-exported from `expo-router/react-navigation` and there is no separate package to install:
 
 ```tsx
-import { Header, HeaderBackButton } from 'expo-router/react-navigation';
 ```
 
 To learn more about the components and utilities the library provides, see [Elements library](https://reactnavigation.org/docs/elements/) documentation.

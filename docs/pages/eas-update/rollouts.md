@@ -3,7 +3,6 @@ title: Rollouts
 description: Learn how to incrementally deploy updates to your users by using a rollout mechanism.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 A rollout allows you to roll out a change to a portion of your users to catch bugs or other issues before releasing that change to all your users.
 

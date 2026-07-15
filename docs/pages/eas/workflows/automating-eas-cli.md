@@ -3,10 +3,7 @@ title: Automating EAS CLI commands
 description: Learn how to automate sequences of EAS CLI commands with EAS Workflows.
 ---
 
-import { Dataflow03Icon } from '@expo/styleguide-icons/outline/Dataflow03Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
 
 If you're using EAS CLI to build, submit, and update your app, you can automate sequences of commands with EAS Workflows. EAS Workflows can build, submit, and update your app, while also running other jobs like Maestro tests, unit tests, custom scripts, and more.
 

@@ -6,10 +6,6 @@ packageName: 'expo-task-manager'
 platforms: ['android', 'ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
-import { PlatformTag } from '~/ui/components/Tag/PlatformTag';
 
 `expo-task-manager` provides an API that allows you to manage long-running tasks, in particular those tasks that can run while your app is in the background. Some features of this library are used by other libraries under the hood. Here is a list of Expo SDK libraries that use `TaskManager`.
 
@@ -39,9 +35,6 @@ Read more about how to configure this in the reference for each of the [librarie
 <SnackInline dependencies={["expo-task-manager", "expo-location"]} platforms={['android', 'ios']}>
 
 ```jsx
-import { Button, View, StyleSheet } from 'react-native';
-import * as TaskManager from 'expo-task-manager';
-import * as Location from 'expo-location';
 
 const LOCATION_TASK_NAME = 'background-location-task';
 
@@ -94,7 +87,6 @@ export default PermissionsButton;
 ## API
 
 ```js
-import * as TaskManager from 'expo-task-manager';
 ```
 
 <APISection packageName="expo-task-manager" apiName="TaskManager" />

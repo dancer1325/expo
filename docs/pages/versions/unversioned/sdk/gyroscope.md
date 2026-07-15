@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-sensors.png'
 platforms: ['android', 'ios*', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `Gyroscope` from `expo-sensors` provides access to the device's gyroscope sensor to respond to changes in rotation in three-dimensional space.
 
@@ -22,9 +19,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Basic Gyroscope usage' dependencies={['expo-sensors']}>
 
 ```jsx
-import { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Gyroscope } from 'expo-sensors';
 
 export default function App() {
   const [{ x, y, z }, setData] = useState({
@@ -110,7 +104,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import { Gyroscope } from 'expo-sensors';
 ```
 
 <APISection packageName="expo-gyroscope" />

@@ -4,13 +4,6 @@ sidebar_title: Integrated approach
 description: A guide for adding Expo and React Native to existing native (brownfield) apps using the integrated approach.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal, DiffBlock } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
-import { PlatformTag } from '~/ui/components/Tag/PlatformTag';
 
 React Native and Expo are flexible and can be adopted incrementally, one screen (or even one view) at a time. You might even find that using Expo in this way is the best fit for your particular application, or you may end up slowly adopting it across more surfaces in your app. Either way, this flexibility allows enables developers to adopt modern, cross-platform tools in their native apps immediately instead of risking a complete rewrite.
 
@@ -232,14 +225,8 @@ Create a new `Activity` that will extend `ReactActivity` and host the React Nati
 ```kotlin MyReactActivity.kt
 // package <your-package-here>
 
-import android.os.Build
 
-import com.facebook.react.ReactActivity
-import com.facebook.react.ReactActivityDelegate
-import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
-import com.facebook.react.defaults.DefaultReactActivityDelegate
 
-import expo.modules.ReactActivityDelegateWrapper
 
 class MyReactActivity : ReactActivity() {
 
@@ -433,10 +420,6 @@ Now, you need to add some native code to start the React Native runtime and tell
 Create a new file called **ReactViewController.swift**, this will be the `ViewController` that loads a React Native view as its `view`.
 
 ```swift ReactViewController.swift
-import UIKit
-import React
-import React_RCTAppDelegate
-import ReactAppDependencyProvider
 
 class ReactNativeViewController: UIViewController {
   var reactNativeFactory: RCTReactNativeFactory?
@@ -473,7 +456,6 @@ class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
 Finally, you can present your React Native view. To do so, you need a new View Controller that can host a view in which we can load the JS content. You already have the initial `ViewController`, and you can make it present the `ReactViewController`. There are several ways to do so, depending on your app. For this example, let's assume that you have a button that presents React Native modally.
 
 ```swift ViewController.swift
-import UIKit
 
 class ViewController: UIViewController {
 

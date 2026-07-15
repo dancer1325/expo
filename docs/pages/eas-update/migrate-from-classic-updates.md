@@ -3,10 +3,6 @@ title: Migrate from Classic Updates
 description: A guide to help migrate from Classic Updates to EAS Update.
 ---
 
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { A } from '~/ui/components/Text';
 
 > **warning** SDK 49 was the last version to support Classic Updates. To continue using the deprecated `expo publish` command, set [`updates.useClassicUpdates`](/versions/latest/config/app/#useclassicupdates) in your app config.
 

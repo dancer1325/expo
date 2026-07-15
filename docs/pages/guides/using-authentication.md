@@ -5,10 +5,7 @@ description: An overview of authentication integrations available in the Expo an
 hideTOC: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { CODE } from '~/ui/components/Text';
 
 Authentication in mobile apps refers to how you identify who a user is, manage sign-up or sign-in flows, and maintain their authenticated session across app launches and across multiple devices. Authentication SDKs and libraries help you add these flows, so you do not need to build your own custom auth backend. The guides below highlight popular SDKs and providers for your Expo and React Native projects.
 

@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI AlertDialog matches the official Jetpack Compose [AlertDialog](https://developer.android.com/develop/ui/compose/components/dialog) API. Content is provided via slot sub-components (`AlertDialog.Title`, `AlertDialog.Text`, `AlertDialog.ConfirmButton`, `AlertDialog.DismissButton`, `AlertDialog.Icon`) that map directly to Compose's slot parameters.
 
@@ -29,8 +26,6 @@ Expo UI AlertDialog matches the official Jetpack Compose [AlertDialog](https://d
 ### Basic alert dialog
 
 ```tsx BasicAlertDialogExample.tsx
-import { useState } from 'react';
-import { Host, AlertDialog, Button, TextButton, Text } from '@expo/ui/jetpack-compose';
 
 export default function BasicAlertDialogExample() {
   const [visible, setVisible] = useState(false);
@@ -68,8 +63,6 @@ export default function BasicAlertDialogExample() {
 ### Custom colors
 
 ```tsx CustomColorsExample.tsx
-import { useState } from 'react';
-import { Host, AlertDialog, Button, TextButton, Text } from '@expo/ui/jetpack-compose';
 
 export default function CustomColorsExample() {
   const [visible, setVisible] = useState(false);
@@ -113,8 +106,6 @@ export default function CustomColorsExample() {
 ### With icon
 
 ```tsx IconDialogExample.tsx
-import { useState } from 'react';
-import { Host, AlertDialog, Button, TextButton, Text, Icon } from '@expo/ui/jetpack-compose';
 
 export default function IconDialogExample() {
   const [visible, setVisible] = useState(false);
@@ -151,7 +142,6 @@ export default function IconDialogExample() {
 ## API
 
 ```tsx
-import { AlertDialog } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/alertdialog" apiName="AlertDialog" />

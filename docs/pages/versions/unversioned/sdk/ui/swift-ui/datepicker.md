@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI DatePicker matches the official SwiftUI [DatePicker API](https://developer.apple.com/documentation/swiftui/datepicker) and supports styling via the [`datePickerStyle`](modifiers/#datepickerstylestyle) modifier.
 
@@ -27,8 +24,6 @@ Expo UI DatePicker matches the official SwiftUI [DatePicker API](https://develop
 ## Date picker
 
 ```tsx DatePickerExample.tsx
-import { useState } from 'react';
-import { Host, DatePicker } from '@expo/ui/swift-ui';
 
 export default function DatePickerExample() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -51,8 +46,6 @@ export default function DatePickerExample() {
 ## Time picker
 
 ```tsx TimePickerExample.tsx
-import { useState } from 'react';
-import { Host, DatePicker } from '@expo/ui/swift-ui';
 
 export default function TimePickerExample() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -75,8 +68,6 @@ export default function TimePickerExample() {
 ## Date and time picker
 
 ```tsx DateTimePickerExample.tsx
-import { useState } from 'react';
-import { Host, DatePicker } from '@expo/ui/swift-ui';
 
 export default function DateTimePickerExample() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -99,8 +90,6 @@ export default function DateTimePickerExample() {
 ## With date range
 
 ```tsx DateRangePickerExample.tsx
-import { useState } from 'react';
-import { Host, DatePicker } from '@expo/ui/swift-ui';
 
 export default function DateRangePickerExample() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -129,9 +118,6 @@ export default function DateRangePickerExample() {
 You can use the `datePickerStyle` modifier to change the appearance of the picker. Available styles are: `automatic`, `compact`, `graphical`, and `wheel`.
 
 ```tsx WheelDatePickerExample.tsx
-import { useState } from 'react';
-import { Host, DatePicker } from '@expo/ui/swift-ui';
-import { datePickerStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function WheelDatePickerExample() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -153,9 +139,6 @@ export default function WheelDatePickerExample() {
 ```
 
 ```tsx GraphicalDatePickerExample.tsx
-import { useState } from 'react';
-import { Host, DatePicker } from '@expo/ui/swift-ui';
-import { datePickerStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function GraphicalDatePickerExample() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -181,9 +164,6 @@ export default function GraphicalDatePickerExample() {
 You can make the picker non-interactive using the `disabled` modifier.
 
 ```tsx DisabledDatePickerExample.tsx
-import { useState } from 'react';
-import { Host, DatePicker } from '@expo/ui/swift-ui';
-import { disabled } from '@expo/ui/swift-ui/modifiers';
 
 export default function DisabledDatePickerExample() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -209,9 +189,6 @@ export default function DisabledDatePickerExample() {
 Apply the `environment` modifier with the `locale` key to display the picker in a specific locale.
 
 ```tsx LocaleDatePickerExample.tsx
-import { useState } from 'react';
-import { Host, DatePicker } from '@expo/ui/swift-ui';
-import { environment } from '@expo/ui/swift-ui/modifiers';
 
 export default function LocaleDatePickerExample() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -237,9 +214,6 @@ export default function LocaleDatePickerExample() {
 Apply the `environment` modifier with the `timeZone` key to display the picker in a specific IANA time zone.
 
 ```tsx TimeZoneDatePickerExample.tsx
-import { useState } from 'react';
-import { Host, DatePicker } from '@expo/ui/swift-ui';
-import { environment } from '@expo/ui/swift-ui/modifiers';
 
 export default function TimeZoneDatePickerExample() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -263,7 +237,6 @@ export default function TimeZoneDatePickerExample() {
 ## API
 
 ```tsx
-import { DatePicker } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/datepicker" apiName="DatePicker" />

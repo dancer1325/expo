@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-haptics.png'
 platforms: ['android', 'ios', 'web']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-haptics` provides haptic (touch) feedback for:
 
@@ -44,8 +41,6 @@ On Android, this library requires permission to control vibration on the device.
 <SnackInline label='Haptics usage' dependencies={['expo-haptics']}>
 
 ```jsx
-import { StyleSheet, View, Text, Button } from 'react-native';
-import * as Haptics from 'expo-haptics';
 
 export default function App() {
   return (
@@ -142,7 +137,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as Haptics from 'expo-haptics';
 ```
 
 <APISection packageName="expo-haptics" apiName="Haptics" />

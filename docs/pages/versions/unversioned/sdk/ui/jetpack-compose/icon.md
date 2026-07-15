@@ -6,10 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 > **info** For cross-platform usage, see the universal [`Icon`](../universal/icon) — it renders the appropriate native component per platform.
 
@@ -45,8 +41,6 @@ Optionally, install [`@expo/material-symbols`](https://www.npmjs.com/package/@ex
 Import any icon directly from its own subpath of `@expo/material-symbols` — each icon resolves to a Metro asset that `Icon` can render natively. For local XML files you add to your project, use `require()` instead (see [Custom styles](#custom-styles-via-expomaterial-symbols-cli) below).
 
 ```tsx BasicIcon.tsx
-import { Host, Icon } from '@expo/ui/jetpack-compose';
-import Home from '@expo/material-symbols/home.xml';
 
 export default function BasicIcon() {
   return (
@@ -62,8 +56,6 @@ export default function BasicIcon() {
 Use the `tint` prop to apply a color overlay to the icon.
 
 ```tsx TintedIcon.tsx
-import { Host, Icon } from '@expo/ui/jetpack-compose';
-import Favorite from '@expo/material-symbols/favorite.xml';
 
 export default function TintedIcon() {
   return (
@@ -79,8 +71,6 @@ export default function TintedIcon() {
 Specify a custom size in dp using the `size` prop.
 
 ```tsx SizedIcon.tsx
-import { Host, Icon } from '@expo/ui/jetpack-compose';
-import Settings from '@expo/material-symbols/settings.xml';
 
 export default function SizedIcon() {
   return (
@@ -123,7 +113,6 @@ export default function SizedIcon() {
 The CLI writes ready-to-use XML vector drawables into your project. Load them with `require()` and pass them to `Icon`.
 
 ```tsx CustomIcon.tsx
-import { Host, Icon } from '@expo/ui/jetpack-compose';
 
 export default function CustomIcon() {
   return (
@@ -137,7 +126,6 @@ export default function CustomIcon() {
 ## API
 
 ```tsx
-import { Icon } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/icon" apiName="Icon" />

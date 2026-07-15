@@ -5,8 +5,6 @@ description: Learn how to create, scope, and consume environment variables with 
 searchRank: 7
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 The following sections cover how to create, scope, and consume environment variables with EAS dashboard and EAS CLI.
 
@@ -69,7 +67,6 @@ Use `eas env:create` to add variables and `eas env:list` to verify what is set.
 The environment variables with the [`EXPO_PUBLIC_`](/guides/environment-variables) prefix are available as `process.env` variables in your app's code. You can use them dynamically to configure your app behavior based on their values:
 
 ```tsx
-import { Button } from 'react-native';
 
 function Post() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;

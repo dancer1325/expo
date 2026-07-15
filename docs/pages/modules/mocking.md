@@ -4,10 +4,7 @@ sidebar_title: Mocking native calls
 description: Learn about mocking native calls in Expo modules.
 ---
 
-import { Grid01Icon } from '@expo/styleguide-icons/outline/Grid01Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
 
 The recommended way to write unit tests for an Expo project is to use [Jest](https://jestjs.io/) and the `jest-expo` preset.
 
@@ -81,8 +78,6 @@ The examples in the following sections demonstrate comprehensive unit testing pa
 Create test files in a **\_\_tests\_\_** directory next to your source files. Import your module and the mocked native module to write assertions:
 
 ```js MyModule.test.js
-import * as MyModule from '../MyModule';
-import ExpoMyModule from '../ExpoMyModule';
 
 describe('MyModule', () => {
   it('calls native module with correct parameters', async () => {
@@ -120,9 +115,6 @@ describe('Module functionality', () => {
 When testing React hooks that use native modules, use React Testing Library's [`renderHook`](https://testing-library.com/docs/react-testing-library/api/#renderhook) function:
 
 ```js useMyHook.test.js
-import { renderHook } from '@testing-library/react-native';
-import { useMyHook } from '../useMyHook';
-import ExpoMyModule from '../ExpoMyModule';
 
 jest.mock('../ExpoMyModule', () => ({
   startOperation: jest.fn().mockResolvedValue(),

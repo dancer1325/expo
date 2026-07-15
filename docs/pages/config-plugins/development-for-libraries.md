@@ -3,9 +3,6 @@ title: Plugin development for libraries
 description: Learn how to develop config plugins for Expo and React Native libraries.
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 Expo config plugins in a React Native library represent a transformative approach to automating native project configuration. Rather than requiring library users to manually edit native files, such as **AndroidManifest.xml**, **Info.plist**, and so on, you can provide a plugin that handles these configurations automatically during the prebuild process. This changes developer experience from error-prone manual setup to reliable, automated configuration that can work consistently across different projects.
 
@@ -140,7 +137,6 @@ Every config plugin follows the same pattern: receives configuration and paramet
 <Tab label="Index file">
 
 ```ts plugin/src/index.ts|collapseHeight=480
-import { type ConfigPlugin, withAndroidManifest, withInfoPlist } from 'expo/config-plugins';
 
 export interface YourLibraryPluginProps {
   customProperty?: string;
@@ -165,7 +161,6 @@ export default withYourLibrary;
 <Tab label="Android">
 
 ```ts plugin/src/withAndroid.ts
-import { type ConfigPlugin, withAndroidManifest, AndroidConfig } from 'expo/config-plugins';
 
 export const withAndroidConfiguration: ConfigPlugin<YourLibraryPluginProps> = (config, props) => {
   return withAndroidManifest(config, config => {
@@ -187,7 +182,6 @@ export const withAndroidConfiguration: ConfigPlugin<YourLibraryPluginProps> = (c
 <Tab label="iOS">
 
 ```ts plugin/src/withIos.ts
-import { type ConfigPlugin, withInfoPlist } from 'expo/config-plugins';
 
 export const withIosConfiguration: ConfigPlugin<YourLibraryPluginProps> = (config, props) => {
   return withInfoPlist(config, config => {
@@ -219,7 +213,6 @@ Effective testing for a config plugin can be a combination of one or more of the
 Since unit tests focus on a plugin's transformation logic without involving the file system, you can use Jest to create and run mock configuration objects, pass them through your plugin, and verify expected modifications are made correctly. For example:
 
 ```ts plugin/__tests__/withYourLibrary.test.ts
-import { withYourLibrary } from '../src';
 
 describe('withYourLibrary', () => {
   it('should configure Android with custom property', () => {

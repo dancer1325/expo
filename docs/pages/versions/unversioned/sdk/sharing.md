@@ -7,10 +7,6 @@ iconUrl: '/static/images/packages/expo-sharing.png'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ConfigPluginExample, ConfigPluginProperties } from '~/ui/components/ConfigSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 `expo-sharing` allows you to share files directly with other compatible applications and to receive compatible data shared from other apps.
 
@@ -117,7 +113,6 @@ When an app user shares content with your app, the operating system launches you
 If you are using [Expo Router](/router/introduction/), you can use the [**+native-intent.ts**](/router/advanced/native-intent/) file to handle the incoming share intent. This allows you to inspect the incoming path and redirect to a specific route.
 
 ```tsx app/+native-intent.ts
-import { getSharedPayloads } from 'expo-sharing';
 
 export async function redirectSystemPath({ path, initial }: { path: string; initial: boolean }) {
   try {
@@ -138,9 +133,6 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
 If you are using [React Navigation](https://reactnavigation.org/), you can use the `linking` prop to intercept the deep link. You should check if the incoming URL hostname matches the `expo-sharing` scheme and redirect the user to a specific handler screen.
 
 ```tsx
-import * as Linking from 'expo-linking';
-import { createStaticNavigation } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const RootStack = createNativeStackNavigator({
   screens: {
@@ -206,9 +198,6 @@ Once you have redirected the user to a handler screen, you can use the `useIncom
 The following example shows a screen that displays shared images:
 
 ```tsx
-import { Image } from 'expo-image';
-import { useIncomingShare } from 'expo-sharing';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
 
 export default function ShareReceived() {
   const { resolvedSharedPayloads, isResolving } = useIncomingShare();
@@ -252,7 +241,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as Sharing from 'expo-sharing';
 ```
 
 <APISection packageName="expo-sharing" apiName="Sharing" />

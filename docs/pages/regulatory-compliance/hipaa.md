@@ -5,7 +5,6 @@ hideTOC: true
 description: Learn about how applications built with Expo can be HIPAA compliant.
 ---
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 ## Are apps built with Expo HIPAA compliant?
 

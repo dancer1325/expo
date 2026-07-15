@@ -8,10 +8,6 @@ iconUrl: '/static/images/packages/expo-fingerprint.png'
 platforms: ['node']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { CODE } from '~/ui/components/Text';
 
 `@expo/fingerprint` provides an API to generate a fingerprint (hash) of your project for use in determining compatibility between the native layer and JavaScript layer of your app. The hash calculation is configurable, but is by default derived from hashing app dependencies, custom native code, native project files, and configuration.
 
@@ -227,7 +223,6 @@ By following these guidelines, you can effectively manage changes to config plug
 ## API
 
 ```ts
-import * as Fingerprint from '@expo/fingerprint';
 ```
 
 <APISection packageName="@expo/fingerprint" apiName="Fingerprint" />

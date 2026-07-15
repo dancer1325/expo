@@ -6,14 +6,10 @@ packageName: 'expo-navigation-bar'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import {
   ConfigReactNative,
   ConfigPluginExample,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-navigation-bar` provides a component and an imperative API for controlling the app's navigation bar on Android devices, allowing you to change the color of its buttons or hide it.
 
@@ -92,8 +88,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 <SnackInline dependencies={["expo-navigation-bar"]}>
 
 ```jsx collapseHeight=310
-import { StyleSheet, Text, View } from 'react-native';
-import { NavigationBar } from 'expo-navigation-bar';
 
 export default function App() {
   return (
@@ -122,7 +116,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import { NavigationBar } from 'expo-navigation-bar';
 ```
 
 <APISection packageName="expo-navigation-bar" apiName="NavigationBar" />

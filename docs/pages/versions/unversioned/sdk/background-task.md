@@ -7,12 +7,6 @@ platforms: ['android', 'ios', 'tvos', 'expo-go']
 hasVideoLink: true
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { PlatformTags } from '~/ui/components/Tag/PlatformTags';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 `expo-background-task` provides an API to run deferrable background tasks in a way that optimizes battery and power consumption on the end user's device. This module uses the [`WorkManager`](https://developer.android.com/topic/libraries/architecture/workmanager) API on Android and the [`BGTaskScheduler`](https://developer.apple.com/documentation/backgroundtasks/bgtaskscheduler) API on iOS to schedule tasks. It also uses the [`expo-task-manager`](task-manager.mdx) Native API to run JavaScript tasks.
 
@@ -96,10 +90,6 @@ If you're not using Continuous Native Generation ([CNG](/workflow/continuous-nat
 Below is an example that demonstrates how to use `expo-background-task`.
 
 ```tsx App.tsx
-import * as BackgroundTask from 'expo-background-task';
-import * as TaskManager from 'expo-task-manager';
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
 
 const BACKGROUND_TASK_IDENTIFIER = 'background-task';
 
@@ -202,8 +192,6 @@ Background tasks can be tested using the [`triggerTaskWorkerForTestingAsync`](#b
 This method is only available in development mode. It will not work in production builds.
 
 ```tsx
-import * as BackgroundTask from 'expo-background-task';
-import { Button } from 'react-native';
 
 function App() {
   const triggerTask = async () => {
@@ -266,7 +254,6 @@ This error also means you must run prebuild to apply your background task config
 ## API
 
 ```js
-import * as BackgroundTask from 'expo-background-task';
 ```
 
 <APISection packageName="expo-background-task" apiName="BackgroundTask" />

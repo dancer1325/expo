@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI DateTimePicker matches the official Jetpack Compose [Date Picker](https://developer.android.com/develop/ui/compose/components/datepickers) and [Time Picker](https://developer.android.com/develop/ui/compose/components/time-pickers) APIs and supports date, time, and combined selection.
 
@@ -31,8 +28,6 @@ Expo UI DateTimePicker matches the official Jetpack Compose [Date Picker](https:
 ### Date picker
 
 ```tsx DatePickerExample.tsx
-import { useState } from 'react';
-import { Host, DateTimePicker } from '@expo/ui/jetpack-compose';
 
 export default function DatePickerExample() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -55,8 +50,6 @@ export default function DatePickerExample() {
 ### Time picker
 
 ```tsx TimePickerExample.tsx
-import { useState } from 'react';
-import { Host, DateTimePicker } from '@expo/ui/jetpack-compose';
 
 export default function TimePickerExample() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -81,8 +74,6 @@ export default function TimePickerExample() {
 Use `variant="input"` to display the picker as a text input field instead of the default picker UI.
 
 ```tsx InputVariantExample.tsx
-import { useState } from 'react';
-import { Host, DateTimePicker } from '@expo/ui/jetpack-compose';
 
 export default function InputVariantExample() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -105,7 +96,6 @@ export default function InputVariantExample() {
 ## API
 
 ```tsx
-import { DateTimePicker } from '@expo/ui/jetpack-compose';
 ```
 
 <APISection packageName="expo-ui/jetpack-compose/datetimepicker" apiName="DateTimePicker" />

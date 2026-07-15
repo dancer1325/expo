@@ -72,7 +72,6 @@ Your app binary needs to be signed with a keystore. Since we're building the pro
 ```groovy android/app/eas-build.gradle
 // Build integration with EAS
 
-import java.nio.file.Paths
 
 android {
   signingConfigs {

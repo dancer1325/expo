@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-sensors.png'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `Pedometer` from `expo-sensors` uses the system `hardware.Sensor` on Android and Core Motion on iOS to get the user's step count, and also allows you to subscribe to pedometer updates.
 
@@ -22,9 +19,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Pedometer' dependencies={['expo-sensors']} >
 
 ```jsx
-import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Pedometer } from 'expo-sensors';
 
 export default function App() {
   const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
@@ -80,7 +74,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import { Pedometer } from 'expo-sensors';
 ```
 
 <APISection packageName="expo-pedometer" apiName="Pedometer" />

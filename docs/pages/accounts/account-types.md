@@ -3,7 +3,6 @@ title: Account types
 description: Learn about the different types of Expo accounts and how to use them.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 An Expo account is a container that holds Expo projects and allows for different amounts of collaboration. There are two types of Expo accounts: **Personal**, and **Organization**.
 

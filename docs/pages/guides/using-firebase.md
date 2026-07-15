@@ -4,11 +4,6 @@ maxHeadingDepth: 4
 description: A guide on getting started and using Firebase JS SDK and React Native Firebase library.
 ---
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import RedirectNotification from '~/ui/components/RedirectNotification';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 <RedirectNotification>
   The `expo-firebase-analytics` and `expo-firebase-recaptcha` libraries have been removed from SDK
@@ -71,7 +66,6 @@ The config object requires an API key and other unique identifiers. To obtain th
 After you have the API key and other identifiers, you can paste the following code snippet by creating a new **firebaseConfig.js** file in your project's root directory or any other directory where you keep the configuration files.
 
 ```js firebaseConfig.js
-import { initializeApp } from 'firebase/app';
 
 // Optionally import the services that you want to use
 // import {...} from "firebase/auth";

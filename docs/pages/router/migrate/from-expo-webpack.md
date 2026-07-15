@@ -4,8 +4,6 @@ sidebar_title: Expo Webpack
 description: Learn how to migrate a website using Expo Webpack to Expo Router.
 ---
 
-import { NoIcon, PendingIcon, YesIcon } from '~/ui/components/DocIcons';
-import { Terminal } from '~/ui/components/Snippet';
 
 The original **Expo for web** version was based on Webpack 4 and focused primarily on building single-page applications (SPAs). This approach was based on [Create React App](https://create-react-app.dev/) and enabled building simple web apps with Expo SDK and React Native for web.
 
@@ -179,8 +177,6 @@ For example, here's a possible flow for setting up Workbox. Create a new project
 Next, create a root HTML file for the app and add the service worker registration script:
 
 ```tsx src/app/+html.tsx
-import { ScrollViewStyleReset } from 'expo-router/html';
-import type { PropsWithChildren } from 'react';
 
 // This file is web-only and used to configure the root HTML for every
 // web page during static rendering.
@@ -322,8 +318,6 @@ Unlike `@expo/webpack-config`, Expo Router does not automatically attempt to gen
 You can link this in your HTML file using the `link` tag:
 
 ```tsx src/app/+html.tsx
-import { ScrollViewStyleReset } from 'expo-router/html';
-import type { PropsWithChildren } from 'react';
 
 // This file is web-only and used to configure the root HTML for every
 // web page during static rendering.

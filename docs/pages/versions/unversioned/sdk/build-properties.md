@@ -6,10 +6,6 @@ packageName: 'expo-build-properties'
 platforms: ['android', 'ios', 'tvos']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ConfigPluginExample } from '~/ui/components/ConfigSection';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 `expo-build-properties` is a [config plugin](/config-plugins/introduction/) configuring the native build properties
 of your **android/gradle.properties** and **ios/Podfile.properties.json** directories during [Prebuild](/workflow/continuous-native-generation).

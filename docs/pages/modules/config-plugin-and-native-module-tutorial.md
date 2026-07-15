@@ -5,11 +5,7 @@ description: A tutorial on creating a native module with a config plugin using E
 searchRank: 3
 ---
 
-import { Grid01Icon } from '@expo/styleguide-icons/outline/Grid01Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 [Config plugins](/config-plugins/introduction/) let you customize native Android and iOS projects generated with `npx expo prebuild` in [Continuous Native Generation (CNG)](/workflow/continuous-native-generation/) projects. You can use them to add properties to native config files, copy assets to native projects, or apply advanced configurations, such as adding an [app extension target](/build-reference/app-extensions/).
 
@@ -65,8 +61,6 @@ Locate the following files and replace them with the provided minimal boilerplat
 ```kotlin android/src/main/java/expo/modules/nativeconfiguration/ExpoNativeConfigurationModule.kt
 package expo.modules.nativeconfiguration
 
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
 
 class ExpoNativeConfigurationModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -80,7 +74,6 @@ class ExpoNativeConfigurationModule : Module() {
 ```
 
 ```swift ios/ExpoNativeConfigurationModule.swift
-import ExpoModulesCore
 
 public class ExpoNativeConfigurationModule: Module {
   public func definition() -> ModuleDefinition {
@@ -94,7 +87,6 @@ public class ExpoNativeConfigurationModule: Module {
 ```
 
 ```ts src/ExpoNativeConfigurationModule.ts
-import { NativeModule, requireNativeModule } from 'expo';
 
 declare class ExpoNativeConfigurationModule extends NativeModule {
   getApiKey(): string;
@@ -105,7 +97,6 @@ export default requireNativeModule<ExpoNativeConfigurationModule>('ExpoNativeCon
 ```
 
 ```ts src/index.ts
-import ExpoNativeConfigurationModule from './ExpoNativeConfigurationModule';
 
 export function getApiKey(): string {
   return ExpoNativeConfigurationModule.getApiKey();
@@ -113,8 +104,6 @@ export function getApiKey(): string {
 ```
 
 ```tsx example/App.tsx
-import * as ExpoNativeConfiguration from 'expo-native-configuration';
-import { Text, View } from 'react-native';
 
 export default function App() {
   return (
@@ -270,7 +259,6 @@ Start creating your plugin with this minimal boilerplate. Create a **plugin** di
 ### Create a plugin/src/index.ts file for your plugin
 
 ```ts plugin/src/index.ts
-import { ConfigPlugin } from 'expo/config-plugins';
 
 const withMyApiKey: ConfigPlugin = config => {
   console.log('my custom plugin');
@@ -347,7 +335,6 @@ const withMyApiKey: ConfigPlugin<{ apiKey: string }> = (config, { apiKey }) => {
 You can create a custom plugin by merging everything into a single function:
 
 ```ts plugin/src/index.ts
-import {
   withInfoPlist,
   withAndroidManifest,
   AndroidConfig,
@@ -404,9 +391,6 @@ On Android, access metadata information from the **AndroidManifest.xml** file us
 ```kotlin android/src/main/java/expo/modules/nativeconfiguration/ExpoNativeConfigurationModule.kt
 package expo.modules.nativeconfiguration
 
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
-import android.content.pm.PackageManager
 
 class ExpoNativeConfigurationModule() : Module() {
   override fun definition() = ModuleDefinition {
@@ -424,7 +408,6 @@ class ExpoNativeConfigurationModule() : Module() {
 On iOS, you can read the content of an **Info.plist** property using the `Bundle.main.object(forInfoDictionaryKey: "")` method. To access the `"MY_CUSTOM_API_KEY"` value added earlier, update the **ios/ExpoNativeConfigurationModule.swift** file as shown:
 
 ```swift ios/ExpoNativeConfigurationModule.swift
-import ExpoModulesCore
 
 public class ExpoNativeConfigurationModule: Module {
   public func definition() -> ModuleDefinition {

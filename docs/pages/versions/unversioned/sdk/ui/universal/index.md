@@ -7,7 +7,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 The universal components in `@expo/ui` are a single-API layer over the platform-native UI toolkits. On Android, they delegate to [`@expo/ui/jetpack-compose`](../jetpack-compose). On iOS, they delegate to [`@expo/ui/swift-ui`](../swift-ui). On web, they're JS implementations using `react-dom` or `react-native-web` and are picked per component to suit the control.
 
@@ -20,7 +19,6 @@ The universal components in `@expo/ui` are a single-API layer over the platform-
 Universal components must still be wrapped in a [`Host`](host), but you import everything, including `Host`, from the package root. The universal `Host` dispatches to the platform-native host on Android and iOS, so there's no need to reach for [`@expo/ui/swift-ui`](../swift-ui) or [`@expo/ui/jetpack-compose`](../jetpack-compose) directly.
 
 ```tsx UniversalExample.tsx
-import { Host, Column, Button, Text } from '@expo/ui';
 
 export default function Example() {
   return (

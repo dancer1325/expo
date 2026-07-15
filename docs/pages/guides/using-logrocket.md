@@ -4,8 +4,6 @@ maxHeadingDepth: 4
 description: A guide on installing and configuring LogRocket for session replays and error monitoring.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 [LogRocket](https://logrocket.com) records user sessions and identifies bugs as your users use your app. You can filter sessions by update IDs and also connect to your LogRocket account on the EAS dashboard to get quick access to your app's session data.
 
@@ -43,9 +41,6 @@ Then, in your [app config](/workflow/configuration/), include the LogRocket conf
 Finally, initialize LogRocket in your app in a top-level file, like **src/app/\_layout.tsx**:
 
 ```tsx src/app/_layout.tsx
-import { useEffect } from 'react';
-import * as Updates from 'expo-updates';
-import LogRocket from '@logrocket/react-native';
 
 const App = () => {
   useEffect(() => {

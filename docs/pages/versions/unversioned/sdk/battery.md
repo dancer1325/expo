@@ -7,9 +7,6 @@ iconUrl: '/static/images/packages/expo-battery.png'
 platforms: ['android', 'ios*', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-battery` provides battery information for the physical device (such as battery level, whether or not the device is charging, and more) as well as corresponding event listeners.
 
@@ -24,8 +21,6 @@ import { SnackInline } from '~/ui/components/Snippet';
 <SnackInline label='Basic Battery Usage' dependencies={['expo-battery']}>
 
 ```jsx
-import { useBatteryLevel } from 'expo-battery';
-import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   const batteryLevel = useBatteryLevel();
@@ -52,7 +47,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as Battery from 'expo-battery';
 ```
 
 <APISection packageName="expo-battery" />

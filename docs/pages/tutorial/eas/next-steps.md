@@ -3,17 +3,7 @@ title: Next steps
 description: Learn about the next steps in your journey with EAS.
 ---
 
-import { BuildIcon } from '@expo/styleguide-icons/custom/BuildIcon';
-import { EasMetadataIcon } from '@expo/styleguide-icons/custom/EasMetadataIcon';
-import { EasSubmitIcon } from '@expo/styleguide-icons/custom/EasSubmitIcon';
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
-import { Cloud01Icon } from '@expo/styleguide-icons/outline/Cloud01Icon';
-import { DataIcon } from '@expo/styleguide-icons/outline/DataIcon';
-import { Dataflow03Icon } from '@expo/styleguide-icons/outline/Dataflow03Icon';
-import { LayersTwo02Icon } from '@expo/styleguide-icons/outline/LayersTwo02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { CODE } from '~/ui/components/Text';
 
 Congratulations! You've completed the EAS tutorial and learned about the main features. Now, you have a working [EAS project](https://expo.dev/eas).
 

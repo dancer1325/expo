@@ -4,9 +4,6 @@ maxHeadingDepth: 4
 description: A command-line tool to create and update Expo modules.
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
-import { BoxLink } from '~/ui/components/BoxLink';
 
 `create-expo-module` is a command-line tool to create a new Expo module or add platform support to an existing one. It can create a local module inside an Expo app, or a standalone module with an example app for developing and testing native code.
 

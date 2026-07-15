@@ -3,9 +3,6 @@ title: Upgrade Expo SDK
 description: Learn how to incrementally upgrade the Expo SDK version in your project.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 > **info** We recommend upgrading SDK versions incrementally, one at a time. Doing so will help you pinpoint breakages and issues that arise during the upgrade process.
 

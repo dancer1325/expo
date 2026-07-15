@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A vertical layout container that arranges its children from top to bottom. Delegates to SwiftUI's [`VStack`](../swift-ui/vstack) on iOS, Jetpack Compose's [`Column`](../jetpack-compose/column) on Android, and a flex `View` on web.
 
@@ -20,7 +18,6 @@ A vertical layout container that arranges its children from top to bottom. Deleg
 ### Basic column
 
 ```tsx ColumnExample.tsx
-import { Host, Column, Text } from '@expo/ui';
 
 export default function ColumnExample() {
   return (
@@ -40,7 +37,6 @@ export default function ColumnExample() {
 Use [`alignment`](#alignment) to position children along the cross (horizontal) axis.
 
 ```tsx ColumnAlignmentExample.tsx
-import { Host, Column, Text } from '@expo/ui';
 
 export default function ColumnAlignmentExample() {
   return (
@@ -57,7 +53,6 @@ export default function ColumnAlignmentExample() {
 ## API
 
 ```tsx
-import { Column } from '@expo/ui';
 ```
 
 <APISection packageName="expo-ui/universal/column" apiName="Column" />

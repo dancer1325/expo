@@ -4,12 +4,7 @@ sidebar_title: Build apps for TV
 description: A guide for building an Expo app for an Android TV or Apple TV target.
 ---
 
-import { GithubIcon } from '@expo/styleguide-icons/custom/GithubIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 > **Warning** TV development is available only in SDK 50 and above. Not all Expo features and SDK libraries are available on TV. For more details, check the [See which libraries are supported](#see-which-libraries-are-supported).
 

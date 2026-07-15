@@ -5,9 +5,7 @@ hideTOC: true
 description: An overview of analytics services available in the Expo and React Native ecosystem.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 An analytics service allows you to track how users interact with your app. With this data, you can take a measured approach when improving your app.
 

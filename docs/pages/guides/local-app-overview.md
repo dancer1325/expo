@@ -6,10 +6,7 @@ searchRank: 90
 searchPosition: 1
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
 
 You can leverage your local development environment to build your app locally by utilizing Android Studio and Xcode. This build process can be done for both debug and release builds. This page provides an overview on different ways to build your app locally using your own machine and references to other guides that might be necessary in this workflow.
 

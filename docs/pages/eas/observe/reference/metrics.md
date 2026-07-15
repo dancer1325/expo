@@ -4,7 +4,6 @@ sidebar_title: Metrics
 description: A reference of each performance metric tracked by EAS Observe, including concepts and data handling.
 ---
 
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 Reference for the performance metrics EAS Observe collects, the core concepts used to organize events (sessions and users), and how collected data is retained.
 
@@ -166,7 +165,6 @@ You can attach your own params to the TTI event by passing them to `markInteract
 <Tab label="SDK 56 and later">
 
 ```tsx
-import { useObserve } from 'expo-observe';
 
 const { markInteractive } = useObserve();
 
@@ -184,7 +182,6 @@ markInteractive({
 <Tab label="SDK 55">
 
 ```tsx
-import { AppMetrics } from 'expo-observe';
 
 AppMetrics.markInteractive({
   params: {
@@ -206,7 +203,6 @@ You can also override the route name attached to the event, which is otherwise p
 <Tab label="SDK 56 and later">
 
 ```tsx
-import { useObserve } from 'expo-observe';
 
 const { markInteractive } = useObserve();
 
@@ -221,7 +217,6 @@ markInteractive({
 <Tab label="SDK 55">
 
 ```tsx
-import { AppMetrics } from 'expo-observe';
 
 AppMetrics.markInteractive({
   routeName: '/feed',
@@ -242,7 +237,6 @@ Instead of calling `markInteractive()` from an effect, you can render the `<Obse
 > **info** `ObserveInteractiveMarker` is available in SDK 56 and later.
 
 ```tsx
-import { ObserveInteractiveMarker } from 'expo-observe';
 
 function Feed({ items }) {
   if (!items) {

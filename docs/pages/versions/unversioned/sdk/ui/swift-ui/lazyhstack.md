@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 Expo UI LazyHStack matches the official SwiftUI [LazyHStack API](https://developer.apple.com/documentation/swiftui/lazyhstack) and arranges its children horizontally, creating items only as needed (when they become visible during scrolling).
 
@@ -24,7 +22,6 @@ Expo UI LazyHStack matches the official SwiftUI [LazyHStack API](https://develop
 LazyHStack should be used inside a `ScrollView` with `axes="horizontal"` to enable lazy rendering.
 
 ```tsx BasicLazyHStackExample.tsx
-import { Host, ScrollView, LazyHStack, Text } from '@expo/ui/swift-ui';
 
 export default function BasicLazyHStackExample() {
   return (
@@ -46,8 +43,6 @@ export default function BasicLazyHStackExample() {
 The `alignment` prop controls vertical alignment of children. Available options are: `top`, `center`, `bottom`, `firstTextBaseline`, and `lastTextBaseline`.
 
 ```tsx LazyHStackAlignmentExample.tsx
-import { Host, ScrollView, LazyHStack, Rectangle } from '@expo/ui/swift-ui';
-import { frame } from '@expo/ui/swift-ui/modifiers';
 
 export default function LazyHStackAlignmentExample() {
   return (
@@ -67,7 +62,6 @@ export default function LazyHStackAlignmentExample() {
 ## API
 
 ```tsx
-import { LazyHStack } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/lazyhstack" apiName="LazyHStack" />

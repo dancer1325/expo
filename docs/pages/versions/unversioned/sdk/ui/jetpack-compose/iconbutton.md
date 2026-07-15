@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI provides four icon button components that match the official Jetpack Compose [IconButton API](https://developer.android.com/develop/ui/compose/components/icon-button): `IconButton`, `FilledIconButton`, `FilledTonalIconButton`, and `OutlinedIconButton`. All variants share the same props and accept composable children for content.
 
@@ -31,7 +28,6 @@ Expo UI provides four icon button components that match the official Jetpack Com
 A standard icon button with no background, typically used for toolbar actions.
 
 ```tsx BasicIconButtonExample.tsx
-import { Host, IconButton, Icon } from '@expo/ui/jetpack-compose';
 
 export default function BasicIconButtonExample() {
   return (
@@ -49,7 +45,6 @@ export default function BasicIconButtonExample() {
 Use different icon button components to convey varying levels of emphasis.
 
 ```tsx IconButtonVariantsExample.tsx
-import {
   Host,
   IconButton,
   FilledIconButton,
@@ -84,7 +79,6 @@ export default function IconButtonVariantsExample() {
 ## API
 
 ```tsx
-import {
   IconButton,
   FilledIconButton,
   FilledTonalIconButton,

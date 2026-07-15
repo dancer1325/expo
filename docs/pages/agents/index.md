@@ -4,10 +4,7 @@ sidebar_title: Overview
 description: Build and publish Expo and React Native apps with AI coding agents such as Claude Code, Codex, and Cursor.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import {
   ClaudeLogoIcon,
   CursorLogoIcon,
   OpenAILogoIcon,

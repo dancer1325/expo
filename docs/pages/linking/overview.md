@@ -4,12 +4,7 @@ sidebar_title: Overview
 description: An overview of available resources to implement Linking and Deep Links in your Expo apps.
 ---
 
-import { AndroidIcon } from '@expo/styleguide-icons/custom/AndroidIcon';
-import { AppleIcon } from '@expo/styleguide-icons/custom/AppleIcon';
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { CODE } from '~/ui/components/Text';
 
 ## Linking
 

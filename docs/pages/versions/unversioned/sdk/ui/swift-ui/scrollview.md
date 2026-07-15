@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 > **info** For cross-platform usage, see the universal [`ScrollView`](../universal/scrollview) — it renders the appropriate native component per platform.
 
@@ -24,8 +22,6 @@ Expo UI ScrollView matches the official SwiftUI [ScrollView API](https://develop
 A simple vertically scrollable list of text items.
 
 ```tsx ScrollViewVerticalExample.tsx
-import { Host, ScrollView, VStack, Text } from '@expo/ui/swift-ui';
-import { padding } from '@expo/ui/swift-ui/modifiers';
 
 export default function ScrollViewVerticalExample() {
   return (
@@ -49,8 +45,6 @@ export default function ScrollViewVerticalExample() {
 Use the `axes` prop to scroll horizontally.
 
 ```tsx ScrollViewHorizontalExample.tsx
-import { Host, ScrollView, HStack, RoundedRectangle } from '@expo/ui/swift-ui';
-import { frame, foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function ScrollViewHorizontalExample() {
   return (
@@ -79,7 +73,6 @@ export default function ScrollViewHorizontalExample() {
 Set `showsIndicators` to `false` to hide the scroll bars.
 
 ```tsx ScrollViewHiddenIndicatorsExample.tsx
-import { Host, ScrollView, VStack, Text } from '@expo/ui/swift-ui';
 
 export default function ScrollViewHiddenIndicatorsExample() {
   return (
@@ -107,9 +100,6 @@ The `scrollPosition` modifier also works on other scrollable containers like `La
 > **warning** Writes to `state.value` must run on the UI runtime. Wrap the write in `scheduleOnUI` from `react-native-worklets`, or call them from inside a `'worklet'` function. Writes from the JS runtime trip Main Thread Checker, Xcode's runtime tool that flags UIKit calls made from a background thread.
 
 ```tsx ScrollViewSharedPositionExample.tsx
-import { Button, Host, ScrollView, Text, VStack, useNativeState } from '@expo/ui/swift-ui';
-import { id, padding, scrollPosition, scrollTargetLayout } from '@expo/ui/swift-ui/modifiers';
-import { scheduleOnUI } from 'react-native-worklets';
 
 export default function ScrollViewSharedPositionExample() {
   const activeID = useNativeState<string | null>(null);
@@ -153,7 +143,6 @@ export default function ScrollViewSharedPositionExample() {
 ## API
 
 ```tsx
-import { ScrollView } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/scrollview" apiName="ScrollView" />

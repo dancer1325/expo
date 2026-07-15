@@ -3,10 +3,6 @@ title: Static rendering
 description: Learn how to render routes to static HTML and CSS files with Expo Router.
 ---
 
-import { PaddedAPIBox } from '~/components/plugins/PaddedAPIBox';
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 To enable Search Engine Optimization (SEO) on the web you must statically render your app. This guide will walk you through the process of statically rendering your Expo Router app.
 
@@ -79,8 +75,6 @@ This project can be deployed to almost every hosting service. Note that this is 
 The `static` output will generate HTML files for each route. This means dynamic routes (**src/app/[id].tsx**) will not work out of the box. You can generate known routes ahead of time using the `generateStaticParams` function.
 
 ```tsx src/app/blog/[id].tsx
-import { Text } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
 
 /* @info This method is run in a Node.js environment at build-time. */
 export async function generateStaticParams(): Promise<Record<string, string>[]> {
@@ -151,8 +145,6 @@ Since Expo Router compiles your code into a separate directory you cannot use `_
 Instead, use `process.cwd()`, which gives you the directory where the project is being compiled.
 
 ```tsx src/app/[category].tsx
-import fs from 'node:fs/promises';
-import path from 'node:path';
 
 export async function generateStaticParams(params: {
   id: string;
@@ -176,8 +168,6 @@ You can customize the root HTML file by creating a **src/app/+html.tsx** file in
 > **Note**: Global context providers should go in the [Root Layout](/router/basics/navigation-layouts/#root-layout) component, not the Root HTML component.
 
 ```tsx src/app/+html.tsx
-import { ScrollViewStyleReset } from 'expo-router/html';
-import { type PropsWithChildren } from 'react';
 
 // This file is web-only and used to configure the root HTML for every
 // web page during static rendering.
@@ -222,8 +212,6 @@ The exports from `expo-router/html` are related to the Root HTML component.
 You can add meta tags to your pages with the `<Head />` module from `expo-router`:
 
 ```tsx src/app/about.tsx
-import Head from 'expo-router/head';
-import { Text } from 'react-native';
 
 export default function Page() {
   return (
@@ -266,7 +254,6 @@ These files will be copied to the **dist** directory during static rendering:
 > **info** **Web only**: Static assets can be accessed in runtime code using relative paths. For example, the **logo.png** can be accessed at `/logo.png`:
 
 ```tsx src/app/index.tsx
-import { Image } from 'react-native';
 
 export default function Page() {
   return <Image source={{ uri: '/logo.png' }} />;
@@ -280,8 +267,6 @@ Expo Font has automatic static optimization for font loading in Expo Router. Whe
 The following snippet will load Inter into the namespace and statically optimize on web:
 
 ```tsx src/app/home.tsx
-import { Text } from 'react-native';
-import { useFonts } from 'expo-font';
 
 export default function App() {
   /* @info Expo CLI automatically finds and extracts this font during compilation. */

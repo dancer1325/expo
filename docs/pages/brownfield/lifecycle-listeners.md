@@ -4,8 +4,6 @@ sidebar_title: Lifecycle listeners
 description: Learn about the mechanism that allows the Expo Modules API to hook into the lifecycle of your app.
 ---
 
-import { DiffBlock, Terminal } from '~/ui/components/Snippet';
-import { PlatformTag } from '~/ui/components/Tag/PlatformTag';
 
 Some Expo libraries need to handle system events such as deep links, push notifications, and configuration changes by implementing `Activity`/`Application` or `AppDelegate` lifecycle callbacks.
 
@@ -57,8 +55,6 @@ To test if the callbacks are working correctly, install a module that relies on 
 Add a listener for deep links in your code and observe the console when opening a deep link:
 
 ```jsx
-import * as Linking from 'expo-linking';
-import { useEffect } from 'react';
 
 useEffect(() => {
   const listener = Linking.addEventListener('url', ({ url }) => {

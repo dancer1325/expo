@@ -4,8 +4,6 @@ sidebar_title: Patch project
 description: Learn about how to use patch-project to create generate, apply, and preserve native changes in your Expo project.
 ---
 
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
 
 > **important** **Note**: `patch-project` is an [alpha](/more/release-statuses/#alpha) feature.
 

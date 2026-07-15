@@ -6,9 +6,6 @@ packageName: '@expo/ui'
 platforms: ['ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
 
 Expo UI Section matches the official SwiftUI [Section API](https://developer.apple.com/documentation/swiftui/section) and is used to group related content within [`List`](list), [`Form`](form) or [`Picker`](picker) components.
 
@@ -31,7 +28,6 @@ Expo UI Section matches the official SwiftUI [Section API](https://developer.app
 Use the `title` prop for simple sections with a text header.
 
 ```tsx BasicSectionExample.tsx
-import { Host, List, Section, Text } from '@expo/ui/swift-ui';
 
 export default function BasicSectionExample() {
   return (
@@ -53,8 +49,6 @@ export default function BasicSectionExample() {
 Use the `header` and `footer` props for custom views. These props are only used when `title` is not provided.
 
 ```tsx CustomHeaderFooterExample.tsx
-import { Host, List, Section, Toggle, Text, HStack, Image } from '@expo/ui/swift-ui';
-import { useState } from 'react';
 
 export default function CustomHeaderFooterExample() {
   const [locationEnabled, setLocationEnabled] = useState(false);
@@ -93,9 +87,6 @@ Use the `isExpanded` prop to control whether the section is expanded or collapse
 > **Note:** Collapsible sections require iOS 17+ and tvOS 17+, and the list must use the `sidebar` style. Footer is not supported for collapsible sections.
 
 ```tsx CollapsibleSectionExample.tsx
-import { useState } from 'react';
-import { Host, List, Section, Text } from '@expo/ui/swift-ui';
-import { listStyle } from '@expo/ui/swift-ui/modifiers';
 
 export default function CollapsibleSectionExample() {
   const [favoritesExpanded, setFavoritesExpanded] = useState(false);
@@ -131,9 +122,6 @@ export default function CollapsibleSectionExample() {
 Sections work within `Form` components to organize form controls into logical groups.
 
 ```tsx FormSectionsExample.tsx
-import { useState } from 'react';
-import { Host, Form, Section, Toggle, Picker, Text, Button } from '@expo/ui/swift-ui';
-import { pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 
 export default function FormSectionsExample() {
   const [darkMode, setDarkMode] = useState(false);
@@ -173,7 +161,6 @@ export default function FormSectionsExample() {
 ## API
 
 ```tsx
-import { Section } from '@expo/ui/swift-ui';
 ```
 
 <APISection packageName="expo-ui/swift-ui/section" apiName="Section" />

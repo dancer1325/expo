@@ -4,9 +4,7 @@ description: Learn about adding a database to your Expo project.
 sidebar_title: Database
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 Most apps need to persist data beyond the lifetime of a single session. You can use a cloud-hosted database to store your app's data and sync it across devices and users.
 

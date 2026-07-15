@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A `MenuView` component with an API compatible with [`@react-native-menu/menu`](https://www.npmjs.com/package/@react-native-menu/menu). Supports both single-tap (default) and long-press (`shouldOpenOnLongPress`) triggers.
 
@@ -34,9 +32,6 @@ If you need lower-level control, use those primitives directly.
 ## Basic usage
 
 ```tsx MenuExample.tsx
-import { Icon } from '@expo/ui';
-import { MenuView } from '@expo/ui/community/menu';
-import { Pressable, Text } from 'react-native';
 
 const editIcon = Icon.select({
   ios: 'pencil',
@@ -69,9 +64,6 @@ export default function MenuExample() {
 Set `shouldOpenOnLongPress` to render as a context menu. On Android, the same controlled `DropdownMenu` opens from the `Pressable`'s `onLongPress` instead of `onPress`. On iOS, this uses SwiftUI's `ContextMenu` and shows the trigger as a blurred preview.
 
 ```tsx LongPressMenuExample.tsx
-import { Icon } from '@expo/ui';
-import { MenuView } from '@expo/ui/community/menu';
-import { Pressable, Text } from 'react-native';
 
 const copyIcon = Icon.select({
   ios: 'doc.on.doc',
@@ -105,8 +97,6 @@ export default function LongPressMenuExample() {
 `subactions` renders nested actions as a submenu by default. Set `displayInline: true` on the parent to render the children as an inline section instead, which is useful for grouping. On Android, only the divider appears (Material's `DropdownMenu` has no section primitive). On iOS, the parent's `title` becomes the section header.
 
 ```tsx SubmenuExample.tsx
-import { MenuView } from '@expo/ui/community/menu';
-import { Pressable, Text } from 'react-native';
 
 export default function SubmenuExample() {
   return (
@@ -146,9 +136,6 @@ export default function SubmenuExample() {
 Set `state` to `'on'` or `'off'` to render an action as a togglable item with a leading checkmark when on. Selecting the action fires `onPressAction` and the caller is responsible for updating the state.
 
 ```tsx ToggleMenuExample.tsx
-import { MenuView } from '@expo/ui/community/menu';
-import { useState } from 'react';
-import { Pressable, Text } from 'react-native';
 
 export default function ToggleMenuExample() {
   const [pinned, setPinned] = useState(false);
@@ -169,7 +156,6 @@ export default function ToggleMenuExample() {
 ## API
 
 ```tsx
-import { MenuView } from '@expo/ui/community/menu';
 ```
 
 <APISection packageName="expo-ui/community/menu" apiName="MenuView" />

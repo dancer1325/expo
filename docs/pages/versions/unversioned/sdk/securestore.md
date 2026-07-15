@@ -7,14 +7,10 @@ iconUrl: '/static/images/packages/expo-secure-store.png'
 platforms: ['android', 'ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import {
   ConfigPluginExample,
   ConfigReactNative,
   ConfigPluginProperties,
 } from '~/ui/components/ConfigSection';
-import { SnackInline } from '~/ui/components/Snippet';
 
 `expo-secure-store` provides a way to encrypt and securely store key-value pairs locally on the device. Each Expo project has a separate storage system and has no access to the storage of other Expo projects.
 
@@ -157,9 +153,6 @@ If you are using your own Auto Backup configuration, you should exclude the `Sec
 <SnackInline label='SecureStore' dependencies={['expo-secure-store']} platforms={['ios', 'android']}>
 
 ```jsx
-import { useState } from 'react';
-import { Text, View, StyleSheet, TextInput, Button } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
 
 async function save(key, value) {
   await SecureStore.setItemAsync(key, value);
@@ -245,7 +238,6 @@ const styles = StyleSheet.create({
 ## API
 
 ```js
-import * as SecureStore from 'expo-secure-store';
 ```
 
 <APISection packageName="expo-secure-store" apiName="SecureStore" />

@@ -4,7 +4,6 @@ sidebar_title: Environment variables
 description: Learn basic concepts about using environment variables in EAS and how to manage them.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 [Environment variables in Expo](/guides/environment-variables) describe how to use environment variables with the Expo framework and **.env** files to set environment variables that can be inlined in your JavaScript code. Expo CLI will substitute prefixed variables in your code (for example, `process.env.EXPO_PUBLIC_VARNAME`) with the corresponding environment variable values in **.env** files on your development machine.
 

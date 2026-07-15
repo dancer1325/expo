@@ -4,9 +4,7 @@ sidebar_title: Overview
 hideTOC: true
 ---
 
-import { GraduationHat02DuotoneIcon } from '@expo/styleguide-icons/duotone/GraduationHat02DuotoneIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 The **Learn** section is a collection of tutorials and other guides that help you learn about Expo and Expo Application Services (EAS). It covers the following:
 

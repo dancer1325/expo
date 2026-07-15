@@ -3,8 +3,6 @@ title: Drawer
 description: Learn how to use the Drawer layout in Expo Router.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
-import { Tabs, Tab } from '~/ui/components/Tabs';
 
 To use [drawer navigator](https://reactnavigation.org/docs/drawer-based-navigation) you'll need to install some extra dependencies.
 
@@ -60,8 +58,6 @@ After you add the Babel plugin, restart your development server and clear the bu
 Now you can use the `Drawer` layout to create a drawer navigator. You'll need to wrap the `<Drawer />` in a `<GestureHandlerRootView>` to enable gestures. You only need one `<GestureHandlerRootView>` in your component tree. Any nested routes are not required to be wrapped individually.
 
 ```tsx app/_layout.tsx
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Drawer } from 'expo-router/drawer';
 
 export default function Layout() {
   return (
@@ -75,8 +71,6 @@ export default function Layout() {
 To edit the drawer navigation menu labels, titles and screen options specific screens are required as follows:
 
 ```tsx app/_layout.tsx
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Drawer } from 'expo-router/drawer';
 
 export default function Layout() {
   return (
@@ -111,7 +105,6 @@ export default function Layout() {
 Now you can use the `Drawer` layout to create a drawer navigator.
 
 ```tsx app/_layout.tsx
-import { Drawer } from 'expo-router/drawer';
 
 export default function Layout() {
   return <Drawer />;
@@ -121,7 +114,6 @@ export default function Layout() {
 To edit the drawer navigation menu labels, titles and screen options specific screens are required as follows:
 
 ```tsx app/_layout.tsx
-import { Drawer } from 'expo-router/drawer';
 
 export default function Layout() {
   return (

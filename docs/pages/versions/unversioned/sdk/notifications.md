@@ -7,18 +7,7 @@ iconUrl: '/static/images/packages/expo-notifications.png'
 platforms: ['android', 'ios']
 ---
 
-import { NotificationBoxIcon } from '@expo/styleguide-icons/outline/NotificationBoxIcon';
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions } from '~/components/plugins/permissions';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ConfigReactNative, ConfigPluginProperties } from '~/ui/components/ConfigSection';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { SnackInline } from '~/ui/components/Snippet';
-import { Tab, Tabs } from '~/ui/components/Tabs';
-import { PlatformTags } from '~/ui/components/Tag/PlatformTags';
 
 `expo-notifications` provides an API to fetch push notification tokens and to present, schedule, receive and respond to notifications.
 
@@ -70,10 +59,6 @@ Check out the example Snack below to see Notifications in action. Push notificat
 <SnackInline label='Push Notifications' dependencies={['expo-constants', 'expo-notifications']}>
 
 ```tsx
-import { useState, useEffect } from 'react';
-import { Text, View, Button, Platform } from 'react-native';
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -203,7 +188,6 @@ async function registerForPushNotificationsAsync() {
 ### Present a local (in-app) notification to the user
 
 ```ts
-import * as Notifications from 'expo-notifications';
 
 // First, set the handler that will cause the notification
 // to show the alert
@@ -237,9 +221,6 @@ If you'd like to deep link to a specific screen in your app when you receive a p
 You can use Expo Router's [built-in deep linking](/router/basics/core-concepts/#2-all-pages-have-a-url) to handle incoming URLs from push notifications. Simply configure the root layout to listen for incoming and initial notification events.
 
 ```tsx app/_layout.tsx
-import { useEffect } from 'react';
-import * as Notifications from 'expo-notifications';
-import { router } from 'expo-router';
 
 function useNotificationObserver() {
   useEffect(() => {
@@ -289,10 +270,6 @@ export default function Layout() {
 React Navigation's manual [linking configuration](https://reactnavigation.org/docs/navigation-container#linking) can be configured to handle incoming redirects from push notifications:
 
 ```tsx App.tsx
-import React from 'react';
-import { Linking } from 'react-native';
-import * as Notifications from 'expo-notifications';
-import { NavigationContainer } from '@react-navigation/native';
 
 export default function App() {
   return (
@@ -654,7 +631,6 @@ You can also set a custom notification color **per-notification** directly in yo
 ## API
 
 ```js
-import * as Notifications from 'expo-notifications';
 ```
 
 <APISection

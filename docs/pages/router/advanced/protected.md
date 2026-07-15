@@ -36,7 +36,6 @@ TODO:
 />
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 const isLoggedIn = false;
 
@@ -73,7 +72,6 @@ You should only declare a screen only once, in the most appropriate group or sta
 * If a screen's availability depends on logic, wrap it in a conditional group instead of duplicating the screen.
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 const isLoggedIn = true;
 const isAdmin = true;
@@ -95,7 +93,6 @@ export function AppLayout() {
 Protected screens can be nested to define hierarchical access control logic.
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 const isLoggedIn = true;
 const isAdmin = true;
@@ -137,7 +134,6 @@ You can configure the navigator to fall back to a specific screen if access is d
 />
 
 ```tsx src/app/_layout.tsx
-import { Stack } from 'expo-router';
 
 const isLoggedIn = false;
 
@@ -162,7 +158,6 @@ In the above example, since the **index** screen is protected and the `guard` is
 Protected routes are also available for [Tabs](/router/advanced/tabs/) and [Drawer](/router/advanced/drawer/) navigators.
 
 ```tsx src/app/_layout.tsx
-import { Tabs } from 'expo-router';
 
 const isLoggedIn = false;
 

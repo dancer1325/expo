@@ -4,8 +4,6 @@ sidebar_title: Local credentials
 description: Learn how to configure and use local credentials when using EAS.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 You can usually get away with not being a code signing expert by [letting EAS handle it for you](/app-signing/managed-credentials/). However, there are cases where some users might want to manage their project keystore, certificates and profiles on their own.
 

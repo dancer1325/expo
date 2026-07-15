@@ -3,7 +3,6 @@ title: Privacy manifests
 description: Learn about configuring iOS privacy manifests for your mobile app.
 ---
 
-import { ConfigReactNative } from '~/ui/components/ConfigSection';
 
 If you're using a native iOS library that uses a "restricted reason" APIs, you'll need to configure an iOS privacy manifest to declare why you're including native code to call those APIs.
 

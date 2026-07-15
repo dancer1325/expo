@@ -3,10 +3,7 @@ title: Custom navigators
 description: Learn how to build your own navigator in Expo Router and how library authors can integrate an existing navigator with the router.
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { FileTree } from '~/ui/components/FileTree';
 
 > **important** The custom navigator API described on this page is in [alpha](/more/release-statuses/#alpha) and available in SDK 56 and later. The API is subject to breaking changes.
 
@@ -27,12 +24,10 @@ Use `unstable_createStandardRouterNavigator` to turn a content component into a 
 The following example builds a minimal tab navigator:
 
 ```tsx components/Tabs.tsx
-import {
   unstable_createStandardRouterNavigator,
   TabRouter,
   type NavigatorContentProps,
 } from 'expo-router';
-import { Pressable, Text, View } from 'react-native';
 
 // The first type argument is the options you can set per screen
 type TabsContentProps = NavigatorContentProps<{ title?: string }>;
@@ -66,7 +61,6 @@ export const Tabs = unstable_createStandardRouterNavigator(TabsContent, TabRoute
 The returned navigator has a `.Screen` child for declaring screens, so you can use it in a `_layout` file like any other layout:
 
 ```tsx app/_layout.tsx
-import { Tabs } from '../components/Tabs';
 
 export default function Layout() {
   return (
@@ -149,8 +143,6 @@ The `NavigatorContent` component shown above is a [standard navigator](https://g
 `unstable_createStandardRouterNavigator` is a shortcut that calls `createStandardNavigator` (from `standard-navigation`) for you and integrates the result with Expo Router in one step. As a library author, call `createStandardNavigator` yourself and keep a reference to the navigator:
 
 ```tsx src/index.ts
-import { createStandardNavigator } from 'standard-navigation';
-import { TabsContent } from './TabsContent';
 
 // Framework-agnostic: this navigator targets the standard contract, not any one host.
 // The first type argument is the per-screen options; the second is the event map.
@@ -167,8 +159,6 @@ Because `TabsContent` and `navigator` depend only on the standard contract, the 
 Wire your navigator into Expo Router with `unstable_integrateWithRouter`:
 
 ```tsx src/expo-router.ts
-import { unstable_integrateWithRouter, TabRouter } from 'expo-router';
-import { navigator } from './index';
 
 export const Tabs = unstable_integrateWithRouter(navigator, TabRouter);
 ```

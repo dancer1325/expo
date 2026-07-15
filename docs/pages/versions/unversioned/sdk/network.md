@@ -7,8 +7,6 @@ iconUrl: '/static/images/packages/expo-network.png'
 platforms: ['android', 'ios', 'web', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 `expo-network` provides useful information about the device's network such as its IP address, MAC address, and airplane mode status.
 
@@ -23,7 +21,6 @@ On Android, this module requires permissions to access the network and Wi-Fi sta
 ## API
 
 ```js
-import * as Network from 'expo-network';
 ```
 
 <APISection packageName="expo-network" apiName="Network" />

@@ -6,10 +6,7 @@ hideTOC: true
 hasVideoLink: true
 ---
 
-import { NotificationBoxIcon } from '@expo/styleguide-icons/outline/NotificationBoxIcon';
 
-import { BoxLink } from '~/ui/components/BoxLink';
-import { VideoBoxLink } from '~/ui/components/VideoBoxLink';
 
 Expo simplifies implementing push notifications by handling much of the complexity involved in communicating with Firebase Cloud Messaging (FCM) or Apple Push Notification Service (APNs). This allows you to treat Android and iOS notifications in the same way and save time both on the front-end and back-end.
 

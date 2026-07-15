@@ -6,8 +6,6 @@ packageName: '@expo/ui'
 platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
 
 A `Picker` component with an API compatible with `@react-native-picker/picker`. It uses a SwiftUI wheel `Picker` on iOS, a Material 3 `ExposedDropdownMenuBox` on Android, and a native `<select>` element on web.
 
@@ -33,9 +31,6 @@ If you need lower-level control, use those primitives directly.
 ## Basic usage
 
 ```tsx PickerExample.tsx
-import { useState } from 'react';
-import { Text, View } from 'react-native';
-import { Picker } from '@expo/ui/community/picker';
 
 export default function PickerExample() {
   const [language, setLanguage] = useState('java');
@@ -61,9 +56,6 @@ Pass a `style` to `Picker.Item` to control `color`, `backgroundColor`, `fontFami
 `fontFamily` accepts iOS font names (for example, `'Menlo'`) on iOS, and Compose generic families (`'monospace'`, `'serif'`, `'sansSerif'`, `'cursive'`) or fonts loaded with [`expo-font`](../../font) on Android.
 
 ```tsx StyledPickerExample.tsx
-import { useState } from 'react';
-import { Platform } from 'react-native';
-import { Picker } from '@expo/ui/community/picker';
 
 const monospace = Platform.select({ ios: 'Menlo', android: 'monospace' });
 const serif = Platform.select({ ios: 'Georgia', android: 'serif' });
@@ -105,9 +97,6 @@ export default function StyledPickerExample() {
 Use a ref to programmatically open and close the dropdown on Android. On iOS, these methods are no-ops because the wheel picker is always visible.
 
 ```tsx RefPickerExample.tsx
-import { useRef, useState } from 'react';
-import { Button } from 'react-native';
-import { Picker, type PickerRef } from '@expo/ui/community/picker';
 
 export default function RefPickerExample() {
   const [language, setLanguage] = useState('java');
@@ -136,7 +125,6 @@ export default function RefPickerExample() {
 ## API
 
 ```tsx
-import { Picker } from '@expo/ui/community/picker';
 ```
 
 <APISection packageName="expo-ui/community/picker" apiName="Picker" />

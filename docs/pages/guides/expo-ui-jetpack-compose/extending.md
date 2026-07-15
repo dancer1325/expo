@@ -5,10 +5,6 @@ description: Learn how to create custom Jetpack Compose components and modifiers
 platforms: ['android']
 ---
 
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { CODE } from '~/ui/components/Text';
 
 This guide explains how to create custom Jetpack Compose components and modifiers that integrate seamlessly with Expo UI.
 
@@ -96,16 +92,6 @@ Create your Compose view. It has two parts:
 ```kotlin my-ui/android/src/main/java/expo/modules/myui/MyCustomView.kt
 package expo.modules.myui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import expo.modules.kotlin.views.ComposeProps
-import expo.modules.kotlin.views.FunctionalComposableScope
-import expo.modules.kotlin.views.OptimizedComposeProps
-import expo.modules.ui.ModifierList
-import expo.modules.ui.ModifierRegistry
-import expo.modules.ui.UIComposableScope
 
 @OptimizedComposeProps
 data class MyCustomViewProps(
@@ -138,9 +124,6 @@ Register the view in your module using `ExpoUIView`. This wires your `@Composabl
 ```kotlin my-ui/android/src/main/java/expo/modules/myui/MyUiModule.kt
 package expo.modules.myui
 
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
-import expo.modules.ui.ExpoUIView
 
 class MyUiModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -162,9 +145,6 @@ class MyUiModule : Module() {
 Create a wrapper component that connects modifiers with event handling. The `createViewModifierEventListener` utility enables event-based modifiers like `clickable` and `onVisibilityChanged` to work with your custom view:
 
 ```tsx my-ui/src/MyCustomView.tsx
-import { type PrimitiveBaseProps } from '@expo/ui/jetpack-compose';
-import { createViewModifierEventListener } from '@expo/ui/jetpack-compose/modifiers';
-import { requireNativeView } from 'expo';
 
 export interface MyCustomViewProps extends PrimitiveBaseProps {
   title: string;
@@ -191,9 +171,6 @@ export function MyCustomView({ modifiers, ...restProps }: MyCustomViewProps) {
 Your custom component now works with all `@expo/ui` built-in modifiers:
 
 ```tsx app/index.tsx
-import { Host, Text } from '@expo/ui/jetpack-compose';
-import { background, clip, paddingAll } from '@expo/ui/jetpack-compose/modifiers';
-import { MyCustomView } from './modules/my-ui';
 
 export default function App() {
   return (
@@ -227,16 +204,6 @@ Define your modifier's parameters as an `@OptimizedRecord` data class, and a fun
 ```kotlin my-ui/android/src/main/java/expo/modules/myui/CustomBorderModifier.kt
 package expo.modules.myui
 
-import android.graphics.Color
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import expo.modules.kotlin.records.Field
-import expo.modules.kotlin.records.Record
-import expo.modules.kotlin.types.OptimizedRecord
-import expo.modules.ui.compose
 
 @OptimizedRecord
 data class CustomBorderParams(
@@ -264,11 +231,6 @@ Register your modifier with `ModifierRegistry` in your module definition. Use `O
 ```kotlin my-ui/android/src/main/java/expo/modules/myui/MyUiModule.kt
 package expo.modules.myui
 
-import expo.modules.kotlin.modules.Module
-import expo.modules.kotlin.modules.ModuleDefinition
-import expo.modules.kotlin.records.recordFromMap
-import expo.modules.ui.ExpoUIView
-import expo.modules.ui.ModifierRegistry
 
 class MyUiModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -304,8 +266,6 @@ The `register` lambda receives the raw map sent from JavaScript, the current `Co
 Create a TypeScript function that builds the modifier config:
 
 ```ts my-ui/src/modifiers.ts
-import { createModifier } from '@expo/ui/jetpack-compose/modifiers';
-import { type ColorValue } from 'react-native';
 
 export const customBorder = (params: {
   color?: ColorValue;
@@ -332,9 +292,6 @@ export { customBorder } from './src/modifiers';
 Your custom modifier works with any `@expo/ui` component:
 
 ```tsx app/index.tsx
-import { Column, Host, Text } from '@expo/ui/jetpack-compose';
-import { paddingAll } from '@expo/ui/jetpack-compose/modifiers';
-import { customBorder } from './modules/my-ui';
 
 export default function App() {
   return (

@@ -4,8 +4,6 @@ sidebar_title: Clean up update branches
 description: Learn how to delete EAS Update branches when GitHub branches are deleted using EAS Workflows.
 ---
 
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
 
 You might publish updates to EAS Update branches named after GitHub branches, for example with [`eas update --auto`](/eas-update/eas-cli/#create-a-new-update-and-publish-it), the [`update` workflow job](/eas/workflows/pre-packaged-jobs#update) with `branch: ${{ github.ref_name }}`, or [preview updates on every branch](/eas/workflows/examples/publish-preview-update). When you do, deleting the GitHub branch leaves the EAS Update branch behind. This workflow cleans up the orphaned EAS Update branch when a Git branch is deleted.
 

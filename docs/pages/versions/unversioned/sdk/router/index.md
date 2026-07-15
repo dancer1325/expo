@@ -8,11 +8,7 @@ platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 searchRank: 6
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import APISection from '~/components/plugins/APISection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { ConfigPluginExample, ConfigPluginProperties } from '~/ui/components/ConfigSection';
 
 `expo-router` is a routing library for React Native and web apps. It enables navigation management using a file-based routing system and provides native navigation components.
 
@@ -163,7 +159,6 @@ For information core concepts, notation patterns, navigation layouts, and common
 ## API
 
 ```js
-import { useRouter, Tabs, Navigator, Slot } from 'expo-router';
 ```
 
 <APISection packageName="expo-router" />

@@ -3,7 +3,6 @@ title: Store data
 description: Learn about different libraries available to store data in your Expo project.
 ---
 
-import { BoxLink } from '~/ui/components/BoxLink';
 
 Storing data can be essential to the features implemented in your mobile app. There are different ways to save data in your Expo project depending on the type of data you want to store and the security requirements of your app. This page lists a variety of libraries to help you decide which solution is best for your project.
 

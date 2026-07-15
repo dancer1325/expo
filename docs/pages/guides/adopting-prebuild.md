@@ -3,7 +3,6 @@ title: Adopt Prebuild
 description: Learn how to adopt Expo Prebuild in a project that was bootstrapped with React Native CLI.
 ---
 
-import { Terminal } from '~/ui/components/Snippet';
 
 There are [many advantages](/workflow/prebuild#pitch) of using [Expo Prebuild][prebuild] to [continuously generate your native projects](/workflow/continuous-native-generation). This guide will show you how to adopt Expo Prebuild in a project that was bootstrapped with `npx @react-native-community/cli@latest init`. The amount of time it will take to convert your project depends on the amount of custom native changes that you have made to your Android and iOS native projects. This may take a minute or two on a brand new project, and on a large project, it will be much longer.
 
@@ -27,7 +26,6 @@ Modify the entry file to use [`registerRootComponent`](/versions/latest/sdk/regi
 + import {registerRootComponent} from 'expo';
 
 - import {AppRegistry} from 'react-native';
-import App from './App';
 - import {name as appName} from './app.json';
 
 - AppRegistry.registerComponent(appName, () => App);

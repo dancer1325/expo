@@ -7,12 +7,6 @@ iconUrl: '/static/images/packages/expo-file-system.png'
 platforms: ['android', 'ios', 'tvos', 'expo-go']
 ---
 
-import APISection from '~/components/plugins/APISection';
-import { APIInstallSection } from '~/components/plugins/InstallSection';
-import { AndroidPermissions } from '~/components/plugins/permissions';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { SnackInline } from '~/ui/components/Snippet';
 
 > **important** The `legacy` version of the FileSystem API is included in the `expo-file-system` library. It can be used alongside the modern API for backward compatibility reasons.
 
@@ -108,7 +102,6 @@ try {
 >
 
 ```js
-import * as FileSystem from 'expo-file-system/legacy';
 
 const gifDir = FileSystem.cacheDirectory + 'giphy/';
 const gifFileUri = (gifId: string) => gifDir + `gif_${gifId}_200.gif`;
@@ -197,7 +190,6 @@ app.listen(3000, () => {
 ## API
 
 ```js
-import * as FileSystem from 'expo-file-system/legacy';
 ```
 
 ### Directories

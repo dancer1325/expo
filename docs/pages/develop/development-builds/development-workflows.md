@@ -4,8 +4,6 @@ sidebar_title: Tools, workflows and extensions
 description: Learn more about different tools, workflows and extensions available when working with development builds.
 ---
 
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { Terminal } from '~/ui/components/Snippet';
 
 Development builds allow you to iterate quickly. However, you can extend the capabilities of your development build to provide a better developer experience when working in teams or customize the build to suit your needs.
 
@@ -103,7 +101,6 @@ Extensions allow you to extend your development client with additional capabilit
 The dev menu can be extended to include extra buttons by using the `registerDevMenuItems` API:
 
 ```tsx
-import { registerDevMenuItems } from 'expo-dev-menu';
 
 const devMenuItems = [
   {

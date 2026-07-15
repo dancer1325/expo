@@ -8,13 +8,7 @@ platforms: ['ios']
 isAlpha: true
 ---
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
 
-import APISection from '~/components/plugins/APISection';
-import { BoxLink } from '~/ui/components/BoxLink';
-import { Collapsible } from '~/ui/components/Collapsible';
-import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
-import { FileTree } from '~/ui/components/FileTree';
 
 > **important** SplitView is an [alpha](/more/release-statuses/#alpha) API available on **iOS only** in **Expo SDK 55** and later. The API is subject to breaking changes and is not ready for production usage yet.
 
@@ -47,10 +41,6 @@ Accepted values are `primary`, `supplementary`, and `secondary`. When not set, t
 Use a `ref` to programmatically show a specific column with the `show` method:
 
 ```tsx
-import { useRef } from 'react';
-import { Pressable, Text } from 'react-native';
-import { SplitView } from 'expo-router/unstable-split-view';
-import type { SplitHostCommands } from 'react-native-screens/experimental';
 
 export default function Layout() {
   const ref = useRef<SplitHostCommands>(null);
@@ -133,10 +123,6 @@ A simple sidebar with main content:
 />
 
 ```tsx app/_layout.tsx
-import { Link } from 'expo-router';
-import { SplitView } from 'expo-router/unstable-split-view';
-import { Text, Pressable } from 'react-native';
-import { SafeAreaView } from 'react-native-screens/experimental';
 
 export default function Layout() {
   return (
@@ -171,9 +157,6 @@ A sidebar with supporting column and main content:
 />
 
 ```tsx app/_layout.tsx
-import { Link, useGlobalSearchParams } from 'expo-router';
-import { SplitView } from 'expo-router/unstable-split-view';
-import { SafeAreaView } from 'react-native-screens/experimental';
 
 export default function Layout() {
   const params = useGlobalSearchParams();
@@ -247,10 +230,6 @@ Here's a password manager-style app with three columns:
 />
 
 ```tsx app/_layout.tsx
-import { Link, Color, useGlobalSearchParams } from 'expo-router';
-import { SplitView } from 'expo-router/unstable-split-view';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-screens/experimental';
 
 export default function Layout() {
   return (
@@ -381,7 +360,6 @@ const style = StyleSheet.create({
 ```
 
 ```tsx app/index.tsx
-import { Redirect } from 'expo-router';
 
 export default function Index() {
   return <Redirect href="/all/" />;
@@ -389,8 +367,6 @@ export default function Index() {
 ```
 
 ```tsx app/[type]/index.tsx
-import { Color } from 'expo-router';
-import { Text, View } from 'react-native';
 
 export default function Index() {
   return (
@@ -404,8 +380,6 @@ export default function Index() {
 ```
 
 ```tsx app/[type]/[id].tsx
-import { useLocalSearchParams } from 'expo-router';
-import { Text, View } from 'react-native';
 
 export default function Id() {
   const { id } = useLocalSearchParams();
@@ -421,7 +395,6 @@ export default function Id() {
 ## API
 
 ```js
-import { SplitView } from 'expo-router/unstable-split-view';
 ```
 
 <APISection packageName="expo-router/split-view" apiName="Split view" />

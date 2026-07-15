@@ -3,9 +3,6 @@ title: Trigger builds from CI
 description: Learn how to trigger builds on EAS for your app from a CI environment such as GitHub Actions and more.
 ---
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Prerequisites, Requirement } from '~/ui/components/Prerequisites';
-import { Terminal } from '~/ui/components/Snippet';
 
 This document outlines how to trigger builds on EAS for your app from a CI environment such as GitHub Actions, Travis CI, and more.
 

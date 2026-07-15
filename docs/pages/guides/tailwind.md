@@ -3,10 +3,6 @@ title: Tailwind CSS
 description: Learn how to configure and use Tailwind CSS in your Expo project.
 ---
 
-import { CodeBlocksTable } from '~/components/plugins/CodeBlocksTable';
-import { FileTree } from '~/ui/components/FileTree';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
 
 > **info** Standard Tailwind CSS supports only web platform. For universal support, use a library such as [NativeWind](https://www.nativewind.dev/), which allows creating styled React Native components with Tailwind CSS.
 
@@ -100,12 +96,10 @@ Import the **global.css** file in your **app/\_layout.tsx** (if using Expo Route
 <CodeBlocksTable tabs={['app/_layout.tsx', 'index.js']}>
 
 ```tsx
-import '../global.css';
 ```
 
 ```tsx
 // Import the global.css file in the index.js file:
-import './global.css';
 ```
 
 </CodeBlocksTable>
@@ -140,7 +134,6 @@ export default function Index() {
 You can use the `{ $$css: true }` syntax to use Tailwind with React Native web elements:
 
 ```tsx app/index.tsx
-import { View, Text } from 'react-native';
 
 export default function Index() {
   return (
@@ -164,7 +157,6 @@ Alternatively, you can use [DOM components](/guides/dom-components) to render yo
 'use dom';
 
 // Remember to import the global.css file in each DOM component.
-import '../global.css';
 
 export default function Page() {
   return (
