@@ -21,6 +21,10 @@ hasVideoLink: true
       * email handling
       * OAuth standards
   * types of authentication methods
+    * [Email and password](#email-and-password)
+    * [Passwordless login](#passwordless-login)
+    * [OAuth 2.0](#oauth-20)
+    * [Modern methods](#modern-methods)
 
 ## Navigation auth flow
 
@@ -39,7 +43,7 @@ hasVideoLink: true
 
 ### -- via -- Expo Router
 
-* ways
+* 👀ways👀
   * [protected routes](../router/advanced/protected)
   * [redirects](../router/advanced/authentication-rewrites)
 

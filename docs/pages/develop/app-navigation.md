@@ -4,13 +4,17 @@ description: Learn about the recommended approach for integrating navigation in 
 sidebar_title: Navigation
 ---
 
-
-
-The core React Native library does not include a built-in navigation solution, so you can choose a navigation library that best fits your needs. For Expo and React Native apps, it is generally a choice between [React Navigation](https://reactnavigation.org/) or [Expo Router](/router/introduction/).
+* core React Native library
+  * ❌does NOT include a built-in navigation solution❌
+    * -> ⚠️you need to choose a navigation library⚠️
+      * | Expo & React Native apps, OPTIONS are
+        * [React Navigation](https://reactnavigation.org/)
+        * [Expo Router](../router/introduction)
 
 ## Why React Native apps need a navigation library
 
-React Native core includes basic UI components, touch handling, device APIs and networking, but excludes, among other things, storage, camera, maps, most device sensors, and **navigation**! These are intended to be covered by community libraries.
+TODO: React Native core includes basic UI components, touch handling, device APIs and networking, but excludes, among other things, storage, camera, maps, most device sensors, and **navigation**! 
+These are intended to be covered by community libraries.
 
 ## React Navigation
 

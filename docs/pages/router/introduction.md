@@ -7,20 +7,20 @@ sidebar_title: Introduction
 
 * Expo Router
   * 👀== file-based router 👀
-    * for applications
-      * React Native
+    * ALLOWED | 
+      * native mobile apps
       * web
   * allows you to
-    * 👀manage navigation -- between -- screens | your app 👀 /
+    * 👀manage navigation -- BETWEEN -- screens | your app 👀 /
       * same components can be reused | MULTIPLE platforms (Android, iOS, and web)
   * how does it work?
-    * 👀add the file | **app** directory 👀
+    * 👀| "src/app/", add the file 👀
       * Reason: 🧠 automatically. the file -- becomes a -- route | your navigation 🧠
 
 ## Features
 
 - **Native**
-  - 👀== built | our powerful [React Navigation suite](https://reactnavigation.org/) 👀
+  - 👀== built | [React Navigation suite](https://reactnavigation.org/) 👀
     - == superset of React Navigation
 - **Shareable**
   - 👀== EVERY screen | your app -- is automatically -- deep linkable 👀 
