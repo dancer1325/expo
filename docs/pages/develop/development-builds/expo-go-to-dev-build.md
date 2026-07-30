@@ -4,84 +4,93 @@ sidebar_title: Expo Go to development build
 description: How to switch from your Expo Go project to use development builds.
 ---
 
+* goal
+  * switch from Expo Go -- to a -- development build
 
-
-To switch from Expo Go to a development build, you'll need to follow the steps below:
-
-<Step label="1">
+* steps
+  * [install `expo-dev-client`](#install-the-expo-dev-client)
+  * [build your native app](#build-your-native-app)
+  * [start the bundler](#start-the-bundler)
 
 ## Install the `expo-dev-client`
 
-The Expo Dev Client library includes the launcher UI (shown in the screenshots below), dev menu, extensions to test over-the-air updates, and more. The Expo Go app has the dev menu built in, and that's why you need to install it separately for a development build.
+* Expo Dev Client library
+  * == launcher UI + dev menu + extensions + ...
+    * dev menu
+      * built-in | Expo Go app
+      * ❌NOT built-in | development build❌
+        * -> ⚠️you need to install it separately⚠️ 
+      * _Example:_ 
+        * middle images
+          * app / run | development build /
+            * customizable developer menu open
+        * side images
+          * launcher UI
+            * | left, iOS
+            * | right, Android
 
-<Terminal
-  cmd={{
-    npm: ['$ npx expo install expo-dev-client'],
-    yarn: ['$ yarn expo install expo-dev-client'],
-    pnpm: ['$ pnpm expo install expo-dev-client'],
-    bun: ['$ bun expo install expo-dev-client'],
-  }}
-/>
+        ![](../../../public/static/images/dev-client/preview.png)
+  * recommendations
+    * use it
+      * Reason:🧠best development experience🧠
+      * ⚠️ALTHOUGH, you can use development builds WITHOUT installing `expo-dev-client`⚠️ 
 
-<ContentSpotlight
-  alt="expo-dev-client launcher and menu UIs on Android and iOS."
-  src="/static/images/dev-client/preview.png"
-  caption={`When you run a development build it will look like this, only with your app name and icon included rather than "Microfoam". The launcher UI is pictured in iOS on the left and Android on the right. In between, you can see an app running inside of the development build, with the customizable developer menu open.`}
-/>
+* steps
+  ```bash
+  $ npx expo install expo-dev-client
+  $ yarn expo install expo-dev-client
+  $ pnpm expo install expo-dev-client
+  $ bun expo install expo-dev-client
+  ```
 
-> We recommend using the `expo-dev-client` for the best development experience, but it is possible to use development builds without installing this library. If not using the dev client, in [Step 3](/develop/development-builds/expo-go-to-dev-build/#start-the-dev-client), start the bundler with `--dev-client`. Otherwise, it will default to opening in Expo Go.
+## Build your NATIVE app
 
-</Step>
+* ways to run your app
+  * -- via -- Expo Go
+    * steps
+      * `npx expo start`
+        * Metro build the JS bundle
+          * Reason:🧠Expo Go == native app | run the JS bundle🧠
+  * -- via -- development builds
+    * steps
+      * build
+        * generate -- , via [prebuild](#prebuild), -- the native "android/" & "ios/" directories
+        * compile -- , via native build tools, -- the native app
+      * `npx expo start`
 
-<Step label="2">
+* use cases | you need to build it again
+  * add OR update a library -- with -- native code
+  * change any native code or configuration
 
-## Build your native app
+### Option 1: Build | your local machine
 
-With Expo Go, you only needed to build the JavaScript bundle, but with development builds you also need to compile the native app. With Expo, there are two parts to building your native app:
-
-1. Generate the native **android** and/or **ios** directories ([read more](/develop/development-builds/expo-go-to-dev-build/#prebuild) on when and how you'll need to do this)
-2. Use native build tools to compile the native app(s)
-
-Once you've built your native app, you won't need to build it again unless you add or update a library with native code, or change any native code or configuration, such as the app name.
-
-> The **android** and **ios** directories are automatically added to **.gitignore** when you create a new project, so they won't be checked into Git. This ensures you can always regenerate the code locally or on CI with [CNG](/workflow/continuous-native-generation/) when needed and never have to edit native code manually.
-
-### Option 1: Build on your local machine
-
-To build a native app on your local machine, follow the setup your environment guides for [Android](/workflow/android-studio-emulator/) and [iOS](/workflow/ios-simulator/) platforms. This involves setting up and configuring native build tools like Android Studio for Android and Xcode for iOS.
+TODO: 
+To build a native app on your local machine, follow the setup your environment guides
+for [Android](../../workflow/android-studio-emulator.md) and [iOS](../../workflow/ios-simulator.md) platforms
+* This involves setting up and configuring native build tools like Android Studio for Android and Xcode for iOS.
 
 Once you have everything set up, run the following command:
 
-<Tabs>
+* | Android,
 
-<Tab label="Build for Android">
+  ```bash
+  $ npx expo run:android
+  $ yarn expo run:android
+  $ pnpm expo run:android
+  $ bun expo run:android
+  ```
+* | iOS
 
-<Terminal
-  cmd={{
-    npm: ['$ npx expo run:android'],
-    yarn: ['$ yarn expo run:android'],
-    pnpm: ['$ pnpm expo run:android'],
-    bun: ['$ bun expo run:android'],
-  }}
-/>
+  ```bash
+  $ npx expo run:ios
+  $ yarn expo run:ios
+  $ pnpm expo run:ios
+  $ bun expo run:ios
+  ```
 
-</Tab>
 
-<Tab label="Build for iOS">
-
-<Terminal
-  cmd={{
-    npm: ['$ npx expo run:ios'],
-    yarn: ['$ yarn expo run:ios'],
-    pnpm: ['$ pnpm expo run:ios'],
-    bun: ['$ bun expo run:ios'],
-  }}
-/>
-
-</Tab>
-</Tabs>
-
-By default, this will build and install the app on an Android Emulator/iOS Simulator. If you need to run the build on your phone, plug it into your computer (on Android, select trust device and allow USB debugging if prompted, and on iOS, enable [developer mode](/get-started/set-up-your-environment/?mode=development-build&buildEnv=local&platform=ios&device=physical#plug-in-your-device-via-usb-and-enable-developer-mode)) and run the above commands with the `--device` flag.
+By default, this will build and install the app on an Android Emulator/iOS Simulator
+* If you need to run the build on your phone, plug it into your computer (on Android, select trust device and allow USB debugging if prompted, and on iOS, enable [developer mode](/get-started/set-up-your-environment/?mode=development-build&buildEnv=local&platform=ios&device=physical#plug-in-your-device-via-usb-and-enable-developer-mode)) and run the above commands with the `--device` flag.
 
 ### Option 2: Build on EAS
 
@@ -98,88 +107,75 @@ Building on EAS servers is useful when:
   Icon={BookOpen02Icon}
 />
 
-</Step>
-
-<Step label="3">
-
 ## Start the bundler
 
-After building locally, `npx expo run:android|ios` will start the bundler automatically. But if you closed the bundler or are working on a dev client you built earlier, (re)start the Metro bundler with:
+* `npx expo run:android|ios`
+  * AFTER building locally,
+    * 👀will start AUTOMATICALLY the bundler👀
+      * ⚠️if you closed the bundler OR are working | dev client / you built earlier -> (re)start the Metro bundler⚠️
 
-<Terminal
-  cmd={{
-    npm: ['$ npx expo start'],
-    yarn: ['$ yarn expo start'],
-    pnpm: ['$ pnpm expo start'],
-    bun: ['$ bun expo start'],
-  }}
-/>
+        ```bash
+        $ npx expo start
+        $ yarn expo start
+        $ pnpm expo start
+        $ bun expo start
+        ```
+        * if you do NOT use the dev client -> start the bundler -- with -- `--dev-client`
 
-When your project has `expo-dev-client` installed, the bundler will print out **Using development build**, and the QR code it shows will link into the development build you created instead of Expo Go.
-
-</Step>
+          ```bash
+          $ npx expo start --dev-client
+          $ yarn expo start --dev-client
+          $ pnpm expo start --dev-client
+          $ bun expo start --dev-client
+          ```
+          * Reason:🧠OTHERWISE, by default open | Expo Go🧠
+    * if your project has `expo-dev-client` installed -> the bundler print out
+      * "Using development build"
+      * a QR code / link -- into the -- development build / you created 
+        * instead of Expo Go
 
 ## Prebuild
 
-[**Prebuild** ](/workflow/continuous-native-generation/#prebuild) is a concept unique to Expo projects. It refers to the process of generating the **android** and **ios** directories based on your local configuration and properties.
+* [here](../../workflow/continuous-native-generation.md#prebuild)
 
-### When should you run prebuild
+### use cases
 
-You will need to run prebuild locally if you are building via `npx expo run:android|ios`, and change any native dependencies or configuration, such as:
+* you are building -- via -- `npx expo run:android|ios` & change any native dependencies OR configuration
+  * _Examples:_
+    * install OR update a library containing native code
+    * change [app config](../../workflow/configuration.md)
+    * upgrade your Expo SDK version
+  * steps
+    * rebuild the native directories
 
-- Installing or updating a library containing native code
-- Changing [app config](/workflow/configuration/)(`app.json`)
-- Upgrading your Expo SDK version
+      ```bash
+      $ npx expo prebuild --clean
+      $ yarn expo prebuild --clean
+      $ pnpm expo prebuild --clean
+      $ bun expo prebuild --clean
+      ```
+    * rebuild your app -- with the -- updated native code
+      * | Android,
 
-In these cases, you'll want to rebuild the native directories with:
+        ```bash
+        $ npx expo run:android
+        $ yarn expo run:android
+        $ pnpm expo run:android
+        $ bun expo run:android
+        ```
+      * | iOS
 
-<Terminal
-  cmd={{
-    npm: ['$ npx expo prebuild --clean'],
-    yarn: ['$ yarn expo prebuild --clean'],
-    pnpm: ['$ pnpm expo prebuild --clean'],
-    bun: ['$ bun expo prebuild --clean'],
-  }}
-/>
+        ```bash
+        $ npx expo run:ios
+        $ yarn expo run:ios
+        $ pnpm expo run:ios
+        $ bun expo run:ios
+        ```
 
-Then, rebuild your app with the updated native code, with:
+### ❌NOT use cases❌
 
-<Tabs>
-
-<Tab label="Build for Android">
-
-<Terminal
-  cmd={{
-    npm: ['$ npx expo run:android'],
-    yarn: ['$ yarn expo run:android'],
-    pnpm: ['$ pnpm expo run:android'],
-    bun: ['$ bun expo run:android'],
-  }}
-/>
-
-</Tab>
-
-<Tab label="Build for iOS">
-
-<Terminal
-  cmd={{
-    npm: ['$ npx expo run:ios'],
-    yarn: ['$ yarn expo run:ios'],
-    pnpm: ['$ pnpm expo run:ios'],
-    bun: ['$ bun expo run:ios'],
-  }}
-/>
-
-</Tab>
-</Tabs>
-
-### When you don't need to run prebuild
-
-All Expo build tools (`npx expo run:android|ios` and `eas build`) will **prebuild** automatically if no existing native folders are found. This means that there is no need to run prebuild manually when you're running `npx expo run:android|ios` for the first time or `eas build`.
-
-<BoxLink
-  title="Continuous Native Generation (CNG)"
-  description="Learn about the philosophy and benefits of Continuous Native Generation (CNG) and Prebuild."
-  href="/workflow/continuous-native-generation/"
-  Icon={BookOpen02Icon}
-/>
+* ❌native folders ("android/" & "ios/") do NOT exist❌
+  * | run `npx expo run:android|ios`,
+    * prebuild AUTOMATICALLY
+  * | run `eas build`,
+    * prebuild AUTOMATICALLY

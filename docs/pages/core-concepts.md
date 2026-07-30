@@ -22,14 +22,14 @@ description: An overview of Expo tools, features and services.
   * [Expo Modules API](modules/overview.mdx)
     * allows
       * write HIGHLY performant native code -- via -- modern Swift and Kotlin API
-  * [Prebuild](workflow/continuous-native-generation.mdx)
+  * [Prebuild](workflow/continuous-native-generation.md)
     * allows
       * React -- is separated from -- Native, to
         * develop | ANY computer,
         * upgrade easily,
         * white label apps,
         * maintain larger projects
-  * [Expo CLI](more/expo-cli.mdx)
+  * [Expo CLI](more/expo-cli.md)
     * allows
       * managing dependencies,
       * compile native apps,

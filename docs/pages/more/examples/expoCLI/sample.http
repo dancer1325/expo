@@ -1,0 +1,14 @@
+# Get the deep link for iOS (works over a tunnel, no Expo Go install required).
+# curl http://localhost:8081/_expo/open?platform=ios
+GET http://localhost:8081/_expo/open?platform=ios
+
+###
+# Force the disambiguation page so a device or external picker chooses.
+# curl http://localhost:8081/_expo/open?platform=android&runtime=unknown
+GET http://localhost:8081/_expo/open?platform=android&runtime=unknown
+
+###
+# curl -X POST http://localhost:8081/_expo/open?platform=ios
+POST http://localhost:8081/_expo/open?platform=ios
+
+###

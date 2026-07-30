@@ -9,6 +9,9 @@
   * `npx create-expo-app@latest`
     * create a default project
     * if you want to specify a template -> pass [`--template` option](../more/create-expo.md#--template)
+    * by default, 
+      * ⚠️ "android/" & "ios/" are added | ".gitignore"⚠️
+        * Reason:🧠regenerate the app code -- via -- [CNG](../workflow/continuous-native-generation.md)🧠
 
 ## Next step
 

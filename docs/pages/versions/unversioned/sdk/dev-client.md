@@ -9,8 +9,9 @@ platforms: ['android', 'ios', 'tvos']
 
 * `expo-dev-client`
   * == library / 
-    * enables creating a development build
-    * includes useful development tools
+    * enables 
+      * creating a development build
+    * == useful development tools
       * [support for network debugging](../../../debugging/tools.md#inspecting-network-requests-expo-only)
       * [support for launching updates](../../../eas-update/expo-dev-client.mdx) (_Example:_ [PR previews](../../../develop/development-builds/development-workflows.md#pr-previews))
       * default in-app development tools UI / provided by React Native -- are replaced with -- [in-app UI](../../../debugging/tools.md/#developer-menu)

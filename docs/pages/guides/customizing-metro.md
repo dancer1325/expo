@@ -34,38 +34,45 @@ description: Learn about different Metro bundler configurations that can be cust
       * == files / used -- by -- your application
         * _Examples:_ JS, TS, JSON, ...
     * [assets](../develop/user-interface/assets) 
-  * [Assets](/) are images, fonts, and other files that should not be transformed by Metro
-* To accommodate large-scale codebases, Metro requires all extensions for both source code and assets to be explicitly defined before starting the bundler
-* This is done by adding the `resolver.sourceExts` and `resolver.assetExts` options to the Metro configuration
-* By default, the following extensions are included:
+      * ❌should NOT be transformed -- by -- Metro❌
+  * requirements
+    * ⚠️ALL extensions -- for -- source code & assets⚠️
+      * Reason:🧠accommodate large-scale codebases🧠  
+      * BEFORE starting the bundler,
+        * they need to be EXPLICITLY defined 
+      * steps
+        * | Metro configuration,
+          * add the `resolver.sourceExts` and `resolver.assetExts` options 
+      * by default, included extensions
+        * [`resolver.assetExts`](https://github.com/facebook/metro/blob/7028b7f51074f9ceef22258a8643d0f90de2388b/packages/metro-config/src/defaults/defaults.js#L15)
+        * [`resolver.sourceExts`](https://github.com/facebook/metro/blob/7028b7f51074f9ceef22258a8643d0f90de2388b/packages/metro-config/src/defaults/defaults.js#L53)
 
-- [`resolver.assetExts`](https://github.com/facebook/metro/blob/7028b7f51074f9ceef22258a8643d0f90de2388b/packages/metro-config/src/defaults/defaults.js#L15)
-- [`resolver.sourceExts`](https://github.com/facebook/metro/blob/7028b7f51074f9ceef22258a8643d0f90de2388b/packages/metro-config/src/defaults/defaults.js#L53)
+### | `resolver.assetExts`, sdd MORE file extensions
 
-### Adding more file extensions to `assetExts`
+* == the MOST COMMON Metro customization
+* steps
+  * | "metro.config.js", 
+    * add the file extension
 
-The most common customization is to include extra asset extensions to Metro.
-
-In the **metro.config.js** file, add the file extension (without a leading `.`) to `resolver.assetExts` array:
-
-```js metro.config.js
-const { getDefaultConfig } = require('expo/metro-config');
-
-const config = getDefaultConfig(__dirname);
-
-config.resolver.assetExts.push(
-  // Adds support for `.db` files for SQLite databases
-  'db'
-);
-
-module.exports = config;
-```
+      ```js metro.config.js
+      const { getDefaultConfig } = require('expo/metro-config');
+      
+      const config = getDefaultConfig(__dirname);
+      
+      config.resolver.assetExts.push(
+      // Adds support for `.db` files for SQLite databases
+      'db'
+      );
+      
+      module.exports = config;
+      ```
 
 ## Aliases
 
 Sometimes you want an import to be redirected to another module or file
 * This is called an alias
-* Due to the way Metro bundles for multiple platforms simultaneously, we recommend using a custom resolver to handle aliases.
+* Due to the way Metro bundles for multiple platforms simultaneously, 
+we recommend using a custom resolver to handle aliases.
 
 In the following example, we'll add an alias for `old-module` to `new-module`:
 
@@ -199,9 +206,4 @@ This feature requires additional setup in bare projects
 
 ## CSS
 
-<BoxLink
-  title="Metro web CSS guide"
-  description="Learn how to use CSS in websites that are bundled with Expo CLI and Metro bundler."
-  href="/versions/latest/config/metro#css"
-  Icon={BookOpen02Icon}
-/>
+* [here](../versions/unversioned/config/metro.md#css)

@@ -4,33 +4,19 @@
 * Expo CLI
   * := CL tool / 
     * 👀primary interface between a developer -- & -- OTHER Expo tools 👀
-
-* [`expo` package](../core-concepts.md)
-
-## Highlights
-
-- `npx expo start`
-  - [Start a server](#develop) -- for -- developing your app
-- `npx expo prebuild`
-  - [Generate the native Android & iOS directories](#prebuild) 
-- `npx expo run:ios` & `npx expo run:android`
-  - [Build & run](#compiling) the NATIVE apps 
-- `npx expo install package-name`
-  - [Install & update packages](#install) / 's version -- compatible with -- the version of `react-native` | your project 
-- `npx expo` + `npx react-native` (SIMULTANEOUSLY)
+  * 👀part of [`expo` package](../core-concepts.md)👀
+    * | Expo SDK v46-,
+      * standalone INDEPENDENT packages -- [expo-cli](https://github.com/expo/expo-cli) --
+        * ⚠️deprecated⚠️
 
 ## Installation
 
-* Expo CLI
-  * included | `expo` package
-  * `npm add expo` or `yarn add expo`
-    * install it
-
-* Bare projects
-  * == projects / NOT use [Expo Prebuild](#prebuild)
-  * requirements
-    * additional setup / ensure ALL custom Expo bundling features work
-      * see [Metro: Bare workflow setup](../versions/unversioned/config/metro.mdx#bare-workflow-setup)
+* -- based on the -- project
+  * | projects / use [Expo Prebuild](#prebuild)
+    * `npm add expo` or `yarn add expo`
+  * [Bare projects](../bare/overview.md)
+    * requirements
+      * ⚠️[ADDITIONAL setup / ensure ALL custom Expo bundling features work](../versions/unversioned/config/metro.md#existing-react-native-apps)⚠️
 
 ## Develop
 
@@ -38,12 +24,13 @@
 
   ```
   npx expo start
-  # or using the alias
+  
+  # or -- via -- alias
   npx expo
   ```
   * uses
     * by a client, to interact with the bundler
-      * 👀default bundler is [Metro](https://metrobundler.dev/) 👀
+      * 👀default bundler: [Metro](https://metrobundler.dev/) 👀
   * server, by default, | `http://localhost:8081`  
 
 * **Terminal UI**
@@ -53,21 +40,21 @@
       * QR code (for the dev server URL)
       * list of keyboard shortcuts / you can press:
 
-| Keyboard shortcut               | Description                                                                                                                                                                              |
-| ------------------------------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <kbd>A</kbd>                    | Open the project on a connected Android device.                                                                                                                                          |
-| <kbd>Shift</kbd> + <kbd>A</kbd> | Select an Android device or emulator to open.                                                                                                                                            |
-| <kbd>I</kbd>                    | Open the project in an iOS Simulator.                                                                                                                                                    |
-| <kbd>Shift</kbd> + <kbd>I</kbd> | Select an iOS Simulator to open.                                                                                                                                                         |
-| <kbd>W</kbd>                    | Open the project in a web browser <br/> requirements: install webpack in your project.                                                                                   |
-| <kbd>R</kbd>                    | Reload the app on any connected device.                                                                                                                                                  |
-| <kbd>S</kbd>                    | Switch the launch target between Expo Go and development builds.                                                                                                                         |
-| <kbd>M</kbd>                    | Open the dev menu on any connected native device (web not supported).                                                                                                                    |
-| <kbd>Shift</kbd> + <kbd>M</kbd> | Choose more commands to trigger on connected devices.<br/>This includes toggling the performance monitor, opening the element inspector, reloading the device, and opening the dev menu. |
-| <kbd>J</kbd>                    | Open React Native DevTools for any connected device that is using Hermes as the JavaScript engine. [Learn more](/guides/using-hermes#javascript-inspector-for-hermes).                   |
-| <kbd>O</kbd>                    | Open project code in your editor. This can be configured with the `EXPO_EDITOR` and `EDITOR` [environment variables](#environment-variables).                                            |
-| <kbd>E</kbd>                    | Show the development server URL as a QR code in the terminal.                                                                                                                            |
-| <kbd>?</kbd>                    | Show all Terminal UI commands.                                                                                                                                                           |
+| Keyboard shortcut        | Description                                                                                                                                                                             |
+|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `A`                      | Open the project \| connected Android device                                                                                                                                            |
+| `Shift` + `A`            | Select an Android device or emulator to open.                                                                                                                                           |
+| `I`                      | Open the project \| iOS Simulator                                                                                                                                                       |
+| `Shift` + `I`            | Select an iOS Simulator -- to -- open                                                                                                                                                   |
+| `W`                      | Open the project \| web browser <br/> requirements: install webpack \| your project                                                                                                     |
+| `R`                      | Reload the app \| any connected device                                                                                                                                                  |
+| `S`                      | Switch the launch target between Expo Go and development builds.                                                                                                                        |
+| `M`                      | Open the dev menu on any connected native device (web not supported).                                                                                                                   |
+| `Shift` + `M`            | Choose more commands to trigger on connected devices.<br/>This includes toggling the performance monitor, opening the element inspector, reloading the device, and opening the dev menu. |
+| `J`                      | Open React Native DevTools for any connected device that is using Hermes as the JavaScript engine <br/> [MORE](../guides/using-hermes.md#javascript-inspector-for-hermes)               |
+| `O`                      | Open project code \| your editor <br/> if you want to configure it -> use `EXPO_EDITOR` & `EDITOR` [environment variables](#environment-variables)                                      |
+| `E`                      | Show the development server URL -- as a -- QR code \| terminal                                                                                                                          |
+| `?`                      | Show ALL Terminal UI commands                                                                                                                                                           |
 
 ### Launch target
 
@@ -81,7 +68,7 @@
       * == launch the app | Expo Go
 
 * | runtime,
-  * if you want to switch the launch target -> press <kbd>S</kbd> | **Terminal UI**
+  * if you want to switch the launch target -> press `S` | **Terminal UI**
 
 ### Server URL
 
@@ -173,25 +160,34 @@
     * ⚠️BOTH informations are specific to your local computer ⚠️
       * ⚠️-> include | **.gitignore** ⚠️
 
-### Open endpoint
+### Open endpoint -- `/_expo/open` --
 
-The dev server exposes `/_expo/open` so external tools, such as cloud agents, remote preview services, CI scripts, can introspect the deep links the CLI would use, and optionally trigger the same action as pressing <kbd>I</kbd> / <kbd>A</kbd> / <kbd>W</kbd> in the **Terminal UI**. It supplements the legacy `/_expo/link` endpoint, which returns a `307` redirect to a deep link scheme that non-mobile clients can't follow.
+* exposed -- by -- dev server
+  * -> external tools 
+    * _Example of external tools:_ cloud agents, remote preview services, CI scripts
+    * can
+      * introspect the deep links / CLI would use
+      * OPTIONALLY trigger the same action -- as -- pressing `I` / `A` / `W` | Terminal UI
+  * supplements the legacy `/_expo/link` endpoint
+    * Reason:🧠 it returns a `307` redirect -- to a -- deep link scheme / NON-mobile clients can NOT follow🧠
 
-| Method | Effect                                                                                                                                                    |
-| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET`  | Dry run: returns the deep link as JSON. Safe to call across tunnels.                                                                                      |
-| `POST` | Opens the project locally — equivalent to pressing <kbd>I</kbd> / <kbd>A</kbd> / <kbd>W</kbd> in the **Terminal UI**. Restricted to same-origin requests. |
+| Method | Effect                                                                                                                             |
+| ------ |------------------------------------------------------------------------------------------------------------------------------------|
+| `GET`  | Dry run: returns the deep link as JSON. Safe to call across tunnels.                                                               |
+| `POST` | Opens the project locally — equivalent to pressing `I` / `A` / `W` in the **Terminal UI** <br/> Restricted to same-origin requests |
 
 #### Query params
 
 - `platform` (or `expo-platform` header): `ios`, `android`, or `web`. Omit on `GET` for a discovery response that lists every platform.
 - `runtime`: choose how the URL is resolved.
-  - `default` (omitted): mirrors what pressing <kbd>I</kbd> / <kbd>A</kbd> does. It picks the dev client when the server was started with `--dev-client`, falls back to a disambiguation page when the project has both Expo Go and a development build, otherwise opens Expo Go.
+  - `default` (omitted): mirrors what pressing `I` / `A` does. It picks the dev client when the server was started with `--dev-client`, 
+   falls back to a disambiguation page when the project has both Expo Go and a development build, otherwise opens Expo Go.
   - `expo`: force the Expo Go deep link (`exp://…`).
   - `custom`: force the development-build deep link (`<scheme>://expo-development-client/?url=…`).
   - `unknown`: force the disambiguation `/_expo/loading` page, letting the device decide between Expo Go and the dev build.
 
-The endpoint reflects mid-run state changes — pressing <kbd>S</kbd> to toggle between Expo Go and the dev client, or installing `expo-dev-client` while the server is running, both show up on the next request.
+The endpoint reflects mid-run state changes — pressing `S` to toggle between Expo Go and the dev client, or installing `expo-dev-client` while the server is running, 
+both show up on the next request.
 
 #### GET response
 
@@ -242,22 +238,10 @@ Without `platform`, the response is keyed by platform for discovery:
 - `501`: host can't launch the requested platform (for example, `platform=ios` on Linux/Windows). The response carries a `details` field explaining why and suggesting the GET-then-launch-remotely workflow.
 - `500`: `openPlatformAsync` threw. The body forwards the underlying error code and message.
 
-#### Examples
-
-```sh
-# Get the deep link for iOS (works over a tunnel, no Expo Go install required).
-curl http://localhost:8081/_expo/open?platform=ios
-
-# Force the disambiguation page so a device or external picker chooses.
-curl 'http://localhost:8081/_expo/open?platform=android&runtime=unknown'
-
-# Trigger an iOS Simulator launch (only works on the dev server's host).
-curl -X POST http://localhost:8081/_expo/open?platform=ios
-```
-
 ## Building
 
-* React Native app == native runtime ([compiling](#compiling)) + static files (_Example:_ JS bundles & assets) ([exporting](#exporting))
+* React Native app 
+  * == native runtime ([compiling](#compiling)) + static files (_Example:_ JS bundles & assets) ([exporting](#exporting))
 
 ### Compiling
 
@@ -359,13 +343,11 @@ curl -X POST http://localhost:8081/_expo/open?platform=ios
     npx expo run:android --variant freeDebug --app-id dev.expo.myapp.free
     ```
 
-* see [local builds -- via -- Android product flavors](../guides/local-app-development.md#local-builds-using-android-product-flavors)
+* see [local builds -- via -- Android product flavors](../guides/local-app-development.md#local-builds----via----android-product-flavors)
 
-##### `debug` variant
+##### `debug` variant 
 
-Use the `debug` variant for a debug build:
-
-<Terminal cmd={['$ npx expo run:android --variant debug']} />
+* `npx expo run:android --variant debug`
 
 ##### `debugOptimized` variant
 
@@ -548,9 +530,8 @@ This command will be disabled if your project is configured to use `metro` for b
 * `npx expo prebuild`
   * generate the native code -- for -- your project
     * happens | BEFORE compile the native app
+  * [MORE](../workflow/continuous-native-generation.md) 
 * 👀if you [compile](#compiling) & NOT exist the native directories -> prebuild is run 1! 👀
-  
-* see [Expo Prebuild docs](../workflow/continuous-native-generation.md)
 
 ## Lint
 
@@ -619,40 +600,28 @@ There are three different config types that are generated from the app config:
 
 ### Version validation
 
-You can perform validation and correction with the `--check` and `--fix` flags:
+* `npx expo install [PACKAGE_NAME1 PACKAGE_NAME2 ...] --check`
+  * check the installed packages / need to be updated
+    * -- based on  -- the environment
+      * | local,
+        * prompt if you want to fix it
+      * | CI,
+        * if there are errors -> return number != 0 -> CI fails
+  * `[PACKAGE_NAME1 PACKAGE_NAME2 ...]`
+    * OPTIONAL
+      * if you do NOT specify it -> check ALL installed packages
 
-- `--check`: Check which installed packages need to be updated.
-- `--fix`: Automatically update any invalid package versions.
-
-Example:
-
-<Terminal
-  cmd={[
-    '# Check all packages for incorrect versions, prompt to fix locally',
-    '$ npx expo install --check',
-  ]}
-  cmdCopy="npx expo install --check"
-/>
-
-`npx expo install --check` prompts you about packages that are installed incorrectly. It also prompts about installing these packages to their compatible versions locally. It exits with non-zero in Continuous Integration (CI). This means you can use this to do continuous immutable validation. In contrast, `npx expo install --fix` will always fix packages if needed, regardless of the environment.
-
-You can validate specific packages by passing them:
-
-<Terminal
-  cmd={[
-    '# Check only react-native and expo-sms',
-    '$ npx expo install react-native expo-sms --check',
-  ]}
-  cmdCopy="npx expo install react-native expo-sms --check"
-/>
-
-The command `npx expo install expo-camera` and `npx expo install expo-camera --fix` serve the same purpose, the `--fix` command is useful for upgrading all packages in your project like:
-
-<Terminal cmd={['$ npx expo install --fix']} />
+* `npx expo install --fix`
+  * if there are invalid package versions -> AUTOMATICALLY update it
+  * ALLOWED
+    * | ANY environment
 
 ### Configuring dependency validation
 
-There may be circumstances where you want to use a version of a package that is different from the version recommended by `npx expo install`. In this case, you can exclude specific packages from version checking by using the [`expo.install.exclude`](/versions/latest/config/package-json/#exclude) property in your project's **package.json**.
+* use case
+  * use a version of a package / != version recommended -- by -- `npx expo install`
+* if you want to exclude specific packages | check version -> | your project's "package.json",
+  * set [`expo.install.exclude` property](../versions/unversioned/config/package-json.md#expoinstallexclude)
 
 ### Install package managers
 
@@ -667,7 +636,9 @@ You can force the package manager using a named argument:
 
 ## Authentication
 
-Expo CLI provides authentication methods to use with the `npx expo start` command. Authentication is used to "code sign" manifests for secure OTA usage. Think of this like HTTPS on the web.
+Expo CLI provides authentication methods to use with the `npx expo start` command
+* Authentication is used to "code sign" manifests for secure OTA usage
+* Think of this like HTTPS on the web.
 
 1. Register an account with `npx expo register`.
 2. Login to your account with `npx expo login`.
@@ -678,7 +649,8 @@ These credentials are shared across Expo CLI and EAS CLI.
 
 ## Customizing
 
-Sometimes you may want to customize a project file that would otherwise be generated in memory by Expo CLI. When utilizing tools other than Expo CLI, you'll need to have the default config files present, otherwise your app may not work as expected. You can generate files by running:
+Sometimes you may want to customize a project file that would otherwise be generated in memory by Expo CLI
+* When utilizing tools other than Expo CLI, you'll need to have the default config files present, otherwise your app may not work as expected. You can generate files by running:
 
 <Terminal cmd={['$ npx expo customize']} />
 
@@ -706,7 +678,7 @@ From here, you can choose to generate basic project files like:
 | `EXPO_NO_GIT_STATUS`                 | **boolean** | Skips warning about git status during potentially dangerous actions like `npx expo prebuild --clean`.                                                                                                                                                                                                                                                                                                                           |
 | `EXPO_NO_REDIRECT_PAGE`              | **boolean** | Disables the redirect page for selecting an app, that shows when a user has `expo-dev-client` installed, and starts the project with `npx expo start` instead of `npx expo start --dev-client`.                                                                                                                                                                                                                                 |
 | `EXPO_PUBLIC_FOLDER`                 | **string**  | Public directory path to use with Metro for web. [Learn more about customizing Metro](/guides/customizing-metro/).<br/>Default: `public`                                                                                                                                                                                                                                                                                        |
-| `EDITOR`                             | **string**  | Name of the editor to open when pressing <kbd>O</kbd> in the Terminal UI. This value is used across many command-line tools.                                                                                                                                                                                                                                                                                                    |
+| `EDITOR`                             | **string**  | Name of the editor to open when pressing `O` in the Terminal UI. This value is used across many command-line tools.                                                                                                                                                                                                                                                                                                    |
 | `EXPO_EDITOR`                        | **string**  | An Expo-specific version of the `EDITOR` variable which takes higher priority when defined.                                                                                                                                                                                                                                                                                                                                     |
 | `EXPO_IMAGE_UTILS_NO_SHARP`          | **boolean** | Disable the usage of global Sharp CLI installation in favor of the slower Jimp package for image manipulation. This is used in places like `npx expo prebuild` for generating app icons.                                                                                                                                                                                                                                        |
 | `EXPO_TUNNEL_SUBDOMAIN`              | **boolean** | <div className="flex items-center pb-1.5"><StatusTag status="experimental" /></div>Disable using `exp.direct` as the hostname for `--tunnel` connections. This enables **https://** forwarding which can be used to test universal links on iOS. This may cause unexpected issues with `expo-linking` and Expo Go. Select the exact subdomain to use by passing a `string` value that is not one of: `true`, `false`, `1`, `0`. |

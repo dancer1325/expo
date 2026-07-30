@@ -1,31 +1,26 @@
+* steps
+  * [install Xcode](#install-xcode)
+  * [install Xcode CL tools](#install-xcode-cl-tools)
+  * [install an iOS Simulator | Xcode](#install-an-ios-simulator--xcode)
+  * [install watchman](#install-watchman)
+
 ### Install Xcode
 
 * steps
   * | Mac App Store,
     * search for [Xcode](https://apps.apple.com/us/app/xcode/id497799835) > click Install
 
-TODO: 
-</Step>
-
-<Step label="2">
-
 ### Install Xcode CL Tools
 
-Open Xcode, choose **Settings...** from the Xcode menu (or press <kbd>cmd ⌘</kbd> + <kbd>,</kbd>)
-* Go to the **Locations** and install the tools by selecting the most recent version in the **Command Line Tools** dropdown.
+* | Xcode
+  * \> Settings > Locations > install
 
-
-</Step>
-
-<Step label="3">
+* if you want to check it's installed -> `xcode-select --version`
 
 ### Install an iOS Simulator | Xcode
 
-To install an iOS Simulator, open **Xcode > Settings... > Components**, and under **Platform Support > iOS ...**, click **Get**.
-
-</Step>
-
-<Step label="4">
+* | Xcode,
+  * \> Settings > Components > Platform Support > iOS > Get
 
 ### Install Watchman
 
@@ -36,9 +31,9 @@ To install an iOS Simulator, open **Xcode > Settings... > Components**, and unde
   * == tool -- for -- watching changes | filesystem
   * allows
     * better performance
-  * ways to install
+  * steps to install
 
-  ```
-  brew update
-  brew install watchman
-  ```
+    ```
+    brew update
+    brew install watchman
+    ```

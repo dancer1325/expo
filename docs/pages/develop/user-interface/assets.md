@@ -5,6 +5,7 @@ description: Learn about using static assets in your project, including images, 
 
 * **static asset** 
   * == file / bundled -- with -- your app's binary (native binary)
+    * _Examples:_ images, fonts, ...
 * TODO: This file type is not part of your app's JavaScript bundle which contain your app's code
 * Common types of static assets include images, videos, sounds, database files for SQLite, and fonts
 * These assets can be served locally from your project or remotely over the network.

@@ -53,22 +53,32 @@ Client environment variable inlining can be disabled with the environment variab
 
 ## CSS
 
-> **info** CSS support is under development and currently only works on web.
+* goal
+  * how to use CSS | websites / are bundled -- with -- Expo CLI + Metro bundler
 
-Expo supports CSS in your project
-* You can import CSS files from any component
-* CSS Modules are also supported.
+* | pure-web
+  * work
+* | react-native
+  * ⚠️under development⚠️
 
-CSS support is enabled by default
-* You can disable the feature by setting `isCSSEnabled` in the Metro config.
+* CSS files,
+  * uses
+    * import | ANY component
 
-```js metro.config.js
-/** @type {import('expo/metro-config').MetroConfig} */
-const config = getDefaultConfig(__dirname, {
-  // Disable CSS support.
-  isCSSEnabled: false,
-});
-```
+* CSS support
+  * by default, enable
+    * if you want to disable -> | Metro config,
+      * set `isCSSEnabled: false` 
+
+        ```js metro.config.js
+        /** @type {import('expo/metro-config').MetroConfig} */
+        const config = getDefaultConfig(__dirname, {
+          // Disable CSS support.
+          isCSSEnabled: false,
+        });
+        ```
+  * ALSO, 
+    * CSS Modules
 
 ### Global CSS
 
@@ -724,29 +734,35 @@ const anotherWorker = new Worker(new URL(path, window.location.href));
 Using a variable in the `Worker` constructor is not supported for bundling
 * To inspect the internal URL, you may use the internal syntax `require.unstable_resolveWorker('./path/to/worker.js')` to get the URL fragment.
 
-## Existing React Native apps
+## EXISTING React Native apps
 
-> This guide is versioned and will need to be revisited when upgrading/downgrading Expo
-* Alternatively, use [Expo Prebuild](/more/glossary-of-terms/#prebuild) for fully automated setup.
+* == projects / do NOT use [Expo Prebuild](../../../more/glossary-of-terms.md#prebuild) 
+* steps
+  * configure native files
+    * Reason:🧠ensure the Expo Metro config is ALWAYS used -- to -- bundle the project🧠
+    * OTHERWISE,
+      * some features do NOT work
+        * _Examples:_ 
+          * [aliases](../../../guides/typescript.md#path-aliases-optional)
+          * [absolute imports](../../../guides/typescript.md#absolute-imports-optional)
+          * asset hashing
+    * enable
+      * replace
+        * `npx react-native bundle` -- by -- `npx expo export:embed`
+        * `npx react-native start` -- with -- `npx expo start`
 
-Projects that don't use [Expo Prebuild](/more/glossary-of-terms/#prebuild) must configure native files to ensure the Expo Metro config is always used to bundle the project.
+### "metro.config.js"
 
-{/* If this isn't done, then features like [aliases](/guides/typescript/#path-aliases-optional), [absolute imports](/guides/typescript/#absolute-imports-optional), asset hashing, and more will not work
-* */}
+* requirements
+  * extends `expo/metro-config`
 
-These modifications are meant to replace `npx react-native bundle` and `npx react-native start` with `npx expo export:embed` and `npx expo start` respectively.
-
-### metro.config.js
-
-Ensure the **metro.config.js** extends `expo/metro-config`:
-
-```js metro.config.js
-const { getDefaultConfig } = require('expo/metro-config');
-
-const config = getDefaultConfig(__dirname);
-
-module.exports = config;
-```
+    ```js metro.config.js
+    const { getDefaultConfig } = require('expo/metro-config');
+    
+    const config = getDefaultConfig(__dirname);
+    
+    module.exports = config;
+    ```
 
 ### `android/app/build.gradle`
 

@@ -3,7 +3,7 @@
     * rather than constantly -- interacting with an -- iPhone or iPad
     * use cases
       * network conditions are slow
-      * [tunnel connection](/more/expo-cli/#tunneling) -- is required due to -- LAN limitations
+      * [tunnel connection](../more/expo-cli.md#tunneling) -- is required due to -- LAN limitations
 
 * goal
   * how to install the iOS Simulator | your Mac 
@@ -13,7 +13,7 @@
 
 ## Setup Xcode and Watchman
 
-<XcodeInstructions />
+* [Xcode instructions](../../scenes/get-started/set-up-your-environment/instructions/_xcodeInstructions.md)
 
 ### Try it out
 
@@ -22,15 +22,15 @@
     * press `i`
     * press `shift` + `i` / select a simulator to open
     
-      ![](/docs/public/static/images/ios-simulator/simulators-list.png)
+      ![](../../public/static/images/ios-simulator/simulators-list.png)
 
 * if you get a warning -- about -- accept the Xcode license -> run the command again
 
-![](/docs/public/static/videos/open-in-ios-simulator.mp4)
+  ![](../../public/static/videos/open-in-ios-simulator.mp4)
 
 ## Expo Orbit
 
-* see [here](../build/orbit.mdx)
+* [here](../build/orbit.md)
 
 ## iOS Simulator limitations
 
@@ -41,45 +41,42 @@
   * Motion Support (accelerometer and gyroscope)
 * suspends background apps & processes
 
-* see [Apple's documentation](https://help.apple.com/simulator/mac/current/#/devb0244142d)
+* [Apple's documentation](https://help.apple.com/simulator/mac/current/#/devb0244142d)
 
 ## Troubleshooting
 
-* TODO:
+### | open a Simulator, CLI seems to be stuck 
 
-### The CLI seems to be stuck when opening a Simulator
+* == iOS Simulator does NOT respond | open command
+* SOLUTION
+  * `open -a Simulator`
+    * == open it MANUALLY
+  * File> Open Simulator > select an iOS version + device
 
-Sometimes the iOS Simulator doesn't respond to the open command. If it seems stuck on this prompt, you can open the iOS Simulator manually (`open -a Simulator`) and then in the macOS toolbar, choose **File** &gt; **Open Simulator**, and select an iOS version and device that you'd like to open.
+  ![Opening a simulator manually from the macOS toolbar.](../../public/static/images/ios-simulator/open-simulator-manually.png)
 
-<ContentSpotlight
-  alt="Opening a simulator manually from the macOS toolbar."
-  src="/static/images/ios-simulator/open-simulator-manually.png"
-/>
+### Simulator opened, BUT the Expo Go app is NOT opened | Expo Go app
 
-You can use this menu to open any version of the simulator. You can also open multiple simulators at the same time, however, Expo CLI will always target the most recently opened simulator.
+* SOLUTION:
+  * | iOS simulator, 
+    * surf to find Expo Go app
 
-### Simulator opened but the Expo Go app isn't opening inside of it
+### How do I force an update -- to -- the latest version?
 
-The first time you install the app in the simulator, iOS will ask if you'd like to open the Expo Go app. You may need to interact with the simulator (click around, drag something) for this prompt to show up, then press **OK**.
+* create a project / use the desired SDK version
 
-### How do I force an update to the latest version?
+  ```bash
+  # Bootstrap an SDK 51 project
+  $ npx create-expo-app --template blank@51
+  
+  # Open the app on a simulator to install the required Expo Go app
+  $ npx expo start --ios
+  ```
 
-Create a project with the desired SDK version and open it in a simulator to install a particular version of Expo Go.
+### Expo CLI is printing an error message about `xcrun`
 
-<Terminal
-  cmd={[
-    '# Bootstrap an SDK 51 project',
-    '$ npx create-expo-app --template blank@51',
-    '',
-    '# Open the app on a simulator to install the required Expo Go app',
-    '$ npx expo start --ios',
-  ]}
-/>
-
-### Expo CLI is printing an error message about `xcrun`, what do I do?
-
-For miscellaneous errors, try the following:
-
-- Manually uninstall Expo Go on your simulator and reinstall by pressing <kbd>shift</kbd> + <kbd>i</kbd> in the Expo CLI Terminal UI and selecting the desired simulator.
-- If that doesn't help, focus the simulator window and in the Mac toolbar choose **Device** &gt; **Erase All Content and Settings...**<br/>
-  This will reinitialize your simulator from a blank image. This is sometimes useful for cases where your computer is low on memory and the simulator fails to store some internal files, leaving the device in a corrupt state.
+* ALTERNATIVES
+  * TODO: Manually uninstall Expo Go on your simulator and reinstall by pressing <kbd>shift</kbd> + <kbd>i</kbd> in the Expo CLI Terminal UI and selecting the desired simulator.
+  * If that doesn't help, focus the simulator window and in the Mac toolbar choose **Device** &gt; **Erase All Content and Settings...**<br/>
+    * This will reinitialize your simulator from a blank image
+  * This is sometimes useful for cases where your computer is low on memory and the simulator fails to store some internal files, leaving the device in a corrupt state.

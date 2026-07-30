@@ -305,6 +305,7 @@ CNG is designed to manage the entire state of a native project continuously
 ### Prebuild
 
 * Expo Prebuild
+  * == process of generating -- , based on your local configuration & properties, -- the "android/" & "ios/" 
   * make easier CNG processing
     * [upgrade sensible project](#upgrade-sensible-project)
     * [cross-platform configuration](#cross-platform-configuration)
