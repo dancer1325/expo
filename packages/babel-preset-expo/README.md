@@ -1,21 +1,60 @@
 # babel-preset-expo
 
-This preset extends the default React Native preset (`@react-native/babel-preset`) and adds support for tree shaking, bundle splitting, React Server Components, Hermes compilation, advanced dead-code elimination, reanimated, Expo DOM components, server-side rendering, and more...
-
-You can use this preset in any React Native project as a drop-in replacement for `@react-native/babel-preset`.
-
-If you have problems with the code in this repository, please file issues & bug reports
-at https://github.com/expo/expo.
+* == preset / 
+  * extends the default React Native preset (`@react-native/babel-preset`) 
+  * adds support for
+    * tree shaking
+    * bundle splitting
+    * React Server Components
+    * Hermes compilation
+    * advanced dead-code elimination
+    * reanimated
+    * Expo DOM components
+    * server-side rendering
+    * ...
+  * use case
+    * | ANY React Native project,
+      * as replacement for `@react-native/babel-preset`
 
 ## Expo Bundler Spec Compliance
 
-A bundler must follow these requirements if they are to be considered spec compliant for use with a **universal React** (Expo) project.
+* == requirements / bundler MUST follow -- to -- be spec compliant with Expo project
+
+### Babel Loader
+
+* properties / Babel loading mechanism MUST include | its `caller`
+
+#### `platform`
+
+* == target platform
+* if `bundler: webpack` & `platform` is NOT specified -> `platform: web`
+
+| Value     | Description             |
+| --------- | ----------------------- |
+| `ios`     | Runs \| iOS devices     |
+| `android` | Runs \| Android devices |
+| `web`     | Runs in web browsers    |
+
+#### `bundler`
+
+* == name of the bundler / used | create the JS bundle
+* if `bundler` is NOT specified &
+  * you use `babel-loader` -> `bundler: webpack`
+  * you do NOT use `babel-loader` -> `bundler: metro`
+
+| Value     | Description           |
+| --------- |-----------------------|
+| `metro`   | Bundling with Metro   |
+| `webpack` | Bundling with Webpack |
 
 ## Options
 
 ### `react-compiler`
 
-Settings to pass to `babel-plugin-react-compiler`. Set as `false` to disable the plugin. As of SDK 51, you must also enable `experiments.reactCompiler: true` in the `app.json`.
+TODO: 
+Settings to pass to `babel-plugin-react-compiler`
+* Set as `false` to disable the plugin
+* As of SDK 51, you must also enable `experiments.reactCompiler: true` in the `app.json`.
 
 ```js
 [
@@ -33,7 +72,8 @@ Settings to pass to `babel-plugin-react-compiler`. Set as `false` to disable the
 
 ### `minifyTypeofWindow`
 
-Set `minifyTypeofWindow: true` to transform `typeof window` checks in your code, e.g. `if (typeof window === 'object')` -> `if (true)` in clients. This is useful when you're using libraries that mock the window object on native or in the server.
+Set `minifyTypeofWindow: true` to transform `typeof window` checks in your code, e.g. `if (typeof window === 'object')` -> `if (true)` in clients
+* This is useful when you're using libraries that mock the window object on native or in the server.
 
 ```js
 [
@@ -51,17 +91,21 @@ Defaults to `true` for server environments, and `false` for client environments 
 
 ### `reanimated`
 
-`boolean`, defaults to `true`. Set `reanimated: false` to disable adding the `react-native-reanimated/plugin` when `react-native-reanimated` is installed.
+`boolean`, defaults to `true`
+* Set `reanimated: false` to disable adding the `react-native-reanimated/plugin` when `react-native-reanimated` is installed.
 
 ### `worklets`
 
-`boolean`, `boolean`, defaults to `true`. Set `worklets: false` to disable adding the `react-native-worklets/plugin` when `react-native-worklets` is installed. Applies only when using standalone `react-native-worklets` or `react-native-reanimated 4`.
+`boolean`, `boolean`, defaults to `true`
+* Set `worklets: false` to disable adding the `react-native-worklets/plugin` when `react-native-worklets` is installed
+* Applies only when using standalone `react-native-worklets` or `react-native-reanimated 4`.
 
 ### [`jsxRuntime`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx#runtime)
 
 `classic | automatic`, defaults to `automatic`
 
-- `automatic` automatically convert JSX to JS without the need to `import React from 'react'` in every file. Be sure to follow the rest of the [setup guide](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html#how-to-upgrade-to-the-new-jsx-transform) after enabling this, otherwise ESLint and other tools will throw warnings.
+- `automatic` automatically convert JSX to JS without the need to `import React from 'react'` in every file
+* Be sure to follow the rest of the [setup guide](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html#how-to-upgrade-to-the-new-jsx-transform) after enabling this, otherwise ESLint and other tools will throw warnings.
 - `classic` does not automatically import anything, React must imported into every file that uses JSX syntax.
 
 ```js
@@ -91,19 +135,22 @@ This option allows specifying a custom import source for importing functions.
 ];
 ```
 
-This property is passed down to [`@babel/plugin-transform-react-jsx`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx). This options does nothing when `jsxRuntime` is not set to `automatic`.
+This property is passed down to [`@babel/plugin-transform-react-jsx`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx)
+* This options does nothing when `jsxRuntime` is not set to `automatic`.
 
 ### [`lazyImports`](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy)
 
 Changes Babel's compiled `import` statements to be lazily evaluated when their imported bindings are used for the first time.
 
-_Note:_ this option has an effect only when the `disableImportExportTransform` option is set to `false`. On Android and iOS, `disableImportExportTransform` defaults to `false`, and on web it defaults to `true` to allow for tree shaking.
+_Note:_ this option has an effect only when the `disableImportExportTransform` option is set to `false`
+* On Android and iOS, `disableImportExportTransform` defaults to `false`, and on web it defaults to `true` to allow for tree shaking.
 
 This can improve the initial load time of your app because evaluating dependencies up front is sometimes entirely un-necessary, particularly when the dependencies have no side effects.
 
 The value of `lazyImports` has a few possible effects:
 
-- `null` - [@react-native/babel-preset](https://github.com/facebook/react-native/tree/main/packages/react-native-babel-preset) will handle it. (Learn more about it here: https://github.com/facebook/metro/commit/23e3503dde5f914f3e642ef214f508d0a699851d)
+- `null` - [@react-native/babel-preset](https://github.com/facebook/react-native/tree/main/packages/react-native-babel-preset) will handle it
+* (Learn more about it here: https://github.com/facebook/metro/commit/23e3503dde5f914f3e642ef214f508d0a699851d)
 - `false` - No lazy initialization of any imported module.
 - `true` - Lazy-init all imported modules except local imports (e.g., `./foo`), certain Expo packages that have side effects, and the two cases mentioned [here](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy).
 - `Array<string>` - [babel-plugin-transform-modules-commonjs](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy) will handle it.
@@ -124,7 +171,9 @@ The value of `lazyImports` has a few possible effects:
 
 ### `disableImportExportTransform`
 
-Pass `true` to disable the transform that converts import/export to `module.exports`. Avoid setting this property directly. If you're using Metro, set `experimentalImportSupport: true` instead to ensure the entire pipeline is configured correctly.
+Pass `true` to disable the transform that converts import/export to `module.exports`
+* Avoid setting this property directly
+* If you're using Metro, set `experimentalImportSupport: true` instead to ensure the entire pipeline is configured correctly.
 
 ```js
 // metro.config.js
@@ -150,11 +199,13 @@ If `undefined` (default), this will be set automatically via `caller.supportsSta
 
 ### `unstable_transformProfile`
 
-Changes the engine preset in `@react-native/babel-preset` based on the JavaScript engine that is being targeted. In Expo SDK 50 and greater, this is automatically set based on the [`jsEngine`](https://docs.expo.dev/versions/latest/config/app/#jsengine) option in your `app.json`.
+Changes the engine preset in `@react-native/babel-preset` based on the JavaScript engine that is being targeted
+* In Expo SDK 50 and greater, this is automatically set based on the [`jsEngine`](https://docs.expo.dev/versions/latest/config/app/#jsengine) option in your `app.json`.
 
 ### `transformImportMeta`
 
-Enable transform that converts `import.meta` to `globalThis.__ExpoImportMetaRegistry`. Defaults to `true`.
+Enable transform that converts `import.meta` to `globalThis.__ExpoImportMetaRegistry`
+* Defaults to `true`.
 
 > **Note:** If the JavaScript engine supports `import.meta` natively, this transformation may interfere with the native implementation.
 
@@ -162,9 +213,12 @@ Enable transform that converts `import.meta` to `globalThis.__ExpoImportMetaRegi
 
 Passed to `@react-native/babel-preset`.
 
-## Platform-specific options
+### Platform-specific options
 
-All options can be passed in the platform-specific objects `native` and `web` to provide different settings on different platforms. For example, if you'd like to only apply `disableImportExportTransform` on web, use the following:
+* 's priority > top level options' priority
+* steps to set
+  * | platform-specific objects, 
+ `disableImportExportTransform` on web, use the following:
 
 ```js
 [
@@ -177,35 +231,10 @@ All options can be passed in the platform-specific objects `native` and `web` to
       // Web-specific value:
       disableImportExportTransform: true,
     },
+    
+    native: {
+     // ...   
+    }
   },
 ];
 ```
-
-Platform-specific options have higher priority over top-level options.
-
-### Babel Loader
-
-The Babel loading mechanism must include the following properties on its `caller`.
-
-#### platform
-
-A `platform` property denoting the target platform. If the `platform` is not defined, it will default to using `web` when the `bundler` is `webpack` -- this is temporary and will throw an error in the future.
-
-| Value     | Description             |
-| --------- | ----------------------- |
-| `ios`     | Runs on iOS devices     |
-| `android` | Runs on Android devices |
-| `web`     | Runs in web browsers    |
-
-#### bundler
-
-A `bundler` property denoting the name of the bundler that is being used to create the JavaScript bundle.
-If the `bundler` is not defined, it will default to checking if a `babel-loader` is used, if so then `webpack` will be used, otherwise it will default to `metro`.
-
-| Value     | Description                      |
-| --------- | -------------------------------- |
-| `metro`   | Bundling with [Metro][metro]     |
-| `webpack` | Bundling with [Webpack][webpack] |
-
-[metro]: https://facebook.github.io/metro/
-[webpack]: https://webpack.js.org/
