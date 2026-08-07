@@ -37,52 +37,52 @@ Many React Native libraries come with platform-specific (native) code
 * One of the steps that has to be done with the native configuration is to enable the autolinking mechanism that takes care of including any supported module's native code into the project
 * The following configuration is required:
 
-### iOS
+### how to configure | iOS?
 
-> Caution! After you have made the following changes you will need to run `pod install` again.
+* steps
+  * | ios/ Podfile,
+    * adjust
+      ```ruby
+      # Podfile
+      
+      require File.join(File.dirname(`node --print "require.resolve('react-native/package.json')"`), "scripts/react_native_pods")
+      require File.join(File.dirname(`node --print "require.resolve('expo-modules-core/package.json')"`), "cocoapods.rb")
+      require File.join(File.dirname(`node --print "require.resolve('expo-modules-core/package.json')"`), "scripts/autolinking")
+      
+      #  ...
+      
+      target "TargetName" do
+        use_unimodules!
+        config = use_native_modules!
+        use_react_native!(:path => config["reactNativePath"])
+      
+        # ...
+      end
+      ```
+  * `pod install`
 
-```ruby
-# Podfile
+### how to configure | Android?
 
-require File.join(File.dirname(`node --print "require.resolve('react-native/package.json')"`), "scripts/react_native_pods")
-require File.join(File.dirname(`node --print "require.resolve('expo-modules-core/package.json')"`), "cocoapods.rb")
-require File.join(File.dirname(`node --print "require.resolve('expo-modules-core/package.json')"`), "scripts/autolinking")
-
-#  ...
-
-target "TargetName" do
-  use_unimodules!
-  config = use_native_modules!
-  use_react_native!(:path => config["reactNativePath"])
-
-  # ...
-end
-```
-
-### Android
-
-```groovy
-// app/build.gradle
-
-apply from: new File(["node", "--print", "require.resolve('expo-modules-core/package.json')"].execute(null, rootDir).text.trim(), "../gradle.groovy")
-apply from: new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim(), "../react.gradle")
-apply from: new File(["node", "--print", "require.resolve('expo-updates/package.json')"].execute(null, rootDir).text.trim(), "../scripts/create-manifest-android.gradle")
-
-// ...
-
-apply from: new File(["node", "--print", "require.resolve('@react-native-community/cli-platform-android/package.json')"].execute(null, rootDir).text.trim(), "../native_modules.gradle");
-applyNativeModulesAppBuildGradle(project)
-```
-
-```groovy
-// settings.gradle
-
-apply from: new File(["node", "--print", "require.resolve('expo-modules-core/package.json')"].execute(null, rootDir).text.trim(), "../gradle.groovy");
-includeUnimodulesProjects()
-
-apply from: new File(["node", "--print", "require.resolve('@react-native-community/cli-platform-android/package.json')"].execute(null, rootDir).text.trim(), "../native_modules.gradle");
-applyNativeModulesSettingsGradle(settings)
-```
+* steps
+  * | app/build.gradle
+    ```groovy
+    apply from: new File(["node", "--print", "require.resolve('expo-modules-core/package.json')"].execute(null, rootDir).text.trim(), "../gradle.groovy")
+    apply from: new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim(), "../react.gradle")
+    apply from: new File(["node", "--print", "require.resolve('expo-updates/package.json')"].execute(null, rootDir).text.trim(), "../scripts/create-manifest-android.gradle")
+    
+    // ...
+    
+    apply from: new File(["node", "--print", "require.resolve('@react-native-community/cli-platform-android/package.json')"].execute(null, rootDir).text.trim(), "../native_modules.gradle");
+    applyNativeModulesAppBuildGradle(project)
+    ```
+  * | settings.gradle  
+    ```groovy
+    apply from: new File(["node", "--print", "require.resolve('expo-modules-core/package.json')"].execute(null, rootDir).text.trim(), "../gradle.groovy");
+    includeUnimodulesProjects()
+    
+    apply from: new File(["node", "--print", "require.resolve('@react-native-community/cli-platform-android/package.json')"].execute(null, rootDir).text.trim(), "../native_modules.gradle");
+    applyNativeModulesSettingsGradle(settings)
+    ```
 
 ### Explanation
 

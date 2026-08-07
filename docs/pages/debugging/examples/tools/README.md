@@ -8,10 +8,19 @@ TODO:
 TODO:
 #### Copy link
 ##### ⚠️ALLOWED ONLY | dev clients⚠️
-TODO:
-* | Expo Go, NOT ALLOWED
-  * check [`showHostUrl = false`](../../../../../apps/expo-go/ios/Exponent/DevMenu/SwiftUI/DevMenuViewModel.swift)
-##### copy the dev server address in dev client or `exp://` link in Expo of your app
+* | [here](my-app)
+  * `npx expo run:ios`
+  * `m`
+  * scroll down to find it
+###### | Expo Go, NOT ALLOWED
+* check source code [`showHostUrl = false`](../../../../../apps/expo-go/ios/Exponent/DevMenu/SwiftUI/DevMenuViewModel.swift)
+* | [here](my-app)
+  * `npm run start`
+  * use device
+    * shift + i
+  * `m`
+    * check that it does NOT appear
+##### link -- to the -- dev server address | dev client
 TODO:
 #### Reload
 TODO:

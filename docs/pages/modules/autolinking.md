@@ -78,14 +78,13 @@ bunx expo-modules-autolinking search
 
 ## Configuration
 
+TODO: 
 The behavior of the module resolution can be customized using some configuration options
 * These options can be defined in three different places, from the lowest to the highest precedence:
 
 - `expo.autolinking` config object in application's **package.json**
 - per platform overrides with `expo.autolinking.ios` and `expo.autolinking.android` objects
 - options provided to the CLI command, the `use_expo_modules!` method in the **Podfile** or `useExpoModules` function in the **settings.gradle**
-
-<APIBox>
 
 ### `searchPaths`
 
@@ -107,8 +106,6 @@ When used with the CLI, you can pass the search paths as command arguments like 
 
 <Terminal cmd={['$ npx expo-modules-autolinking search ../../packages']} />
 
-</APIBox>
-<APIBox>
 
 ### `exclude`
 
@@ -144,42 +141,39 @@ module.exports = {
 };
 ```
 
-</APIBox>
-<APIBox platforms={['ios']}>
-
 ### `flags`
 
+* ⚠️ALLOWED ONLY | iOS⚠️
 CocoaPods flags to pass to each autolinked pod
 * `inhibit_warnings` is likely the only flag most developers want to use, to inhibit Xcode warnings produced when compiling the autolinked modules.
 You can refer to the [CocoaPods Podfile documentation](https://guides.cocoapods.org/syntax/podfile.html#pod) for available flags.
 
-<CodeBlocksTable tabs={['Podfile', 'package.json']}>
+* | ios/Podfile
 
-```ruby
-use_expo_modules!({
-  flags: {
-    :inhibit_warnings => false
-  }
-})
-```
+  ```ruby
+  use_expo_modules!({
+    flags: {
+      :inhibit_warnings => false
+    }
+  })
+  ```
 
-```json
-{
-  "expo": {
-    "autolinking": {
-      "ios": {
-        "flags": {
-          "inhibit_warnings": true
+* | "package.json"
+
+  ```json
+  {
+    "expo": {
+      "autolinking": {
+        "ios": {
+          "flags": {
+            "inhibit_warnings": true
+          }
         }
       }
     }
   }
-}
-```
+  ```
 
-</CodeBlocksTable>
-
-</APIBox>
 
 ## Common questions
 

@@ -18,9 +18,7 @@ sidebar_title: Tools
   * 👀-- access to -- useful debugging functions 👀
     * **Copy link**
       * ⚠️ALLOWED ONLY | dev clients⚠️
-      * copy the 
-        * dev server address in dev client or
-        * [`exp://`](../linking/into-your-app.md#test-the-deep-link) link in Expo of your app
+      * link -- to the -- [dev server address | dev client](../more/expo-cli.md#server-url)
     * **Reload**
       * reload you app
         * NORMALLY, NOT necessary
