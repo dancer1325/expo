@@ -11,7 +11,8 @@
   * 👀adds VARIOUS development tools | your debug builds 👀
     * configurable launcher UI /
       * allows
-        * launching updates (_Example:_ from [PR previews](https://docs.expo.dev/develop/development-builds/development-workflows#pr-previews))
+        * launching updates 
+          * _Example:_ | [PR previews](../../docs/pages/develop/development-builds/development-workflows#pr-previews)
         * switching between development servers / NO need to recompile the native app
     * improved debugging tools
       * _Example:_ [inspecting network requests](https://docs.expo.dev/debugging/tools/#inspecting-network-requests)
@@ -25,4 +26,4 @@
 
 ## Issues
 
-* see [here](https://github.com/expo/expo/issues/new?template=dev_client_bug_report.yml)
+* [here](https://github.com/expo/expo/issues/new?template=dev_client_bug_report.yml)

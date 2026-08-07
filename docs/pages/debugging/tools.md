@@ -9,15 +9,18 @@ sidebar_title: Tools
 
 * React Native == JS + native code 
   * ⚠️-> if an error is thrown -- from the -- JS code -> you MIGHT NOT find it -- via -- debugging tools | native code ⚠️
+    * TODO: check React Native architecture
 
 ## Developer menu
 
+* [source code](../../../packages/expo-dev-menu)
 * provides
   * 👀-- access to -- useful debugging functions 👀
     * **Copy link**
+      * ⚠️ALLOWED ONLY | dev clients⚠️
       * copy the 
         * dev server address in dev client or
-        * [`exp://`](../linking/into-your-app.mdx#test-a-link-using-expo-go) link in Expo of your app
+        * [`exp://`](../linking/into-your-app.md#test-the-deep-link) link in Expo of your app
     * **Reload**
       * reload you app
         * NORMALLY, NOT necessary
@@ -35,9 +38,10 @@ sidebar_title: Tools
 * built into
   * dev clients
   * Expo Go
-* if you press <kbd>m</kbd> -> you access to it
+* steps to open it
+  * press `m`
 
-* alternatives
+* ALTERNATIVES
   * Android device WITHOUT USB
     * Shake the device vertically
   * Android Emulator or device WITH USB
@@ -49,34 +53,37 @@ sidebar_title: Tools
   * iOS Simulator or device WITH USB
     * Press <kbd>Ctrl</kbd> + <kbd>Cmd ⌘</kbd> + <kbd>z</kbd> or <kbd>Cmd ⌘</kbd> + <kbd>d</kbd>
 
-![](/docs/public/static/images/debugging/developer-menu.png)
+![](../../public/static/images/debugging/developer-menu.png)
 
 ### Toggle performance monitor
 
-* TODO:
-Opens up a small overlay that provides the following performance information about your app:
-
-- RAM usage of a project.
-- JavaScript heap (this is an easy way to know of any memory leaks in your application).
-- Two Views. The top indicates the number of views for the screen and the bottom indicates the number of views in the component.
-- Frames Per Second for the UI and JS threads. The UI thread is used for native Android or iOS UI rendering. The JS thread is where most of your logic runs, including API calls, touch events, and so on.
+* provide
+  * your app's performance information
+    - RAM usage of a project.
+    - JavaScript heap (this is an easy way to know of any memory leaks in your application).
+    - 2 Views
+      - | top,
+        - \# views for the screen 
+      - | bottom,
+        - \# of views | component
+    - Frames / Second -- for the -- UI & JS threads
+      - UI thread
+        - uses
+          - native Android or iOS UI rendering
+      - JS thread
+        - where MOST of your logic runs
+          - _Examples:_ API calls + touch events
 
 ### Toggle element inspector
 
-Opens up the element inspector overlay:
+![](../../public/static/images/debugging/element-inspector.png)
 
-<ContentSpotlight
-  alt="The element inspector overlay which shows details about an element after inspecting it."
-  src="/static/images/debugging/element-inspector.png"
-  className="max-w-[280px]"
-/>
-
-This overlay has capabilities to:
-
-- Inspect: Inspect elements
-- Perf: Show Performance overlay
-- Network: Show network details
-- Touchables: Highlight touchable elements
+* provide
+  * capabilities to
+    - Inspect: Inspect elements
+    - Perf: Show Performance overlay
+    - Network: Show network details
+    - Touchables: Highlight touchable elements
 
 ## Debugging with React Native DevTools
 

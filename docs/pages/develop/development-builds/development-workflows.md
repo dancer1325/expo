@@ -5,12 +5,19 @@ description: Learn more about different tools, workflows and extensions availabl
 ---
 
 
-Development builds allow you to iterate quickly. However, you can extend the capabilities of your development build to provide a better developer experience when working in teams or customize the build to suit your needs.
+* Development builds  -- TODO: check why NOT appear | [introduction.md](introduction.md)
+  * allow you
+    * to iterate quickly
+  * capabilities
+    * can be extended -- to -- 
+      * provide a better developer experience | work as team
+      * suit your needs
 
 ## Tools
 
 ### Tunnel URLs
 
+TODO: 
 Sometimes, restrictive network conditions make it difficult to connect to the development server.
 The `npx expo start` command exposes your development server on a publicly available URL that is accessible through firewalls from around the globe.
 This option is helpful if you are not able to connect to your development server with the default LAN option or if you want to get feedback on your implementation while you are developing.
@@ -19,11 +26,15 @@ To get a tunneled URL, pass the [`--tunnel` flag](/more/expo-cli/#tunneling) to 
 
 ### Published updates
 
-EAS CLI's `eas update` command bundles the current state of your JavaScript and asset files into an optimized "update". This update is stored on a hosting service by Expo. A development build of your app can load published updates without needing to check out a particular commit or leave a development machine running.
+EAS CLI's `eas update` command bundles the current state of your JavaScript and asset files into an optimized "update"
+* This update is stored on a hosting service by Expo
+* A development build of your app can load published updates without needing to check out a particular commit or leave a development machine running.
 
 ### Manually entering an update's URL
 
-When a development build launches, it will expose UI to load a development server, or to "Enter URL manually". You can provide a URL manually that will launch a specific branch. The URL follows this pattern:
+When a development build launches, it will expose UI to load a development server, or to "Enter URL manually"
+* You can provide a URL manually that will launch a specific branch
+* The URL follows this pattern:
 
 ```text
 https://u.expo.dev/[your-project-id]?channel-name=[channel-name]
@@ -32,13 +43,15 @@ https://u.expo.dev/[your-project-id]?channel-name=[channel-name]
 https://u.expo.dev/F767ADF57-B487-4D8F-9522-85549C39F43F?channel-name=main
 ```
 
-To get your project's ID, use the URL in the [app config's `expo.updates.url`](/versions/latest/config/app/#url) field. To see a list of channels, run `eas channel:list`.
+To get your project's ID, use the URL in the [app config's `expo.updates.url`](/versions/latest/config/app/#url) field
+* To see a list of channels, run `eas channel:list`.
 
 {/* TODO: @aman move this section out of this page -- make it part of the main path or a standalone guide, this is important part that should be searchable for eg: Deep linking URLs for Development builds/EAS Builds (when using expo-dev-client) */}
 
 ### Deep linking to an update's URL
 
-You can load your app on a device that has a compatible build of your custom client by opening a URL of the form `{scheme}://expo-development-client/?url={manifestUrl}`. You'll need to pass the following parameters:
+You can load your app on a device that has a compatible build of your custom client by opening a URL of the form `{scheme}://expo-development-client/?url={manifestUrl}`
+* You'll need to pass the following parameters:
 
 | parameter     | value                                                                                                                                     |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
@@ -84,13 +97,16 @@ In the example above, the `scheme` is `exp+app-slug`, and the `url` is a project
 
 ## Example workflows
 
-These are a few examples of workflows to help your team get the most out of your development build. If you come up with others that would be useful for other teams, [submit a PR](https://github.com/expo/expo/tree/main/CONTRIBUTING.md#-updating-documentation) to share your knowledge!
+These are a few examples of workflows to help your team get the most out of your development build
+* If you come up with others that would be useful for other teams, [submit a PR](https://github.com/expo/expo/tree/main/CONTRIBUTING.md#-updating-documentation) to share your knowledge!
 
 ### PR previews
 
-You can set up your CI process to publish an EAS Update whenever a pull request is updated and add a QR code that is used to view the change in a compatible development build.
+You can set up your CI process to publish an EAS Update whenever a pull request is updated and 
+add a QR code that is used to view the change in a compatible development build.
 
-See [instructions for publishing app previews on pull requests](/eas-update/github-actions/#publish-previews-on-pull-requests) to implement this workflow in your project using GitHub Actions or serve as a template in your CI of choice.
+See [instructions for publishing app previews on pull requests](/eas-update/github-actions/#publish-previews-on-pull-requests) 
+to implement this workflow in your project using GitHub Actions or serve as a template in your CI of choice.
 
 ## Extensions
 
@@ -114,32 +130,26 @@ registerDevMenuItems(devMenuItems);
 
 This will create a new section in the dev menu that includes the buttons you have registered:
 
-<ContentSpotlight
-  alt="An example of a custom menu button in expo-dev-menu"
-  src="/static/images/dev-client/custom-menu-button.png"
-  className="max-w-[400px]"
-/>
+![An example of a custom menu button in expo-dev-menu](../../../public/static/images/dev-client/custom-menu-button.png)
 
 > Subsequent calls of `registerDevMenuItems` will override all previous entries.
 
 ### EAS Update
 
-<ContentSpotlight
-  alt="An example list of EAS Update that can be loaded in the expo-dev-client."
-  src="/static/images/dev-client/eas-updates-screen.png"
-  className="max-w-[400px]"
-/>
+![](../../../public/static/images/dev-client/eas-updates-screen.png)
 
-The EAS Update extension provides the ability to view and load published updates in your development client. To install it, you'll need the most recent publish of `expo-updates`:
+The EAS Update extension provides the ability to view and load published updates in your development client
+* To install it, you'll need the most recent publish of `expo-updates`:
 
-<Terminal
-  cmd={{
-    npm: ['$ npx expo install expo-dev-client expo-updates'],
-    yarn: ['$ yarn expo install expo-dev-client expo-updates'],
-    pnpm: ['$ pnpm expo install expo-dev-client expo-updates'],
-    bun: ['$ bun expo install expo-dev-client expo-updates'],
-  }}
-/>
+```bash
+$ npx expo install expo-dev-client expo-updates
+---
+$ yarn expo install expo-dev-client expo-updates
+---
+$ pnpm expo install expo-dev-client expo-updates
+---
+$ bun expo install expo-dev-client expo-updates
+```
 
 #### Configure EAS Update
 
@@ -149,6 +159,8 @@ You can now view and load EAS Updates in your development build via the `Extensi
 
 ## Set runtimeVersion in app config
 
-When you create a development build of your project, you'll get a stable environment to load any changes to your app that are defined in JavaScript or other asset-related changes. Other changes to your app, whether defined directly in **android** and **ios** directories or by packages or SDKs you choose to install, will require you to create a new build of your development build.
+When you create a development build of your project, you'll get a stable environment to load any changes to your app that are defined in JavaScript or other asset-related changes
+* Other changes to your app, whether defined directly in **android** and **ios** directories or by packages or SDKs you choose to install, will require you to create a new build of your development build.
 
-To enforce an API contract between the JavaScript and native layers of your app, you should set the [`runtimeVersion`](/eas-update/runtime-versions) value in the app config. Each build you make will have this value embedded and will only load bundles with the same `runtimeVersion`, in both development and production.
+To enforce an API contract between the JavaScript and native layers of your app, you should set the [`runtimeVersion`](/eas-update/runtime-versions) value in the app config
+* Each build you make will have this value embedded and will only load bundles with the same `runtimeVersion`, in both development and production.

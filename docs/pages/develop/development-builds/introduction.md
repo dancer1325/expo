@@ -3,6 +3,7 @@
 
 * **development build**
   * 💡:= debug build of your app / contains the [`expo-dev-client` package](../../versions/unversioned/sdk/dev-client.md) 💡
+    * [how to create](create-a-build.md)
   * 👀ALTERNATIVE to [Expo Go](/get-started/set-up-your-environment/) 👀 /
     * benefits vs Expo Go
       * gain FULL control over the native runtime -> you can

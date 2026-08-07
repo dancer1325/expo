@@ -1,16 +1,21 @@
 # 📦 expo-dev-menu
 
-Expo/React Native module to add developer menu to Debug builds of your application. This package is intended to be included in your project through [`expo-dev-client`](https://docs.expo.dev/develop/development-builds/introduction/#what-is-an-expo-dev-client).
+* == Expo/React Native module /
+  * add developer menu | Debug builds of your application
+  * included -- , through [`expo-dev-client`](../expo-dev-client), -- | your project 
 
 ## Documentation
 
-You can find more information in the [Expo documentation](https://docs.expo.dev/develop/development-builds/introduction).
+* [here](../../docs/pages/debugging/tools.md)
 
 ## Contributing
 
-The Dev Menu UI is built with native platform UI toolkits:
+* Dev Menu UI
+  * == native platform UI toolkits
+    * | **iOS**,
+      * [SwiftUI](ios/SwiftUI/)
+    * | **Android**
+      * [Jetpack Compose](android/src/debug/java/expo/modules/devmenu/compose/)
 
-- **iOS**: SwiftUI (see `ios/SwiftUI/`)
-- **Android**: Jetpack Compose (see `android/src/debug/java/expo/modules/devmenu/compose/`)
-
-Local development is usually done through [`bare-expo`](/apps/bare-expo). Recompile `bare-expo` after making changes to the native code.
+* local development
+  * -- through -- [`bare-expo`](../../apps/bare-expo)

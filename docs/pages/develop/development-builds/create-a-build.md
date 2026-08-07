@@ -15,7 +15,7 @@ hasVideoLink: true
 
 * ways to create a development build
   * locally
-    * [`npx expo run:[android|ios]`](../../guides/local-app-development.md#local-builds-with-expo-dev-client)
+    * [`npx expo run:[android|ios]`](../../guides/local-app-development.md#local-builds----with----expo-dev-client--development-builds)
       * requirements
         * install
           * Android Studio
@@ -23,6 +23,7 @@ hasVideoLink: true
     * [`eas build --local`](../../build-reference/local-builds.mdx)
   * remotely | EAS
 
+TODO: 
 When you create a new Expo app with `npx create-expo-app`, you start off with a project where
 you update the JavaScript code on your local machine and view the changes in the Expo Go app
 * A **development build** is essentially **your own version of Expo Go** where you are free
@@ -76,10 +77,6 @@ To build locally without EAS requires your local [development environment](https
 | **Windows** | <YesIcon/> | <NoIcon />    | <NoIcon />    |
 | **Linux**   | <YesIcon/> | <NoIcon />    | <NoIcon />    |
 
-## Get started
-
-For detailed, step-by-step instructions, see our [EAS Tutorial](/tutorial/eas/introduction)
-* Available also as a [tutorial series](https://www.youtube.com/playlist?list=PLsXDmrmFV_AS14tZCBin6m9NIS_VCUKe2) on YouTube.
 
 <Step label="1">
 
@@ -91,34 +88,27 @@ TODO: add rest of commands
 
 ### Build the native app (Android)
 
-<Prerequisites>
-  <Requirement title="Expo account">
-    Sign up for an [Expo](https://expo.dev/signup) account, if you haven't already.
-  </Requirement>
-  <Requirement title="EAS CLI">
-    The [EAS CLI](/build/setup/#install-the-latest-eas-cli) installed and logged in.
-    <Terminal
-      cmd={{
-        npm: ['$ npm install --global eas-cli && eas login'],
-        yarn: ['$ yarn global add eas-cli && eas login'],
-        pnpm: ['$ pnpm add --global eas-cli && eas login'],
-        bun: ['$ bun add --global eas-cli && eas login'],
-      }}
-    />
-  </Requirement>
-  <Requirement title="An Android Emulator (optional)">
-    An [Android Emulator](/workflow/android-studio-emulator/) is optional if you want to test your
-    app on an emulator.
-  </Requirement>
-</Prerequisites>
+* requirements
+  * [sign up for an Expo account](https://expo.dev/signup)
+  * EAS CLI
+    * [install](../../build/setup.md#install-the-latest-eas-cli)
+    * log in
 
-<Terminal cmd={['$ eas build --platform android --profile development']} />
+    ```bash
+    $ npm install --global eas-cli && eas login
+    ---
+    $ yarn global add eas-cli && eas login
+    ---
+    $ pnpm add --global eas-cli && eas login
+    ---
+    $ bun add --global eas-cli && eas login
+    ```
+  
+  * [Android Emulator](../../workflow/android-studio-emulator) 
+    * OPTIONAL
 
-Read more about [Android builds on EAS](/tutorial/eas/android-development-build).
-
-</Step>
-
-<Step label="2">
+* `eas build --platform android --profile development`
+  * [MORE](../../tutorial/eas/android-development-build)
 
 ### Build the native app (iOS Simulator)
 
@@ -128,14 +118,15 @@ Read more about [Android builds on EAS](/tutorial/eas/android-development-build)
   </Requirement>
   <Requirement title="EAS CLI">
     The [EAS CLI](/build/setup/#install-the-latest-eas-cli) installed and logged in.
-    <Terminal
-      cmd={{
-        npm: ['$ npm install --global eas-cli && eas login'],
-        yarn: ['$ yarn global add eas-cli && eas login'],
-        pnpm: ['$ pnpm add --global eas-cli && eas login'],
-        bun: ['$ bun add --global eas-cli && eas login'],
-      }}
-    />
+    ```bash
+$ npm install --global eas-cli && eas login
+---
+$ yarn global add eas-cli && eas login
+---
+$ pnpm add --global eas-cli && eas login
+---
+$ bun add --global eas-cli && eas login
+```
   </Requirement>
   <Requirement title="macOS with iOS Simulator installed">
     iOS Simulators are available only on macOS
@@ -176,14 +167,15 @@ Read more about [iOS Simulator builds on EAS](/tutorial/eas/ios-development-buil
   </Requirement>
   <Requirement title="EAS CLI">
     The [EAS CLI](/build/setup/#install-the-latest-eas-cli) installed and logged in.
-    <Terminal
-      cmd={{
-        npm: ['$ npm install --global eas-cli && eas login'],
-        yarn: ['$ yarn global add eas-cli && eas login'],
-        pnpm: ['$ pnpm add --global eas-cli && eas login'],
-        bun: ['$ bun add --global eas-cli && eas login'],
-      }}
-    />
+    ```bash
+$ npm install --global eas-cli && eas login
+---
+$ yarn global add eas-cli && eas login
+---
+$ pnpm add --global eas-cli && eas login
+---
+$ bun add --global eas-cli && eas login
+```
   </Requirement>
   <Requirement title="Apple Developer account">
     A paid [Apple Developer](https://developer.apple.com/) account for creating [signing
@@ -273,18 +265,8 @@ This is the same command you would have used with Expo Go
 
 </Step>
 
-## Video walkthroughs
+## MORE details
 
-<BoxLink
-  title={`"EAS Tutorial Series"`}
-  description="A course on YouTube: learn how to speed up your development with Expo Application Services."
-  href="https://www.youtube.com/playlist?list=PLsXDmrmFV_AS14tZCBin6m9NIS_VCUKe2"
-  Icon={VideoRecorderIcon}
-/>
-
-<BoxLink
-  title={`"Async Office Hours: How to make a development build with EAS Build"`}
-  description="Learn how to make a development build with EAS Build in this video tutorial hosted by Developer Success Engineer: Keith Kurak."
-  href="https://www.youtube.com/watch?v=LUFHXsBcW6w"
-  Icon={VideoRecorderIcon}
-/>
+* [EAS Tutorial](../../tutorial/eas/introduction)
+  * [video](https://www.youtube.com/playlist?list=PLsXDmrmFV_AS14tZCBin6m9NIS_VCUKe2)
+* [How to make a development build -- with -- EAS Build](https://www.youtube.com/watch?v=LUFHXsBcW6w)
