@@ -3,9 +3,7 @@
 TODO:
 
 # Developer menu
-## provides
-### 👀-- access to -- useful debugging functions 👀
-TODO:
+## provides: -- access to -- useful debugging functions
 #### Copy link
 ##### ⚠️ALLOWED ONLY | dev clients⚠️
 * | [here](my-app)
@@ -23,31 +21,43 @@ TODO:
 ##### link -- to the -- dev server address | dev client
 TODO:
 #### Reload
-TODO:
 ##### reload your app
-TODO:
-###### NORMALLY, NOT necessary
-TODO:
-####### Reason: 🧠 Fast Refresh is enabled by default 🧠
-TODO:
+* [here](my-app)
+   * `npx expo run:ios`
+  * `m`
+  * scroll down to find it
+  * click Reload
 #### Go Home
-TODO:
 ##### leave your app & navigate back to the dev client's or Expo Go app's Home screen
-TODO:
+* [here](my-app)
+  * `npx expo run:ios`
+  * `m`
+  * click "Go Home"
 #### Toggle performance monitor
-TODO:
 ##### view the performance information about your app
-TODO:
+* [here](my-app)
+  * `npx expo run:ios`
+  * `m`
+  * click "Toggle performance monitor"
 #### Toggle element inspector
-TODO:
 ##### enable or disable the element inspector overlay
-TODO:
-#### Open JS debugger
-TODO:
+* [here](my-app)
+  * `npx expo run:ios`
+  * `m`
+  * click "Toggle element inspector"
+#### Open DevTools
+* [here](my-app)
+  * `npx expo run:ios`
+  * `m`
+  * click "Open DevTools"
 #### Fast Refresh
-TODO:
-##### toggle automatic refreshing of the JS bundle | make changes your project's files -- via a -- text editor
-TODO:
+##### | make changes | your project's files, toggle automatic refreshing of the JS bundle
+* [here](my-app)
+  * `npx expo run:ios`
+  * `m`
+  * disable "Fast Refresh" toggle
+  * make changes | sour code
+  * check it's NOT refreshed
 ## built into
 ### dev clients
 TODO:

@@ -29,10 +29,10 @@ sidebar_title: Tools
       * view the performance information about your app
     * **Toggle element inspector**
       * enable or disable the element inspector overlay
-    * **Open JS debugger**
-      * see [Debugging with Chrome DevTools](#debugging-with-chrome-devtools)
+    * [**Open DevTools**](#debugging-with-react-native-devtools)
     * **Fast Refresh**
-      * toggle automatic refreshing of the JS bundle | make changes your project's files -- via a -- text editor
+      * | make changes | your project's files, 
+        * toggle automatic refreshing of the JS bundle 
 * built into
   * dev clients
   * Expo Go
@@ -85,47 +85,56 @@ sidebar_title: Tools
 
 ## Debugging with React Native DevTools
 
-> **info** **Starting from React Native 0.76**, React Native DevTools has replaced Chrome DevTools.
+* React Native DevTools
+  * ⚠️requirements⚠️
+    * React Native v0.76+
+    * [Hermes](../guides/using-hermes) -- as -- JS engine
+  * == debugging tool -- for -- Expo apps & React Native apps /
+    * modern
+    * allows you to,
+      * gain insights about your app's JS code -- by -- accessing the tabs
+        * [Console](#interacting-with-the-console)
+        * [Sources](#pausing-on-breakpoints)
+        * [Network](#inspecting-network-requests-expo-only)
+          * AVAILABLE ONLY | Expo
+        * [Memory](#inspecting-memory)
+    * built-in support -- for -- React DevTools
+      * [Components](#inspecting-components) 
+      * [Profiler](#profiling-javascript-performance)
+  * ALLOWED | 
+    * dev clients, OR
+    * Expo Go
+    * ANY app -- , by using, -- [Hermes](../guides/using-hermes) 
+  * replacement of Chrome DevTools 
+  * steps to open it
+    * | terminal / run the Expo app,
+      * press `J`
 
-**React Native DevTools** is a modern debugging tool for Expo and React Native apps. It allows you to gain insights into the JavaScript code of your app by accessing the [Console](#interacting-with-the-console), [Sources](#pausing-on-breakpoints), [Network](#inspecting-network-requests-expo-only) (**Expo only**), and [Memory](#inspecting-memory) tabs. It also has **built-in support for React DevTools** such as [Components](#inspecting-components) and [Profiler](#profiling-javascript-performance) tabs. All of these inspectors can be accessed using [dev clients](/more/glossary-of-terms/#dev-clients) or Expo Go.
-
-You can use the React Native DevTools on any app using [Hermes](/guides/using-hermes/)
-* **To open it, start your app and press <kbd>J</kbd> in the terminal where Expo was started**
-* Once you have opened the React Native DevTools, it will appear as below:
-
-<ContentSpotlight
-  alt="The React Native DevTools showing one of the files under the Sources tab."
-  src="/static/images/debugging/inspector-sources-tab.png"
-/>
+![The React Native DevTools showing one of the files under the Sources tab.](../../public/static/images/debugging/inspector-sources-tab.png)
 
 ### Pausing on breakpoints
 
-You can pause your app on specific parts of your code
-* To do this, set the breakpoint under the Sources tab by clicking the line number or add the `debugger` statement in your code.
+* steps
+  * ways
+    * | React Native DevTools,
+      * \> Sources tab > set the breakpoint | some line number, OR
+    * | your code,
+      * add `debugger` statement
 
-Once your app is executing code that has a breakpoint, it will entirely pause your app
-* This allows you to inspect all variables and functions in that scope
-* You can also execute code in the [Console](#interacting-with-the-console) tab as part of your app.
-
-<ContentSpotlight
-  alt="The React Native DevTools showing one of the files under the Sources tab."
-  src="/static/images/debugging/inspector-breakpoint.png"
-/>
+![The React Native DevTools showing one of the files under the Sources tab.](../../public/static/images/debugging/inspector-breakpoint.png)
 
 ### Pausing on exceptions
 
-If your app throws unexpected errors, it can be hard to find the source of the error
-* You can use React Native DevTools to pause your app and inspect the stack trace and variables the moment it throws an error.
+* enable you to
+  * pause your app | ANY thrown error
+* SOME errors
+  * might be caught -- by -- OTHER components | your app
+    * _Example:_ Expo Router
+* steps
+  * | React Native DevTools,
+    * \> Sources > turn on "Pause on caught exceptions"
 
-<ContentSpotlight
-  alt="Enable Pause on exceptions in the right panel of the Sources tab."
-  src="/static/images/debugging/inspector-pause-exception.png"
-  className="max-w-[360px]"
-/>
-
-> **info** Some errors might be caught by other components in your app, such as Expo Router
-* In these cases, you can turn on **Pause on caught exceptions**
-* It will enable you to inspect any thrown error, even when handled properly.
+![Enable Pause on exceptions in the right panel of the Sources tab.](../../public/static/images/debugging/inspector-pause-exception.png)
 
 ### Interacting with the console
 
@@ -135,10 +144,7 @@ The **Console** tab gives you access to an interactive terminal, connected direc
 * But, when using breakpoints from the [Sources](#pausing-on-breakpoints) tab, it executes in the scope of the reached breakpoint
 * This allows you to invoke methods and access variables throughout your app.
 
-<ContentSpotlight
-  alt="Use the console with breakpoints to inspect variables and invoke code through your app."
-  src="/static/images/debugging/inspector-breakpoint-console.png"
-/>
+![Use the console with breakpoints to inspect variables and invoke code through your app.](../../public/static/images/debugging/inspector-breakpoint-console.png)
 
 ### Inspecting network requests (Expo only)
 
@@ -148,11 +154,7 @@ The **Network** tab gives you insights into the network requests made by your ap
 * You can inspect each request and response by clicking on them
 * This includes `fetch` requests, external loaded media, and in some cases, even requests made by native modules.
 
-<ContentSpotlight
-  alt="Gain insights in the network requests from your app."
-  src="/static/images/debugging/inspector-network-post.png"
-  className="max-w-[720px]"
-/>
+![Gain insights in the network requests from your app.](../../public/static/images/debugging/inspector-network-post.png)
 
 > **info** See the [Inspecting network traffic](#inspecting-network-traffic) for alternative ways to inspect network requests.
 
@@ -160,11 +162,7 @@ The **Network** tab gives you insights into the network requests made by your ap
 
 The **Memory** tab allows you to inspect the memory usage and take a heap snapshot of your app's JavaScript code.
 
-<ContentSpotlight
-  alt="Inspect memory usage of your app's JavaScript code."
-  src="/static/images/debugging/inspector-memory.png"
-  className="max-w-[720px]"
-/>
+![Inspect memory usage of your app's JavaScript code.](../../public/static/images/debugging/inspector-memory.png)
 
 ### Inspecting components
 
@@ -172,42 +170,38 @@ The **Components** tab allows you to inspect the React components in your app
 * You can view the props, and styles of each component by hovering that component in React Native DevTools
 * This is a great way to debug your app's UI and understand how your components are structured.
 
-<ContentSpotlight
-  alt="Inspect a component in React Native DevTools."
-  src="/static/images/debugging/inspector-components.png"
-  className="max-w-[720px]"
-/>
+![Inspect a component in React Native DevTools.](../../public/static/images/debugging/inspector-components.png)
 
 ### Profiling JavaScript performance
 
-> **warning** Profiles are not yet symbolicated with sourcemaps, and [can only be used in debug builds](https://github.com/facebook/hermes/issues/760). These limitations will be addressed in upcoming releases.
+> **warning** Profiles are not yet symbolicated with sourcemaps, and [can only be used in debug builds](https://github.com/facebook/hermes/issues/760)
+* These limitations will be addressed in upcoming releases.
 
-The **Profiler** tab allows you to record and analyze the performance of your app's JavaScript. You can start recording, interact with your app, and stop recording to analyze the profile.
+The **Profiler** tab allows you to record and analyze the performance of your app's JavaScript
+* You can start recording, interact with your app, and stop recording to analyze the profile.
 
-<ContentSpotlight
-  alt="React Native DevTools Profiler tab open to show insights on app's JavaScript performance."
-  src="/static/images/debugging/inspector-profiler.png"
-  className="max-w-[720px]"
-/>
+![React Native DevTools Profiler tab open to show insights on app's JavaScript performance.](../../public/static/images/debugging/inspector-profiler.png)
 
 > **info** To profile the native runtime, use the tools included in Android Studio or Xcode.
 
 ### Rozenite
 
-[**Rozenite**](https://www.rozenite.dev/) is a React Native DevTools plugin framework. It allows you to install plug-and-play integrations which get auto-discovered and appear as panels in React Native Devtools. You can also [create your own Rozenite plugin](https://www.rozenite.dev/docs/plugin-development/plugin-development) to integrate with custom or third party tools.
+[**Rozenite**](https://www.rozenite.dev/) is a React Native DevTools plugin framework
+* It allows you to install plug-and-play integrations which get auto-discovered and appear as panels in React Native Devtools
+* You can also [create your own Rozenite plugin](https://www.rozenite.dev/docs/plugin-development/plugin-development) to integrate with custom or third party tools.
 
 ## Debugging with VS Code
 
-> **warning** VS Code debugger integration is in [alpha](/more/release-statuses/#alpha). For the most stable debugging experience, [use the React Native DevTools](#debugging-with-react-native-devtools).
+> **warning** VS Code debugger integration is in [alpha](/more/release-statuses/#alpha)
+* For the most stable debugging experience, [use the React Native DevTools](#debugging-with-react-native-devtools).
 
-VS Code is a popular code editor, which has a built-in debugger. This debugger uses the same system as the React Native DevTools — the inspector protocol.
+VS Code is a popular code editor, which has a built-in debugger
+* This debugger uses the same system as the React Native DevTools — the inspector protocol.
 
-You can use this debugger with the [Expo Tools](https://github.com/expo/vscode-expo#readme) VS Code extension. This debugger allows you to set breakpoints, inspect variables, and execute code through the debug console.
+You can use this debugger with the [Expo Tools](https://github.com/expo/vscode-expo#readme) VS Code extension
+* This debugger allows you to set breakpoints, inspect variables, and execute code through the debug console.
 
-<ContentSpotlight
-  alt="Debug your code while you write it."
-  src="/static/images/debugging/vscode-expo.png"
-/>
+![Debug your code while you write it.](../../public/static/images/debugging/vscode-expo.png)
 
 To start debugging:
 
@@ -217,25 +211,26 @@ To start debugging:
 
 This will attach VS Code to your running app.
 
-Alternatively, if you want a fully-featured IDE setup in VS Code, you might want to check out the [Radon IDE](https://ide.swmansion.com/) extension (paid with a 30-day free trial). It turns your editor into a powerful environment designed specifically for React Native and Expo projects, with advanced debugging, a network inspector, router integration, and other built-in tools.
+Alternatively, if you want a fully-featured IDE setup in VS Code, you might want to check out the [Radon IDE](https://ide.swmansion.com/) extension (paid with a 30-day free trial)
+* It turns your editor into a powerful environment designed specifically for React Native and Expo projects, with advanced debugging, a network inspector, router integration, and other built-in tools.
 
-<ContentSpotlight
-  alt="Debugging code using Radon IDE."
-  src="/static/images/debugging/radon-ide.png"
-/>
+![Debugging code using Radon IDE.](../../public/static/images/debugging/radon-ide.png)
 
 ## React Native Debugger
 
 > **warning** The React Native Debugger requires Remote JS debugging, which has been deprecated since [React Native 0.73](https://reactnative.dev/docs/other-debugging-methods#remote-javascript-debugging-deprecated).
 
-The React Native Debugger is a standalone app that wraps the React DevTools, Redux DevTools, and React Native DevTools. Unfortunately, it requires the [deprecated Remote JS debugging workflow](https://github.com/jhen0409/react-native-debugger/discussions/774) and is incompatible with Hermes.
+The React Native Debugger is a standalone app that wraps the React DevTools, Redux DevTools, and React Native DevTools
+* Unfortunately, it requires the [deprecated Remote JS debugging workflow](https://github.com/jhen0409/react-native-debugger/discussions/774) and is incompatible with Hermes.
 
 If you are using Expo **SDK 50** or **above**, you can use the [Expo dev tools plugins](/debugging/devtools-plugins) equivalents to the React Native Debugger:
 
 - [React Native DevTools](#debugging-with-react-native-devtools)
 - [Redux DevTools](/debugging/devtools-plugins/#redux)
 
-If you are using Expo SDK 49 and earlier, you can use the React Native Debugger. This section provides quick get started instructions. For in-depth information, check its [documentation](https://github.com/jhen0409/react-native-debugger#documentation).
+If you are using Expo SDK 49 and earlier, you can use the React Native Debugger
+* This section provides quick get started instructions
+* For in-depth information, check its [documentation](https://github.com/jhen0409/react-native-debugger#documentation).
 
 You can install it via the [release page](https://github.com/jhen0409/react-native-debugger/releases), or if you're on macOS you can run:
 
@@ -249,7 +244,7 @@ In the debugger console, you can see the Element tree, as well as the props, sta
 
 If you right-click anywhere in the React Native Debugger, you'll get some handy shortcuts to reload your JS, enable/disable the element inspector, network inspector, and to log and clear your `AsyncStorage` content.
 
-<ContentSpotlight file="debugging/react-native-debugger.mp4" />
+[react-native-debugger demo](../../public/static/videos/debugging/react-native-debugger.mp4)
 
 ### Inspecting network traffic
 
