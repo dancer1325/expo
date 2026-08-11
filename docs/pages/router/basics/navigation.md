@@ -58,11 +58,14 @@ With Expo Router, you refer to pages by their URL, or their position relative to
   Icon={BookOpen02Icon}
 />
 
-## Links and buttons
+## Links & buttons
 
-The typical way to link to a page in Expo Router is to use links like web apps
-* Expo Router has a `Link` component for navigating between pages, where the `href` is the same route 
-you would use in `router.navigate`:
+* Expo Router's built-in `Link` component
+  * allows
+    * link -- to -- a page | Expo Router 
+
+TODO: the `href` is the same route 
+    you would use in `router.navigate`:
 
 {/* prettier-ignore */}
 ```tsx src/app/index.tsx
@@ -109,12 +112,7 @@ export default function Page() {
   Icon={BookOpen02Icon}
 />
 
-<BoxLink
-  title="Link preview"
-  description="Learn how to add a preview to your link on iOS when using Expo Router."
-  href="/router/reference/link-preview/"
-  Icon={BookOpen02Icon}
-/>
+* [how to add a preview | your link](../reference/link-preview.md)
 
 ## Relative routes
 

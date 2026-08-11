@@ -7,6 +7,8 @@ description: Learn how to migrate Expo Router from SDK 55 to 56 using a codemod 
 
 In **SDK 56 and later**, Expo Router no longer supports importing from external `@react-navigation/*` packages in application code. Update those imports to the matching `expo-router` entry points. The runtime API is unchanged - only the module specifiers move.
 
+== refactor the imports -- to -- the matching `expo-router` entry points
+
 ## Automated migration
 
 Run the codemod from the root of your project. It rewrites `@react-navigation/*` imports in your application code to the matching `expo-router` entry points.

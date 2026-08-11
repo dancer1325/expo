@@ -9,7 +9,7 @@ platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 
 
 
-An Expo Router API that provides components for navigating between routes, including link, redirect, preview, and zoom transitions.
+* == Expo Router API / provides components for navigating between routes, including link, redirect, preview, and zoom transitions.
 
 > See the [Expo Router](./index) reference for installation and configuration.
 

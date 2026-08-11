@@ -3,102 +3,72 @@ title: Top-level src directory
 description: Learn how to use a top-level src directory in your Expo Router project.
 ---
 
-
-Projects created with the [default template](/get-started/create-a-project/) on SDK 55 and later already include a top-level **src** directory that contains the **app**, **components**, **constants**, and **hooks** directories. No extra configuration is needed.
-
-If you are using a [custom template](/more/create-expo/#--template) or an existing project that doesn't include a **src** directory, follow the steps below to set it up.
+* top-level "src/"    /    contains "app/" + "components/" + "constants/" + "hooks/"
+  * if you create the project -- through -- 
+    * default template
+      * | SDK v55+, -> ALREADY included
+      * | SDK v55-, -> you need to configure MANUALLY
+    * ANOTHER approach -> you need to configure MANUALLY
 
 ## Using a top-level src directory
 
-<Step label="1">
+* steps
+  * refactor your app -- to -- 
 
-Move your **app** directory to **src/app**.
+    <FileTree
+      files={['src/app/_layout.tsx', 'src/app/index.tsx', 'src/components/button.tsx', 'package.json']}
+    />
+  * | "tsconfig.json",
+    * update [TypeScript path aliases](../../guides/typescript.md#path-aliases-optional) == "src/"
 
-<FileTree
-  files={['src/app/_layout.tsx', 'src/app/index.tsx', 'src/components/button.tsx', 'package.json']}
-/>
+        ```json tsconfig.json
+        {
+          "compilerOptions": {
+            "paths": {
+              "@/*": ["./src/*"]
+            }
+          }
+        }
+        ```
+  * 
 
-</Step>
-
-<Step label="2">
-
-Update [TypeScript path aliases](/guides/typescript#path-aliases) in the **tsconfig.json** file to point to the **src** directory instead of the root directory. If you use the default `@/*` alias, set it to **./src/\***:
-
-```json tsconfig.json
-{
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
-}
-```
-
-This keeps `@/` imports working after moving your app directory into **src**.
-
-</Step>
-
-<Step label="3">
-
-Restart your development server.
-
-{/* prettier-ignore */}
-<Terminal
-  cmd={{
-    npm: [
-      '$ npx expo start',
-      '',
-      '# Or export for production',
-      '$ npx expo export',
-    ],
-    yarn: [
-      '$ yarn expo start',
-      '',
-      '# Or export for production',
-      '$ yarn expo export',
-    ],
-    pnpm: [
-      '$ pnpm expo start',
-      '',
-      '# Or export for production',
-      '$ pnpm expo export',
-    ],
-    bun: [
-      '$ bun expo start',
-      '',
-      '# Or export for production',
-      '$ bun expo export',
-    ],
-  }}
-/>
-
-</Step>
+    ```bash
+    # start
+    npx expo start
+    
+    # Or export for production
+    npx expo export
+    ---
+    yarn expo start
+    
+    # Or export for production
+    yarn expo export
+    ---
+    pnpm expo start
+    
+    # Or export for production
+    pnpm expo export
+    ---
+    bun expo start
+    
+    # Or export for production
+    bun expo export
+    ```
 
 ### Notes
 
+TODO: 
 - The config files (**app.config.ts**, **app.json**, **package.json**, **metro.config.js**, **tsconfig.json**) should remain in the root directory.
 - The **src/app** directory takes higher precedence than the root **app** directory. Only the **src/app** directory will be used if you have both.
 - The **public** directory should remain in the root directory.
 - Static rendering will automatically use the **src/app** directory if it exists.
 - You may consider updating any [type aliases](/guides/typescript#path-aliases) to point to the **src** directory instead of the root directory.
 
-## Custom directory
+## Custom directory == CUSTOM root directory
 
-> **warning** Changing the default root directory is highly discouraged. We will not accept bug reports regarding projects with custom root directories.
-
-You can dangerously customize the root directory using the Expo Router Config Plugin. The following will change the root directory to **src/routes**, relative to the project root.
-
-```json app.json
-{
-  "plugins": [
-    [
-      "expo-router",
-      {
-        "root": "./src/routes"
-      }
-    ]
-  ]
-}
-```
-
-This may lead to unexpected behavior. Many tools assume the root directory to be either **app** or **src/app**. Only tools in the exact version of Expo CLI will respect the config plugin.
+* ⚠️HIGHLY discouraged⚠️
+  * Reason:🧠it may lead to unexpected behavior
+    * MANY tools' assumed root directory: 
+      * "app/", OR
+      * "src/app/"
+    * ONLY tools / exact version of Expo CLI respect the config plugin🧠

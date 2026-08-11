@@ -11,8 +11,7 @@ sidebar_title: Introduction
       * native mobile apps
       * web
   * allows you to
-    * 👀manage navigation -- BETWEEN -- screens | your app 👀 /
-      * same components can be reused | MULTIPLE platforms (Android, iOS, and web)
+    * 👀[manage navigation -- BETWEEN -- screens | your app](basics/navigation.md) 👀 /
   * how does it work?
     * 👀| "src/app/", add the file 👀
       * Reason: 🧠 automatically. the file -- becomes a -- route | your navigation 🧠

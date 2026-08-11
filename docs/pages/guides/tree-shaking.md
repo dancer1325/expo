@@ -5,14 +5,25 @@ description: Learn about how Expo CLI optimizes production JavaScript bundles.
 platforms: ['android', 'ios', 'web', 'tvos']
 ---
 
+* goal
+  * tree shaking
 
-Tree shaking (also referred to as _dead code removal_) is a technique to remove unused code from the production bundle. Expo CLI employs different techniques, including [minification](/guides/minify), to improve startup time by removing unused code.
+* Tree shaking OR dead code removal
+  * == technique /
+    * | production bundle, remove unused code 
+  * ADDITIONAL to
+    * [minification](minify)
 
 ## Platform shaking
 
-Expo CLI employs a process known as **platform shaking** for app bundling, where it creates separate bundles for each platform (Android, iOS, web). It ensures that the code is only used on one platform and is removed from other platforms.
+TODO: 
+Expo CLI employs a process known as **platform shaking** for app bundling, 
+where it creates separate bundles for each platform (Android, iOS, web)
+* It ensures that the code is only used on one platform and is removed from other platforms.
 
-Any code that is used conditionally based on the `Platform` module from `react-native` is removed from the other platforms. However, this exclusion specifically applies to instances where `Platform.select` and `Platform.OS` are directly imported from react-native in each file. If these are re-exported through a different module, they will not be removed during the bundling process for different platforms.
+Any code that is used conditionally based on the `Platform` module from `react-native` is removed from the other platforms
+* However, this exclusion specifically applies to instances where `Platform.select` and `Platform.OS` are directly imported from react-native in each file
+* If these are re-exported through a different module, they will not be removed during the bundling process for different platforms.
 
 For example, consider the following transformation input:
 
@@ -33,13 +44,17 @@ The production bundle will remove the conditional based on the platform:
 console.log('Hello on iOS');
 ```
 
-This optimization is production only and runs on a per-file basis. If you re-export `Platform.OS` from a different module, it will not be removed from the production bundle.
+This optimization is production only and runs on a per-file basis
+* If you re-export `Platform.OS` from a different module, it will not be removed from the production bundle.
 
-Starting in SDK 51, `process.env.EXPO_OS` can be used to detect the platform that the JavaScript was bundled for (cannot change at runtime). This value does not support platform shaking imports due to how Metro minifies code after dependency resolution.
+Starting in SDK 51, `process.env.EXPO_OS` can be used to detect the platform that the JavaScript was bundled for (cannot change at runtime)
+* This value does not support platform shaking imports due to how Metro minifies code after dependency resolution.
 
 ## Remove development-only code
 
-In your project, there might be code designed to help with the development process. It should be excluded from the production bundle. To handle these scenarios, use the `process.env.NODE_ENV `environment variable or the non-standard `__DEV__` global boolean.
+In your project, there might be code designed to help with the development process
+* It should be excluded from the production bundle
+* To handle these scenarios, use the `process.env.NODE_ENV `environment variable or the non-standard `__DEV__` global boolean.
 
 <Step label="1">
 
@@ -83,11 +98,14 @@ The unreachable conditions are removed during [minification](/guides/minify):
 
 </Step>
 
-To improve speed, Expo CLI only performs code elimination in production builds. Conditionals from the above code snippet are kept in development builds.
+To improve speed, Expo CLI only performs code elimination in production builds
+* Conditionals from the above code snippet are kept in development builds.
 
 ## Custom code removal
 
-With Expo SDK 50, `EXPO_PUBLIC_` environment variables are inlined before the minification process. This means they can be used to remove code from the production bundle. For example:
+With Expo SDK 50, `EXPO_PUBLIC_` environment variables are inlined before the minification process
+* This means they can be used to remove code from the production bundle
+* For example:
 
 <Step label="1">
 
@@ -134,7 +152,9 @@ The above code snippet is then minified, which removes the unused conditional:
 
 It's common to use `typeof window === 'undefined'` to conditionally enable or disable code for server and client environments.
 
-`babel-preset-expo` automatically transforms `typeof window === 'undefined'` to `true` when bundling for server environments and `false` when bundling for websites. The check remains unchanged when bundling for native client environments to support apps that polyfill `window`. This transform runs in both development and production but only removes conditional requires in production.
+`babel-preset-expo` automatically transforms `typeof window === 'undefined'` to `true` when bundling for server environments and `false` when bundling for websites
+* The check remains unchanged when bundling for native client environments to support apps that polyfill `window`
+* This transform runs in both development and production but only removes conditional requires in production.
 
 You can configure `babel-preset-expo` to skip the transform by passing `{ preserveTypeofWindow: false }`.
 
@@ -192,7 +212,8 @@ console.log('Hello on the server!');
 
 ## React Native web imports
 
-`babel-preset-expo` provides a built-in optimization for the `react-native-web` barrel file. If you import `react-native` directly using ESM, then the barrel file will be removed from the production bundle.
+`babel-preset-expo` provides a built-in optimization for the `react-native-web` barrel file
+* If you import `react-native` directly using ESM, then the barrel file will be removed from the production bundle.
 
 <Tabs>
 <Tab label="ESM">
@@ -227,7 +248,8 @@ const { View, Image } = require('react-native-web');
 
 > Experimentally available in SDK 52 and above.
 
-You can experimentally enable support for automatically removing unused imports and exports across modules. This is useful for speeding up native OTA downloads and optimizing web performance where JavaScript must be parsed and executed using a standard JavaScript engine.
+You can experimentally enable support for automatically removing unused imports and exports across modules
+* This is useful for speeding up native OTA downloads and optimizing web performance where JavaScript must be parsed and executed using a standard JavaScript engine.
 
 Consider the following example code:
 

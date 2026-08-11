@@ -8,12 +8,10 @@ platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 searchRank: 10
 ---
 
-  ConfigPluginExample,
-  ConfigPluginProperties,
-  ConfigReactNative,
-} from '~/ui/components/ConfigSection';
-
-`expo-image` is a cross-platform React component that loads and renders images.
+* `expo-image`
+  * == React component /
+    * cross-platform
+    * loads & renders images
 
 **Main features:**
 
@@ -150,14 +148,15 @@ This guide demonstrates how to create a blurhash of an uploaded image on the bac
 
 Start by installing a few dependencies: [`multer`](https://github.com/expressjs/multer) for handling multipart requests, [`sharp`](https://github.com/lovell/sharp) for converting files to a data buffer, and the official [`blurhash` JavaScript package](https://github.com/woltapp/blurhash/tree/master/TypeScript).
 
-<Terminal
-  cmd={{
-    npm: ['$ npm install multer sharp blurhash'],
-    yarn: ['$ yarn add multer sharp blurhash'],
-    pnpm: ['$ pnpm add multer sharp blurhash'],
-    bun: ['$ bun add multer sharp blurhash'],
-  }}
-/>
+```bash
+$ npm install multer sharp blurhash
+---
+$ yarn add multer sharp blurhash
+---
+$ pnpm add multer sharp blurhash
+---
+$ bun add multer sharp blurhash
+```
 
 Next, import all required functions from installed packages and initialize `multer`:
 

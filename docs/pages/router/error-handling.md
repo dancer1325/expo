@@ -20,6 +20,8 @@ Native apps don't have a server so there are technically no 404s
 export default Unmatched;
 ```
 
+which catches any requests that don't match a route in your app.
+
 This will render the default `Unmatched`
 * You can export any component you want to render instead
 * We recommend having a link to `/` so users can navigate back to the home screen.

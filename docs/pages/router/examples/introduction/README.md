@@ -10,16 +10,15 @@
 ### native mobile apps
 * [set up your environment](../../../get-started/set-up-your-environment.md)
 * `npx expo start`
+  * open | mobile device-related
+    * shift + i
+  * check sections | footer
 ### web
 * `npx expo start`
 * | browser,
   * index.tsx -- http://localhost:8081/
   * test.tsx -- http://localhost:8081/test
   * explore.tsx -- http://localhost:8081/explore
-## allows you to: 👀manage navigation -- between -- screens | your app👀
-TODO:
-### same components can be reused | MULTIPLE platforms (Android, iOS, web)
-TODO:
 ## how does it work? 👀add the file | app directory👀
 TODO:
 

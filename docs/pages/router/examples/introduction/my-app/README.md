@@ -15,6 +15,10 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```bash
    npx expo start
    ```
+  * Problems: 
+    * Problem1: "Expo Go crash"
+      * Solution: align dependency versions
+        * `npm install react-native-worklets@0.10.1 react-native-reanimated@4.5.1 react-native@0.86.2`
 
 In the output, you'll find options to open the app in a
 

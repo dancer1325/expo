@@ -162,8 +162,11 @@ export async function generateStaticParams(params: {
 ## Root HTML
 
 By default, every page is wrapped with some small HTML boilerplate, this is known as the **root HTML**.
-
-You can customize the root HTML file by creating a **src/app/+html.tsx** file in your project. This file exports a React component that only ever runs in Node.js, which means global CSS cannot be imported inside of it. The component will wrap all routes in the **app** directory. This is useful for adding global `<head>` elements or disabling body scrolling.
+is used to customize the HTML boilerplate used by your app on web.
+You can customize the root HTML file by creating a **src/app/+html.tsx** file in your project
+* This file exports a React component that only ever runs in Node.js, which means global CSS cannot be imported inside of it
+* The component will wrap all routes in the **app** directory
+* This is useful for adding global `<head>` elements or disabling body scrolling.
 
 > **Note**: Global context providers should go in the [Root Layout](/router/basics/navigation-layouts/#root-layout) component, not the Root HTML component.
 

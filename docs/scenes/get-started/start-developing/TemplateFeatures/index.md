@@ -1,0 +1,5 @@
+* [File-based routing](features/navigation.md)
+* [Android, iOS, and web support](features/platforms.md)
+* [Images](features/images.md)
+* [Light and dark modes](features/themes.md)
+* [Animations](features/animations.md)

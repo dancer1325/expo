@@ -116,6 +116,7 @@ You will see the changes the next time you restart the dev server
 * Resolutions are never cached and do not need the `--clear` flag to update
 * If you use a transform-based system like `babel-plugin-module-resolver`, you will need to clear the cache to see changes applied.
 
+* 
 <BoxLink
   title="Customizing Metro resolution"
   description="Learn more about advanced Metro resolving in your project."
@@ -125,29 +126,21 @@ You will see the changes the next time you restart the dev server
 
 ## Bundle splitting
 
-From SDK 50, Expo CLI automatically splits bundles based on async imports (web-only).
+* | Expo SDK 50,
+  * | web,
+    * Expo CLI AUTOMATICALLY splits bundles -- based on -- async imports
 
 This technique can be used with Expo Router to automatically split the bundle based on route files in the **app** directory
 * It will only load the code required for the current route, and defer loading additional JavaScript until the user navigates to different pages
-* See [Async Routes](/router/reference/async-routes) for more information.
+* [Async Routes](../router/reference/async-routes)
 
 ## Tree shaking
 
-<BoxLink
-  title="Tree shaking"
-  description="Learn about how Expo CLI optimizes production JavaScript bundles."
-  href="/guides/tree-shaking/"
-  Icon={BookOpen02Icon}
-/>
+* [here](tree-shaking)
 
 ## Minification
 
-<BoxLink
-  title="Minifying JavaScript"
-  description="Learn about customizing the JavaScript minification process in Expo CLI with Metro bundler."
-  href="/guides/minify/"
-  Icon={BookOpen02Icon}
-/>
+* [here](minify.md)
 
 ## Web support
 

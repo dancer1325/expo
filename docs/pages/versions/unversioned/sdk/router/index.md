@@ -8,153 +8,130 @@ platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 searchRank: 6
 ---
 
-
-
-`expo-router` is a routing library for React Native and web apps. It enables navigation management using a file-based routing system and provides native navigation components.
-
-<BoxLink
-  title="Expo Router guides"
-  description="Learn about Expo Router basics, navigation patterns, core concepts, and more."
-  href="/router/introduction/"
-  Icon={BookOpen02Icon}
-/>
-
-> **Important** In **SDK 56 and later**, Expo Router no longer supports importing from external `@react-navigation/*` packages in application code. Repoint those imports to the matching `expo-router` entry points. Run the [codemod](/router/migrate/sdk-55-to-56#automated-migration) or follow the [SDK 55 to 56 migration guide](/router/migrate/sdk-55-to-56) to update your project.
+* `expo-router`
+  * == routing library -- for -- React Native & web apps
+    * enables
+      * navigation management -- via -- file-based routing system
+    * provides
+      * native navigation components
+  * [guides](../../../../router)
+  * requirements
+    * ⚠️| Expo SDK v56+, 
+      * Expo Router NO longer supports importing -- from -- external `@react-navigation/*` packages⚠️
+        * [how to migrate Expo SDK v55 -- to -- v56](../../../../router/migrate/sdk-55-to-56#automated-migration)
 
 ## Installation
 
-To use Expo Router in your project, you need to install. Follow the instructions from the Expo Router's installation guide:
+* [how to install Expo Router](../../../../router/installation.md)
 
-<BoxLink
-  title="Install Expo Router"
-  description="Learn how to install Expo Router in your project."
-  href="/router/installation/"
-  Icon={BookOpen02Icon}
-/>
+## Configuration | app config
 
-## Configuration in app config
+* if you create the project -- through -- the default template -> `expo-router`'s [config plugin](../../../../config-plugins/introduction) is ALREADY configured | your app config
 
-If you are using the [default](/more/create-expo/#--template) template to create a new project, `expo-router`'s [config plugin](/config-plugins/introduction/) is already configured in your app config.
-
-<ConfigPluginExample>
-
-```json app.json
-{
-  "expo": {
-    "plugins": ["expo-router"]
+  ```json app.json
+  {
+    "expo": {
+      "plugins": ["expo-router", ConfigPluginProperties]
+    }
   }
-}
-```
-
-</ConfigPluginExample>
-
-<ConfigPluginProperties
-  properties={[
-    {
-      name: 'root',
-      description:
-        'Changes the routes directory from `app` to another value. Avoid using this property unless you have a specific need.',
-      default: '"app"',
-    },
-    {
-      name: 'origin',
-      description:
-        'Production origin URL where assets in the public folder are hosted. The fetch function is polyfilled to support relative requests from this origin in production. The development origin is inferred using the Expo CLI development server.',
-      default: 'undefined',
-    },
-    {
-      name: 'headOrigin',
-      description:
-        'A more specific origin URL used in the `expo-router/head` module for iOS handoff. Defaults to `origin`.',
-      default: 'undefined',
-    },
-    {
-      name: 'asyncRoutes',
-      description:
-        'Enable async routes (lazy loading). Can be a boolean, a string (`"development"` or `"production"`), or an object with platform-specific values (`{ android, ios, web, default }`). `production` is currently web-only and will be disabled on native.',
-      default: 'undefined',
-    },
-    {
-      name: 'platformRoutes',
-      description:
-        'Enable or disable platform-specific routes (for example, **index.android.tsx** and **index.ios.tsx**).',
-      default: 'true',
-    },
-    {
-      name: 'sitemap',
-      description: 'Enable or disable the automatically generated sitemap at **/_sitemap**.',
-      default: 'true',
-    },
-    {
-      name: 'partialRouteTypes',
-      description:
-        'Enable partial typed routes generation. This allows TypeScript to provide type checking for routes without requiring all routes to be statically known.',
-      default: 'true',
-    },
-    {
-      name: 'redirects',
-      description:
-        'An array of static redirect rules. Each rule should have `source`, `destination`, and optionally `permanent` (defaults to `false`) and `methods` (HTTP methods to redirect).',
-      default: 'undefined',
-    },
-    {
-      name: 'rewrites',
-      description:
-        'An array of static rewrite rules. Each rule should have `source`, `destination`, and optionally `methods` (HTTP methods to rewrite).',
-      default: 'undefined',
-    },
-    {
-      name: 'headers',
-      description:
-        'A list of headers that are set on every route response from the server. The value can be a string or an array of strings.',
-      default: 'undefined',
-    },
-    {
-      name: 'disableSynchronousScreensUpdates',
-      description:
-        'Disable synchronous layout updates for native screens. This can help with performance in some cases.',
-      default: 'false',
-    },
-    {
-      name: 'unstable_useServerMiddleware',
-      description:
-        'Enable server middleware support with a `+middleware.ts` file. Requires `web.output: "server"` to be set in app config.',
-      default: 'false',
-      experimental: true,
-    },
-    {
-      name: 'unstable_useServerDataLoaders',
-      description:
-        'Enable data loader support. This is only supported for `web.output: "static"` outputs at the moment.',
-      default: 'false',
-      experimental: true,
-    },
-    {
-      name: 'unstable_useServerRendering',
-      description:
-        'Enable server-side rendering. When enabled with `web.output: "server"`, HTML is rendered at request time instead of being pre-rendered at build time.',
-      default: 'false',
-      experimental: true,
-    },
-  ]}
-/>
+  ```
+  * `ConfigPluginProperties`
+    * `root`
+      * == routes directory 
+      * recommendation
+        * ONLY change if you need it
+      * by default,
+        * `"app"`
+    * `origin`
+      * Production origin URL where assets | public folder -- are -- hosted
+      * the `fetch` function -- is polyfilled to support -- relative requests from this origin | production
+      * development origin -- is inferred via -- Expo CLI development server
+      * by default,
+        * `undefined`
+    * `headOrigin`
+      * MORE specific origin URL -- used in -- `expo-router/head` module -- for -- iOS handoff
+      * by default,
+        * `origin`
+    * `asyncRoutes`
+      * enable async routes (lazy loading)
+      * possible values
+        * boolean
+        * string (`"development"` or `"production"`)
+        * object with platform-specific values (`{ android, ios, web, default }`)
+      * ⚠️ `production` -- is currently -- web-only -> will be DISABLED | native
+      * by default,
+        * `undefined`
+    * `platformRoutes`
+      * enable or disable platform-specific routes (_Example:_ `index.android.tsx` and `index.ios.tsx`)
+      * by default,
+        * `true`
+    * `sitemap`
+      * enable or disable the automatically generated sitemap | `/_sitemap`
+      * by default,
+        * `true`
+    * `partialRouteTypes`
+      * enable partial typed routes generation
+      * -> TypeScript -- can provide -- type checking for routes / WITHOUT requiring ALL routes to be statically known
+      * by default,
+        * `true`
+    * `redirects`
+      * array of static redirect rules
+      * each rule
+        * `source`
+        * `destination`
+        * `permanent` ⚠️ optional (by default, `false`)
+        * `methods` ⚠️ optional -- HTTP methods to redirect --
+      * by default,
+        * `undefined`
+    * `rewrites`
+      * array of static rewrite rules
+      * each rule
+        * `source`
+        * `destination`
+        * `methods` ⚠️ optional -- HTTP methods to rewrite --
+      * by default,
+        * `undefined`
+    * `headers`
+      * list of headers -- set on -- EVERY route response from the server
+      * value
+        * string or array of strings
+      * by default,
+        * `undefined`
+    * `disableSynchronousScreensUpdates`
+      * disable synchronous layout updates for native screens
+      * 🧠 can help with performance in SOME cases 🧠
+      * by default,
+        * `false`
+    * `unstable_useServerMiddleware` ⚠️ experimental
+      * enable server middleware support -- with a -- `+middleware.ts` file
+      * ⚠️ requires `web.output: "server"` | app config
+      * by default,
+        * `false`
+    * `unstable_useServerDataLoaders` ⚠️ experimental
+      * enable data loader support
+      * ⚠️ ONLY supported for `web.output: "static"` outputs
+      * by default,
+        * `false`
+    * `unstable_useServerRendering` ⚠️ experimental
+      * enable server-side rendering
+      * ⚠️ when enabled with `web.output: "server"` -> HTML -- is rendered at -- request time != pre-rendered at build time
+      * by default,
+        * `false`
 
 ## Usage
 
-For information core concepts, notation patterns, navigation layouts, and common navigation patterns, start with Router 101 section:
-
-<BoxLink title="Router 101" Icon={BookOpen02Icon} href="/router/basics/core-concepts/" />
+* [Expo router core concepts](../../../../router/basics/core-concepts.md)
 
 ## APIs
 
-| API                        | Description                                     |
-| -------------------------- | ----------------------------------------------- |
-| [Stack](stack)             | Stack navigator, toolbar, and screen components |
-| [Link](link)               | Link and Redirect components                    |
-| [Color](color)             | Platform color utilities                        |
-| [Native Tabs](native-tabs) | Native tab navigation                           |
-| [Split View](split-view)   | Split view layout                               |
-| [UI](ui)                   | Headless tab components                         |
+| API                          | Description                                     |
+|------------------------------| ----------------------------------------------- |
+| [Stack](stack)               | Stack navigator, toolbar, and screen components |
+| [Link](link)                 | Link and Redirect components                    |
+| [Color](color)               | Platform color utilities                        |
+| [Native Tabs](native-tabs)   | Native tab navigation                           |
+| [Split View](split-view)     | Split view layout                               |
+| [UI](ui)                     | Headless tab components                         |
 
 ## API
 

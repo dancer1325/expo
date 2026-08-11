@@ -9,31 +9,37 @@ searchRank: 10
   * Expo Router's file-based routing core concepts 
   * Expo Router project structure != React Native project structure
 
-## The rules of Expo Router
+## Expo Router rules
 
-### 1. All screens/pages are files inside the src/app directory
+### 1. ALL screens/pages == files | "src/app/"
 
-All navigation routes in your app are defined by the files and sub-directories inside the [**src/app**](/router/reference/src-directory/) directory
-* Every file inside the **src/app** directory has a default export that defines a distinct page in your app 
-(except for the special **\_layout** files).
-
-Accordingly, directories inside **src/app** define groups of related screens together.
+* ALL your app's navigation routes
+  * == (files + sub-directories) | [src/app](../reference/src-directory)
+    * 💡EACH file / has a `export default` == DISTINCT page | your app💡
+      * ⚠️EXCEPT TO: "\_layout" files⚠️
+    * 💡EACH directory | "src/app" == groups of related screens💡
 
 ### 2. All pages have a URL
 
-All pages have a URL path that matches the file's location in the **src/app** directory, 
-which can be used to navigate to that page in the address bar on the web, or as an app-specific deep link
-in a native mobile app
-* This is what is meant by Expo Router supporting [universal deep-linking](/linking/overview/)
-* All pages in your app can be navigated to with a URL, regardless of the platform.
+* pages' URL path
+  * == file's location | "src/app/" 
+  * uses
+    * | web,
+      * navigate -- to -- that page 
+    * | native mobile app,
+      * app-specific deep link
+  * enable
+    * [universal deep-linking](../../linking/overview)
+      * == ALL pages | your app can be navigated to -- with -- a URL
 
-### 3. First index.tsx is the initial route
+### 3. FIRST "index.tsx" == initial route (`/`)
 
-With Expo Router, you do not define an initial route or first screen in code
-* Rather, when you open your app, Expo Router will look for the first **index.tsx** file matching the `/` URL
-* In the [default template](/router/installation/#quick-start), this is **src/app/index.tsx**
-* If the app user should start by default in a deeper part of your navigation tree, you can use a [route group](/router/basics/notation/#parentheses)
-(a directory where the name is surrounded in parentheses), and that will not count as part of the URL
+* -> ❌you do NOT define an initial route OR first screen❌
+* | default template,
+  * it's "src/app/index.tsx"
+* ⚠️if you want to use a deeper part of your navigation tree -> use a [route group](notation#parentheses)⚠️
+
+TODO:
 * If you want your first screen to be a group of tabs, you might put all of the tab pages inside the **src/app/(tabs)** 
 directory and define the default tab as **index.tsx**
 * With this arrangement, the `/` URL will take the user directly to **src/app/(tabs)/index.tsx** file.
