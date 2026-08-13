@@ -20,7 +20,7 @@ description: An in-depth guide on configuring an Expo project with TypeScript.
   * [set up your environment](../get-started/set-up-your-environment) 
   * [start developing](../get-started/start-developing)
 
-## Migrating existing JavaScript project
+## how to migrating EXISTING JS project -- to -- TS?
 
 TODO: 
 To migrate your existing JavaScript based project to use TypeScript, follow the instructions below:
@@ -255,8 +255,7 @@ Some language features may require additional configuration
 * For example, if you want to use decorators you'll need to add the `experimentalDecorators` option
 * For more information on the available properties see the [TypeScript compiler options](https://www.typescriptlang.org/docs/handbook/compiler-options.html) documentation.
 
-## Learn how to use TypeScript
+## how to use TypeScript
 
-A good place to start learning TypeScript is the official [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html).
-
-**For TypeScript and React components,** we recommend referring to the [React TypeScript CheatSheet](https://github.com/typescript-cheatsheets/react) to learn how to type your React components in a variety of common situations.
+* [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html)
+* [React TypeScript CheatSheet](https://github.com/typescript-cheatsheets/react)

@@ -68,11 +68,7 @@ Open **Android Studio Setup**. Under **Select components to install**, select An
 
 In the Android Studio Setup Wizard, under **Install Type**, select **Standard** and click **Next**.
 
-<ContentSpotlight
-  alt="Android Studio Setup Wizard asks for the type of installation."
-  src="/static/images/android-studio/windows-install-type.webp"
-  className="max-w-[600px]"
-/>
+![Android Studio Setup Wizard asks for the type of installation.](../../../../public/static/images/android-studio/windows-install-type.webp)
 
 </Step>
 
@@ -86,11 +82,7 @@ The Android Studio Setup Wizard will ask you to verify the settings, such as the
 
 In the next window, accept licenses for all available components.
 
-<ContentSpotlight
-  alt="Android Studio Setup Wizard asks to accept various licenses to install the tools."
-  src="/static/images/android-studio/windows-licenses.webp"
-  className="max-w-[600px]"
-/>
+![Android Studio Setup Wizard asks to accept various licenses to install the tools.](../../../../public/static/images/android-studio/windows-licenses.webp)
 
 </Step>
 
@@ -100,11 +92,7 @@ By default, Android Studio will install the latest version of the Android SDK. H
 
 Open Android Studio, go to **Settings** &gt; **Languages & Frameworks** &gt; **Android SDK**. From the **SDK Platforms** tab, and under **Android 16 (`Baklava`)**, select **Android SDK Platform 36** and **Sources for Android 36**.
 
-<ContentSpotlight
-  alt="Android SDK Platforms"
-  src="/static/images/android-studio/windows-sdk-platforms.webp"
-  className="max-w-[640px]"
-/>
+![Android SDK Platforms](../../../../public/static/images/android-studio/windows-sdk-platforms.webp)
 
 </Step>
 
@@ -112,11 +100,7 @@ Open Android Studio, go to **Settings** &gt; **Languages & Frameworks** &gt; **A
 
 Then, click on the **SDK Tools** tab and make sure you have at least one version of the **Android SDK Build-Tools** and **Android Emulator** installed.
 
-<ContentSpotlight
-  alt="Android SDK build tools"
-  src="/static/images/android-studio/windows-build-tools.webp"
-  className="max-w-[640px]"
-/>
+![Android SDK build tools](../../../../public/static/images/android-studio/windows-build-tools.webp)
 
 </Step>
 
@@ -124,11 +108,7 @@ Then, click on the **SDK Tools** tab and make sure you have at least one version
 
 After the tools installation is complete, configure the `ANDROID_HOME` environment variable. Go to **Windows Control Panel** > **User Accounts** > **User Accounts** (again) > **Change my environment variables** and click **New** to create a new `ANDROID_HOME` user variable. The value of this variable will point to the path to your Android SDK:
 
-<ContentSpotlight
-  alt="Setting up ANDROID_HOME user variable."
-  src="/static/images/android-studio/windows-android-home-variable.webp"
-  className="max-w-[480px]"
-/>
+![Setting up ANDROID_HOME user variable.](../../../../public/static/images/android-studio/windows-android-home-variable.webp)
 
 <Collapsible summary="How to find installed SDK location?">
 
@@ -140,11 +120,7 @@ By default, the Android SDK is installed at the following location:
 
 To find the location of the SDK in Android Studio manually, go to **Settings** > **Languages & Frameworks** > **Android SDK**. See the location next to **Android SDK Location**.
 
-<ContentSpotlight
-  alt="Android SDK location in Android Studio Settings."
-  src="/static/images/android-studio/windows-android-sdk-location.webp"
-  className="max-w-[400px]"
-/>
+![Android SDK location in Android Studio Settings.](../../../../public/static/images/android-studio/windows-android-sdk-location.webp)
 
 </Collapsible>
 
@@ -164,11 +140,7 @@ The command will output all user environment variables. In this list, see if `AN
 
 To add platform-tools to the Path, go to **Windows Control Panel** > **User Accounts** > **User Accounts** (again) > **Change my environment variables** > **Path** > **Edit** > **New** and add the path to the platform-tools to the list as shown below:
 
-<ContentSpotlight
-  alt="Setting up platform-tools user variable."
-  src="/static/images/android-studio/windows-platform-tools-path.webp"
-  className="max-w-[480px]"
-/>
+![Setting up platform-tools user variable.](../../../../public/static/images/android-studio/windows-platform-tools-path.webp)
 
 <Collapsible summary="How to find installed platform-tools location">
 
