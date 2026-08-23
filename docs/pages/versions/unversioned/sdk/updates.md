@@ -9,15 +9,21 @@ searchRank: 100
 searchPosition: 1
 ---
 
-
-
-`expo-updates` is a library that enables your app to manage remote updates to your application code. It communicates with the configured remote update service to get information about available updates.
+* `expo-updates`
+  * == library /
+    * allows
+      * your app can manage -- , by communicating with the configured remote update service, -- remote updates | your application code
 
 ## Installation
 
-The `expo-updates` library can be automatically configured using [EAS Update](/eas-update/introduction/), which is a hosted service that manages and serves updates to your app. To get started with EAS Update, follow the instructions in the [Get started](/eas-update/getting-started/) guide.
+* ways to configure `expo-updates`
+  * AUTOMATICALLY -- , thanks to [EAS Update](/eas-update/introduction/), -- configured
+  * MANUALLY
+    * use cases
+      * require a DIFFERENT remote update service
+      * configuration is ONLY specified | native files
 
-Alternatively, it is also possible to configure the `expo-updates` library manually in cases where a different remote update service is required or configuration is only specified in native files.
+TODO: 
 
 <Collapsible summary="Manual installation, configuration, and custom remote update services">
 
@@ -30,7 +36,8 @@ If using [app config](/workflow/configuration/) for configuration, this library 
 - [`updates.url`](../config/app/#updates): a URL of a remote service implementing the [Expo Updates protocol](/technical-specs/expo-updates-1/)
 - [`runtimeVersion`](../config/app/#runtimeversion): a [runtime version](#runtime-version)
 
-The remote service must implement the [Expo Updates protocol](/technical-specs/expo-updates-1/). [EAS Update](/eas-update/introduction) is one such service, but it is also possible to use this library with a custom server.
+The remote service must implement the [Expo Updates protocol](/technical-specs/expo-updates-1/)
+* [EAS Update](/eas-update/introduction) is one such service, but it is also possible to use this library with a custom server.
 
 <BoxLink
   title="Custom Expo Updates Server"

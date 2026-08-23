@@ -3,20 +3,29 @@ title: Upgrade Expo SDK
 description: Learn how to incrementally upgrade the Expo SDK version in your project.
 ---
 
+* recommendations
+  * ⚠️upgrade SDK versions incrementally +1 ⚠️
+    * Reason:🧠avoid pinpoint breakages🧠
+  * | production apps,
+    * use [development builds](../develop/development-builds/) 
+      * Reason:🧠EAS services tends to be MUCH longer SDK version backward compatible🧠 
 
-> **info** We recommend upgrading SDK versions incrementally, one at a time. Doing so will help you pinpoint breakages and issues that arise during the upgrade process.
+* Expo Go
+  * ⚠️ONLY supports the latest SDK version⚠️
 
-With a new SDK release, the latest version enters the current release status. This applies to Expo Go as it only supports the latest SDK version and previous versions are no longer supported. We recommend using [development builds](/develop/development-builds/introduction/) for production apps as the backwards compatibility for older SDK versions on EAS services tends to be much longer, but not forever.
+## How to upgrade -- to -- the latest SDK version?
 
-If you are looking to install a specific version of Expo Go, visit [expo.dev/go](https://expo.dev/go) or use [`expo-go` CLI](/develop/tools/#expo-go-cli). It supports downloads for Android devices/emulators and iOS simulators. However, due to iOS platform restrictions, only the latest version of Expo Go is available for installation on physical iOS devices.
+### -- via -- AI coding agent
 
-## How to upgrade to the latest SDK version
+* steps
+  * install [Expo Skills](../skills) 
+  * use the [`expo-upgrade` skill](../skills#available-expo-skills)
+  * review any proposed changes
+  * check the SDK changelog -- for -- version-specific instructions
 
-### Upgrade with an AI coding agent
+### MANUALLY
 
-If you use an AI coding agent, install [Expo Skills](/skills/) and use the [`upgrading-expo` skill](/skills/#available-expo-skills). The skill provides guidelines for upgrading Expo SDK versions and fixing dependency issues. Review any proposed changes and check the SDK changelog for version-specific instructions.
-
-### Upgrade manually
+TODO:
 
 <Step label="1">
 
@@ -33,7 +42,8 @@ Install the new version of the Expo package:
   }}
 />
 
-Depending on which SDK you're upgrading to, substitute `expo@^57.0.0` with the version range of the Expo SDK version you're targeting. For example, `expo@^57.0.0` stands for SDK 57.
+Depending on which SDK you're upgrading to, substitute `expo@^57.0.0` with the version range of the Expo SDK version you're targeting
+* For example, `expo@^57.0.0` stands for SDK 57.
 
 </Step>
 
@@ -41,7 +51,8 @@ Depending on which SDK you're upgrading to, substitute `expo@^57.0.0` with the v
 
 #### Upgrade dependencies
 
-Upgrade all dependencies to match the installed SDK version. Then run [`expo-doctor`](/develop/tools/#expo-doctor) command to check for common problems.
+Upgrade all dependencies to match the installed SDK version
+* Then run [`expo-doctor`](/develop/tools/#expo-doctor) command to check for common problems.
 
 <Terminal
   cmd={['$ npx expo install --fix', '', '$ npx expo-doctor']}
@@ -54,8 +65,11 @@ Upgrade all dependencies to match the installed SDK version. Then run [`expo-doc
 
 #### Update native projects
 
-- **If you use [Continuous Native Generation](/workflow/continuous-native-generation/)**: Delete the **android** and **ios** directories if you generated them for a previous SDK version in your local project directory. They'll be re-generated next time you run a build, either with `npx expo run:ios`, `npx expo prebuild`, or with EAS Build.
-- **If you don't use [Continuous Native Generation](/workflow/continuous-native-generation/)**: Run `npx pod-install` if you have an **ios** directory. Apply any relevant changes from the [Native project upgrade helper](/bare/upgrade/). Alternatively, you could consider [adopting prebuild](/guides/adopting-prebuild/) for easier upgrades in the future.
+- **If you use [Continuous Native Generation](/workflow/continuous-native-generation/)**: Delete the **android** and **ios** directories if you generated them for a previous SDK version in your local project directory
+* They'll be re-generated next time you run a build, either with `npx expo run:ios`, `npx expo prebuild`, or with EAS Build.
+- **If you don't use [Continuous Native Generation](/workflow/continuous-native-generation/)**: Run `npx pod-install` if you have an **ios** directory
+* Apply any relevant changes from the [Native project upgrade helper](/bare/upgrade/)
+* Alternatively, you could consider [adopting prebuild](/guides/adopting-prebuild/) for easier upgrades in the future.
 
 </Step>
 
@@ -63,13 +77,16 @@ Upgrade all dependencies to match the installed SDK version. Then run [`expo-doc
 
 #### Follow the release notes for any other instructions
 
-Read the [SDK changelogs](#sdk-changelogs) for the SDK version you are upgrading to. They contain important information about breaking changes, deprecations, and other changes that may affect your app. Refer to the "Upgrading your app" section at the bottom of the release notes page for any additional instructions.
+Read the [SDK changelogs](#sdk-changelogs) for the SDK version you are upgrading to
+* They contain important information about breaking changes, deprecations, and other changes that may affect your app
+* Refer to the "Upgrading your app" section at the bottom of the release notes page for any additional instructions.
 
 </Step>
 
 ## SDK Changelogs
 
-Each SDK announcement release notes post contains information about deprecations, breaking changes, and anything else that might be unique to that particular SDK version. When upgrading, be sure to check these out to make sure you don't miss anything.
+Each SDK announcement release notes post contains information about deprecations, breaking changes, and anything else that might be unique to that particular SDK version
+* When upgrading, be sure to check these out to make sure you don't miss anything.
 
 - **SDK 57**: [Release notes](https://expo.dev/changelog/sdk-57)
 - **SDK 56**: [Release notes](https://expo.dev/changelog/sdk-56)

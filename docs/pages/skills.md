@@ -4,7 +4,7 @@ sidebar_title: Expo Skills
 description: A list of official AI agent skills provided by Expo for building, deploying, and debugging Expo and React Native apps.
 ---
 
-* Expo Skills 
+* [Expo Skills](https://github.com/expo/skills) 
   * == structured instruction files /
     * teach AI agents (Claude Code, Cursor, Codex, other), about Expo & React Native apps,
       * how to 
@@ -12,85 +12,67 @@ description: A list of official AI agent skills provided by Expo for building, d
         * deploy
         * debug
 
-## Install Expo Skills
+## how to install?
 
-TODO: 
-<Tabs>
+### | Claude Code
 
-<Tab label="Claude Code">
+```bash
+$ /plugin install expo@claude-plugins-official
+```
 
-Run the following command to install the official Expo plugin from the `claude-plugins-official` marketplace:
+### | Codex
 
-<Terminal cmd={['$ /plugin install expo@claude-plugins-official']} />
+* ways
+  * `$ codex plugin add expo@openai-curated`, OR
+  * | Codex,
+    * \> "/plugins" > `openai-curated` marketplace > install `expo` 
 
-</Tab>
+### | Cursor
 
-<Tab label="Codex">
+* if you have 
+  * ALREADY installed Expo Skills -- for -- Claude Code, Codex, OR ANOTHER agent & Cursor vX.Y -> imported AUTOMATICALLY
+    * "Settings" > "Rules, Skills, Subagents" > check "Skills" list
+    * requirements
+      * ⚠️**Include third-party Plugins, Skills, and other configs** is enabled⚠️
+  * NOT YET installed Expo Skills -> run -- via -- [skills CLI](https://skills.sh/docs/cli)
 
-From the command line, run the following command to install the official Expo plugin:
+      ```bash
+      $ npx skills add expo/skills
+      ---
+      $ yarn dlx skills add expo/skills
+      ---
+      $ pnpm dlx skills add expo/skills
+      ---
+      $ bunx skills add expo/skills
+      ```
 
-<Terminal cmd={['$ codex plugin add expo@openai-curated']} />
+* Skills 
+  * ❌| `/`, are NOT shown❌
+    * Reason:🧠they work -- via -- auto-discovery / you ask the agent Expo-related questions🧠
 
-You can also open `/plugins` in Codex and install `expo` from the `openai-curated` marketplace.
+### | OTHER agents
 
-</Tab>
+* -- via -- [skills CLI](https://skills.sh/docs/cli)
 
-<Tab label="Cursor">
-
-{/* vale off */}
-
-If you have already installed Expo Skills for Claude Code, Codex, or another agent, recent versions of Cursor import them automatically
-* Open **Settings** > **Rules, Skills, Subagents**, make sure **Include third-party Plugins, Skills, and other configs** is enabled (it is on by default), and the Expo Skills appear in the **Skills** list.
-
-{/* vale on */}
-
-If you have not installed Expo Skills yet, run one of the following with the [skills CLI](https://skills.sh/docs/cli):
-
-<Terminal
-  cmd={{
-    npm: ['$ npx skills add expo/skills'],
-    yarn: ['$ yarn dlx skills add expo/skills'],
-    pnpm: ['$ pnpm dlx skills add expo/skills'],
-    bun: ['$ bunx skills add expo/skills'],
-  }}
-/>
-
-{/* vale off */}
-
-Then reopen Cursor and verify the skills appear under **Settings** > **Rules, Skills, Subagents** > **Skills**.
-
-{/* vale on */}
-
-> **important** Skills in Cursor are not shown in the slash command (`/`) menu
-* They work via auto-discovery when you ask the agent Expo-related questions.
-
-</Tab>
-
-<Tab label="Other agents">
-
-Use the [skills CLI](https://skills.sh/docs/cli) to add Expo Skills to any compatible agent:
-
-<Terminal
-  cmd={{
-    npm: ['$ npx skills add expo/skills'],
-    yarn: ['$ yarn dlx skills add expo/skills'],
-    pnpm: ['$ pnpm dlx skills add expo/skills'],
-    bun: ['$ bunx skills add expo/skills'],
-  }}
-/>
-
-</Tab>
-
-</Tabs>
+  ```bash
+  $ npx skills add expo/skills
+  ---
+  $ yarn dlx skills add expo/skills
+  ---
+  $ pnpm dlx skills add expo/skills
+  ---
+  $ bunx skills add expo/skills
+  ```
 
 ## Available Expo Skills
 
-The following skills are available in the `expo` plugin:
+* -- through -- `expo` plugin
 
-<ExpoSkillsTable />
+* [AVAILABLE ones](https://github.com/expo/skills/tree/main/plugins/expo/skills)
 
 ## Example prompts
 
+TODO: 
 Try the following prompts after installing Expo Skills
 * Your AI agent will automatically use the appropriate skill:
 
@@ -104,23 +86,3 @@ Try the following prompts after installing Expo Skills
 | How do I deploy my Expo app to the Apple App Store?    | `expo-deployment`         |
 | Create a CI/CD workflow that builds on every PR        | `expo-cicd-workflows`     |
 | Upgrade my project to the latest Expo SDK              | `upgrading-expo`          |
-
-## Additional resources
-
-<BoxLink
-  title={
-    <>
-      <CODE>expo/skills</CODE> GitHub repository
-    </>
-  }
-  description="Browse the source for all available Expo Skills, or report issues."
-  href="https://github.com/expo/skills"
-  Icon={GithubIcon}
-/>
-
-<BoxLink
-  title="Expo MCP Server"
-  description="Companion AI tooling that gives coding agents direct access to Expo and EAS services."
-  href="/mcp/"
-  Icon={BookOpen02Icon}
-/>
