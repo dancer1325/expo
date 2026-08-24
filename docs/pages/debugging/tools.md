@@ -234,7 +234,9 @@ If you are using Expo SDK 49 and earlier, you can use the React Native Debugger
 
 You can install it via the [release page](https://github.com/jhen0409/react-native-debugger/releases), or if you're on macOS you can run:
 
-<Terminal cmd={['$ brew install react-native-debugger']} />
+```bash
+$ brew install react-native-debugger
+```
 
 ### Startup
 

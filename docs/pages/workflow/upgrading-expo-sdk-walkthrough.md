@@ -25,83 +25,64 @@ description: Learn how to incrementally upgrade the Expo SDK version in your pro
 
 ### MANUALLY
 
-TODO:
+#### 1. Upgrade the Expo SDK
 
-<Step label="1">
+```bash
+# npm install expo@^X.Y.Z
 
-#### Upgrade the Expo SDK
+$ npm install expo@^57.0.0
+---
+$ yarn add expo@^57.0.0
+---
+$ pnpm add expo@^57.0.0
+---
+$ bun install expo@^57.0.0
+```
 
-Install the new version of the Expo package:
+#### 2. Upgrade dependencies / match the installed SDK version 
 
-<Terminal
-  cmd={{
-    npm: ['$ npm install expo@^57.0.0'],
-    yarn: ['$ yarn add expo@^57.0.0'],
-    pnpm: ['$ pnpm add expo@^57.0.0'],
-    bun: ['$ bun install expo@^57.0.0'],
-  }}
-/>
+```bash
+$ npx expo install --fix && npx expo-doctor
+```
 
-Depending on which SDK you're upgrading to, substitute `expo@^57.0.0` with the version range of the Expo SDK version you're targeting
-* For example, `expo@^57.0.0` stands for SDK 57.
+* [`expo-doctor`](../develop/tools.md#expo-doctor)
 
-</Step>
+#### 3. Update native projects
 
-<Step label="2">
+* if you 
+  * use [CNG](continuous-native-generation) -> 
+    * delete the "android/" & "ios/"
+      * Reason:🧠generated -- for -- a PREVIOUS SDK version🧠
+    * | NEXT build-time, 
+      * they'll be re-generated
+  * do NOT use [CNG](continuous-native-generation) 
+    * & you have an "ios/" -> run `npx pod-install` 
+    * ALTERNATIVES
+      * ALTERNATIVE1: follow [native bare project upgrade](../bare/upgrade)
+      * ALTERNATIVE2: [adopt prebuild](../guides/adopting-prebuild)
 
-#### Upgrade dependencies
+#### 4. check the release notes
 
-Upgrade all dependencies to match the installed SDK version
-* Then run [`expo-doctor`](/develop/tools/#expo-doctor) command to check for common problems.
-
-<Terminal
-  cmd={['$ npx expo install --fix', '', '$ npx expo-doctor']}
-  cmdCopy="npx expo install --fix && npx expo-doctor"
-/>
-
-</Step>
-
-<Step label="3">
-
-#### Update native projects
-
-- **If you use [Continuous Native Generation](/workflow/continuous-native-generation/)**: Delete the **android** and **ios** directories if you generated them for a previous SDK version in your local project directory
-* They'll be re-generated next time you run a build, either with `npx expo run:ios`, `npx expo prebuild`, or with EAS Build.
-- **If you don't use [Continuous Native Generation](/workflow/continuous-native-generation/)**: Run `npx pod-install` if you have an **ios** directory
-* Apply any relevant changes from the [Native project upgrade helper](/bare/upgrade/)
-* Alternatively, you could consider [adopting prebuild](/guides/adopting-prebuild/) for easier upgrades in the future.
-
-</Step>
-
-<Step label="4">
-
-#### Follow the release notes for any other instructions
-
-Read the [SDK changelogs](#sdk-changelogs) for the SDK version you are upgrading to
-* They contain important information about breaking changes, deprecations, and other changes that may affect your app
-* Refer to the "Upgrading your app" section at the bottom of the release notes page for any additional instructions.
-
-</Step>
+* [SDK changelogs](#sdk-changelogs)
+* Reason:🧠contain info about 
+  * breaking changes
+  * deprecations
+  * ...🧠
 
 ## SDK Changelogs
 
-Each SDK announcement release notes post contains information about deprecations, breaking changes, and anything else that might be unique to that particular SDK version
-* When upgrading, be sure to check these out to make sure you don't miss anything.
-
-- **SDK 57**: [Release notes](https://expo.dev/changelog/sdk-57)
-- **SDK 56**: [Release notes](https://expo.dev/changelog/sdk-56)
-- **SDK 55**: [Release notes](https://expo.dev/changelog/sdk-55)
-- **SDK 54**: [Release notes](https://expo.dev/changelog/sdk-54)
+* [here](https://github.com/dancer1325/expo-website)
+  - **SDK 57**: [Release notes](https://github.com/dancer1325/expo-website/blob/main/docs/changelog_sdk-57.md)
+  - **SDK 56**: [Release notes](https://github.com/dancer1325/expo-website/blob/main/docs/changelog_sdk-56.md)
+  - **SDK 55**: [Release notes](https://github.com/dancer1325/expo-website/blob/main/docs/changelog_sdk-55.md)
+  - **SDK 54**: [Release notes](https://github.com/dancer1325/expo-website/blob/main/docs/changelog_sdk-54.md)
+  - **SDK 53**: [Release notes](https://github.com/dancer1325/expo-website/blob/main/docs/changelog_sdk-53.md)
+  - **SDK 52**: [Release notes](https://github.com/dancer1325/expo-website/blob/main/docs/changelog_2024-11-12-sdk-52.md)
 
 ### Deprecated SDK Version Changelogs
 
-The following blog posts may included outdated information, but they are still useful for reference if you happen to fall far behind on SDK upgrades.
+TODO: 
 
-<Collapsible summary="See a full list of deprecated SDK release changelogs">
-
-- **SDK 53**: [Release notes](https://expo.dev/changelog/sdk-53)
-- **SDK 52**: [Release notes](https://expo.dev/changelog/2024-11-12-sdk-52)
-  - **React Native 0.77 is available with Expo SDK 52**. To upgrade, see these [Release notes](https://expo.dev/changelog/2025/01-21-react-native-0.77).
 - **SDK 51**: [Release notes](https://expo.dev/changelog/2024-05-07-sdk-51)
 - **SDK 50**: [Release notes](https://expo.dev/changelog/2024-01-18-sdk-50)
 - **SDK 49**: [Release notes](https://blog.expo.dev/expo-sdk-49-c6d398cdf740)
@@ -119,5 +100,3 @@ The following blog posts may included outdated information, but they are still u
 - **SDK 37**: [Release notes](https://dev.to/expo/expo-sdk-37-is-now-available-69g)
 - **SDK 36**: [Release notes](https://blog.expo.dev/expo-sdk-36-is-now-available-b91897b437fe)
 - **SDK 35**: [Release notes](https://blog.expo.dev/expo-sdk-35-is-now-available-beee0dfafbf4)
-
-</Collapsible>
