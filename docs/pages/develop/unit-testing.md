@@ -6,13 +6,15 @@ description: Learn how to set up and configure the jest-expo library to write un
 
 
 
-[Jest](https://jestjs.io) is the most widely used unit and snapshot JavaScript testing framework. In this guide, you will learn how to set up Jest in your project, write a unit test, write a snapshot test, and best practices for structuring your tests when using Jest with React Native.
+[Jest](https://jestjs.io) is the most widely used unit and snapshot JavaScript testing framework
+* In this guide, you will learn how to set up Jest in your project, write a unit test, write a snapshot test, and best practices for structuring your tests when using Jest with React Native.
 
 You will also use the [`jest-expo`](https://github.com/expo/expo/tree/main/packages/jest-expo) library, which is a Jest preset that mocks the native part of the Expo SDK and handles most of the configuration required for your Expo project.
 
 ## Installation and configuration
 
-If you have created your project using the [default Expo template](/get-started/create-a-project/), you can skip this section. The `jest-expo` and other required dev dependencies are already installed and configured.
+If you have created your project using the [default Expo template](/get-started/create-a-project/), you can skip this section
+* The `jest-expo` and other required dev dependencies are already installed and configured.
 
 <Collapsible summary={<>Manual installation instructions for <CODE>jest-expo</CODE></>}>
 
@@ -20,7 +22,8 @@ If you have created your project using [different template](/more/create-expo/#-
 
 <Step label="1">
 
-Install `jest-expo` and other required dev dependencies in your project. Run the following command from your project's root directory:
+Install `jest-expo` and other required dev dependencies in your project
+* Run the following command from your project's root directory:
 
 <Terminal
   cmd={[
@@ -58,7 +61,8 @@ Open **package.json**, add a script for running tests, and add the preset for us
 
 <Collapsible summary={<>Additional configuration for using <CODE>transformIgnorePatterns</CODE></>}>
 
-You can transpile node modules your project uses by configuring [`transformIgnorePatterns`](https://jestjs.io/docs/configuration#transformignorepatterns-arraystring) in your **package.json**. This property takes a regex pattern as its value:
+You can transpile node modules your project uses by configuring [`transformIgnorePatterns`](https://jestjs.io/docs/configuration#transformignorepatterns-arraystring) in your **package.json**
+* This property takes a regex pattern as its value:
 
 <Tabs>
 
@@ -94,13 +98,16 @@ You can transpile node modules your project uses by configuring [`transformIgnor
 
 </Tabs>
 
-Jest has many configuration options, but the above configuration should cover most of your needs. However, you can always add to this pattern list. For more details, see [Configuring Jest](https://jestjs.io/docs/configuration).
+Jest has many configuration options, but the above configuration should cover most of your needs
+* However, you can always add to this pattern list
+* For more details, see [Configuring Jest](https://jestjs.io/docs/configuration).
 
 </Collapsible>
 
 ## Install React Native Testing Library
 
-The [React Native Testing Library (`@testing-library/react-native`)](https://callstack.github.io/react-native-testing-library/) is a lightweight solution for testing React Native components. It provides utility functions and works with Jest.
+The [React Native Testing Library (`@testing-library/react-native`)](https://callstack.github.io/react-native-testing-library/) is a lightweight solution for testing React Native components
+* It provides utility functions and works with Jest.
 
 To install it, run the following command:
 
@@ -114,11 +121,14 @@ To install it, run the following command:
   ]}
 />
 
-> **warning** **Deprecated:** If you are using the default Expo template, after installing this library, you can uninstall the `react-test-renderer` and `@types/react-test-renderer` from your project's dev dependencies. The `react-test-renderer` has been deprecated and will no longer be maintained in the future. See [React's documentation for more information](https://react.dev/warnings/react-test-renderer).
+> **warning** **Deprecated:** If you are using the default Expo template, after installing this library, you can uninstall the `react-test-renderer` and `@types/react-test-renderer` from your project's dev dependencies
+* The `react-test-renderer` has been deprecated and will no longer be maintained in the future
+* See [React's documentation for more information](https://react.dev/warnings/react-test-renderer).
 
 ## Unit test
 
-A unit test checks the smallest unit of code, usually a function. To write your first unit test, take a look at the following example:
+A unit test checks the smallest unit of code, usually a function
+* To write your first unit test, take a look at the following example:
 
 <Step label="1">
 
@@ -154,7 +164,10 @@ const styles = StyleSheet.create({
 
 <Step label="2">
 
-Create a **\_\_tests\_\_** directory at the root of your project's directory. If this directory already exists in your project, use that. Then, create a new file called **HomeScreen-test.tsx**. The `jest-expo` preset customizes the Jest configuration to also identify files with **-test.ts|tsx** extensions as tests.
+Create a **\_\_tests\_\_** directory at the root of your project's directory
+* If this directory already exists in your project, use that
+* Then, create a new file called **HomeScreen-test.tsx**
+* The `jest-expo` preset customizes the Jest configuration to also identify files with **-test.ts|tsx** extensions as tests.
 
 Add the following example code in **HomeScreen-test.tsx**:
 
@@ -170,7 +183,9 @@ describe('<HomeScreen />', () => {
 });
 ```
 
-In the above example, the `getByText` query helps your tests find relevant element in your app's user interface and make assertion whether or not the certain element exists. The React Native Testing Library provides this query, and each [query variant](https://callstack.github.io/react-native-testing-library/docs/api/queries#query-variant) differs in its return type. For more examples and detailed API information, see the React Native Testing Library's [Queries API reference](https://callstack.github.io/react-native-testing-library/docs/api/queries).
+In the above example, the `getByText` query helps your tests find relevant element in your app's user interface and make assertion whether or not the certain element exists
+* The React Native Testing Library provides this query, and each [query variant](https://callstack.github.io/react-native-testing-library/docs/api/queries#query-variant) differs in its return type
+* For more examples and detailed API information, see the React Native Testing Library's [Queries API reference](https://callstack.github.io/react-native-testing-library/docs/api/queries).
 
 </Step>
 
@@ -186,7 +201,8 @@ You will see one test being passed.
 
 ## Structure your tests
 
-Organizing your test files is important to make them easier to maintain. A common pattern is creating a **\_\_tests\_\_** directory and putting all your tests inside.
+Organizing your test files is important to make them easier to maintain
+* A common pattern is creating a **\_\_tests\_\_** directory and putting all your tests inside.
 
 An example structure of tests next to the **components** directory is shown below:
 
@@ -198,7 +214,8 @@ An example structure of tests next to the **components** directory is shown belo
   ]}
 />
 
-Alternatively, you can have multiple **\_\_tests\_\_** sub-directories for different areas of your project. For example, create a separate test directory for **components**, and so on:
+Alternatively, you can have multiple **\_\_tests\_\_** sub-directories for different areas of your project
+* For example, create a separate test directory for **components**, and so on:
 
 <FileTree
   files={[
@@ -233,7 +250,8 @@ Run `npm run test` command, and you will see a snapshot created inside **\_\_tes
 
 ## Code coverage reports
 
-Code coverage reports can help you understand how much of your code is tested. To see the code coverage report in your project using the HTML format, in **package.json**, under `jest`, set the `collectCoverage` to true and use `collectCoverageFrom` to specify a list of files to ignore when collecting the coverage.
+Code coverage reports can help you understand how much of your code is tested
+* To see the code coverage report in your project using the HTML format, in **package.json**, under `jest`, set the `collectCoverage` to true and use `collectCoverageFrom` to specify a list of files to ignore when collecting the coverage.
 
 ```json package.json
 "jest": {
@@ -250,13 +268,17 @@ Code coverage reports can help you understand how much of your code is tested. T
 }
 ```
 
-Run `npm run test`. You will see a **coverage** directory created in your project. Find the **lcov-report/index.html** and open it in a browser to see the coverage report.
+Run `npm run test`
+* You will see a **coverage** directory created in your project
+* Find the **lcov-report/index.html** and open it in a browser to see the coverage report.
 
-> Usually, we don't recommend uploading **index.html** file to git. Add `coverage/**/*` in the **.gitignore** file to prevent it from being tracked.
+> Usually, we don't recommend uploading **index.html** file to git
+* Add `coverage/**/*` in the **.gitignore** file to prevent it from being tracked.
 
 ## Jest flows (optional)
 
-You can also use different flows to run your tests. Below are a few example scripts that you can try:
+You can also use different flows to run your tests
+* Below are a few example scripts that you can try:
 
 ```json package.json
 "scripts": {

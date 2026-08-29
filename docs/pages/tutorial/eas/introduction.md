@@ -4,7 +4,7 @@ sidebar_title: Introduction
 description: An introduction to the tutorial for building apps for Android and iOS using Expo Application Services (EAS) that covers the Build, Update, and Submit workflows.
 ---
 
-
+If you are looking to learn about building your Android and iOS apps using Expo Application Services (EAS), this tutorial covers the EAS Build, Update, and Submit workflows.
 
 ## About this tutorial
 

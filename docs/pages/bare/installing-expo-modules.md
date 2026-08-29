@@ -21,14 +21,10 @@ Depending on how you [initialized the project](/bare/overview/), there are two w
 
 To install and use Expo modules, the easiest way to get up and running is with the `install-expo-modules` command.
 
-<InstallSection
-  packageName="expo"
-  cmd={[
-    '# Install and configure the expo package automatically',
-    '$ npx install-expo-modules@latest',
-  ]}
-  hideBareInstructions
-/>
+```bash
+# Install and configure the expo package automatically
+$ npx install-expo-modules@latest
+```
 
 - <YesIcon small /> **When the command succeeds**, you will be able to add any Expo module in your
   app! Proceed to [Usage](#usage) for more information.
@@ -67,17 +63,13 @@ Save all of your changes and update your iOS Deployment Target in Xcode to `iOS 
 
 The last step is to install the project's CocoaPods again to pull in Expo modules that are detected by `use_expo_modules!` directive that we added to the **Podfile**:
 
-<InstallSection
-  packageName="expo"
-  cmd={[
-    '# Install pods',
-    '$ npx pod-install',
-    '',
-    '# Alternatively, the run command will install them for you',
-    '$ npx expo run:ios',
-  ]}
-  hideBareInstructions
-/>
+```bash
+# Install pods
+$ npx pod-install
+
+# Alternatively, the run command will install them for you
+$ npx expo run:ios
+```
 
 ### Configure Expo CLI for bundling on Android and iOS
 

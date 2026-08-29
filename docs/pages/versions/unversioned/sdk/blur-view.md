@@ -7,101 +7,46 @@ iconUrl: '/static/images/packages/expo-blur.png'
 platforms: ['android', 'ios', 'tvos', 'web', 'expo-go']
 ---
 
+* == React component /
+  * blurs everything | view
+  * uses
+    * navigation bars
+    * tab bars
+    * modals
 
-A React component that blurs everything underneath the view. Common usage of this is for navigation bars, tab bars, and modals.
+## Known issues
 
-> **info** In SDK 55 and later, `expo-blur` is stable on Android, but some code changes are required for the `BlurView` to work. See the [Android support](#android-support) section to learn more.
-
-#### Known issues
-
-The blur effect does not update when `BlurView` is rendered before dynamic content is rendered using, for example, `FlatList`. To fix this, make sure that `BlurView` is rendered after the dynamic content component. For example:
-
-```jsx
-<View>
-  <FlatList />
-  <BlurView />
-</View>
-```
+* AFTER the dynamic content component,  render `BlurView`
+  * Reason:🧠OTHERWISE, blur effect does NOT update🧠
 
 ## Installation
 
-<APIInstallSection />
+```bash
+npx expo install expo-blur
+---
+yarn expo install expo-blur
+---
+pnpm expo install expo-blur
+---
+bun expo install expo-blur
+```
 
 ## Usage
 
-<Collapsible summary={<>Basic iOS and web-only <CODE>BlurView</CODE> usage</>}>
-  This is the legacy way of creating a `BlurView`, which will result in a blur only on iOS. On Android, this will result in a view with a semi-transparent background.
+* legacy way
+  * ALLOWED |
+    * iOS
+    * web
+  * NOT ALLOWED |
+    * Android
+      * ONLY semi-transparent background
 
-  <SnackInline label='Basic iOS-only BlurView usage' dependencies={['expo-blur']}>
+TODO: 
 
-```jsx
-
-export default function App() {
-  const text = 'Hello, my container is blurring contents underneath!';
-  return (
-    <View style={styles.container}>
-      <View style={styles.background}>
-        {[...Array(20).keys()].map(i => (
-          <View
-            key={`box-${i}`}
-            style={[styles.box, i % 2 === 1 ? styles.boxOdd : styles.boxEven]}
-          />
-        ))}
-      </View>
-      <BlurView intensity={100} style={styles.blurContainer}>
-        <Text style={styles.text}>{text}</Text>
-      </BlurView>
-      <BlurView intensity={80} tint="light" style={styles.blurContainer}>
-        <Text style={styles.text}>{text}</Text>
-      </BlurView>
-      <BlurView intensity={90} tint="dark" style={styles.blurContainer}>
-        <Text style={[styles.text, { color: '#fff' }]}>{text}</Text>
-      </BlurView>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  blurContainer: {
-    flex: 1,
-    padding: 20,
-    margin: 16,
-    textAlign: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    borderRadius: 20,
-  },
-  background: {
-    flex: 1,
-    flexWrap: 'wrap',
-    ...StyleSheet.absoluteFill,
-  },
-  box: {
-    width: '25%',
-    height: '20%',
-  },
-  boxEven: {
-    backgroundColor: 'orangered',
-  },
-  boxOdd: {
-    backgroundColor: 'gold',
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-});
-```
-
-  </SnackInline>
-
-</Collapsible>
 <Collapsible summary={<>Basic <CODE>BlurView</CODE> usage with Android support</>}>
   To blur the background of a view on Android, wrap the content to be blurred in a `BlurTargetView` component and pass its ref to the `BlurView`.
-  > **info** **Note:** Notice that, as long as all of the `BlurViews` fit into the bounds of a single `BlurTargetView`, you can use the single `BlurTargetView` for multiple `BlurViews`. This is more efficient than creating multiple `BlurTargetViews`.
+  > **info** **Note:** Notice that, as long as all of the `BlurViews` fit into the bounds of a single `BlurTargetView`, you can use the single `BlurTargetView` for multiple `BlurViews`
+* This is more efficient than creating multiple `BlurTargetViews`.
   <SnackInline label='Basic BlurView usage with Android support' dependencies={['expo-blur']}>
 
 ```tsx
@@ -188,15 +133,19 @@ const styles = StyleSheet.create({
 
 ## Android support
 
-The blurring feature is stable on Android. There are a few things to keep in mind when migrating:
+* | SDK v55+,
+  * `expo-blur` is stable | Android 
+    * ⚠️BUT require some changes⚠️
 
 ### API
 
-To blur the background of a view on Android, wrap the content to be blurred in a `BlurTargetView` component and pass its ref to the `BlurView`. You can see an example in the [Usage](#basic-blurview-usage-with-android-support) section.
+To blur the background of a view on Android, wrap the content to be blurred in a `BlurTargetView` component and 
+pass its ref to the `BlurView`
 
 ### Performance
 
-The blur can be achieved efficiently only by using the [RenderNode](https://developer.android.com/reference/android/graphics/RenderNode) Android API, which was introduced in Android SDK 31 (Android 12.0). Due to this, on older versions of Android `expo-blur` uses the much less efficient [RenderScript](https://developer.android.com/guide/topics/renderscript/compute) API.
+The blur can be achieved efficiently only by using the [RenderNode](https://developer.android.com/reference/android/graphics/RenderNode) Android API, which was introduced in Android SDK 31 (Android 12.0)
+* Due to this, on older versions of Android `expo-blur` uses the much less efficient [RenderScript](https://developer.android.com/guide/topics/renderscript/compute) API.
 If you want to avoid the performance penalty on older platforms you can use the `dimezisBlurViewSdk31Plus` [BlurMethod](#blurmethod-1)
 which will only blur on newer versions of Android and fall back to the [`none`](#blurmethod-1) on older versions.
 
@@ -209,4 +158,6 @@ which will only blur on newer versions of Android and fall back to the [`none`](
 
 ## Using `borderRadius` with `BlurView`
 
-When using `BlurView` on Android and iOS, the `borderRadius` property is not applied when provided explicitly. To fix this, you can use the `overflow: 'hidden'` style since `BlurView` inherits props from `<View>`. See [Usage](#usage) for an example.
+When using `BlurView` on Android and iOS, the `borderRadius` property is not applied when provided explicitly
+* To fix this, you can use the `overflow: 'hidden'` style since `BlurView` inherits props from `<View>`
+* See [Usage](#usage) for an example.

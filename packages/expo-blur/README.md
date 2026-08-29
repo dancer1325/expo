@@ -7,36 +7,33 @@
   </a>
 </p>
 
-A component that renders a native blur view on iOS and falls back to a semi-transparent view on Android. A common usage of this is for navigation bars, tab bars, and modals.
+* component /
+  * renders 
+    * | iOS, Anative blur view 
+    * | Android, semi-transparent view 
+* uses
+  * navigation bars
+  * tab bars
+  * modals
 
 # API documentation
 
-- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/blur-view/)
-- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/blur-view/)
+* [here](../../docs/pages/versions/unversioned/sdk/blur-view.md)
 
-# Installation in managed Expo projects
+# | bare React Native projects, how to install? 
 
-For [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/blur-view/).
+* configure the [`expo` package](../../docs/pages/bare/installing-expo-modules.md)
 
-# Installation in bare React Native projects
-
-For bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.
-
-### Add the package to your npm dependencies
+## Add the package | your npm dependencies
 
 ```
 npx expo install expo-blur
 ```
 
-### Configure for Android
+## Configure -- for -- Android
 
-> [!note]
-> This package only supports iOS. On Android, a plain `View` with a translucent background will be rendered.
+* [here](../../docs/pages/versions/unversioned/sdk/blur-view.md#android-support)
 
-### Configure for iOS
+## Configure -- for -- iOS
 
-Run `npx pod-install` after installing the npm package.
-
-# Contributing
-
-Contributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).
+* `npx pod-install`

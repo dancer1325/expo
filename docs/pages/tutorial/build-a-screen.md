@@ -4,70 +4,53 @@ description: In this tutorial, learn how to use components such as React Native'
 ---
 
 
-In this chapter, we'll create the first screen of the StickerSmash app.
+* goal
+  * create the first screen | StickerSmash app
 
-<ContentSpotlight
-  alt="Initial layout."
-  src="/static/images/tutorial/initial-layout.png"
-  className="max-w-[300px]"
-/>
+* [video](https://www.youtube.com/watch?v=3rcOP8xDwTQ)
 
-The screen above displays an image and two buttons. The app user can select an image using one of the two buttons. The first button allows the user to select an image from their device. The second button allows the user to continue with a default image provided by the app.
+* steps
+  * [Break down the screen | ESSENTIAL elements](#break-down-the-screen--essential-elements)
+  * TODO:
 
-Once the user selects an image, they can add a sticker to it. So, let's start creating this screen.
+## Break down the screen | ESSENTIAL elements
 
-<VideoBoxLink videoId="3rcOP8xDwTQ" title="Watch: Building a screen in your universal Expo app" />
+![Break down of initial layout.](../../public/static/images/tutorial/breakdown-of-layout.webp)
 
----
-
-<Step label="1">
-
-## Break down the screen
-
-Before we build this screen by writing code, let's break it down into some essential elements.
-
-<ContentSpotlight
-  alt="Break down of initial layout."
-  src="/static/images/tutorial/breakdown-of-layout.png"
-  className="max-w-[300px]"
-/>
-
+TODO: 
 There are two essential elements:
 
 - There is a large image displayed at the center of the screen
 - There are two buttons in the bottom half of the screen
 
-The first button contains multiple components. The parent element provides a yellow border, and contains an icon and text components inside a row.
+The first button contains multiple components
+* The parent element provides a yellow border, and contains an icon and text components inside a row.
 
-<ContentSpotlight
-  alt="Break down of the button component with row."
-  src="/static/images/tutorial/breakdown-of-buttons.png"
-  className="max-w-[400px]"
-/>
+![Break down of the button component with row.](../../public/static/images/tutorial/breakdown-of-buttons.webp)
 
 Now that we've broken down the UI into smaller chunks, we're ready to start coding.
 
-</Step>
 
 <Step label="2">
 
 ## Display the image
 
-We'll use `expo-image` library to display the image in the app. It provides a cross-platform `<Image>` component to load and render an image.
+We'll use `expo-image` library to display the image in the app
+* It provides a cross-platform `<Image>` component to load and render an image.
 
-Stop the development server by pressing <kbd>Ctrl</kbd> + <kbd>c</kbd> in the terminal. Then, install the `expo-image` library:
+Stop the development server by pressing <kbd>Ctrl</kbd> + <kbd>c</kbd> in the terminal
+* Then, install the `expo-image` library:
 
 <Terminal cmd={['$ npx expo install expo-image']} />
 
 The [`npx expo install`](/more/expo-cli/#installation) command will install the library and add it to the project's dependencies in **package.json**.
 
-The Image component takes the source of an image as its value. The source can be either a [static asset](https://reactnative.dev/docs/images#static-image-resources) or a URL. For example, the source required from **assets/images** directory is static. It can also come from [Network](https://reactnative.dev/docs/images#network-images) as a `uri` property.
+The Image component takes the source of an image as its value
+* The source can be either a [static asset](https://reactnative.dev/docs/images#static-image-resources) or a URL
+* For example, the source required from **assets/images** directory is static
+* It can also come from [Network](https://reactnative.dev/docs/images#network-images) as a `uri` property.
 
-<ContentSpotlight
-  alt="Background image that we are going to use as a placeholder for the tutorial."
-  src="/static/images/tutorial/background-image.png"
-  className="max-w-[250px]"
-/>
+![Background image that we are going to use as a placeholder for the tutorial.](../../public/static/images/tutorial/background-image.webp)
 
 To use the Image component in **app/(tabs)/index.tsx** file:
 
@@ -415,19 +398,4 @@ const styles = StyleSheet.create({
 });
 ```
 
-Let's take a look at our app on Android, iOS and the web:
-
-<ContentSpotlight file="tutorial/04-complete-layout.mp4" />
-
-</Step>
-
-## Summary
-
-<ProgressTracker
-  currentChapterIndex={2}
-  name="GET_STARTED"
-  summary="We've successfully implemented the initial design to start building our app's first screen."
-  nextChapterDescription="In the next chapter, we'll add the functionality to pick an image from the device's media library."
-  nextChapterTitle="Use an image picker"
-  nextChapterLink="/tutorial/image-picker"
-/>
+* [our app video](../../public/static/videos/tutorial/04-complete-layout.mp4)

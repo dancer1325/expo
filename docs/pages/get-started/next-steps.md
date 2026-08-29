@@ -4,32 +4,34 @@ description: Develop, review, and submit your project.
 hideTOC: true
 ---
 
-
-Here are next steps to continue building your app:
+* requirements
+  * ⚠️default template⚠️
 
 ### Reset your project
 
-You can remove the boilerplate code and start fresh with a new project. Run the following command to reset your project:
+* == remove the boilerplate code /
+  * "app/*" are moved -- to -- "app-example/*"
+  * create a NEW 
+    * "app/"
+    * "index.tsx"
 
-<Terminal
-  cmd={{
-    npm: ['$ npm run reset-project'],
-    yarn: ['$ yarn run reset-project'],
-    pnpm: ['$ pnpm run reset-project'],
-    bun: ['$ bun run reset-project'],
-  }}
-/>
-
-This command will move the existing files in **app** to **app-example**, then create a new **app** directory with a new **index.tsx** file.
+```bash
+$ npm run reset-project
+---
+$ yarn run reset-project
+---
+$ pnpm run reset-project
+---
+$ bun run reset-project
+```
 
 ### Develop, review, and deploy
 
-Learn how to develop by reading the docs in the Develop section. You'll learn how to create [UI elements](/develop/user-interface/splash-screen-and-app-icon/), add [unit tests](/develop/unit-testing/), include [native modules](/config-plugins/introduction/), and more.
-
-Once you've developed your app, you can share it with your teammates for [review](/review/overview).
-
-Finally, you can [build](/deploy/build-project/) and [submit](/deploy/submit-to-app-stores/) your project to the app stores.
+* [develope](../develop)
+* [review](../review)
+* [build](../deploy/build-project)
+* [submit](../deploy/submit-to-app-stores)
 
 ### Step-by-step guide
 
-For a guided, step-by-step walkthrough of building an app with Expo from start to finish, check out the [tutorial](/tutorial/introduction/).
+* [tutorial](../tutorial/introduction)

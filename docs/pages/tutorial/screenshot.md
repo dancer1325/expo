@@ -5,9 +5,11 @@ hasVideoLink: true
 ---
 
 
-In this chapter, we'll learn how to take a screenshot using a third-party library and save it on the device's media library. We'll use [`react-native-view-shot`](https://github.com/gre/react-native-view-shot) to take a screenshot and [`expo-media-library`](/versions/v54.0.0/sdk/media-library/) to save an image on device's media library.
+In this chapter, we'll learn how to take a screenshot using a third-party library and save it on the device's media library
+* We'll use [`react-native-view-shot`](https://github.com/gre/react-native-view-shot) to take a screenshot and [`expo-media-library`](/versions/v54.0.0/sdk/media-library/) to save an image on device's media library.
 
-> **info** So far, we have used third-party libraries, such as `react-native-gesture-handler`, `react-native-reanimated`. We can find hundreds of other third-party libraries on [React Native Directory](https://reactnative.directory/) depending on a use case.
+> **info** So far, we have used third-party libraries, such as `react-native-gesture-handler`, `react-native-reanimated`
+* We can find hundreds of other third-party libraries on [React Native Directory](https://reactnative.directory/) depending on a use case.
 
 <VideoBoxLink
   videoId="Jft3_Yfr-p4"
@@ -23,14 +25,15 @@ In this chapter, we'll learn how to take a screenshot using a third-party librar
 
 To install `react-native-view-shot` and `expo-media-library`, run the following commands:
 
-<Terminal
-  cmd={{
-    npm: ['$ npx expo install react-native-view-shot expo-media-library'],
-    yarn: ['$ yarn expo install react-native-view-shot expo-media-library'],
-    pnpm: ['$ pnpm expo install react-native-view-shot expo-media-library'],
-    bun: ['$ bun expo install react-native-view-shot expo-media-library'],
-  }}
-/>
+```bash
+$ npx expo install react-native-view-shot expo-media-library
+---
+$ yarn expo install react-native-view-shot expo-media-library
+---
+$ pnpm expo install react-native-view-shot expo-media-library
+---
+$ bun expo install react-native-view-shot expo-media-library
+```
 
 </Step>
 
@@ -38,9 +41,15 @@ To install `react-native-view-shot` and `expo-media-library`, run the following 
 
 ## Prompt for permissions
 
-An app that requires sensitive information, such as accessing a device's media library, has to prompt permission to allow or deny access. Using `useMediaLibraryPermissions()` hook from `expo-image-picker`, we can use the permission `permissionResponse` and `requestPermission()` method to ask for access. This hook requests both read and write permissions, which covers picking images from the library and saving screenshots to it.
+An app that requires sensitive information, such as accessing a device's media library, has to prompt permission to allow or deny access
+* Using `useMediaLibraryPermissions()` hook from `expo-image-picker`, we can use the permission `permissionResponse` and `requestPermission()` method to ask for access
+* This hook requests both read and write permissions, which covers picking images from the library and saving screenshots to it.
 
-When the app loads for the first time and the permission status is neither granted nor denied, the value of the `permissionResponse` is `null`. When asked for permission, a user can either grant the permission or deny it. We can add a condition to check if it is not granted. If it is not granted, trigger the `requestPermission()` method. After getting the access, the value of the `permissionResponse` changes to `granted`.
+When the app loads for the first time and the permission status is neither granted nor denied, the value of the `permissionResponse` is `null`
+* When asked for permission, a user can either grant the permission or deny it
+* We can add a condition to check if it is not granted
+* If it is not granted, trigger the `requestPermission()` method
+* After getting the access, the value of the `permissionResponse` changes to `granted`.
 
 Add the following code snippet inside the **src/app/(tabs)/index.tsx**:
 
@@ -71,7 +80,9 @@ export default function Index() {
 
 ## Create a ref to save the current view
 
-We'll use `react-native-view-shot` to allow the user to take a screenshot within the app. This library captures the screenshot of a `<View>` as an image using the `captureRef()` method. It returns the URI of the captured screenshot image file.
+We'll use `react-native-view-shot` to allow the user to take a screenshot within the app
+* This library captures the screenshot of a `<View>` as an image using the `captureRef()` method
+* It returns the URI of the captured screenshot image file.
 
 1. Import `captureRef` from `react-native-view-shot` and `useRef` from React.
 2. Create an `imageRef` reference variable to store the reference of the screenshot image captured.
@@ -100,7 +111,8 @@ export default function Index() {
 }
 ```
 
-In the above snippet, the `collapsable` prop is set to `false`. This allows the `<View>` component to screenshot only of the background image and emoji sticker.
+In the above snippet, the `collapsable` prop is set to `false`
+* This allows the `<View>` component to screenshot only of the background image and emoji sticker.
 
 </Step>
 
@@ -108,9 +120,12 @@ In the above snippet, the `collapsable` prop is set to `false`. This allows the 
 
 ## Capture a screenshot and save it
 
-We can capture a screenshot of the view by calling the `captureRef()` method from `react-native-view-shot` inside the `onSaveImageAsync()` function. It accepts an optional argument where we can pass the `width` and `height` of the screenshot capturing area. We can read more about available options in [the library's documentation](https://github.com/gre/react-native-view-shot#capturerefview-options-lower-level-imperative-api).
+We can capture a screenshot of the view by calling the `captureRef()` method from `react-native-view-shot` inside the `onSaveImageAsync()` function
+* It accepts an optional argument where we can pass the `width` and `height` of the screenshot capturing area
+* We can read more about available options in [the library's documentation](https://github.com/gre/react-native-view-shot#capturerefview-options-lower-level-imperative-api).
 
-The `captureRef()` method also returns a promise that fulfills with the screenshot's URI. We will pass this URI as a parameter to [`MediaLibrary.saveToLibraryAsync()`](/versions/v54.0.0/sdk/media-library/#medialibrarysavetolibraryasynclocaluri) and save the screenshot to the device's media library.
+The `captureRef()` method also returns a promise that fulfills with the screenshot's URI
+* We will pass this URI as a parameter to [`MediaLibrary.saveToLibraryAsync()`](/versions/v54.0.0/sdk/media-library/#medialibrarysavetolibraryasynclocaluri) and save the screenshot to the device's media library.
 
 Inside **app/(tabs)/index.tsx**, update the `onSaveImageAsync()` function with the following code:
 
@@ -238,7 +253,9 @@ const styles = StyleSheet.create({
 });
 ```
 
-Now, choose a photo and add a sticker in the app. Then tap the "Save" button. We should see the following result on Android and iOS:
+Now, choose a photo and add a sticker in the app
+* Then tap the "Save" button
+* We should see the following result on Android and iOS:
 
 <ContentSpotlight file="tutorial/saving-screenshot.mp4" />
 

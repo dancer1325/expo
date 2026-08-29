@@ -3,37 +3,49 @@ title: Use an image picker
 description: In this tutorial, learn how to use Expo Image Picker.
 ---
 
+* goal
+  * | device's media library, how to pick an image ?
+    * | StickerSmash app
+      * 2 buttons /
+        * top one
+          * enable user / choose an image | device
+        * below one
+          * choose the default image / provided by the app
 
-React Native provides built-in components as standard building blocks, such as `<View>`, `<Text>`, and `<Pressable>`. We are building a feature to select an image from the device's media gallery. This isn't possible with the core components and we'll need a library to add this feature in our app.
+        ![](../../public/static/images/tutorial/initial-layout.webp)
+      * | AFTER selecting an image, 
+        * user can add a sticker | the photo
 
-We'll use [`expo-image-picker`](/versions/latest/sdk/imagepicker), a library from Expo SDK.
+* React Native's built-in components
+  * `<View>`
+  * `<Text>`
+  * `<Pressable>`
 
-> `expo-image-picker` provides access to the system's UI to select images and videos from the phone's library.
+* [`expo-image-picker`](../versions/unversioned/sdk/imagepicker)
+  * provides
+    * access -- to -- the system's UI 
+      * == select images & videos | phone's library
+      * NOT built-in | React Native 
 
-<VideoBoxLink
-  videoId="iEQZU58naS8"
-  title="Watch: Using an image picker in your universal Expo app"
-/>
+* [video](https://www.youtube.com/watch?v=iEQZU58naS8)
+  * TODO:
 
----
+* steps
+  * `npx expo install expo-image-picker`
+  * | device's media library, pick an image
+  * | TODO: 
 
-<Step label="1">
-
-## Install expo-image-picker
-
-To install the library, run the following command:
-
-<Terminal cmd={['$ npx expo install expo-image-picker']} />
-
-> **info** **Tip:** Any time we install a new library in our project, stop the development server by pressing <kbd>Ctrl</kbd> + <kbd>c</kbd> in the terminal and then run the installation command. After the installation completes, we can start the development server again by running `npx expo start` from the same terminal window.
-
-</Step>
 
 <Step label="2">
 
-## Pick an image from the device's media library
+## | device's media library, pick an image 
 
-`expo-image-picker` provides `launchImageLibraryAsync()` method to display the system UI by choosing an image or a video from the device's media library. We'll use the primary themed button created in the previous chapter to select an image from the device's media library and create a function to launch the device's image library to implement this functionality.
+* `expo-image-picker`
+  * 's `launchImageLibraryAsync()`
+
+TODO: 
+* We'll use the primary themed button created in the previous chapter to select an image 
+from the device's media library and create a function to launch the device's image library to implement this functionality.
 
 In **app/(tabs)/index.tsx**, import `expo-image-picker` library and create a `pickImageAsync()` function inside the `Index` component:
 
@@ -69,7 +81,8 @@ export default function Index() {
 
 Let's learn what the above code does:
 
-- The `launchImageLibraryAsync()` receives an object to specify different options. This object is the [`ImagePickerOptions`](/versions/latest/sdk/imagepicker/#imagepickeroptions) object, which we are passing when invoking the method.
+- The `launchImageLibraryAsync()` receives an object to specify different options
+* This object is the [`ImagePickerOptions`](/versions/latest/sdk/imagepicker/#imagepickeroptions) object, which we are passing when invoking the method.
 - When `allowsEditing` is set to `true`, the user can crop the image during the selection process on Android and iOS.
 
 </Step>
@@ -78,7 +91,8 @@ Let's learn what the above code does:
 
 ## Update the button component
 
-On pressing the primary button, we'll call the `pickImageAsync()` function on the `Button` component. Update the `onPress` prop of the `Button` component in **components/Button.tsx**:
+On pressing the primary button, we'll call the `pickImageAsync()` function on the `Button` component
+* Update the `onPress` prop of the `Button` component in **components/Button.tsx**:
 
 {/* prettier-ignore */}
 ```tsx components/Button.tsx
@@ -195,7 +209,8 @@ const styles = StyleSheet.create({
 });
 ```
 
-The `pickImageAsync()` function invokes `ImagePicker.launchImageLibraryAsync()` and then handles the result. The `launchImageLibraryAsync()` method returns an object containing information about the selected image.
+The `pickImageAsync()` function invokes `ImagePicker.launchImageLibraryAsync()` and then handles the result
+* The `launchImageLibraryAsync()` method returns an object containing information about the selected image.
 
 Here is an example of the `result` object and the properties it contains:
 
@@ -278,7 +293,8 @@ Here is an example of the `result` object and the properties it contains:
 
 ## Use the selected image
 
-The `result` object provides the `assets` array, which contains the `uri` of the selected image. Let's take this value from the image picker and use it to show the selected image in the app.
+The `result` object provides the `assets` array, which contains the `uri` of the selected image
+* Let's take this value from the image picker and use it to show the selected image in the app.
 
 Modify the **app/(tabs)/index.tsx** file:
 
@@ -381,7 +397,8 @@ const styles = StyleSheet.create({
 });
 ```
 
-In the above snippet, the Image component uses a conditional operator to load the image's source. The picked image is a [`uri` string](https://reactnative.dev/docs/images#network-images), not a local asset like the placeholder image.
+In the above snippet, the Image component uses a conditional operator to load the image's source
+* The picked image is a [`uri` string](https://reactnative.dev/docs/images#network-images), not a local asset like the placeholder image.
 
 Let's take a look at our app now:
 
@@ -390,14 +407,3 @@ Let's take a look at our app now:
 > The images used for the example app in this tutorial were picked from [Unsplash](https://unsplash.com).
 
 </Step>
-
-## Summary
-
-<ProgressTracker
-  currentChapterIndex={3}
-  name="GET_STARTED"
-  summary="We've successfully added the functionality to pick an image from the device's media library."
-  nextChapterDescription="In the next chapter, we'll learn how to create an emoji picker modal component."
-  nextChapterTitle="Create an emoji picker modal"
-  nextChapterLink="/tutorial/create-a-modal"
-/>
