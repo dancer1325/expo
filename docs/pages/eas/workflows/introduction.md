@@ -47,9 +47,13 @@ hasVideoLink: true
   * == ".yaml" | root of your project's ".eas/workflows/" /
     * contain
       * `name`
+        * == workflow name
       * triggers (`on`)
         * OPTIONAL
-      * \>=1 `jobs` / run | cloud
+        * == when to trigger the workflow
+      * \>=1 `jobs` / 
+        * run | cloud
+        * can depend ONE to EACH OTHER
 
 TODO: 
 Blazing fast M4 Pro powered workers
@@ -158,6 +162,17 @@ we're constantly updating those for you.
 
 EAS Workflows are great for operations related to your Expo apps, while other CI/CD services will provide a better experience 
 for other types of workflows.
+
+EAS Workflows are designed to help you and your team release your app
+* It comes preconfigured with pre-packaged job types that can build, submit, update, run Maestro tests, and more
+* All job types run on EAS, so you'll only have to manage one set of YAML files, and all the artifacts from your job runs will appear on [expo.dev](https://expo.dev/).
+
+Other CI services, like CircleCI and GitHub Actions, are more generalized and have the ability to do more than workflows
+* However, those services also require you to understand more about the implementation of each job
+* While that is necessary in some cases, workflows help you get common tasks done quickly by pre-packaging the most essential types of jobs for app developers
+* In addition, workflows are designed to provide you with the fastest possible cloud machine for the task at hand, and we're constantly updating those for you.
+
+EAS Workflows are great for operations related to your Expo apps, while other CICD services will provide a better experience for other types of workflows.
 
 ### Can I trigger a workflow without GitHub?
 

@@ -12,105 +12,45 @@ description: Learn how to use EAS Workflows to automate your development and rel
 * [video](https://www.youtube.com/watch?v=OJ2u9tQCpr4)
   * TODO:
 
-### EAS workflows vs other CI services?
-
-TODO: 
-EAS Workflows are designed to help you and your team release your app
-* It comes preconfigured with pre-packaged job types that can build, submit, update, run Maestro tests, and more
-* All job types run on EAS, so you'll only have to manage one set of YAML files, and all the artifacts from your job runs will appear on [expo.dev](https://expo.dev/).
-
-Other CI services, like CircleCI and GitHub Actions, are more generalized and have the ability to do more than workflows
-* However, those services also require you to understand more about the implementation of each job
-* While that is necessary in some cases, workflows help you get common tasks done quickly by pre-packaging the most essential types of jobs for app developers
-* In addition, workflows are designed to provide you with the fastest possible cloud machine for the task at hand, and we're constantly updating those for you.
-
-EAS Workflows are great for operations related to your Expo apps, while other CICD services will provide a better experience for other types of workflows.
-
 ## Set up your project
-
-If you haven't already, you'll need to create a project and sync it with EAS:
 
 ### Create a project and sync it with EAS
 
-You can create a new project with the following command:
-
 ```bash
-npx create-expo-app@latest
-```
+# 1. create a NEW project
+npx create-expo-app@latest workflows-get-started
 
-Once you've created the project, login with your account:
-
-```bash
+# 2. login in | EAS
 npx eas-cli@latest login
-```
 
-Finally, link the project you have locally with EAS:
-
-```bash
+# 3. link your local project -- with -- EAS
+cd workflows-get-started
 npx eas-cli@latest init
-```
 
-Then, create a directory named **.eas/workflows** at the root of your project with a **.yaml** file inside of it
-* For example: **.eas/workflows/hello-world.yaml**.
+# 4. create a directory | root of your project
+mkdir /.eas/workflows
+touch /.eas/workflows/hello-world.yaml
+```
 
 ## Write a workflow
 
-Each workflow consists of three top-level elements:
-
-- `name`: defines the name of the workflow. For example: "Hello World"
-- `on`: defines when this workflow should be triggered. For example, when pushing a new commit to a GitHub branch.
-- `jobs`: a sequence of jobs which can depend on and pass data between each other. For example: a job that runs a unit test followed by a job that builds your project into an app.
-
-Here's an example of a workflow that prints "Hello, world":
-
-```yaml .eas/workflows/hello-world.yaml
-name: Hello World
-
-on:
-  push:
-    branches: ['*']
-
-jobs:
-  Hello World:
-    steps:
-      - run: echo "Hello, World"
-```
-
-Here's another example that creates and submits an iOS build of a project on every push to every branch. This is similar to running `eas build --platform ios --profile production --auto-submit`:
-
-```yaml .eas/workflows/ios-build-and-submit.yaml
-name: Release iOS app
-
-on:
-  push:
-    branches: ['*']
-
-jobs:
-  build:
-    type: build
-    params:
-      platform: ios
-      profile: production
-  submit:
-    needs: [build]
-    type: submit
-    params:
-      build_id: ${{ needs.build.outputs.build_id }}
-```
+* "ios-build-and-submit.yaml"
+  * == `eas build --platform ios --profile production --auto-submit`
 
 ## Configure your project
 
-To enable workflows to run on events from GitHub, you'll need to install Expo's GitHub app and connect it to your project:
+* goal
+  * | GitHub events,
+    * run EAS workflows
 
-- Navigate to your project's [GitHub settings](https://expo.dev/accounts/%5Baccount%5D/projects/%5BprojectName%5D/github)
-- Follow the UI to install the GitHub app. Then search for the GitHub repository that matches the Expo project and connect it.
+* steps
+  * Expo Cloud > projects > choose a project > Github > connect to your Github account > choose the Github repository
 
 ## Run your workflow
 
-Once you have a workflow file and your project is connected to Expo's GitHub app, you can trigger your workflow by pushing a commit to your GitHub repository. For the workflow to run, you'll need to make sure the trigger (defined with `on`) you defined in your workflow is met.
+* ways to trigger the workflow
+  * AUTOMATICALLY: -- by -- push a commit | your GitHub repository
+  * MANUALLY: `npx eas-cli@latest workflow:run .eas/workflows/<your-workflow-file>.yaml`
 
-Alternatively, you can trigger a workflow manually by running the following command:
-
-<Terminal cmd={['$ npx eas-cli@latest workflow:run .eas/workflows/<your-workflow-file>.yaml']} />
-
-Once you do, you can see your workflow running on your project's [workflows page](https://expo.dev/accounts/[account]/projects/[projectName]/workflows).
+* how to check workflow is running?
+  * Expo Cloud > projects > choose a project > workflows
