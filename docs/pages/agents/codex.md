@@ -8,6 +8,8 @@ description: Use Codex to build, upgrade, debug, and deploy your Expo and React 
 
 Codex is OpenAI's terminal-based AI coding agent. It can read and write files across your project, run terminal commands, and browse the web. Expo projects created with `create-expo-app` are scaffolded with an **AGENTS.md** file that Codex reads directly. It can also check EAS and Expo CLI logs, fetch documentation from the Expo Model Context Protocol (MCP) Server, use Expo Skills for best practices, manage your EAS deployment workflow, and more.
 
+Set up OpenAI's terminal agent with Expo, including project context and example prompts.
+
 ## Quick start
 
 <Step label="1">

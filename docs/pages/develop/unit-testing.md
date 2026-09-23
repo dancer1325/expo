@@ -4,12 +4,16 @@ sidebar_title: Unit testing
 description: Learn how to set up and configure the jest-expo library to write unit and snapshot tests for a project with Jest.
 ---
 
+* goal
+  * how to 
+    * set up Jest | your project
+    * write a unit test
+    * write a snapshot test
+  * | use Jest + React Native,
+    * best practices -- for -- structuring your tests  
 
-
-[Jest](https://jestjs.io) is the most widely used unit and snapshot JavaScript testing framework
-* In this guide, you will learn how to set up Jest in your project, write a unit test, write a snapshot test, and best practices for structuring your tests when using Jest with React Native.
-
-You will also use the [`jest-expo`](https://github.com/expo/expo/tree/main/packages/jest-expo) library, which is a Jest preset that mocks the native part of the Expo SDK and handles most of the configuration required for your Expo project.
+* [Jest](https://jestjs.io)
+* [`jest-expo`](../../../packages/jest-expo) library
 
 ## Installation and configuration
 

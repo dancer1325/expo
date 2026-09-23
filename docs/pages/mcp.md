@@ -4,11 +4,16 @@ sidebar_title: MCP Server
 description: A guide on integrating Model Context Protocol with Expo projects to enhance AI model capabilities.
 ---
 
+* [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
+  * TODO: check MCP allows AI models to integrate with external data sources, 
+  providing enhanced context for more precise responses
+It enables AI-assisted tools like agents to understand your development environment more deeply, 
+allowing them to provide better assistance with your codebase.
 
+Connect the remote Expo MCP Server to give agents live access to Expo documentation and EAS
 
-[Model Context Protocol (MCP)](https://modelcontextprotocol.io/) is a standard protocol that allows AI models to integrate with external data sources, providing enhanced context for more precise responses. It enables AI-assisted tools like agents to understand your development environment more deeply, allowing them to provide better assistance with your codebase.
-
-Expo MCP Server is a remote MCP server hosted by Expo that integrates with popular AI-assisted tools such as Claude Code, Cursor, VS Code, and others, enabling them to interact directly with your Expo projects.
+Expo MCP Server is a remote MCP server hosted by Expo that integrates with popular AI-assisted tools
+such as Claude Code, Cursor, VS Code, and others, enabling them to interact directly with your Expo projects.
 
 <VideoBoxLink
   videoId="dp9dpIgDxZQ"
@@ -18,7 +23,9 @@ Expo MCP Server is a remote MCP server hosted by Expo that integrates with popul
 
 ## What does Expo MCP Server do?
 
-Expo MCP Server teaches your AI-assisted tools about the Expo SDK and lets them interact with mobile simulators and the React Native DevTools. These are some examples of the tasks Expo MCP Server enhances:
+Expo MCP Server teaches your AI-assisted tools about the Expo SDK and lets them interact 
+with mobile simulators and the React Native DevTools
+* These are some examples of the tasks Expo MCP Server enhances:
 
 **Learn about developing with Expo.** Your AI-assisted tools can fetch the latest official Expo documentation on demand and use it to reply to prompts like:
 
@@ -41,7 +48,8 @@ Expo MCP Server teaches your AI-assisted tools about the Expo SDK and lets them 
 - "Show me recent TestFlight crashes"
 - "Show TestFlight feedback for my app"
 
-**Automate visual verification and testing.** Multimodal AI-assisted tools can screenshot and interact with your running app in a simulator. Expo MCP Server includes local capabilities enabled by adding the `expo-mcp` package to your project's dependencies.
+**Automate visual verification and testing.** Multimodal AI-assisted tools can screenshot and interact with your running app in a simulator
+* Expo MCP Server includes local capabilities enabled by adding the `expo-mcp` package to your project's dependencies.
 
 - "Add a blue circle view and make sure it renders correctly"
 - "Add a button and tap it to verify the interaction works"
@@ -70,7 +78,8 @@ The complete table of [MCP capabilities](#available-mcp-capabilities) documents 
 
 ### Install Expo MCP Server
 
-Expo MCP Server supports integration with various AI-assisted tools. Use the general settings below or expand your specific tool for detailed instructions:
+Expo MCP Server supports integration with various AI-assisted tools
+* Use the general settings below or expand your specific tool for detailed instructions:
 
 - **Server type**: Streamable HTTP
 - **URL**: `https://mcp.expo.dev/mcp`
@@ -135,11 +144,13 @@ After installing the MCP server, you'll need to authenticate using one of two me
 Generate a **Personal access token** from your Expo account and use it during the OAuth flow.
 
 - To generate an access token, open [Access tokens](https://expo.dev/accounts/[account]/settings/access-tokens) settings page in EAS dashboard.
-- Under **Personal access tokens**, click **Create token**. Copy the token and use it during the OAuth flow.
+- Under **Personal access tokens**, click **Create token**
+* Copy the token and use it during the OAuth flow.
 
 #### Credentials
 
-Use your Expo account username and password. In this case, the server will generate an access token automatically.
+Use your Expo account username and password
+* In this case, the server will generate an access token automatically.
 
 </Step>
 
@@ -151,62 +162,55 @@ Use your Expo account username and password. In this case, the server will gener
 
 For the full MCP experience with advanced features like taking screenshots from your iOS Simulator, opening DevTools, and automation capabilities, set up a local Expo development server:
 
-<Terminal
-  cmd={{
-    npm: [
-      '$ cd /path/to/your-project',
-      '',
-      '# Install the expo-mcp package',
-      '$ npx expo install expo-mcp --dev',
-      '',
-      '# Ensure you are logged in to Expo CLI with the same account as the one used to',
-      '# authenticate with the MCP server',
-      '$ npx expo whoami || npx expo login',
-      '',
-      '# Start the dev server with MCP capabilities',
-      '$ EXPO_UNSTABLE_MCP_SERVER=1 npx expo start',
-    ],
-    yarn: [
-      '$ cd /path/to/your-project',
-      '',
-      '# Install the expo-mcp package',
-      '$ yarn expo install expo-mcp --dev',
-      '',
-      '# Ensure you are logged in to Expo CLI with the same account as the one used to',
-      '# authenticate with the MCP server',
-      '$ yarn expo whoami || yarn expo login',
-      '',
-      '# Start the dev server with MCP capabilities',
-      '$ EXPO_UNSTABLE_MCP_SERVER=1 yarn expo start',
-    ],
-    pnpm: [
-      '$ cd /path/to/your-project',
-      '',
-      '# Install the expo-mcp package',
-      '$ pnpm expo install expo-mcp --dev',
-      '',
-      '# Ensure you are logged in to Expo CLI with the same account as the one used to',
-      '# authenticate with the MCP server',
-      '$ pnpm expo whoami || pnpm expo login',
-      '',
-      '# Start the dev server with MCP capabilities',
-      '$ EXPO_UNSTABLE_MCP_SERVER=1 pnpm expo start',
-    ],
-    bun: [
-      '$ cd /path/to/your-project',
-      '',
-      '# Install the expo-mcp package',
-      '$ bun expo install expo-mcp --dev',
-      '',
-      '# Ensure you are logged in to Expo CLI with the same account as the one used to',
-      '# authenticate with the MCP server',
-      '$ bun expo whoami || bun expo login',
-      '',
-      '# Start the dev server with MCP capabilities',
-      '$ EXPO_UNSTABLE_MCP_SERVER=1 bun expo start',
-    ],
-  }}
-/>
+```bash
+$ cd /path/to/your-project
+
+# Install the expo-mcp package
+$ npx expo install expo-mcp --dev
+
+# Ensure you are logged in to Expo CLI with the same account as the one used to
+# authenticate with the MCP server
+$ npx expo whoami || npx expo login
+
+# Start the dev server with MCP capabilities
+$ EXPO_UNSTABLE_MCP_SERVER=1 npx expo start
+---
+$ cd /path/to/your-project
+
+# Install the expo-mcp package
+$ yarn expo install expo-mcp --dev
+
+# Ensure you are logged in to Expo CLI with the same account as the one used to
+# authenticate with the MCP server
+$ yarn expo whoami || yarn expo login
+
+# Start the dev server with MCP capabilities
+$ EXPO_UNSTABLE_MCP_SERVER=1 yarn expo start
+---
+$ cd /path/to/your-project
+
+# Install the expo-mcp package
+$ pnpm expo install expo-mcp --dev
+
+# Ensure you are logged in to Expo CLI with the same account as the one used to
+# authenticate with the MCP server
+$ pnpm expo whoami || pnpm expo login
+
+# Start the dev server with MCP capabilities
+$ EXPO_UNSTABLE_MCP_SERVER=1 pnpm expo start
+---
+$ cd /path/to/your-project
+
+# Install the expo-mcp package
+$ bun expo install expo-mcp --dev
+
+# Ensure you are logged in to Expo CLI with the same account as the one used to
+# authenticate with the MCP server
+$ bun expo whoami || bun expo login
+
+# Start the dev server with MCP capabilities
+$ EXPO_UNSTABLE_MCP_SERVER=1 bun expo start
+```
 
 > **important** Whenever you start or stop the development server, you need to **reconnect or restart** your MCP server connection in your AI-assisted tool to ensure the AI-assisted tool gets refreshed capabilities.
 
@@ -228,11 +232,13 @@ Local capabilities require a local Expo development server to be running and pro
 - **Development tools**: Open React Native DevTools
 - **Project analysis**: Generate `expo-router` sitemap
 
-These capabilities enable more sophisticated workflows like automated testing, visual verification, and deeper project introspection. To use local capabilities, you will need to follow the [Set up local capabilities](#set-up-local-capabilities-recommended) section above.
+These capabilities enable more sophisticated workflows like automated testing, visual verification, and deeper project introspection
+* To use local capabilities, you will need to follow the [Set up local capabilities](#set-up-local-capabilities-recommended) section above.
 
 ## Available MCP capabilities
 
-> **info** The MCP capabilities are subject to change from the `expo-mcp` package updates or MCP server changes. The following list is a reference and may not be up to date.
+> **info** The MCP capabilities are subject to change from the `expo-mcp` package updates or MCP server changes
+* The following list is a reference and may not be up to date.
 
 ### Tools
 
@@ -254,23 +260,21 @@ The current implementation has the following limitations:
 
 ## Data privacy
 
-Expo does not use data sent to Expo MCP Server to train AI models. Expo MCP Server does not run an AI model itself. It provides MCP tools and prompts to the AI-assisted tool you connect, such as Claude Code, Cursor, or VS Code.
+Expo does not use data sent to Expo MCP Server to train AI models
+* Expo MCP Server does not run an AI model itself
+* It provides MCP tools and prompts to the AI-assisted tool you connect, such as Claude Code, Cursor, or VS Code.
 
-For server capabilities, Expo MCP Server may access Expo account and project data needed to complete the requested tool call, such as build, workflow, documentation, or TestFlight-related data. The result is returned to your AI-assisted tool over the MCP connection.
+For server capabilities, Expo MCP Server may access Expo account and project data needed to complete the requested tool call, such as build, workflow, documentation, or TestFlight-related data
+* The result is returned to your AI-assisted tool over the MCP connection.
 
-For local capabilities, data from your development machine is proxied through Expo MCP Server and returned to your AI-assisted tool. For example, when an AI-assisted tool asks to take a simulator screenshot, the data flow is:
+For local capabilities, data from your development machine is proxied through Expo MCP Server and returned to your AI-assisted tool
+* For example, when an AI-assisted tool asks to take a simulator screenshot, the data flow is:
 
 1. The local Expo development server captures the screenshot from your simulator.
 2. The screenshot is sent to Expo MCP Server.
 3. Expo MCP Server returns the screenshot to your local MCP client or AI-assisted tool.
 
-Expo MCP Server returns data to the MCP client you connect, such as Claude Code, Cursor, VS Code, or Codex. From there, the client and its model provider may apply their own retention, zero data retention (ZDR), and training policies. Review those policies before enabling MCP access for projects that handle sensitive data, including HIPAA, SOC 2, or other regulated workloads.
+Expo MCP Server returns data to the MCP client you connect, such as Claude Code, Cursor, VS Code, or Codex
+* From there, the client and its model provider may apply their own retention, zero data retention (ZDR), and training policies
+* Review those policies before enabling MCP access for projects that handle sensitive data, including HIPAA, SOC 2, or other regulated workloads.
 
-## Additional resources
-
-<BoxLink
-  title="Model Context Protocol Documentation"
-  Icon={BookOpen02Icon}
-  description="Learn more about the MCP specification and protocol details."
-  href="https://modelcontextprotocol.io/"
-/>

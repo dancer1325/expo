@@ -83,7 +83,7 @@ sidebar_title: Tools
     - Network: Show network details
     - Touchables: Highlight touchable elements
 
-## Debugging with React Native DevTools
+## Debugging -- with -- React Native DevTools
 
 * React Native DevTools
   * ⚠️requirements⚠️
@@ -146,17 +146,14 @@ The **Console** tab gives you access to an interactive terminal, connected direc
 
 ![Use the console with breakpoints to inspect variables and invoke code through your app.](../../public/static/images/debugging/inspector-breakpoint-console.png)
 
-### Inspecting network requests (Expo only)
+### Inspecting network requests | Expo project
 
-> **info** The Network tab in React Native DevTools is only available when you have `expo` installed in your project.
-
-The **Network** tab gives you insights into the network requests made by your app
-* You can inspect each request and response by clicking on them
-* This includes `fetch` requests, external loaded media, and in some cases, even requests made by native modules.
+* allows
+  * inspect EACH request & response
 
 ![Gain insights in the network requests from your app.](../../public/static/images/debugging/inspector-network-post.png)
 
-> **info** See the [Inspecting network traffic](#inspecting-network-traffic) for alternative ways to inspect network requests.
+* [ALTERNATIVE ways](#inspecting-network-traffic)
 
 ### Inspecting memory
 

@@ -4,9 +4,9 @@ sidebar_title: Cursor
 description: Use Cursor to build, upgrade, debug, and deploy your Expo and React Native projects.
 ---
 
-
-
 Cursor is an AI-first code editor built on VS Code. It can edit across multiple files, run terminal commands, and work autonomously with its agent. Expo projects created with `create-expo-app` are scaffolded with an **AGENTS.md** file that Cursor reads directly. It can also check EAS and Expo CLI logs, fetch documentation from the Expo Model Context Protocol (MCP) Server, use Expo Skills for best practices, manage your EAS deployment workflow, and more.
+
+Set up the AI-first code editor with Expo, including project context and example prompts.
 
 ## Quick start
 

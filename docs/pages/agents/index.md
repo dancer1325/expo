@@ -4,68 +4,32 @@ sidebar_title: Overview
 description: Build and publish Expo and React Native apps with AI coding agents such as Claude Code, Codex, and Cursor.
 ---
 
-
-  ClaudeLogoIcon,
-  CursorLogoIcon,
-  OpenAILogoIcon,
-} from '~/ui/components/CustomIcons/AIProviderIcons';
-
-Claude Code, Codex, Cursor, and other AI coding agents can help you build, upgrade, debug, and deploy your Expo and React Native projects. When you use [`create-expo-app`](/more/create-expo/) to create a new project, that new project is already set up with the configuration files required by an AI agent. This setup is also committed to your project, so everyone on your team starts from the same SDK version and project instructions, and their agents read the same project context.
-
 ## How Expo supports AI agents
 
-Three pieces work together to give an AI agent consistent, Expo-specific context:
+* Expo-specific context
+  * [Expo Skills](https://github.com/expo/skills)
+    * [introduction](../skills.md)
+  * [Expo MCP Server](https://github.com/expo/expo-mcp)
+    * [introduction](../mcp.md)
+  * Project context files
+    * are
+      * "AGENTS.md"
+      * "CLAUDE.md"
+      * ".claude/settings.json"
+    * if you want to create them FROM scratch -> use`create-expo-app`
 
-- **Expo Skills:** A plugin that adds Expo-specific instructions and slash commands to the agent. The agent applies known-good Expo patterns (SDK upgrades, EAS Workflows, native UI with Jetpack Compose and SwiftUI, API routes) instead of guessing from training data. Skills install once per machine.
-- **Expo MCP Server:** A remote Model Context Protocol (MCP) server that gives the agent live access to the latest Expo documentation, EAS Build history, EAS Update channels, and TestFlight metadata. The agent can install SDK-matching packages, read build logs, and take simulator screenshots through it.
-- **Project context files:** `create-expo-app` writes **AGENTS.md**, **CLAUDE.md**, and **.claude/settings.json** at the project root. These are the first thing the agent reads when you open the project. They point the agent to the documentation for the Expo SDK version your project targets.
+## -- based on -- chosen agent
 
-## Set up Expo Skills and Expo MCP Server
-
-Expo Skills and the Expo MCP Server work with every supported agent. Set up each one by following the guides below:
-
-<BoxLink
-  title="Expo Skills"
-  description="Install the plugin that teaches agents known-good Expo patterns, and browse the full list of available skills."
-  href="/skills/"
-  Icon={BookOpen02Icon}
-/>
-
-<BoxLink
-  title="Expo MCP Server"
-  description="Connect the remote Expo MCP Server to give agents live access to Expo documentation and EAS."
-  href="/mcp/"
-  Icon={BookOpen02Icon}
-/>
-
-## Pick an agent
-
-Each per-agent guide covers install, setup, and example prompts for that agent:
-
-<BoxLink
-  title="Claude Code"
-  description="Set up Anthropic's terminal agent with Expo, including project context and example prompts."
-  href="/agents/claude/"
-  Icon={ClaudeLogoIcon}
-/>
-
-<BoxLink
-  title="Codex"
-  description="Set up OpenAI's terminal agent with Expo, including project context and example prompts."
-  href="/agents/codex/"
-  Icon={OpenAILogoIcon}
-/>
-
-<BoxLink
-  title="Cursor"
-  description="Set up the AI-first code editor with Expo, including project context and example prompts."
-  href="/agents/cursor/"
-  Icon={CursorLogoIcon}
-/>
+* [Claude Code](claude.md)
+* [Codex](codex.md)
+* [Cursor](cursor.md)
 
 ## Project context files for agents
 
-Each agent looks for project context in a different place. Instead of forcing one convention, `create-expo-app` CLI adds the following configuration files to a project's root when you create a new Expo project using the CLI:
+TODO: 
+Each agent looks for project context in a different place
+* Instead of forcing one convention, `create-expo-app` CLI adds the following configuration files
+to a project's root when you create a new Expo project using the CLI:
 
 | File                      | Read by                                                       | Purpose                                                                                                                             |
 | ------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
@@ -73,7 +37,8 @@ Each agent looks for project context in a different place. Instead of forcing on
 | **CLAUDE.md**             | Claude Code on startup.                                       | Contains `@AGENTS.md`, which imports **AGENTS.md** into Claude Code's context.                                                      |
 | **.claude/settings.json** | Claude Code on startup.                                       | Pre-enables the official Expo plugin from the Claude Code plugin marketplace.                                                       |
 
-Each file targets a different agent convention, so the same project works with Claude Code, Codex, or Cursor without per-agent configuration.
+Each file targets a different agent convention, so the same project works with Claude Code, 
+Codex, or Cursor without per-agent configuration.
 
 ## Verify the setup
 
@@ -87,7 +52,9 @@ If the agent replies with the SDK version from **package.json**, the agent is re
 
 ## Agent toolkits
 
-The agents mentioned in [Pick an agent](#pick-an-agent) read your code and documentation, among other things. To let an agent also act on your Expo project while it runs, pair it with a third-party toolkit. An agent toolkit can then tap through flows, read logs, inspect the React component tree, and profile performance.
+The agents mentioned in [Pick an agent](#pick-an-agent) read your code and documentation, among other things
+* To let an agent also act on your Expo project while it runs, pair it with a third-party toolkit
+* An agent toolkit can then tap through flows, read logs, inspect the React component tree, and profile performance.
 
 <BoxLink
   title="Argent"
