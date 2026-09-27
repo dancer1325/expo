@@ -53,7 +53,7 @@ TODO:
 #### `"extra"` key -- allows passing arbitrary config data -- to your app
 TODO:
 ### export an object -- to define -- your custom config
-TODO:
+* [here](dynamic-configuration)
 ### export a function -- to access and modify incoming config values
 TODO:
 ### how to switch configuration -- based on the -- environment?

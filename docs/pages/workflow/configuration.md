@@ -4,24 +4,24 @@ description: Learn about what app.json/app.config.js/app.config.ts files are and
 ---
 
 * goal
-  * app.json OR app.config.js OR app.config.ts
+  * "app.json" OR "app.config.js" OR "app.config.ts"
     * what are they for?
     * how to customize?
     * how to use them dynamically?
 
 * app config
   * ALLOWED
-    * **app.json**
+    * "app.json"
       * default one
-    * **app.config.js**,
-    * **app.config.ts**
+    * "app.config.js",
+    * "app.config.ts"
   * uses
     * configure 
       * [Expo Prebuild](continuous-native-generation.md) generation, 
       * how a project loads | [Expo Go](../get-started/set-up-your-environment.md),
       * OTA update manifest
   * requirements
-    * locate | root of your project (== next to the **package.json**)
+    * locate | root of your project (== next to the "package.json")
 
     ```json app.json
     {
@@ -43,7 +43,7 @@ description: Learn about what app.json/app.config.js/app.config.ts files are and
     * [`android.config`](../versions/unversioned/config/app.mdx#config-1)
     * [`updates.codeSigningCertificate`](../versions/unversioned/config/app.mdx#codesigningcertificate)
     * [`updates.codeSigningMetadata`](../versions/unversioned/config/app.mdx#codesigningmetadata)
-  * ONLY use `Constants.expoConfig`, ❌NOT import **app.json** or **app.config.js** directly | your JS code ❌
+  * ONLY use `Constants.expoConfig`, ❌NOT import "app.json" or "app.config.js" directly | your JS code ❌
     * Reason: 🧠 it will import the ENTIRE file rather than a processed version of it 🧠
 * `npx expo config --type public`
   * verify the configuration / will be embedded | your builds/updates & available | runtime  
@@ -54,7 +54,7 @@ description: Learn about what app.json/app.config.js/app.config.ts files are and
 
 ## Dynamic configuration
 
-* == 💡use **app.config.js** or **app.config.ts**💡
+* == 💡use "app.config.js" or "app.config.ts"💡
 * properties
   - TODO: Comments, variables, and single quotes.
   - ESM import syntax (== `import` keyword)
@@ -68,34 +68,14 @@ description: Learn about what app.json/app.config.js/app.config.ts files are and
   - `"extra"` key
     - allows
       - passing arbitrary configuration data -- to -- your app
-    - 's value -- is accessed via -- [`expo-constants`](/versions/latest/sdk/constants/) 
-
-* _Example:_ export an object -- to define -- your custom config
-
-```js app.config.js
-const myValue = 'My App';
-
-module.exports = {
-  name: myValue,
-  version: process.env.MY_CUSTOM_PROJECT_VERSION || '1.0.0',
-  // All values in extra will be passed to your app.
-  extra: {
-    fact: 'kittens are cool',
-  },
-};
-```
-
-```js App.js
-
-Constants.expoConfig.extra.fact === 'kittens are cool';
-```
+    - 's value -- is accessed via -- [`expo-constants`](/versions/latest/sdk/constants/)
 
 * TODO:
 You can access and modify incoming config values by exporting a function that returns an object. 
-This is useful if your project also has an **app.json**. 
-By default, Expo CLI will read the **app.json** first and send the normalized results to the **app.config.js**.
+This is useful if your project also has an "app.json". 
+By default, Expo CLI will read the "app.json" first and send the normalized results to the "app.config.js".
 
-For example, your **app.json** could look like this:
+For example, your "app.json" could look like this:
 
 ```json app.json
 {
@@ -103,7 +83,7 @@ For example, your **app.json** could look like this:
 }
 ```
 
-And in your **app.config.js**, you are provided with that configuration in the arguments to the exported function:
+And in your "app.config.js", you are provided with that configuration in the arguments to the exported function:
 
 ```js app.config.js
 module.exports = ({ config }) => {
@@ -138,20 +118,26 @@ module.exports = ({ config }) => {
   ```
 
 TODO: 
-To import other TypeScript files into **app.config.ts** or customize the language features, 
-we recommend using [`ts-node`](/guides/typescript/#appconfigjs). `ts-node` also enables using `import` syntax in any file imported by **app.config.ts**
+To import other TypeScript files into "app.config.ts" or customize the language features, 
+we recommend using [`ts-node`](/guides/typescript/#appconfigjs). `ts-node` also enables using `import` syntax in any file imported by "app.config.ts"
 * This means you can write local [config plugins](/config-plugins/introduction/) in TypeScript with full language features.
 
 ### Configuration resolution rules
 
-There are two different types of configs: static (**app.config.json**, **app.json**), and dynamic (**app.config.js**, **app.config.ts**)
-* Static configs can be automatically updated with CLI tools, whereas dynamic configs must be manually updated by the developer.
+* configs types
+  * static ("app.config.json", "app.json")
+    * if you want to update -> they are AUTOMATICALLY updated -- via -- CLI tools
+  * dynamic ("app.config.js", "app.config.ts")
+    * if you want to update -> MANUALLY update them
 
-1. The static config is read if **app.config.json** exists (falls back to **app.json**). If no static config exists, then default values are inferred from the **package.json** and your dependencies.
-2. The dynamic config is read if either **app.config.ts** or **app.config.js** exist. If both exist, then the TypeScript config is used.
-3. If the dynamic config returns a function, then the static config is passed to the function with `({ config }) => ({})`. This function can then mutate the static config values. Think of this like middleware for the static config.
-4. The return value from the dynamic config is used as the final config. It cannot have any promises.
-5. All functions in the config are evaluated and serialized before any tool in the Expo ecosystem uses it. The config must be a JSON manifest when it is hosted.
-6. If the final config object has a top-level `expo: {}` object, then this will be used in place of the root object and all other keys will be ignored.
+* config resolution rules
+  * are applied following
+    1. if "app.config.json" OR "app.json" exist -> read them 
+       * else -> default values are inferred -- from -- "package.json" 
+    2. TODO: The dynamic config is read if either "app.config.ts" or "app.config.js" exist. If both exist, then the TypeScript config is used.
+    3. If the dynamic config returns a function, then the static config is passed to the function with `({ config }) => ({})`. This function can then mutate the static config values. Think of this like middleware for the static config.
+    4. The return value from the dynamic config is used as the final config. It cannot have any promises.
+    5. All functions in the config are evaluated and serialized before any tool in the Expo ecosystem uses it. The config must be a JSON manifest when it is hosted.
+    6. If the final config object has a top-level `expo: {}` object, then this will be used in place of the root object and all other keys will be ignored.
 
-Running `npx expo config` will display the final configuration that will be used in Expo CLI after resolution has occurred.
+* if you want to get the configuration / will be applied | Expo CLI -> run `npx expo config`
