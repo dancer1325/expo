@@ -4,9 +4,15 @@ description: Learn how to set up push notifications, get credentials for develop
 ---
 
 
-To utilize Expo push notification service, you must configure your app by installing a set of libraries, implement functions to handle notifications, and set up credentials for Android and iOS.
+* Expo push notification service setup
+  * == | your app,
+    * install a set of libraries
+    * implement functions / handle notifications
+    * set up credentials -- for -- Android & iOS
 
-Complete the steps outlined in this guide or follow the more detailed video below. At the end, you'll be able to send a push notification and receive it on a device.
+TODO: 
+Complete the steps outlined in this guide or follow the more detailed video below
+* At the end, you'll be able to send a push notification and receive it on a device.
 
 <NotificationsVideo />
 <br />
@@ -19,15 +25,20 @@ To get the client-side ready for push notifications, the following things are re
 <br />
 <Collapsible summary="Do you want to use FCM / APNs directly, instead of the Expo push notification service?">
 
-If you need finer-grained control over your notifications, communicating directly with FCM and APNs may be necessary. Expo does not lock you into using Expo Application Services, and the `expo-notifications` API is push-service agnostic. Learn how to ["Send notifications with FCM and APNs"](/push-notifications/sending-notifications-custom/).
+If you need finer-grained control over your notifications, communicating directly with FCM and APNs may be necessary
+* Expo does not lock you into using Expo Application Services, and the `expo-notifications` API is push-service agnostic
+* Learn how to ["Send notifications with FCM and APNs"](/push-notifications/sending-notifications-custom/).
 
 </Collapsible>
 
 ## Prerequisites
 
-> **warning** **Important:** Push notifications are not supported on Android Emulators and iOS Simulators. A real device is required.
+> **warning** **Important:** Push notifications are not supported on Android Emulators and iOS Simulators
+* A real device is required.
 
-The following steps described in this guide use [EAS Build](/build/introduction/). This is the easiest way to set up notifications since your EAS project will also contain the [notification credentials](#get-credentials-for-development-builds). However, you can use the `expo-notifications` library without EAS Build by building [your project locally](/guides/local-app-development/).
+The following steps described in this guide use [EAS Build](/build/introduction/)
+* This is the easiest way to set up notifications since your EAS project will also contain the [notification credentials](#get-credentials-for-development-builds)
+* However, you can use the `expo-notifications` library without EAS Build by building [your project locally](/guides/local-app-development/).
 
 <Step label="1">
 
@@ -47,7 +58,8 @@ Run the following command to install the `expo-notifications`, `expo-device` and
 
 ## Add a minimal working example
 
-The code below shows a working example of how to register for, send, and receive push notifications in a React Native app. Copy and paste it into your project:
+The code below shows a working example of how to register for, send, and receive push notifications in a React Native app
+* Copy and paste it into your project:
 
 ```tsx App.tsx
 
@@ -184,9 +196,13 @@ export default function App() {
 
 ### Configure `projectId`
 
-Using the previous example, when you are registering for push notifications, you need to use [`projectId`](/versions/latest/sdk/constants/#easconfig). This property is used to attribute Expo push token to the specific project. For projects using EAS, the `projectId` property represents the Universally Unique Identifier (UUID) of that project.
+Using the previous example, when you are registering for push notifications, you need to use [`projectId`](/versions/latest/sdk/constants/#easconfig)
+* This property is used to attribute Expo push token to the specific project
+* For projects using EAS, the `projectId` property represents the Universally Unique Identifier (UUID) of that project.
 
-`projectId` is set automatically when you create a development build. However, **we recommend setting it manually in your project's code**. To do so, you can use [`expo-constants`](/versions/latest/sdk/constants/) to get the `projectId` value from the app config.
+`projectId` is set automatically when you create a development build
+* However, **we recommend setting it manually in your project's code**
+* To do so, you can use [`expo-constants`](/versions/latest/sdk/constants/) to get the `projectId` value from the app config.
 
 ```ts
 const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
@@ -257,7 +273,8 @@ After creating and installing the development build, you can use [Expo push noti
      className="max-w-screen-xl"
    />
 
-After sending the notification from the tool, you should see the notification on your device. Below is an example of an Android device receiving a push notification.
+After sending the notification from the tool, you should see the notification on your device
+* Below is an example of an Android device receiving a push notification.
 
   <ContentSpotlight
     alt="An Android device receiving a push notification."

@@ -5,46 +5,43 @@ description: A guide on installing and configuring Sentry for crash reporting.
 platforms: ['android', 'ios', 'web']
 ---
 
+* goal
+  * how to integrate Sentry | your Expo projects
 
-[Sentry](https://getsentry.com/) is a crash reporting platform that provides you with **real-time insight into production deployments with info to reproduce and fix crashes**.
+* [Sentry](https://getsentry.com/)
+  * == crash reporting platform /
+    * notified you, about published & used apps,
+      * real-time insight
+      * errors
 
-It notifies you of exceptions or errors that your users run into while using your app and organizes them for you on a web dashboard. Reported exceptions include stacktraces, device info, version, and other relevant context automatically. You can also provide additional context that is specific to your application such as the current route and user id.
+## install & configure Sentry | your React Native app
 
-## What you'll learn
+* steps
+  * [sign up for a Sentry account + create a project](#sign-up-for-a-sentry-account--create-a-project)
+  * TODO: 
 
-This guide covers three main aspects of integrating Sentry with your Expo projects:
-
-- [Install and configure Sentry](#install-and-configure-sentry) in your React Native app
-
-- Using Sentry with EAS:
-  - [EAS Build](#usage-with-eas-build) for building your app
-  - [EAS Update](#usage-with-eas-update) for over-the-air updates
-
-- [Setting up the Sentry-Expo integration](#sentry-integration-with-eas-dashboard) to view crash reports and session replays directly in your EAS dashboard
-
-## Install and configure Sentry
-
-<Step label="1">
-
-### Sign up for a Sentry account and create a project
+### Sign up for a Sentry account + create a project
 
 Before proceeding with installing Sentry, you'll need to make sure you have created a Sentry account and project:
 
-<Step label="1.1">
+* steps
+  * [Sign up for Sentry](https://sentry.io/signup/)
+  * | Sentry dashboard,
+    * create a project
+      * **organization slug** 
+        * check **Organization settings** tab
+      * **project name** 
+        * check your project's **Settings** > **Projects** tab
+      * **DSN** 
+        * check your project's **Settings** > **Projects** > **Project name** > Under **SDK Setup** section > **Client Keys (DSN)** tab
+  * 
 
-[Sign up for Sentry](https://sentry.io/signup/) (the free tier supports up to 5,000 events per month), and create a project in your
-Dashboard. Take note of your **organization slug**, **project name**, and **DSN** as you'll need
-them later:
-
-- **organization slug** is available in your **Organization settings** tab
-- **project name** is available in your project's **Settings** > **Projects** tab (find it in the list)
-- **DSN** is available in your project's **Settings** > **Projects** > **Project name** > Under **SDK Setup** section > **Client Keys (DSN)** tab.
-
-</Step>
 
 <Step label="1.2">
 
-Go to the [Developer Settings > Auth Tokens](https://sentry.io/settings/auth-tokens/) page and create a new [Organization Auth Token](https://docs.sentry.io/account/auth-tokens/#organization-auth-tokens). The token is automatically scoped for Source Map Upload and Release Creation. Save it.
+Go to the [Developer Settings > Auth Tokens](https://sentry.io/settings/auth-tokens/) page and create a new [Organization Auth Token](https://docs.sentry.io/account/auth-tokens/#organization-auth-tokens)
+* The token is automatically scoped for Source Map Upload and Release Creation
+* Save it.
 
 </Step>
 
@@ -56,18 +53,20 @@ Once you have each of these: **organization slug**, **project name**, **DSN**, a
 
 ### Use the Sentry wizard to set up your project
 
-The easiest way to set up Sentry in your Expo project is to use the Sentry wizard. This tool will automatically configure your project with the right settings.
+The easiest way to set up Sentry in your Expo project is to use the Sentry wizard
+* This tool will automatically configure your project with the right settings.
 
 Run the following command in your project directory:
 
-<Terminal
-  cmd={{
-    npm: ['$ npx @sentry/wizard@latest -i reactNative'],
-    yarn: ['$ yarn dlx @sentry/wizard@latest -i reactNative'],
-    pnpm: ['$ pnpm dlx @sentry/wizard@latest -i reactNative'],
-    bun: ['$ bunx @sentry/wizard@latest -i reactNative'],
-  }}
-/>
+```bash
+$ npx @sentry/wizard@latest -i reactNative
+---
+$ yarn dlx @sentry/wizard@latest -i reactNative
+---
+$ pnpm dlx @sentry/wizard@latest -i reactNative
+---
+$ bunx @sentry/wizard@latest -i reactNative
+```
 
 The wizard will:
 
@@ -76,7 +75,8 @@ The wizard will:
 - Set up the Metro configuration automatically
 - Add the necessary initialization code to your app
 
-Follow the prompts in the wizard to complete the setup process. The wizard will guide you to log in to your Sentry account and fetch all the correct information regarding your project.
+Follow the prompts in the wizard to complete the setup process
+* The wizard will guide you to log in to your Sentry account and fetch all the correct information regarding your project.
 
 </Step>
 
@@ -84,7 +84,8 @@ Follow the prompts in the wizard to complete the setup process. The wizard will 
 
 ### Verify the configuration
 
-Create a new release build of your app and verify that it uploads source maps correctly. You may want to add a button in your app to test that it is working and sourcemaps are wired up as expected, for example:
+Create a new release build of your app and verify that it uploads source maps correctly
+* You may want to add a button in your app to test that it is working and sourcemaps are wired up as expected, for example:
 
 {/* prettier-ignore */}
 ```jsx
@@ -95,36 +96,35 @@ Create a new release build of your app and verify that it uploads source maps co
 
 </Step>
 
-## Usage with EAS Build
+## Sentry + EAS
+### Sentry + EAS Build
 
-Ensure that `SENTRY_AUTH_TOKEN` is set in your build environment with [sensitive visibility](/eas/environment-variables/#visibility-settings-for-environment-variables). Sentry will automatically upload source maps for you. If you use environment variables rather than properties in your app config, ensure that those are set as well.
+* allows
+  * building your app
+
+Ensure that `SENTRY_AUTH_TOKEN` is set in your build environment with [sensitive visibility](/eas/environment-variables/#visibility-settings-for-environment-variables)
+* Sentry will automatically upload source maps for you
+* If you use environment variables rather than properties in your app config, ensure that those are set as well.
 
 Using the above instructions, no additional work is needed to integrate Sentry into your project when using EAS Build.
 
-## Usage with EAS Update
+### Sentry + EAS Update
 
 After running `eas update`, upload the source maps to Sentry:
 
-<Terminal
-  cmd={{
-    npm: [
-      '# Pass in the "dist" directory generated by `eas update` to the upload script',
-      '$ npx sentry-expo-upload-sourcemaps dist',
-    ],
-    yarn: [
-      '# Pass in the "dist" directory generated by `eas update` to the upload script',
-      '$ yarn dlx sentry-expo-upload-sourcemaps dist',
-    ],
-    pnpm: [
-      '# Pass in the "dist" directory generated by `eas update` to the upload script',
-      '$ pnpm dlx sentry-expo-upload-sourcemaps dist',
-    ],
-    bun: [
-      '# Pass in the "dist" directory generated by `eas update` to the upload script',
-      '$ bunx sentry-expo-upload-sourcemaps dist',
-    ],
-  }}
-/>
+```bash
+# Pass in the "dist" directory generated by `eas update` to the upload script
+$ npx sentry-expo-upload-sourcemaps dist
+---
+# Pass in the "dist" directory generated by `eas update` to the upload script
+$ yarn dlx sentry-expo-upload-sourcemaps dist
+---
+# Pass in the "dist" directory generated by `eas update` to the upload script
+$ pnpm dlx sentry-expo-upload-sourcemaps dist
+---
+# Pass in the "dist" directory generated by `eas update` to the upload script
+$ bunx sentry-expo-upload-sourcemaps dist
+```
 
 That's it! Errors for your updates will now be properly symbolicated in Sentry.
 
@@ -179,9 +179,15 @@ Once configured, information about the associated update will show up in an erro
 
 </Collapsible>
 
-## Sentry integration with EAS dashboard
+## Sentry + EAS dashboard
 
-The Sentry integration with Expo allows you to view crash reports and Session Replays for your Expo app deployments directly within your EAS dashboard. This integration provides a direct link to Sentry stack traces with full context, session replays, and debugging capabilities.
+* allows
+  * | your EAS dashboard, view 
+    * crash reports
+    * session replays 
+
+The Sentry integration with Expo allows you to view crash reports and Session Replays for your Expo app deployments directly within your EAS dashboard
+* This integration provides a direct link to Sentry stack traces with full context, session replays, and debugging capabilities.
 
 ### Install
 
