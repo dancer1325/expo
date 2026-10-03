@@ -7,20 +7,22 @@ iconUrl: '/static/images/packages/expo-notifications.png'
 platforms: ['android', 'ios']
 ---
 
+* `expo-notifications` API
+  * allows
+    * fetch push notification tokens
+      * | Expo Go | Android & Expo SDK v53+
+        * ❌NOT AVAILABLE❌
+        * -> use a [development build](../../../develop/development-builds/introduction)
+    * present notifications 
+    * schedule notifications 
+    * receive notifications
+    * respond -- to -- notifications 
 
-
-`expo-notifications` provides an API to fetch push notification tokens and to present, schedule, receive and respond to notifications.
-
-<BoxLink
-  title="Notification guides"
-  description="Do not miss our guides on how to set up, send, and handle push notifications."
-  href="/push-notifications/overview/"
-  Icon={NotificationBoxIcon}
-/>
-
-> **warning** Push notifications (remote notifications) functionality provided by `expo-notifications` is unavailable in Expo Go on Android from SDK 53. A [development build](/develop/development-builds/introduction/) is required to use push notifications. Local notifications (in-app notifications) remain available in Expo Go.
+* [Notification guides](../../../push-notifications)
 
 ## Features
+
+TODO: 
 
 - Schedule a one-off notification for a specific date or some time from now
 - Schedule a notification repeating in some time interval (or a calendar date match on iOS)
@@ -44,17 +46,20 @@ obtain the [credentials](#credentials) for push notifications.
 
 ### Known issues <PlatformTags platforms={['android']} />
 
-When launching the app from a push notification in **Android development builds**, the splash screen may fail to display correctly about 70% of the time. The icon and fade animation may not appear as expected.
+When launching the app from a push notification in **Android development builds**, the splash screen may fail to display correctly about 70% of the time
+* The icon and fade animation may not appear as expected.
 
 - Icon may be missing
 - Fade animation may not run
 - Only the background color may flash briefly
 
-This issue only affects debug builds and does not occur in release builds. To workaround it, test notification launches in release mode (`npx expo run:android --variant release`) for accurate behavior.
+This issue only affects debug builds and does not occur in release builds
+* To workaround it, test notification launches in release mode (`npx expo run:android --variant release`) for accurate behavior.
 
 ## Usage
 
-Check out the example Snack below to see Notifications in action. Push notifications work on physical devices, Android emulators with Google Play services, and iOS simulators on Xcode 14 or later (macOS 13+, iOS 16+).
+Check out the example Snack below to see Notifications in action
+* Push notifications work on physical devices, Android emulators with Google Play services, and iOS simulators on Xcode 14 or later (macOS 13+, iOS 16+).
 
 <SnackInline label='Push Notifications' dependencies={['expo-constants', 'expo-notifications']}>
 
@@ -218,7 +223,8 @@ If you'd like to deep link to a specific screen in your app when you receive a p
 
 <Tab label="Expo Router">
 
-You can use Expo Router's [built-in deep linking](/router/basics/core-concepts/#2-all-pages-have-a-url) to handle incoming URLs from push notifications. Simply configure the root layout to listen for incoming and initial notification events.
+You can use Expo Router's [built-in deep linking](/router/basics/core-concepts/#2-all-pages-have-a-url) to handle incoming URLs from push notifications
+* Simply configure the root layout to listen for incoming and initial notification events.
 
 ```tsx app/_layout.tsx
 
@@ -339,7 +345,8 @@ Follow the [setup guide](/push-notifications/push-notifications-setup/#get-crede
 
 ### App config
 
-To configure `expo-notifications`, use the built-in [config plugin](/config-plugins/introduction/) in the app config (**app.json** or **app.config.js**) for [EAS Build](/build/introduction) or with `npx expo run:[android|ios]`. The plugin allows you to configure the following properties that cannot be set at runtime and require building a new app binary to take effect:
+To configure `expo-notifications`, use the built-in [config plugin](/config-plugins/introduction/) in the app config (**app.json** or **app.config.js**) for [EAS Build](/build/introduction) or with `npx expo run:[android|ios]`
+* The plugin allows you to configure the following properties that cannot be set at runtime and require building a new app binary to take effect:
 
 <ConfigPluginProperties
   properties={[

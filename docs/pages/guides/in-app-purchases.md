@@ -26,23 +26,26 @@ hasVideoLink: true
 
 ## Libraries
 
-TODO: 
-The following libraries provide robust support for in-app purchase functionality and out-of-the-box compatibility
-with Expo apps using [CNG](/workflow/continuous-native-generation/) and [Config Plugins](/config-plugins/introduction/) for seamless integration in your app.
-
-<BoxLink
-  title={
-    <>
-      <CODE>react-native-purchases</CODE>
-    </>
-  }
-  description="An open-source framework that provides a wrapper around Google Play Billing and StoreKit APIs, and integration with RevenueCat services supporting in-app purchases
-* It enables product management, analytics, and simplified workflows for in-app purchase requirements that may extend beyond your client code, such as validating purchases on an app's backend."
-  href="https://github.com/RevenueCat/react-native-purchases"
-  Icon={GithubIcon}
-/>
+* [react-native-purchases](https://github.com/RevenueCat/react-native-purchases)
+  * == framework /
+    * open-source
+    * integrated -- with -- RevenueCat services
+    * provide
+      * built-in in-app purchase workflows
+      * analytics
+    * enable
+      * product management
+  * == wrapper around 
+    * Google Play Billing
+    * StoreKit APIs
+  * how to configure | your Expo app?
+    * -- via -- [CNG](../workflow/continuous-native-generation)
+    * -- via -- [Config Plugins](../config-plugins/introduction)
 
 * [expo-iap](https://github.com/hyodotdev/openiap/tree/main/libraries/expo-iap)
   * == React Native library -- for -- in-app purchases /
     * conforms to the OpenIAP specification 
     * works with development builds
+  * how to configure | your Expo app?
+    * -- via -- [CNG](../workflow/continuous-native-generation)
+    * -- via -- [Config Plugins](../config-plugins/introduction)
