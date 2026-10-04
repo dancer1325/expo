@@ -50,9 +50,9 @@ hasVideoLink: true
 ### -- via -- React Navigation
 
 TODO:
-If you're using React Navigation, they offer a helpful [authentication flow guide](https://reactnavigation.org/docs/auth-flow/) that explains how to structure your navigation logic
+If you're using React Navigation, they offer a helpful [authentication flow guide](https://reactnavigation.org/docs/auth-flow/)
+that explains how to structure your navigation logic
 * It includes examples for both [static](https://reactnavigation.org/docs/auth-flow/?config=static#how-it-will-work) and [dynamic](https://reactnavigation.org/docs/auth-flow/?config=dynamic#how-it-will-work) approaches based on the user's authentication state.
-
 
 Both Expo Router and React Navigation give you flexible tools to implement protected navigation based on whether the user is logged in.
 
@@ -60,9 +60,11 @@ Both Expo Router and React Navigation give you flexible tools to implement prote
 
 Email and password is a popular option when adding authentication to your app.
 
-To make this flow user-friendly, you also need to implement forgot password and reset password functionality so users who lose access to their accounts can recover them.
+To make this flow user-friendly, you also need to implement forgot password and reset password functionality
+so users who lose access to their accounts can recover them.
 
-If you want a quicker solution, several services offer built-in email and password authentication, including [Clerk](/#clerk), [Supabase](/#supabase), [Cognito](/#cognito), [Firebase](/#firebase-auth), and [Better Auth](/#better-auth)
+If you want a quicker solution, several services offer built-in email and password authentication, 
+including [Clerk](/#clerk), [Supabase](/#supabase), [Cognito](/#cognito), [Firebase](/#firebase-auth), and [Better Auth](/#better-auth)
 * Most of these have generous free tiers, but it is a good idea to evaluate pricing if your app grows quickly.
 
 The biggest advantage of these services is their ease of integration
@@ -75,15 +77,10 @@ If you're building this flow yourself, be sure to review the [Authentication Che
 
 > **info** Adding email and password authentication is usually enough to pass App Store and Play Store review
 * You can submit your app with this method first
-* If you include "Sign in with Google," Apple may reject your app unless you also support "Sign in with Apple." The same rule applies in reverse on Google Play.
+* If you include "Sign in with Google," Apple may reject your app unless you also support "Sign in with Apple." 
+The same rule applies in reverse on Google Play.
 
-
-<BoxLink
-  title="Better Auth Example"
-  description="An example demonstrating email and password authentication with Better Auth."
-  href="https://github.com/expo/examples/tree/master/with-better-auth"
-  Icon={GithubIcon}
-/>
+* _Example:_ [here](../../../../expo-examples/with-better-auth)
 
 ## Passwordless login
 
@@ -130,14 +127,16 @@ Fortunately, newer versions of Android and iOS automatically detect passcodes in
 
 To let your users log in using their existing accounts from services like Google, Apple, GitHub, and more, you can use OAuth 2.0.
 
-[OAuth 2.0](https://oauth.net/2) is a widely used, secure protocol that allows your app to access user information from another service, without needing to handle passwords
+[OAuth 2.0](https://oauth.net/2) is a widely used, secure protocol that allows your app to access user information from another service, 
+without needing to handle passwords
 * It allows your users to log in with a single tap, which saves time, builds trust, and removes the need to manage passwords.
 
 > **info** OAuth flows can be complex
 * If you're looking for a simple integration, most providers offer SDKs and services that handle everything for you
 * You can learn more about these in the [Auth solutions](#auth-solutions) section.
 
-If you are looking for full control or want to understand how OAuth works under the hood, the following sections show how to implement a complete OAuth flow yourself using Expo.
+If you are looking for full control or want to understand how OAuth works under the hood, the following sections 
+show how to implement a complete OAuth flow yourself using Expo.
 
 ### How OAuth works
 
@@ -145,11 +144,7 @@ OAuth works by introducing an authorization server that acts as a secure middlem
 * Instead of giving your app their password, users log in through this server and approve access to specific data (like their name or email)
 * The server then issues a temporary code, which your app can exchange for a secure access token.
 
-<ContentSpotlight
-  alt="A diagram of the OAuth flow, where the user signs in with the authorization server, which returns a temporary code that the app exchanges for an access token."
-  src="/static/images/develop/authentication/oauth-flow.avif"
-  caption="In this diagram, 'client' simply refers to the application and does not imply any specific implementation details, such as whether it runs on a server, desktop, mobile device, or other platform."
-/>
+![A diagram of the OAuth flow, where the user signs in with the authorization server, which returns a temporary code that the app exchanges for an access token.](../../public/static/images/develop/authentication/oauth-flow.avif)
 
 Once you understand this pattern, you can apply it to any provider
 * The setup for Google, Apple, or GitHub will follow the same general steps.
