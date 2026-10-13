@@ -179,7 +179,8 @@ The following setup gives you full control over the login experience across Andr
 
 ### What are Expo API Routes?
 
-[Expo Router API Routes](/router/web/api-routes) allow you to write server-side logic directly inside your Expo app
+* [Expo Router API Routes](../router/web/api-routes) 
+  * allow you to write server-side logic directly inside your Expo app
 * You can define functions that handle requests just like an Express or Next.js backend, no need for an external server.
 
 This makes it easy to securely handle sensitive parts of the auth flow, like the [authorization code exchange](https://www.oauth.com/oauth2-servers/pkce/authorization-code-exchange), directly within your app
@@ -190,11 +191,8 @@ This makes it easy to securely handle sensitive parts of the auth flow, like the
 
 ### What is Expo AuthSession?
 
-[Expo AuthSession](/versions/latest/sdk/auth-session) is a client-side package that helps you open a web browser or native modal to start the OAuth login flow
-* It handles redirection, parses the authorization response, and brings the user back into your app.
+* [Expo AuthSession](../versions/unversioned/sdk/auth-session.md)
 
-It's the tool that kicks off the flow and talks to your API Route after the user authorizes access
-* See [Authentication with OAuth or OpenID providers](/guides/authentication/) for more information.
 
 
 This setup lets you:
@@ -210,19 +208,8 @@ This setup lets you:
 The following tutorials cover implementing OAuth on Android, iOS, and web, including how to create and verify custom JWTs, manage sessions, and protect API routes
 * If you're new to this flow, we recommend starting with the Google tutorial.
 
-<VideoBoxLink
-  videoId="V2YdhR1hVNw"
-  title="Google Sign-In with Expo OAuth"
-  description="Learn how to implement Google Sign-In with Expo Router API Routes."
-/>
-<br />
-<VideoBoxLink
-  videoId="tqxTijhYhp8"
-  title="Sign in with Apple using Expo"
-  description="Learn how to implement Sign in with Apple."
-/>
-
-<br />
+* [Google Sign-In -- with -- Expo OAuth](https://www.youtube.com/watch?v=V2YdhR1hVNw)
+* [Sign in -- , via Expo, with -- Apple](https://www.youtube.com/watch?v=tqxTijhYhp8)
 
 ### Managing sessions after OAuth
 

@@ -7,6 +7,11 @@ platforms: ['android', 'ios', 'web', 'expo-go']
 ---
 
 * `AuthSession`
+  * == client-side package /
+    * handle
+      * redirection
+      * parses the authorization response
+      * brings the user back | your app
   * enables
     * | your app, web browser-based authentication 
       * _Example:_ browser-based OAuth flows
@@ -14,6 +19,9 @@ platforms: ['android', 'ios', 'web', 'expo-go']
       * [guide](../../../guides/authentication)
 
 TODO:
+
+It's the tool that kicks off the flow and talks to your API Route after the user authorizes access
+
 > **Note:** `AuthSession` enables general-purpose OAuth and OpenID Connect browser-based auth workflows
 * Where available, we recommend using a library supplied by your identity provider, as it will handle implementation details specific to that provider
 * For example, use [`@react-native-google-signin/google-signin`](/guides/google-authentication/) for Google authentication and [`react-native-fbsdk-next`](/guides/facebook-authentication/) for Facebook
